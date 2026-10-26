@@ -365,24 +365,29 @@
   function islandIcon(g, v, a = 1, glow = 0) {     // Easter Island on the globe: drawn bigger than life until the camera is close
     const P = ISLAND.map(([lo, la]) => GB.prLL(v, lo, la)), cx = P.reduce((s, p) => s + p[0], 0) / P.length, cy = P.reduce((s, p) => s + p[1], 0) / P.length;
     // ~110 px across at least: big enough to read as LAND at phone size when the Jaisalmer point lands on it (26 px was a speck)
-    const w = Math.hypot(P[0][0] - P[2][0], P[0][1] - P[2][1]) || 1, ex = Math.max(1, 110 / w), gr0 = 70 + 0.6 * w * ex;
+    // a speck (26 px) until "the big exception", then it swells (with the glow) so the landing reads; the story reveals it
+    const w = Math.hypot(P[0][0] - P[2][0], P[0][1] - P[2][1]) || 1, ex = Math.max(1, (26 + 84 * eo(clamp(glow))) / w), gr0 = 70 + 0.6 * w * ex;
     g.save(); g.globalAlpha *= a;
     if (glow > 0) { const gr = g.createRadialGradient(cx, cy, 2, cx, cy, gr0); gr.addColorStop(0, `rgba(255,138,31,${(0.45 * glow).toFixed(3)})`); gr.addColorStop(1, 'rgba(255,138,31,0)'); g.fillStyle = gr; g.beginPath(); g.arc(cx, cy, gr0, 0, TAU); g.fill(); }
     const shape = () => { g.beginPath(); P.forEach(([x, y], i) => { const X = cx + (x - cx) * ex, Y = cy + (y - cy) * ex; i ? g.lineTo(X, Y) : g.moveTo(X, Y); }); g.closePath(); };
     g.lineJoin = 'round';
-    shape(); g.strokeStyle = 'rgba(200,230,255,0.35)'; g.lineWidth = 22; g.stroke();     // the surf
-    shape(); g.strokeStyle = COL.sandL; g.lineWidth = 9; g.stroke();                     // the beach
+    const sw = eo(clamp(glow));                                                         // the speck's rim is thin
+    shape(); g.strokeStyle = 'rgba(200,230,255,0.35)'; g.lineWidth = 6 + 16 * sw; g.stroke();   // the surf
+    shape(); g.strokeStyle = COL.sandL; g.lineWidth = 3 + 6 * sw; g.stroke();             // the beach
     shape(); g.fillStyle = COL.grass; g.fill();
     g.restore();
     return [cx, cy, w * ex];
   }
-  function label(g, x, y, k, text, sub, bgc = 'rgba(10,16,30,0.88)', fg = COL.ink, size = 36) {
+  // a label chip with an optional mono second line under it. Sized for a phone: 42 px chips and a 30 px second line
+  // (36 / 24 came out ~12 / 8 px tall in the 360 px phone view); the second line sits just under the chip at any size
+  function label(g, x, y, k, text, sub, bgc = 'rgba(10,16,30,0.88)', fg = COL.ink, size = 42) {
     if (k <= 0.01) return;
     chip(g, x, y, k, text, bgc, fg, size);
     if (sub) {
-      g.save(); g.globalAlpha *= clamp(k * 2 - 0.6); const w = measure(g, sub, 24, { f: 'Mono', w: 700, st: 'normal', ls: '0.14em' }) + 28;
-      g.fillStyle = 'rgba(10,16,30,0.8)'; g.beginPath(); g.roundRect(x - w / 2, y + 28, w, 34, 17); g.fill();
-      txt(g, sub, x, y + 53, 24, { f: 'Mono', w: 700, st: 'normal', c: COL.ink, ls: '0.14em' }); g.restore();
+      const ss = 30, top = y + size * 0.725 + 3, ph = ss * 1.4;
+      g.save(); g.globalAlpha *= clamp(k * 2 - 0.6); const w = measure(g, sub, ss, { f: 'Mono', w: 700, st: 'normal', ls: '0.14em' }) + 30;
+      g.fillStyle = 'rgba(10,16,30,0.8)'; g.beginPath(); g.roundRect(x - w / 2, top, w, ph, ph / 2); g.fill();
+      txt(g, sub, x, top + ph / 2 + ss * 0.36, ss, { f: 'Mono', w: 700, st: 'normal', c: COL.ink, ls: '0.14em' }); g.restore();
     }
   }
   const pop = (t, t0) => (t < t0 ? 1 : 1 + 0.2 * Math.exp(-(t - t0) * 9) * Math.sin((t - t0) * 20));
@@ -474,7 +479,7 @@
             const [x0, y0] = toS(c, 0, -RE), [x1, y1] = toS(c, 0, 0);
             sl.save(); sl.globalAlpha = kB; sl.strokeStyle = COL.ink; sl.lineWidth = 3; sl.beginPath(); sl.moveTo(x0 + 40, y0); sl.lineTo(x0 + 52, y0); sl.lineTo(x1 + 52, y1); sl.lineTo(x1 + 40, y1); sl.stroke();
             label(sl, x1 + 190, (y0 + y1) / 2, 1, '6,371 KM', 'TO THE CENTRE'); sl.fillStyle = COL.acc; sl.beginPath(); sl.arc(x0, y0 + 2, 6, 0, TAU); sl.fill();
-            label(sl, x0 - 150, y0 + 6, 1, '12 KM', null, COL.acc, COL.paperInk, 34); sl.restore();
+            label(sl, x0 - 150, y0 + 6, 1, '12 KM', null, COL.acc, COL.paperInk, 38); sl.restore();
           }
         }
         // s06: the drill head and the layers it passes
@@ -513,13 +518,13 @@
         gb.save(); gb.strokeStyle = 'rgba(190,225,255,0.16)'; gb.lineWidth = 3; gb.lineCap = 'round';   // the sea moving
         for (const [lo, la, ph] of WAVES) { const q = GB.prLL(v, lo, la); if (q[2] < 0.1 || q[0] < -40 || q[0] > W + 40) continue; const dx = 14 * Math.sin(t * 0.8 + ph); gb.beginPath(); gb.moveTo(q[0] - 22 + dx, q[1]); gb.quadraticCurveTo(q[0] + dx, q[1] - 7, q[0] + 22 + dx, q[1]); gb.stroke(); }
         gb.restore();
-        label(gb, 820, 1480, hit(t, T.pacific - 0.1, 'default') * (1 - clamp((t - (T.big - 0.3)) / 0.3)), '→', 'SOUTH AMERICA', 'rgba(10,16,30,0.6)', COL.mute, 36);
+        label(gb, 780, 1480, hit(t, T.pacific - 0.1, 'default') * (1 - clamp((t - (T.big - 0.3)) / 0.3)), '→', 'SOUTH AMERICA', 'rgba(10,16,30,0.6)', COL.mute, 36);
         CITY5.forEach(([name, ll, ox, oy], i) => {
           const t0 = [T.delhi, T.mumbai, T.bengaluru, T.chennai, T.kolkata][i] - 0.12, q = GB.prLL(v, ...anti(ll));
           if (t < t0 || q[2] < 0.05) return;
           splashFx(gb, q[0], q[1], t - t0, 1.5);
           gb.fillStyle = COL.splash; gb.beginPath(); gb.arc(q[0], q[1], 8, 0, TAU); gb.fill();
-          label(gb, q[0] + ox * 1.15, q[1] + (oy || -50), hit(t, t0 + 0.05, 'playful') * (1 - clamp((t - (T.big - 0.3)) / 0.3)), name, null, 'rgba(10,16,30,0.88)', COL.ink, 38);
+          label(gb, q[0] + ox * 1.15, q[1] + (oy || -50), hit(t, t0 + 0.05, 'playful') * (1 - clamp((t - (T.big - 0.3)) / 0.3)), name, null, 'rgba(10,16,30,0.88)', COL.ink, 46);
         });
         ORDER.forEach((j, n) => {                    // the rest of India, splashing down: an upside-down India in the sea
           const t0 = T.almost - 0.15 + (n / ORDER.length) * Math.max(0.8, T.does - T.almost + 0.5), q = GB.prLL(v, ...anti(MORE[j]));
@@ -535,7 +540,7 @@
           else {
             const kd = clamp((t - tJ) / 0.8); for (let i = 0; i < 9; i++) { const a = i / 9 * TAU, d = 14 + 40 * eo(kd); gb.fillStyle = `rgba(214,170,110,${(0.8 * (1 - kd)).toFixed(3)})`; gb.beginPath(); gb.arc(ix + Math.cos(a) * d, iy + Math.sin(a) * d * 0.7, 5 * (1 - kd * 0.5), 0, TAU); gb.fill(); }
             pin(gb, ix, iy, hit(t, tJ, 'playful'), t, 13);
-            label(gb, ix + 10, iy - 74 - iw * 0.1, hit(t, tJ + 0.15, 'playful'), 'DESERT OUTSIDE JAISALMER', null, COL.acc, COL.paperInk, 30);
+            label(gb, ix + 10, iy - 74 - iw * 0.1, hit(t, tJ + 0.15, 'playful'), 'DESERT OUTSIDE JAISALMER', null, COL.acc, COL.paperInk, 38);
           }
         }
         label(gb, ix, iy + 70 + iw * 0.05, hit(t, T.easter - 0.4, 'default') * (1 - clamp((t - (T.islandIn - 0.1)) / 0.2)), 'EASTER ISLAND', 'CHILE');
@@ -550,7 +555,7 @@
         const q = GB.prLL(v, ...PATCH), mk = clamp((t - (T.root - 0.15)) / 0.95);
         if (q[2] > 0.05) { CL.rootMark(gb, q[0], q[1], 0.75, mk, t); gb.save(); gb.globalAlpha *= clamp((t - T.root - 0.5) / 0.3); txt(gb, 'JAISALMER', q[0], q[1] + 72, 30, { f: 'Mono', w: 700, st: 'normal', c: COL.ink, ls: '0.14em' }); gb.restore(); }
         const qc = GB.prLL(v, 112, 34);
-        if (qc[2] > 0.05) label(gb, qc[0] - 60, qc[1] - 40, hit(t, T.land9 - 0.05, 'playful'), 'CHINA ⟷ ARGENTINA', null, 'rgba(10,16,30,0.88)', COL.ink, 30);
+        if (qc[2] > 0.05) label(gb, qc[0] - 60, qc[1] - 40, hit(t, T.land9 - 0.05, 'playful'), 'CHINA ⟷ ARGENTINA', null, 'rgba(10,16,30,0.88)', COL.ink, 38);
         gb.restore();
       }
 
