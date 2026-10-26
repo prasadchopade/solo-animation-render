@@ -59,7 +59,7 @@
 
   // ------------------------------------------------------------------ places and the globe
   const anti = ([lon, lat]) => [lon > 0 ? lon - 180 : lon + 180, -lat];
-  const CITY5 = [['DELHI', [77.21, 28.61], 0, 52], ['MUMBAI', [72.88, 19.08], -96, 0], ['BENGALURU', [77.59, 12.97], -112, -6], ['CHENNAI', [80.27, 13.08], 92, -6], ['KOLKATA', [88.36, 22.57], 100, 0]];
+  const CITY5 = [['DELHI', [77.21, 28.61], 0, 52], ['MUMBAI', [72.88, 19.08], -96, 0], ['BENGALURU', [77.59, 12.97], -112, -6], ['CHENNAI', [80.27, 13.08], 92, -6], ['KOLKATA', [88.36, 22.57], 50, 0]];
   const MORE = [[73.86, 18.52], [78.49, 17.39], [72.57, 23.02], [75.79, 26.91], [80.95, 26.85], [85.14, 25.59], [77.41, 23.26], [91.74, 26.14], [76.27, 9.93], [76.78, 30.73],
     [74.80, 34.08], [77.58, 34.15], [91.89, 25.58], [85.82, 20.30], [81.63, 21.25], [85.31, 23.34], [79.09, 21.15], [75.86, 22.72], [72.83, 21.17], [82.97, 25.32],
     [74.87, 31.63], [78.03, 30.32], [73.83, 15.49], [76.94, 8.52], [78.12, 9.93], [83.22, 17.69], [93.94, 24.82], [92.73, 11.62], [88.61, 27.33], [93.61, 27.08],
@@ -364,11 +364,15 @@
   }
   function islandIcon(g, v, a = 1, glow = 0) {     // Easter Island on the globe: drawn bigger than life until the camera is close
     const P = ISLAND.map(([lo, la]) => GB.prLL(v, lo, la)), cx = P.reduce((s, p) => s + p[0], 0) / P.length, cy = P.reduce((s, p) => s + p[1], 0) / P.length;
-    const w = Math.hypot(P[0][0] - P[2][0], P[0][1] - P[2][1]) || 1, ex = Math.max(1, 26 / w);
+    // ~110 px across at least: big enough to read as LAND at phone size when the Jaisalmer point lands on it (26 px was a speck)
+    const w = Math.hypot(P[0][0] - P[2][0], P[0][1] - P[2][1]) || 1, ex = Math.max(1, 110 / w), gr0 = 70 + 0.6 * w * ex;
     g.save(); g.globalAlpha *= a;
-    if (glow > 0) { const gr = g.createRadialGradient(cx, cy, 2, cx, cy, 60); gr.addColorStop(0, `rgba(255,138,31,${(0.45 * glow).toFixed(3)})`); gr.addColorStop(1, 'rgba(255,138,31,0)'); g.fillStyle = gr; g.beginPath(); g.arc(cx, cy, 60, 0, TAU); g.fill(); }
-    g.fillStyle = COL.grass; g.strokeStyle = 'rgba(230,245,210,0.7)'; g.lineWidth = 1.5;
-    g.beginPath(); P.forEach(([x, y], i) => { const X = cx + (x - cx) * ex, Y = cy + (y - cy) * ex; i ? g.lineTo(X, Y) : g.moveTo(X, Y); }); g.closePath(); g.fill(); g.stroke();
+    if (glow > 0) { const gr = g.createRadialGradient(cx, cy, 2, cx, cy, gr0); gr.addColorStop(0, `rgba(255,138,31,${(0.45 * glow).toFixed(3)})`); gr.addColorStop(1, 'rgba(255,138,31,0)'); g.fillStyle = gr; g.beginPath(); g.arc(cx, cy, gr0, 0, TAU); g.fill(); }
+    const shape = () => { g.beginPath(); P.forEach(([x, y], i) => { const X = cx + (x - cx) * ex, Y = cy + (y - cy) * ex; i ? g.lineTo(X, Y) : g.moveTo(X, Y); }); g.closePath(); };
+    g.lineJoin = 'round';
+    shape(); g.strokeStyle = 'rgba(200,230,255,0.35)'; g.lineWidth = 22; g.stroke();     // the surf
+    shape(); g.strokeStyle = COL.sandL; g.lineWidth = 9; g.stroke();                     // the beach
+    shape(); g.fillStyle = COL.grass; g.fill();
     g.restore();
     return [cx, cy, w * ex];
   }
@@ -509,7 +513,7 @@
         gb.save(); gb.strokeStyle = 'rgba(190,225,255,0.16)'; gb.lineWidth = 3; gb.lineCap = 'round';   // the sea moving
         for (const [lo, la, ph] of WAVES) { const q = GB.prLL(v, lo, la); if (q[2] < 0.1 || q[0] < -40 || q[0] > W + 40) continue; const dx = 14 * Math.sin(t * 0.8 + ph); gb.beginPath(); gb.moveTo(q[0] - 22 + dx, q[1]); gb.quadraticCurveTo(q[0] + dx, q[1] - 7, q[0] + 22 + dx, q[1]); gb.stroke(); }
         gb.restore();
-        label(gb, 900, 1480, hit(t, T.pacific - 0.1, 'default') * (1 - clamp((t - (T.big - 0.3)) / 0.3)), '→', 'SOUTH AMERICA', 'rgba(10,16,30,0.6)', COL.mute, 36);
+        label(gb, 820, 1480, hit(t, T.pacific - 0.1, 'default') * (1 - clamp((t - (T.big - 0.3)) / 0.3)), '→', 'SOUTH AMERICA', 'rgba(10,16,30,0.6)', COL.mute, 36);
         CITY5.forEach(([name, ll, ox, oy], i) => {
           const t0 = [T.delhi, T.mumbai, T.bengaluru, T.chennai, T.kolkata][i] - 0.12, q = GB.prLL(v, ...anti(ll));
           if (t < t0 || q[2] < 0.05) return;
@@ -546,7 +550,7 @@
         const q = GB.prLL(v, ...PATCH), mk = clamp((t - (T.root - 0.15)) / 0.95);
         if (q[2] > 0.05) { CL.rootMark(gb, q[0], q[1], 0.75, mk, t); gb.save(); gb.globalAlpha *= clamp((t - T.root - 0.5) / 0.3); txt(gb, 'JAISALMER', q[0], q[1] + 72, 30, { f: 'Mono', w: 700, st: 'normal', c: COL.ink, ls: '0.14em' }); gb.restore(); }
         const qc = GB.prLL(v, 112, 34);
-        if (qc[2] > 0.05) label(gb, qc[0], qc[1] - 40, hit(t, T.land9 - 0.05, 'playful'), 'CHINA ⟷ ARGENTINA', null, 'rgba(10,16,30,0.88)', COL.ink, 30);
+        if (qc[2] > 0.05) label(gb, qc[0] - 60, qc[1] - 40, hit(t, T.land9 - 0.05, 'playful'), 'CHINA ⟷ ARGENTINA', null, 'rgba(10,16,30,0.88)', COL.ink, 30);
         gb.restore();
       }
 

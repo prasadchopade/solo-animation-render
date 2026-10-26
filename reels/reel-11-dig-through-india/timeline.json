@@ -406,60 +406,130 @@
       "pitch": 1.4
     },
     {
-      "at": 65.18,
+      "at": 65.8,
       "type": "tick",
       "gain": 0.12,
-      "what": "the clock to 38 minutes",
+      "what": "the clock: 20 MIN",
+      "pitch": 1.15
+    },
+    {
+      "at": 66.0,
+      "type": "tick",
+      "gain": 0.12,
+      "what": "the clock: 21 MIN",
+      "pitch": 1.1749999999999998
+    },
+    {
+      "at": 66.2,
+      "type": "tick",
+      "gain": 0.12,
+      "what": "the clock: 22 MIN",
       "pitch": 1.2
     },
     {
-      "at": 65.42,
+      "at": 66.2667,
       "type": "tick",
       "gain": 0.12,
-      "what": "the clock to 38 minutes",
-      "pitch": 1.28
+      "what": "the clock: 23 MIN",
+      "pitch": 1.2249999999999999
     },
     {
-      "at": 65.66,
+      "at": 66.4,
       "type": "tick",
       "gain": 0.12,
-      "what": "the clock to 38 minutes",
-      "pitch": 1.3599999999999999
+      "what": "the clock: 24 MIN",
+      "pitch": 1.25
     },
     {
-      "at": 65.9,
+      "at": 66.4667,
       "type": "tick",
       "gain": 0.12,
-      "what": "the clock to 38 minutes",
-      "pitch": 1.44
+      "what": "the clock: 25 MIN",
+      "pitch": 1.275
     },
     {
-      "at": 66.14,
+      "at": 66.5333,
       "type": "tick",
       "gain": 0.12,
-      "what": "the clock to 38 minutes",
-      "pitch": 1.52
+      "what": "the clock: 26 MIN",
+      "pitch": 1.2999999999999998
     },
     {
-      "at": 66.38,
+      "at": 66.6,
       "type": "tick",
       "gain": 0.12,
-      "what": "the clock to 38 minutes",
-      "pitch": 1.6
+      "what": "the clock: 27 MIN",
+      "pitch": 1.325
     },
     {
-      "at": 66.62,
+      "at": 66.6667,
       "type": "tick",
       "gain": 0.12,
-      "what": "the clock to 38 minutes",
-      "pitch": 1.68
+      "what": "the clock: 28 MIN",
+      "pitch": 1.3499999999999999
     },
     {
-      "at": 66.86,
+      "at": 66.7333,
       "type": "tick",
       "gain": 0.12,
-      "what": "the clock to 38 minutes",
-      "pitch": 1.76
+      "what": "the clock: 29 MIN",
+      "pitch": 1.375
+    },
+    {
+      "at": 66.8,
+      "type": "tick",
+      "gain": 0.12,
+      "what": "the clock: 31 MIN",
+      "pitch": 1.4
+    },
+    {
+      "at": 66.8667,
+      "type": "tick",
+      "gain": 0.12,
+      "what": "the clock: 32 MIN",
+      "pitch": 1.4249999999999998
+    },
+    {
+      "at": 66.9333,
+      "type": "tick",
+      "gain": 0.12,
+      "what": "the clock: 33 MIN",
+      "pitch": 1.45
+    },
+    {
+      "at": 67.0667,
+      "type": "tick",
+      "gain": 0.12,
+      "what": "the clock: 34 MIN",
+      "pitch": 1.4749999999999999
+    },
+    {
+      "at": 67.1333,
+      "type": "tick",
+      "gain": 0.12,
+      "what": "the clock: 35 MIN",
+      "pitch": 1.5
+    },
+    {
+      "at": 67.2667,
+      "type": "tick",
+      "gain": 0.12,
+      "what": "the clock: 36 MIN",
+      "pitch": 1.525
+    },
+    {
+      "at": 67.4,
+      "type": "tick",
+      "gain": 0.12,
+      "what": "the clock: 37 MIN",
+      "pitch": 1.5499999999999998
+    },
+    {
+      "at": 67.6667,
+      "type": "tick",
+      "gain": 0.12,
+      "what": "the clock: 38 MIN",
+      "pitch": 1.575
     },
     {
       "at": 68.2,
