@@ -400,7 +400,7 @@
       S.sl = canvas(root); S.gb = canvas(root); S.top = canvas(root);
       const head = CL.head;
       S.L = {
-        a1: head(root, 'DIG STRAIGHT DOWN', 140, 150, COL.ink), a2: head(root, 'FROM INDIA', 310, 150, COL.ink, { 1: COL.acc }),
+        a1: head(root, 'DIG STRAIGHT DOWN', 140, 134, COL.ink), a2: head(root, 'FROM INDIA', 292, 150, COL.ink, { 1: COL.acc }),   // a1 at 134: at 150 it ran to 10 px from both edges
         b1: head(root, 'THE PACIFIC OCEAN', 140, 124, COL.ink, { 1: COL.seaL }),
         c1: head(root, 'ALMOST ALL OF INDIA', 140, 120, COL.ink), c2: head(root, 'THE EXCEPTION:', 140, 92, COL.mute), c3: head(root, 'JAISALMER', 240, 190, COL.acc),
         d1: head(root, 'EASTER ISLAND', 140, 160, COL.ink),
