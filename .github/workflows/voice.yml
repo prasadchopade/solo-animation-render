@@ -1,0 +1,171 @@
+# Generate and score narration on GitHub's machines (no speech model ever runs on the laptop).
+#
+#   gh workflow run voice.yml -f reel=reel-2-38-witnesses -f task=cast          # audition the voices in vo_script.json "cast"
+#   gh workflow run voice.yml -f reel=reel-2-38-witnesses -f task=takes         # every line, several takes, with the "take" voice
+#   gh run download --name voice-reel-2-38-witnesses-cast                       # → audio/vo_lab/ (WAVs, report.md, casting reels)
+#
+# Kokoro-82M (Apache-2.0) and Chatterbox (MIT) run on CPU. Scoring: UTMOS22 predicted naturalness, Whisper word errors
+# against the script, pace and pitch range — see scripts/voice_lab.py.
+name: Voice lab
+
+on:
+  workflow_dispatch:
+    inputs:
+      reel:
+        description: Reel folder name under reels/
+        required: true
+      task:
+        description: cast = audition voices · takes = every line with the chosen voice
+        type: choice
+        options: [cast, takes]
+        default: cast
+      takes:
+        description: Takes per line (task=takes)
+        default: "3"
+      shards:
+        description: Parallel Chatterbox machines
+        default: "4"
+
+permissions:
+  contents: read
+
+env:
+  REEL: ${{ inputs.reel }}
+  TASK: ${{ inputs.task }}
+  TORCH_CPU: https://download.pytorch.org/whl/cpu
+
+jobs:
+  plan:
+    runs-on: ubuntu-latest
+    outputs:
+      kokoro: ${{ steps.p.outputs.kokoro }}
+      chatterbox: ${{ steps.p.outputs.chatterbox }}
+      shards: ${{ steps.p.outputs.shards }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: reels/${{ inputs.reel }}/vo_script.json
+          sparse-checkout-cone-mode: false
+      - id: p
+        env:
+          SHARDS: ${{ inputs.shards }}
+        run: |
+          node -e '
+            const s = JSON.parse(require("fs").readFileSync(`reels/${process.env.REEL}/vo_script.json`, "utf8"));
+            const list = process.env.TASK === "cast" ? s.cast : [].concat(s.take || []);
+            if (!list.length) { console.log("::error::no take voice in vo_script.json"); process.exit(1); }
+            const cb = list.some((e) => e.engine === "chatterbox");
+            const kk = list.some((e) => e.engine === "kokoro") || list.some((e) => e.ref);
+            const n = Math.max(1, Math.min(16, parseInt(process.env.SHARDS, 10) || 4));
+            const o = require("fs").createWriteStream(process.env.GITHUB_OUTPUT, { flags: "a" });
+            o.write(`kokoro=${kk}\nchatterbox=${cb}\nshards=${JSON.stringify([...Array(n).keys()])}\n`);
+            console.log({ kokoro: kk, chatterbox: cb, shards: n });'
+
+  kokoro:
+    needs: plan
+    if: needs.plan.outputs.kokoro == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+          cache-dependency-path: .github/workflows/voice.yml
+      - uses: actions/cache@v4
+        with:
+          path: ~/.cache/huggingface
+          key: hf-kokoro-v1
+      - name: Kokoro (CPU)
+        run: |
+          sudo apt-get update -qq && sudo apt-get install -y -qq espeak-ng > /dev/null
+          pip install -q torch==2.6.0 --index-url "$TORCH_CPU"
+          pip install -q kokoro==0.9.4 "transformers>=4.44,<4.50" soundfile
+      - name: Generate
+        run: cd "reels/$REEL" && python ../../scripts/voice_lab.py gen --engine kokoro --task "$TASK" --takes ${{ inputs.takes }}
+      - uses: actions/upload-artifact@v4
+        with:
+          name: vo-kokoro
+          path: reels/${{ inputs.reel }}/audio/vo_lab/
+          retention-days: 2
+
+  chatterbox:
+    needs: [plan, kokoro]
+    if: always() && needs.plan.outputs.chatterbox == 'true' && needs.plan.result == 'success' && needs.kokoro.result != 'failure' && needs.kokoro.result != 'cancelled'
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    strategy:
+      fail-fast: true
+      matrix:
+        shard: ${{ fromJson(needs.plan.outputs.shards) }}
+    name: chatterbox ${{ matrix.shard }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+          cache-dependency-path: .github/workflows/voice.yml
+      - uses: actions/cache@v4
+        with:
+          path: ~/.cache/huggingface
+          key: hf-chatterbox-v1
+      - name: Chatterbox (CPU)
+        run: |
+          pip install -q torch==2.6.0 torchaudio==2.6.0 --index-url "$TORCH_CPU"
+          pip install -q chatterbox-tts==0.1.7
+      - uses: actions/download-artifact@v4
+        if: needs.kokoro.result == 'success'
+        with:
+          name: vo-kokoro
+          path: reels/${{ inputs.reel }}/audio/vo_lab
+      - name: Generate (shard ${{ matrix.shard }} of ${{ strategy.job-total }})
+        run: |
+          cd "reels/$REEL"
+          python ../../scripts/voice_lab.py gen --engine chatterbox --task "$TASK" --takes ${{ inputs.takes }} --shard ${{ matrix.shard }}/${{ strategy.job-total }}
+          rm -rf audio/vo_lab/refs audio/vo_lab/cast/k-* 2>/dev/null; true
+      - uses: actions/upload-artifact@v4
+        with:
+          name: vo-cb-${{ matrix.shard }}
+          path: reels/${{ inputs.reel }}/audio/vo_lab/
+          retention-days: 2
+          if-no-files-found: ignore
+
+  score:
+    needs: [plan, kokoro, chatterbox]
+    if: always() && needs.plan.result == 'success' && needs.kokoro.result != 'failure' && needs.chatterbox.result != 'failure' && needs.kokoro.result != 'cancelled' && needs.chatterbox.result != 'cancelled'
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+          cache-dependency-path: .github/workflows/voice.yml
+      - uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cache/huggingface
+            ~/.cache/torch
+          key: hf-score-v1
+      - name: Scorers (CPU)
+        run: |
+          pip install -q torch==2.6.0 torchaudio==2.6.0 --index-url "$TORCH_CPU"
+          pip install -q faster-whisper librosa soundfile
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: vo-*
+          path: reels/${{ inputs.reel }}/audio/vo_lab
+          merge-multiple: true
+      - name: Score
+        run: |
+          cd "reels/$REEL"
+          python ../../scripts/voice_lab.py score --task "$TASK"
+          cat "audio/vo_lab/$TASK/report.md" >> "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: voice-${{ inputs.reel }}-${{ inputs.task }}
+          path: reels/${{ inputs.reel }}/audio/vo_lab/
+          retention-days: 14

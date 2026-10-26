@@ -1,0 +1,58 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Reel 11: Dig through India</title>
+<style>
+  /* Display + UI: Barlow (SIL OFL) — Condensed Bold for display, Semi Condensed for UI/captions. Data: Inconsolata (SIL OFL).
+     Free licences, so the film renders identically on any machine (cloud runners included). 'Bahn' / 'Mono' are aliases. */
+  @font-face { font-family: 'Bahn'; src: url(../../../assets/fonts/BarlowCondensed-Bold.ttf) format('truetype'); font-weight: 700; font-stretch: 75%; }
+  @font-face { font-family: 'Bahn'; src: url(../../../assets/fonts/BarlowSemiCondensed-SemiBold.ttf) format('truetype'); font-weight: 600; font-stretch: 87.5%; }
+  @font-face { font-family: 'Bahn'; src: url(../../../assets/fonts/BarlowSemiCondensed-Bold.ttf) format('truetype'); font-weight: 700; font-stretch: 87.5%; }
+  @font-face { font-family: 'Bahn'; src: url(../../../assets/fonts/Barlow-Regular.ttf) format('truetype'); font-weight: 400; font-stretch: 100%; }
+  @font-face { font-family: 'Bahn'; src: url(../../../assets/fonts/Barlow-SemiBold.ttf) format('truetype'); font-weight: 600; font-stretch: 100%; }
+  @font-face { font-family: 'Mono'; src: url(../../../assets/fonts/Inconsolata.ttf) format('truetype'); font-weight: 200 900; font-stretch: 50% 200%; }
+  :root {
+    /* one accent (signal red) + its tonal ramp; everything else is warm neutral on blue-black */
+    --bg: #07090c; --bg-2: #0e1217; --ink: #ece8e1; --ink-2: #8d949c; --ink-3: #3b434c; --line: #1c232b;
+    --accent: #ff3b1f; --accent-d: #a8230f; --accent-l: #ff8f78; --paper: #ebe6dc; --paper-ink: #17191c;
+  }
+  html, body { margin: 0; background: #000; overflow: hidden; }
+  #stage { position: relative; overflow: hidden; background: var(--bg); transform-origin: 0 0;
+           font-family: 'Bahn', 'Segoe UI', Arial, sans-serif; color: var(--ink);
+           -webkit-font-smoothing: antialiased; text-rendering: geometricPrecision; font-kerning: normal; }
+  .scene { position: absolute; inset: 0; overflow: hidden; }
+  .abs { position: absolute; left: 0; top: 0; transform-origin: 0 0; }
+  .cam { position: absolute; left: 0; top: 0; width: 1080px; height: 1920px; transform-origin: 540px 960px; }
+  /* display: Bahnschrift Bold Condensed, upper case */
+  .display { font-family: 'Bahn'; font-weight: 700; font-stretch: 75%; letter-spacing: -0.005em; line-height: 0.92;
+             white-space: nowrap; text-transform: uppercase; }
+  .ui { font-family: 'Bahn'; font-weight: 600; font-stretch: 88%; letter-spacing: 0; line-height: 1.08; }
+  .mono { font-family: 'Mono'; font-weight: 400; letter-spacing: 0.06em; text-transform: uppercase; white-space: nowrap; }
+  .tnum { font-variant-numeric: tabular-nums; font-feature-settings: 'tnum' 1; }
+  .acc { color: var(--accent); }
+  .dim { color: var(--ink-2); }
+  /* a line is a mask: words rise through it. Padding keeps descenders; words start >= 140% below so no sliver shows. */
+  .line { position: absolute; overflow: hidden; padding: 0.10em 0.04em 0.16em; margin: -0.10em -0.04em 0; white-space: nowrap; }
+  .word { display: inline-block; }
+  /* caption words: each word is its own mask so wrapped lines still rise cleanly */
+  .cw { display: inline-block; overflow: hidden; vertical-align: top; padding: 0.06em 0.02em 0.14em; margin: -0.06em -0.02em -0.14em; }
+  .cw > span { display: inline-block; }
+  canvas { position: absolute; left: 0; top: 0; }
+</style>
+</head>
+<body>
+<div id="stage"></div>
+<script src="../../../engine/lib/motion.js"></script>
+<script src="data.js"></script>
+<script src="words.js"></script>
+<script src="../../../engine/core.js"></script>
+<script src="../../../engine/type.js"></script>
+<script src="../../../engine/kit.js"></script>
+<script src="../../../engine/ui.js"></script>
+<script src="../../../engine/clean.js"></script>
+<script src="../../../engine/globe.js"></script>
+<script src="../../../engine/endcard/endcard.js"></script>
+<script src="film.js"></script>
+</body>
+</html>

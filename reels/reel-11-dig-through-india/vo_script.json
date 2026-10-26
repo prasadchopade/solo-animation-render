@@ -1,0 +1,70 @@
+{
+ "note": "Reel 11: Dig Through India. Dig straight down from India and you come out in the Pacific, except a patch of desert outside Jaisalmer whose other side is Easter Island; then the dig, the heat, the 38-minute fall, and the root cause (only ~15% of land has land opposite). Original voice (Kokoro af_heart, speed 1.0). Numbers are written as spoken, so the display words match the voice's word tokens one to one. Indian names in phonemes: Jaisalmer /ʤˈIsᵊlmˌɛɹ/, Bengaluru /bˈɛŋɡəlˌuɹu/, Kolkata /kˈOlkətə/. Facts: docs/research.md. FIRST RUN: s02b and s03b are the plain-spelling variants of s02 and s03.",
+ "voice": "af_heart",
+ "speed": 1.0,
+ "lines": [
+  {
+   "id": "s01",
+   "text": "Dig straight down from India, and you'd think you'd hit America."
+  },
+  {
+   "id": "s02",
+   "text": "You won't. Delhi comes out in the Pacific. So do Mumbai, Bengaluru, Chennai and Kolkata.",
+   "text_kokoro": "You won't. Delhi comes out in the Pacific. So do Mumbai, [Bengaluru](/bˈɛŋɡəlˌuɹu/), Chennai and [Kolkata](/kˈOlkətə/)."
+  },
+  {
+   "id": "s03",
+   "text": "Almost all of India does. The big exception: a patch of desert outside Jaisalmer.",
+   "text_kokoro": "Almost all of India does. The big exception: a patch of desert outside [Jaisalmer](/ʤˈIsᵊlmˌɛɹ/)."
+  },
+  {
+   "id": "s04",
+   "text": "Its other side is Easter Island, and its giant stone heads."
+  },
+  {
+   "id": "s05",
+   "text": "Now dig. The deepest hole ever drilled is twelve kilometres. Barely a scratch.",
+   "text_kokoro": "Now dig. The deepest hole ever drilled is twelve kilometers. Barely a scratch."
+  },
+  {
+   "id": "s06",
+   "text": "Below, it gets hotter, until the core: as hot as the surface of the Sun."
+  },
+  {
+   "id": "s07",
+   "text": "Now jump. You'd shoot through the centre faster than a satellite.",
+   "text_kokoro": "Now jump. You'd shoot through the center faster than a satellite."
+  },
+  {
+   "id": "s08",
+   "text": "Thirty-eight minutes later, you'd pop out next to the stone heads."
+  },
+  {
+   "id": "s09",
+   "text": "The root cause of all those splashes? Only fifteen percent of land has land on its other side."
+  },
+  {
+   "id": "s10",
+   "text": "And with no air in the tunnel, you'd fall back. And forth. Forever."
+  },
+  {
+   "id": "s02b",
+   "text": "You won't. Delhi comes out in the Pacific. So do Mumbai, Bengaluru, Chennai and Kolkata."
+  },
+  {
+   "id": "s03b",
+   "text": "Almost all of India does. The big exception: a patch of desert outside Jaisalmer."
+  }
+ ],
+ "ref_text": "The night was cold and very quiet.",
+ "cast_lines": [],
+ "cast": [],
+ "take": [
+  {
+   "id": "k-heart",
+   "engine": "kokoro",
+   "voice": "af_heart",
+   "speed": 1.0
+  }
+ ]
+}

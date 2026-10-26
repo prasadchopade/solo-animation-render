@@ -1,0 +1,169 @@
+# Render a reel in the cloud, split across parallel GitHub-hosted machines, and stitch the result.
+#
+#   gh workflow run render.yml -f reel=reel-1-ai171-short -f shards=12 -f mode=final
+#   gh run watch                                   # follow it
+#   gh run download --name film-reel-1-ai171-short-final  # the finished MP4
+#
+# A patch (a fix inside a few seconds): re-render only the shards that contain the change and take every other part
+# from an earlier run of the SAME reel, mode and shard count (its part artifacts live 2 days):
+#   gh workflow run render.yml -f reel=reel-3-chernobyl -f shards=12 -f mode=final -f only=1,2 -f reuse=<run id>
+#
+# Each shard renders a contiguous, frame-exact slice of reels/<reel> (scripts/render.mjs --range) on its own 4-core
+# Linux runner. Every frame is a pure function of time, so slices rendered on different machines join without seams;
+# the join job concatenates them without re-encoding and muxes the reel's audio/mix.wav.
+name: Render film
+
+on:
+  workflow_dispatch:
+    inputs:
+      reel:
+        description: Reel folder name under reels/ (e.g. reel-2-38-witnesses)
+        required: true
+      shards:
+        description: Parallel machines (1–20; the free plan runs 20 jobs at once)
+        default: "12"
+        required: true
+      mode:
+        description: final = 60 fps · draft = 30 fps, fast checks
+        type: choice
+        options: [final, draft]
+        default: final
+      blur:
+        description: Adaptive motion blur (off by default; on costs ~40 % more render time)
+        type: boolean
+        default: false
+      only:
+        description: "Patch: re-render only these shards (e.g. 1,2); the rest come from the run in reuse"
+        default: ""
+        required: false
+      reuse:
+        description: "Patch: the run id whose parts fill in the other shards (same reel, mode, shards)"
+        default: ""
+        required: false
+
+permissions:
+  contents: read
+  actions: read          # a patch downloads the parts of an earlier run
+
+jobs:
+  plan:
+    runs-on: ubuntu-latest
+    outputs:
+      shards: ${{ steps.plan.outputs.shards }}
+      fmt: ${{ steps.plan.outputs.fmt }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: reels/${{ inputs.reel }}/timeline.json
+          sparse-checkout-cone-mode: false
+      - id: plan
+        env:
+          REEL: ${{ inputs.reel }}
+          SHARDS: ${{ inputs.shards }}
+          MODE: ${{ inputs.mode }}
+          ONLY: ${{ inputs.only }}
+        run: |
+          test -f "reels/$REEL/timeline.json" || { echo "::error::no reels/$REEL/timeline.json"; exit 1; }
+          node -e '
+            const tl = JSON.parse(require("fs").readFileSync("reels/" + process.env.REEL + "/timeline.json", "utf8"));
+            const fps = process.env.MODE === "draft" ? 30 : (tl.fps || 60);
+            const N = Math.round(tl.duration * fps);
+            const n = Math.max(1, Math.min(20, parseInt(process.env.SHARDS, 10) || 12));
+            let shards = [];
+            for (let k = 0; k < n; k++) {
+              const i0 = Math.round(N * k / n), i1 = Math.round(N * (k + 1) / n);
+              if (i1 > i0) shards.push({ k, a: i0 / fps, b: i1 / fps, frames: i1 - i0 });
+            }
+            const only = (process.env.ONLY || "").split(",").map((x) => x.trim()).filter(Boolean).map(Number);
+            if (only.length) shards = shards.filter((s) => only.includes(s.k));   // a patch: these shards only
+            const o = require("fs").createWriteStream(process.env.GITHUB_OUTPUT, { flags: "a" });
+            o.write("shards=" + JSON.stringify(shards) + "\n");
+            o.write("fmt=" + tl.formats[0] + "\n");
+            console.log(`${N} frames @ ${fps} fps in ${shards.length} shards`);'
+
+  render:
+    needs: plan
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    strategy:
+      fail-fast: true
+      max-parallel: 20
+      matrix:
+        shard: ${{ fromJson(needs.plan.outputs.shards) }}
+    name: render ${{ matrix.shard.k }} (${{ matrix.shard.frames }} frames)
+    env:
+      REEL: ${{ inputs.reel }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: ffmpeg
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg > /dev/null
+      - name: Playwright + headless Chromium
+        run: |
+          npm install --no-audit --no-fund --loglevel=error
+          npx playwright install --with-deps --only-shell chromium > /dev/null
+      - name: Render frames ${{ matrix.shard.a }}s → ${{ matrix.shard.b }}s
+        run: |
+          cd "reels/$REEL"
+          node ../../scripts/render.mjs --range "${{ matrix.shard.a }},${{ matrix.shard.b }}" --workers 2 ${{ inputs.mode == 'draft' && '--draft' || '' }} --blur ${{ inputs.blur && '1' || '0' }}
+          mkdir -p "$GITHUB_WORKSPACE/parts" && mv renders/clip_*.mp4 "$GITHUB_WORKSPACE/parts/part_$(printf %03d ${{ matrix.shard.k }}).mp4"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: part-${{ matrix.shard.k }}
+          path: parts/part_*.mp4
+          retention-days: 2
+          if-no-files-found: error
+
+  join:
+    needs: [plan, render]
+    runs-on: ubuntu-latest
+    env:
+      REEL: ${{ inputs.reel }}
+      FMT: ${{ needs.plan.outputs.fmt }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: reels/${{ inputs.reel }}/audio/mix.wav
+          sparse-checkout-cone-mode: false
+      - name: ffmpeg
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg > /dev/null
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: part-*
+          path: parts
+          merge-multiple: true
+      - name: "Patch: the other parts from run ${{ inputs.reuse }}"
+        if: ${{ inputs.reuse != '' }}
+        uses: actions/download-artifact@v4
+        with:
+          pattern: part-*
+          path: oldparts
+          merge-multiple: true
+          run-id: ${{ inputs.reuse }}
+          github-token: ${{ github.token }}
+      - name: "Patch: keep the new parts, fill in the rest"
+        if: ${{ inputs.reuse != '' }}
+        run: |
+          for f in oldparts/part_*.mp4; do b=$(basename "$f"); [ -f "parts/$b" ] && echo "new  $b" || { cp "$f" parts/; echo "kept $b"; }; done
+      - name: Stitch the parts, mux the mix
+        run: |
+          mkdir -p out
+          ls parts/part_*.mp4 | sort | sed "s|^|file '$PWD/|; s|$|'|" > parts.txt
+          cat parts.txt
+          OUT="out/${REEL}-${{ inputs.mode }}-${FMT}.mp4"
+          MIX="reels/$REEL/audio/mix.wav"
+          if [ -f "$MIX" ]; then
+            ffmpeg -hide_banner -loglevel error -y -f concat -safe 0 -i parts.txt -i "$MIX" \
+              -map 0:v -map 1:a -c:v copy -c:a aac -b:a 320k -shortest -movflags +faststart "$OUT"
+          else
+            ffmpeg -hide_banner -loglevel error -y -f concat -safe 0 -i parts.txt -c:v copy -movflags +faststart "$OUT"
+          fi
+          ffprobe -v error -show_entries stream=codec_name,width,height,r_frame_rate,nb_frames:format=duration,size -of compact "$OUT" | tee -a "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: film-${{ inputs.reel }}-${{ inputs.mode }}
+          path: out/*.mp4
+          retention-days: 14
+          if-no-files-found: error
