@@ -1,7 +1,7 @@
 {
   "note": "Single source of truth for picture + sound, in BEATS (120 bpm: beat = 0.5 s). film.js reads marks via film/data.js; sync.mjs turns sfx into cues.json; score.py reads marks for the music; vo.json places the narration. Every reel ends with the Root Cause end card: 'end' → 'done' = 3.0 s (6 beats), engine/endcard.",
   "title": "Reel 11: Dig through India",
-  "duration": 52.0,
+  "duration": 51.25,
   "fps": 30,
   "bpm": 120,
   "formats": [
@@ -23,8 +23,8 @@
   },
   "marks": {
     "hook": 0,
-    "end": 98,
-    "done": 104
+    "end": 96.5,
+    "done": 102.5
   },
   "sfx": [
     {
@@ -42,195 +42,212 @@
       "pitch": 1.2
     },
     {
-      "at": 1.3,
+      "at": 1.18,
       "type": "shovel",
-      "gain": 0.8,
-      "what": "the second bite, on \"down\"",
+      "gain": 0.45,
+      "what": "the second bite, on \"down\" (it lands inside \"straight\": soft)",
       "pitch": 0.92
     },
     {
-      "at": 1.6,
+      "at": 1.48,
       "type": "whoosh",
       "gain": 0.45,
       "what": "the camera pulls out of the desert",
       "pitch": 0.5
     },
     {
-      "at": 2.0,
+      "at": 1.88,
       "type": "rumble",
       "gain": 0.3,
       "what": "the whole Earth: a low rumble (a bed: kept low)",
       "len": 2.2
     },
     {
-      "at": 6.2,
+      "at": 5.104,
       "type": "pop",
       "gain": 0.4,
       "what": "AMERICA?",
       "pitch": 1.0
     },
     {
-      "at": 8.8,
-      "type": "whoosh",
-      "gain": 0.4,
-      "what": "onto the Pacific",
-      "pitch": 0.8
-    },
-    {
-      "at": 8.94,
+      "at": 7.796,
       "type": "buzzer",
       "gain": 0.8,
       "what": "AMERICA? is wrong",
       "len": 0.45
     },
     {
-      "at": 8.98,
+      "at": 7.836,
       "type": "scratch",
       "gain": 0.5,
       "what": "and struck through",
       "pitch": 0.7
     },
     {
-      "at": 9.26,
+      "at": 8.354,
+      "type": "whoosh",
+      "gain": 0.4,
+      "what": "onto the Pacific",
+      "pitch": 0.8
+    },
+    {
+      "at": 8.814,
       "type": "splash",
       "gain": 1.0,
       "what": "DELHI splashes down",
-      "pitch": 1.0
+      "pitch": 1.0,
+      "len": 0.5
     },
     {
-      "at": 14.06,
+      "at": 13.14,
       "type": "splash",
-      "gain": 0.85,
+      "gain": 0.6,
       "what": "MUMBAI splashes down",
-      "pitch": 1.08
+      "pitch": 1.08,
+      "len": 0.3
     },
     {
-      "at": 14.66,
+      "at": 14.34,
       "type": "splash",
-      "gain": 0.85,
+      "gain": 0.6,
       "what": "BENGALURU splashes down",
-      "pitch": 0.94
+      "pitch": 0.94,
+      "len": 0.3
     },
     {
-      "at": 15.26,
+      "at": 15.864,
       "type": "splash",
-      "gain": 0.85,
+      "gain": 0.6,
       "what": "CHENNAI splashes down",
-      "pitch": 1.15
+      "pitch": 1.15,
+      "len": 0.3
     },
     {
-      "at": 16.46,
+      "at": 16.89,
       "type": "splash",
-      "gain": 0.85,
+      "gain": 0.6,
       "what": "KOLKATA splashes down",
-      "pitch": 0.88
+      "pitch": 0.88,
+      "len": 0.3
     },
     {
-      "at": 19.7,
+      "at": 19.23,
+      "type": "splash",
+      "gain": 0.16,
+      "what": "the rest of India, splashing down",
+      "pitch": 1.3,
+      "len": 0.25
+    },
+    {
+      "at": 19.4792,
+      "type": "splash",
+      "gain": 0.19,
+      "what": "the rest of India, splashing down",
+      "pitch": 1.35,
+      "len": 0.25
+    },
+    {
+      "at": 19.7283,
       "type": "splash",
       "gain": 0.22,
       "what": "the rest of India, splashing down",
-      "pitch": 1.3
+      "pitch": 1.4000000000000001,
+      "len": 0.25
     },
     {
-      "at": 19.9833,
+      "at": 19.9775,
       "type": "splash",
-      "gain": 0.26,
+      "gain": 0.16,
       "what": "the rest of India, splashing down",
-      "pitch": 1.35
+      "pitch": 1.4500000000000002,
+      "len": 0.25
     },
     {
-      "at": 20.2667,
+      "at": 20.2267,
       "type": "splash",
-      "gain": 0.3,
+      "gain": 0.19,
       "what": "the rest of India, splashing down",
-      "pitch": 1.4000000000000001
+      "pitch": 1.5,
+      "len": 0.25
     },
     {
-      "at": 20.55,
-      "type": "splash",
-      "gain": 0.22,
-      "what": "the rest of India, splashing down",
-      "pitch": 1.4500000000000002
-    },
-    {
-      "at": 20.8333,
-      "type": "splash",
-      "gain": 0.26,
-      "what": "the rest of India, splashing down",
-      "pitch": 1.5
-    },
-    {
-      "at": 21.1167,
-      "type": "splash",
-      "gain": 0.3,
-      "what": "the rest of India, splashing down",
-      "pitch": 1.55
-    },
-    {
-      "at": 21.4,
+      "at": 20.4758,
       "type": "splash",
       "gain": 0.22,
       "what": "the rest of India, splashing down",
-      "pitch": 1.3
+      "pitch": 1.55,
+      "len": 0.25
     },
     {
-      "at": 21.6833,
+      "at": 20.725,
       "type": "splash",
-      "gain": 0.26,
+      "gain": 0.16,
       "what": "the rest of India, splashing down",
-      "pitch": 1.35
+      "pitch": 1.3,
+      "len": 0.25
     },
     {
-      "at": 21.9667,
+      "at": 20.9742,
       "type": "splash",
-      "gain": 0.3,
+      "gain": 0.19,
       "what": "the rest of India, splashing down",
-      "pitch": 1.4000000000000001
+      "pitch": 1.35,
+      "len": 0.25
     },
     {
-      "at": 22.25,
+      "at": 21.2233,
       "type": "splash",
       "gain": 0.22,
       "what": "the rest of India, splashing down",
-      "pitch": 1.4500000000000002
+      "pitch": 1.4000000000000001,
+      "len": 0.25
     },
     {
-      "at": 22.5333,
+      "at": 21.4725,
       "type": "splash",
-      "gain": 0.26,
+      "gain": 0.16,
       "what": "the rest of India, splashing down",
-      "pitch": 1.5
+      "pitch": 1.4500000000000002,
+      "len": 0.25
     },
     {
-      "at": 22.8167,
+      "at": 21.7217,
       "type": "splash",
-      "gain": 0.3,
+      "gain": 0.19,
       "what": "the rest of India, splashing down",
-      "pitch": 1.55
+      "pitch": 1.5,
+      "len": 0.25
     },
     {
-      "at": 23.4,
+      "at": 21.9708,
+      "type": "splash",
+      "gain": 0.22,
+      "what": "the rest of India, splashing down",
+      "pitch": 1.55,
+      "len": 0.25
+    },
+    {
+      "at": 22.87,
       "type": "whoosh",
       "gain": 0.35,
       "what": "toward Easter Island",
       "pitch": 0.7
     },
     {
-      "at": 26.6,
+      "at": 27.22,
       "type": "riser",
       "gain": 0.22,
       "what": "the orange point falls"
     },
     {
-      "at": 27.6,
+      "at": 28.22,
       "type": "thud",
       "gain": 0.9,
       "what": "it lands on LAND, not the sea",
       "pitch": 1.1
     },
     {
-      "at": 27.64,
+      "at": 28.26,
       "type": "stone",
       "gain": 0.35,
       "what": "a gritty landing",
@@ -238,343 +255,357 @@
       "len": 0.15
     },
     {
-      "at": 27.9,
+      "at": 28.52,
       "type": "ping",
       "gain": 0.3,
       "what": "the pin",
       "pitch": 1.4
     },
     {
-      "at": 31.6,
+      "at": 31.754,
       "type": "whoosh",
       "gain": 0.45,
       "what": "the dive onto the island",
       "pitch": 0.55
     },
     {
-      "at": 34.5,
-      "type": "stone",
-      "gain": 0.85,
-      "what": "the moai rise",
-      "pitch": 1.0,
-      "len": 0.45
-    },
-    {
-      "at": 34.82,
+      "at": 34.906,
       "type": "stone",
       "gain": 0.6,
       "what": "the moai rise",
-      "pitch": 0.92,
-      "len": 0.45
+      "pitch": 0.65,
+      "len": 0.35
     },
     {
-      "at": 35.18,
+      "at": 35.226,
       "type": "stone",
-      "gain": 0.75,
+      "gain": 0.42,
       "what": "the moai rise",
-      "pitch": 0.84,
-      "len": 0.45
+      "pitch": 0.6,
+      "len": 0.35
     },
     {
-      "at": 35.7,
+      "at": 35.586,
+      "type": "stone",
+      "gain": 0.52,
+      "what": "the moai rise",
+      "pitch": 0.55,
+      "len": 0.35
+    },
+    {
+      "at": 36.106,
       "type": "pop",
       "gain": 0.35,
       "what": "MOAI",
       "pitch": 1.1
     },
     {
-      "at": 38.3,
+      "at": 38.42,
       "type": "whoosh",
       "gain": 0.45,
       "what": "out from the island",
       "pitch": 0.5
     },
     {
-      "at": 39.0,
+      "at": 38.97,
       "type": "drill",
       "gain": 0.4,
       "what": "the drill (a bed under the line: low)",
       "len": 2.4
     },
     {
-      "at": 39.5,
+      "at": 39.62,
       "type": "rumble",
       "gain": 0.35,
       "what": "the Earth turns over",
       "len": 0.9
     },
     {
-      "at": 40.9,
+      "at": 41.02,
       "type": "pop",
       "gain": 0.4,
       "what": "the magnifier",
       "pitch": 0.9
     },
     {
-      "at": 43.4,
+      "at": 43.32,
       "type": "ping",
       "gain": 0.3,
       "what": "12 KM",
       "pitch": 1.5
     },
     {
-      "at": 46.3,
+      "at": 47.93,
       "type": "scratch",
-      "gain": 0.6,
-      "what": "…barely a scratch",
+      "gain": 1.4,
+      "what": "…barely a scratch (after the word, in the pause before s06: full)",
       "pitch": 1.2
     },
     {
-      "at": 47.5,
+      "at": 48.57,
       "type": "drill",
       "gain": 0.3,
       "what": "the drill head descending (a bed: low)",
-      "len": 4.199999999999999
+      "len": 3.588000000000001
     },
     {
-      "at": 47.9,
+      "at": 48.97,
       "type": "rumble",
       "gain": 0.3,
       "what": "deeper and deeper",
-      "len": 4.6
+      "len": 3.988000000000001
     },
     {
-      "at": 51.3,
+      "at": 51.92,
       "type": "lava",
       "gain": 0.4,
       "what": "the liquid outer core bubbling",
       "len": 1.6
     },
     {
-      "at": 56.14,
+      "at": 55.986,
       "type": "hit",
       "gain": 0.6,
       "what": "as hot as the surface of the Sun",
       "pitch": 0.8
     },
     {
-      "at": 58.0,
+      "at": 57.59,
       "type": "whoosh",
       "gain": 0.35,
       "what": "up to the rim",
       "pitch": 0.9
     },
     {
-      "at": 59.5,
+      "at": 58.964,
       "type": "boing",
       "gain": 0.45,
       "what": "the hop off the rim",
       "pitch": 1.3
     },
     {
-      "at": 60.2,
+      "at": 59.664,
       "type": "wind",
-      "gain": 0.8,
-      "what": "falling: the wind rush peaks at the centre",
-      "len": 4.3,
+      "gain": 0.6,
+      "what": "falling: the wind rush peaks at the centre (a bed under s07: kept low)",
+      "len": 4.31,
       "peak": 0.5
     },
     {
-      "at": 64.4,
-      "type": "whoosh",
-      "gain": 0.55,
-      "what": "through the centre: the Earth turns over",
-      "pitch": 1.4
-    },
-    {
-      "at": 64.5,
+      "at": 63.09,
       "type": "ping",
-      "gain": 0.25,
+      "gain": 0.15,
       "what": "FASTER THAN A SATELLITE",
       "pitch": 1.7
     },
     {
-      "at": 66.3,
+      "at": 63.872,
+      "type": "whoosh",
+      "gain": 0.2,
+      "what": "through the centre: the Earth turns over (under \"satellite\")",
+      "pitch": 1.4
+    },
+    {
+      "at": 65.18,
       "type": "tick",
       "gain": 0.12,
       "what": "the clock to 38 minutes",
       "pitch": 1.2
     },
     {
-      "at": 66.54,
+      "at": 65.42,
       "type": "tick",
       "gain": 0.12,
       "what": "the clock to 38 minutes",
       "pitch": 1.28
     },
     {
-      "at": 66.78,
+      "at": 65.66,
       "type": "tick",
       "gain": 0.12,
       "what": "the clock to 38 minutes",
       "pitch": 1.3599999999999999
     },
     {
-      "at": 67.02,
+      "at": 65.9,
       "type": "tick",
       "gain": 0.12,
       "what": "the clock to 38 minutes",
       "pitch": 1.44
     },
     {
-      "at": 67.26,
+      "at": 66.14,
       "type": "tick",
       "gain": 0.12,
       "what": "the clock to 38 minutes",
       "pitch": 1.52
     },
     {
-      "at": 67.5,
+      "at": 66.38,
       "type": "tick",
       "gain": 0.12,
       "what": "the clock to 38 minutes",
       "pitch": 1.6
     },
     {
-      "at": 67.74,
+      "at": 66.62,
       "type": "tick",
       "gain": 0.12,
       "what": "the clock to 38 minutes",
       "pitch": 1.68
     },
     {
-      "at": 67.98,
+      "at": 66.86,
       "type": "tick",
       "gain": 0.12,
       "what": "the clock to 38 minutes",
       "pitch": 1.76
     },
     {
-      "at": 68.72,
+      "at": 68.2,
       "type": "pop",
-      "gain": 0.95,
+      "gain": 1.0,
       "what": "POP: out of the hole beside the moai",
       "pitch": 0.75
     },
     {
-      "at": 68.76,
+      "at": 68.22,
+      "type": "thud",
+      "gain": 0.55,
+      "what": "the weight under the pop (a sub drop: below the words)",
+      "pitch": 1.0
+    },
+    {
+      "at": 68.24,
       "type": "boing",
-      "gain": 0.6,
+      "gain": 0.4,
       "what": "and bounces up",
       "pitch": 1.1
     },
     {
-      "at": 69.7,
+      "at": 69.18,
       "type": "stone",
-      "gain": 0.4,
-      "what": "the nearest moai turns to look",
+      "gain": 0.22,
+      "what": "the nearest moai turns to look (under \"next to the\")",
       "pitch": 1.4,
       "len": 0.3
     },
     {
-      "at": 74.2,
+      "at": 72.06,
       "type": "whoosh",
       "gain": 0.4,
       "what": "to the globe",
       "pitch": 0.7
     },
     {
-      "at": 75.3,
+      "at": 72.756,
       "type": "paper",
       "gain": 0.25,
       "what": "the mark draws itself",
       "pitch": 1.5
     },
     {
-      "at": 76.53,
+      "at": 73.986,
       "type": "ping",
       "gain": 0.45,
       "what": "the dot lands: the root cause",
       "pitch": 1.0
     },
     {
-      "at": 76.53,
+      "at": 73.986,
       "type": "hit",
       "gain": 0.6,
       "what": "and thuds",
       "pitch": 0.75
     },
     {
-      "at": 78.9,
+      "at": 77.256,
       "type": "pop",
       "gain": 0.16,
       "what": "the land with land opposite lights up",
       "pitch": 1.2
     },
     {
-      "at": 79.1,
+      "at": 77.456,
       "type": "pop",
       "gain": 0.16,
       "what": "the land with land opposite lights up",
       "pitch": 1.26
     },
     {
-      "at": 79.3,
+      "at": 77.656,
       "type": "pop",
       "gain": 0.16,
       "what": "the land with land opposite lights up",
       "pitch": 1.3199999999999998
     },
     {
-      "at": 79.5,
+      "at": 77.856,
       "type": "pop",
       "gain": 0.16,
       "what": "the land with land opposite lights up",
       "pitch": 1.38
     },
     {
-      "at": 79.7,
+      "at": 78.056,
       "type": "pop",
       "gain": 0.16,
       "what": "the land with land opposite lights up",
       "pitch": 1.44
     },
     {
-      "at": 79.9,
+      "at": 78.256,
       "type": "pop",
       "gain": 0.16,
       "what": "the land with land opposite lights up",
       "pitch": 1.5
     },
     {
-      "at": 81.4,
+      "at": 79.83,
       "type": "pop",
       "gain": 0.35,
       "what": "CHINA ⟷ ARGENTINA",
       "pitch": 1.0
     },
     {
-      "at": 86.4,
+      "at": 84.33,
       "type": "whoosh",
       "gain": 0.4,
       "what": "back to the whole Earth",
       "pitch": 0.8
     },
     {
-      "at": 91.4,
+      "at": 87.38,
       "type": "wind",
       "gain": 0.55,
       "what": "falling again",
-      "len": 0.9,
+      "len": 0.83,
       "peak": 0.5
     },
     {
-      "at": 92.7,
-      "type": "wind",
-      "gain": 0.5,
-      "what": "falling again",
-      "len": 0.8,
-      "peak": 0.5
-    },
-    {
-      "at": 93.14,
+      "at": 88.97,
       "type": "pop",
       "gain": 0.5,
       "what": "popping out the other side",
       "pitch": 0.85
     },
     {
-      "at": 94.0,
+      "at": 89.03,
+      "type": "wind",
+      "gain": 0.5,
+      "what": "falling again",
+      "len": 0.71,
+      "peak": 0.5
+    },
+    {
+      "at": 90.394,
+      "type": "pop",
+      "gain": 0.5,
+      "what": "popping out the other side",
+      "pitch": 0.95
+    },
+    {
+      "at": 91.006,
       "type": "wind",
       "gain": 0.45000000000000007,
       "what": "falling again",
@@ -582,28 +613,14 @@
       "peak": 0.5
     },
     {
-      "at": 94.24,
+      "at": 92.746,
       "type": "pop",
-      "gain": 0.5,
-      "what": "popping out the other side",
-      "pitch": 0.95
-    },
-    {
-      "at": 95.2,
-      "type": "whoosh",
-      "gain": 0.4,
-      "what": "down into the Jaisalmer hole (the loop)",
-      "pitch": 0.6
-    },
-    {
-      "at": 95.74,
-      "type": "pop",
-      "gain": 0.5,
+      "gain": 1.3,
       "what": "popping out the other side",
       "pitch": 0.85
     },
     {
-      "at": 95.8,
+      "at": 92.806,
       "type": "wind",
       "gain": 0.4,
       "what": "falling again",
@@ -611,14 +628,21 @@
       "peak": 0.5
     },
     {
-      "at": 96.84,
+      "at": 93.7,
+      "type": "whoosh",
+      "gain": 0.4,
+      "what": "down into the Jaisalmer hole (the loop)",
+      "pitch": 0.6
+    },
+    {
+      "at": 93.846,
       "type": "pop",
-      "gain": 0.5,
+      "gain": 1.3,
       "what": "popping out the other side",
       "pitch": 0.95
     },
     {
-      "at": 96.9,
+      "at": 93.906,
       "type": "wind",
       "gain": 0.4,
       "what": "falling again",
@@ -626,9 +650,9 @@
       "peak": 0.5
     },
     {
-      "at": 97.74,
+      "at": 94.746,
       "type": "pop",
-      "gain": 0.5,
+      "gain": 1.3,
       "what": "popping out the other side",
       "pitch": 0.85
     },

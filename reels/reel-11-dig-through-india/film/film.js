@@ -105,7 +105,7 @@
   // the explorer's path along the tunnel (y in slice units; the surface is at ±430, a little beyond is "popped out")
   function legs() {
     const T = times(), A = 437;
-    return [
+    const L = [
       [T.fallStart, T.arrive, -430, A],                                     // the first fall, through the centre
       [T.fall - 0.25, T.back + 0.35, A, -A],                                // back
       [T.forth - 0.5, T.forth + 0.3, -A, A],                                // and forth
@@ -113,6 +113,10 @@
       [T.forever + 0.75, T.forever + 1.3, -A, A],
       [T.forever + 1.3, T.forever + 1.75, A, -A],
     ];
+    for (let i = 1; i < L.length; i++) {             // a swing never starts before the last one ends (else the explorer jumps)
+      L[i][0] = Math.max(L[i][0], L[i - 1][1]); L[i][1] = Math.max(L[i][1], L[i][0] + 0.35);
+    }
+    return L;
   }
   function figY(t) {
     const T = times(), L = legs();
@@ -411,6 +415,14 @@
       const wP = clamp((t - T.globeIn) / 0.3) * (1 - clamp((t - T.islandIn) / 0.3));       // the Pacific globe
       const wA = clamp((t - T.rootIn) / 0.3) * (1 - clamp((t - T.rootOut) / 0.3));        // the Asia globe (the root cause)
       const wS = 1 - Math.max(wP, wA);
+      // a navy scrim behind the headlines where the picture under them is busy and warm: the core (s06–s08: grey and orange
+      // type on orange) and the root-cause globe (its dots ran through the three lines)
+      const wTop = Math.max(clamp((t - (T.below - 0.3)) / 0.3) * (1 - clamp((t - (T.arrive - 0.35)) / 0.35)), wA);
+      if (wTop > 0.005) {
+        const sg = top.createLinearGradient(0, 0, 0, 700);
+        sg.addColorStop(0, `rgba(12,20,36,${0.9 * wTop})`); sg.addColorStop(0.6, `rgba(12,20,36,${0.85 * wTop})`); sg.addColorStop(1, 'rgba(12,20,36,0)');
+        top.fillStyle = sg; top.fillRect(0, 0, W, 700);
+      }
 
       // ---- the slice
       if (wS > 0.005) {
@@ -497,7 +509,7 @@
         gb.save(); gb.strokeStyle = 'rgba(190,225,255,0.16)'; gb.lineWidth = 3; gb.lineCap = 'round';   // the sea moving
         for (const [lo, la, ph] of WAVES) { const q = GB.prLL(v, lo, la); if (q[2] < 0.1 || q[0] < -40 || q[0] > W + 40) continue; const dx = 14 * Math.sin(t * 0.8 + ph); gb.beginPath(); gb.moveTo(q[0] - 22 + dx, q[1]); gb.quadraticCurveTo(q[0] + dx, q[1] - 7, q[0] + 22 + dx, q[1]); gb.stroke(); }
         gb.restore();
-        label(gb, 935, 1060, hit(t, T.pacific - 0.1, 'default') * (1 - clamp((t - (T.big - 0.3)) / 0.3)), '→', 'SOUTH AMERICA', 'rgba(10,16,30,0.6)', COL.mute, 36);
+        label(gb, 900, 1480, hit(t, T.pacific - 0.1, 'default') * (1 - clamp((t - (T.big - 0.3)) / 0.3)), '→', 'SOUTH AMERICA', 'rgba(10,16,30,0.6)', COL.mute, 36);
         CITY5.forEach(([name, ll, ox, oy], i) => {
           const t0 = [T.delhi, T.mumbai, T.bengaluru, T.chennai, T.kolkata][i] - 0.12, q = GB.prLL(v, ...anti(ll));
           if (t < t0 || q[2] < 0.05) return;

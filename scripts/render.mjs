@@ -134,6 +134,11 @@ async function openFilm(fmt) {
   await page.evaluate(() => window.READY);
   const cdp = await page.context().newCDPSession(page);
   const info = await page.evaluate(() => ({ DUR: window.DURATION, FPS: window.FPS, CUTS: window.CUTS || [], BEATS: window.BEATS || {} }));
+  // one throwaway paint before the first real frame: the first paint after load rasterizes scaled text (a word mid-pop)
+  // a little differently from every later paint (render --verify caught it on reel 11, 2026-10-26: 1 probe of 12, until
+  // a warm-up paint), and every cloud shard's first frame is a first paint
+  await page.evaluate((t) => window.seek(t), info.DUR * 0.5);
+  await cdp.send('Page.captureScreenshot', { format: 'png', optimizeForSpeed: true });
   const png = async (t) => {
     await page.evaluate((t) => window.seek(t), t);
     const { data } = await cdp.send('Page.captureScreenshot', { format: 'png', optimizeForSpeed: true });
@@ -175,16 +180,27 @@ for (const fmt of FORMATS) {
       console.log('wrote', path.relative(ROOT, out), `(${times.length} beats, ${rows} rows)`);
     }
   } else if (has('verify')) {
-    // determinism: every probe time must paint identical pixels cold and after seeking elsewhere (in any order)
+    // determinism: every probe time must paint identical pixels cold and after seeking elsewhere (in any order).
+    // A probe that differs is saved as review/verify/t<sec>_cold.png + _again.png, with the box of the differing pixels.
     const probes = Array.from({ length: 12 }, (_, i) => +((i + 0.37) * F.DUR / 12).toFixed(3));
-    const cold = [];
-    for (const t of probes) cold.push(decodePNG(await F.png(t)));
+    const cold = [], coldPng = [];
+    for (const t of probes) { const b = await F.png(t); coldPng.push(b); cold.push(decodePNG(b)); }
     let bad = 0;
     for (let k = probes.length - 1; k >= 0; k--) {
       await F.png(probes[(k * 7 + 3) % probes.length]);                // disturb: seek somewhere else first
-      const again = decodePNG(await F.png(probes[k]));
+      const againPng = await F.png(probes[k]), again = decodePNG(againPng);
       let d = 0; for (let q = 0; q < again.length; q += 13) d = Math.max(d, Math.abs(again[q] - cold[k][q]));
-      if (d > 2) { bad++; console.log(`NOT DETERMINISTIC at t=${probes[k]}s (max pixel diff ${d})`); }
+      if (d > 2) {
+        bad++;
+        let x0 = F.W, y0 = F.H, x1 = -1, y1 = -1;
+        for (let q = 0; q < again.length; q += 3) {
+          if (Math.abs(again[q] - cold[k][q]) + Math.abs(again[q + 1] - cold[k][q + 1]) + Math.abs(again[q + 2] - cold[k][q + 2]) <= 6) continue;
+          const p = q / 3, x = p % F.W, y = (p / F.W) | 0; x0 = Math.min(x0, x); x1 = Math.max(x1, x); y0 = Math.min(y0, y); y1 = Math.max(y1, y);
+        }
+        const dir = path.join(ROOT, 'review/verify'), s = probes[k].toFixed(3); mkdir(dir);
+        fs.writeFileSync(path.join(dir, `t${s}_cold.png`), coldPng[k]); fs.writeFileSync(path.join(dir, `t${s}_again.png`), againPng);
+        console.log(`NOT DETERMINISTIC at t=${probes[k]}s (max pixel diff ${d}; the differing pixels: x ${x0}–${x1}, y ${y0}–${y1}) → review/verify/t${s}_cold.png, _again.png`);
+      }
     }
     console.log(bad ? `${bad}/${probes.length} probes differ — state is leaking between frames` : `deterministic: ${probes.length}/${probes.length} probes identical (${fmt})`);
     if (bad) process.exitCode = 1;

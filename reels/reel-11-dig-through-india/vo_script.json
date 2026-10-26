@@ -1,5 +1,5 @@
 {
- "note": "Reel 11: Dig Through India. Dig straight down from India and you come out in the Pacific, except a patch of desert outside Jaisalmer whose other side is Easter Island; then the dig, the heat, the 38-minute fall, and the root cause (only ~15% of land has land opposite). Original voice (Kokoro af_heart, speed 1.0). Numbers are written as spoken, so the display words match the voice's word tokens one to one. Indian names in phonemes: Jaisalmer /ʤˈIsᵊlmˌɛɹ/, Bengaluru /bˈɛŋɡəlˌuɹu/, Kolkata /kˈOlkətə/. Facts: docs/research.md. FIRST RUN: s02b and s03b are the plain-spelling variants of s02 and s03.",
+ "note": "Reel 11: Dig Through India. Dig straight down from India and you come out in the Pacific, except a patch of desert outside Jaisalmer whose other side is Easter Island; then the dig, the heat, the 38-minute fall, and the root cause (only ~15% of land has land opposite). Original voice (Kokoro af_heart, speed 1.0). Numbers are written as spoken, so the display words match the voice's word tokens one to one. Indian names in phonemes: Jaisalmer /ʤˈIsᵊlmˌɛɹ/, Bengaluru /bˈɛŋɡəlˌuɹu/, Kolkata /kˈOlkətə/. Facts: docs/research.md.",
  "voice": "af_heart",
  "speed": 1.0,
  "lines": [
@@ -46,14 +46,6 @@
   {
    "id": "s10",
    "text": "And with no air in the tunnel, you'd fall back. And forth. Forever."
-  },
-  {
-   "id": "s02b",
-   "text": "You won't. Delhi comes out in the Pacific. So do Mumbai, Bengaluru, Chennai and Kolkata."
-  },
-  {
-   "id": "s03b",
-   "text": "Almost all of India does. The big exception: a patch of desert outside Jaisalmer."
   }
  ],
  "ref_text": "The night was cold and very quiet.",
