@@ -11,6 +11,10 @@
 # Each shard renders a contiguous, frame-exact slice of reels/<reel> (scripts/render.mjs --range) on its own 4-core
 # Linux runner. Every frame is a pure function of time, so slices rendered on different machines join without seams;
 # the join job concatenates them without re-encoding and muxes the reel's audio/mix.wav.
+#
+# The installs (ffmpeg, Chromium's system packages, the headless shell) come from GitHub's cache, filled by the deps job
+# once per runner image (scripts/cloud-deps.sh), so no shard waits on Ubuntu's mirror. The jobs run on ubuntu-24.04, not
+# ubuntu-latest: the encoder is Ubuntu's ffmpeg, and a new Ubuntu would change it, and every part's bytes, unannounced.
 name: Render film
 
 on:
@@ -47,7 +51,7 @@ permissions:
 
 jobs:
   plan:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     outputs:
       shards: ${{ steps.plan.outputs.shards }}
       fmt: ${{ steps.plan.outputs.fmt }}
@@ -81,9 +85,59 @@ jobs:
             o.write("fmt=" + tl.formats[0] + "\n");
             console.log(`${N} frames @ ${fps} fps in ${shards.length} shards`);'
 
+  # Fills the cache the shards and the join install from, next to plan: a few seconds when this runner image already
+  # has one. A new image installs the last image's files where they still fit, the rest from Ubuntu's mirror; a new
+  # Playwright version or scripts/cloud-deps.sh starts from the mirror.
+  deps:
+    name: installs → cache
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            package.json
+            scripts/cloud-deps.sh
+          sparse-checkout-cone-mode: false
+      - id: key
+        run: bash scripts/cloud-deps.sh key >> "$GITHUB_OUTPUT"
+      - id: cached
+        uses: actions/cache/restore@v4
+        with:
+          path: |
+            ~/.cache/cloud-deps
+            ~/.cache/ms-playwright
+          key: ${{ steps.key.outputs.render }}
+          lookup-only: true
+      - if: steps.cached.outputs.cache-hit != 'true'
+        uses: actions/cache/restore@v4
+        with:
+          path: |
+            ~/.cache/cloud-deps
+            ~/.cache/ms-playwright
+          key: ${{ steps.key.outputs.render }}
+          restore-keys: ${{ steps.key.outputs.render-older }}
+      - if: steps.cached.outputs.cache-hit != 'true'
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: ffmpeg + Playwright + headless Chromium
+        id: fill
+        if: steps.cached.outputs.cache-hit != 'true'
+        continue-on-error: true          # then the shards use the last image's files, or the mirror themselves
+        timeout-minutes: 30
+        run: bash scripts/cloud-deps.sh render
+      - if: steps.fill.outcome == 'success'
+        uses: actions/cache/save@v4
+        with:
+          path: |
+            ~/.cache/cloud-deps
+            ~/.cache/ms-playwright
+          key: ${{ steps.key.outputs.render }}
+
   render:
-    needs: plan
-    runs-on: ubuntu-latest
+    needs: [plan, deps]
+    runs-on: ubuntu-24.04
     timeout-minutes: 120
     strategy:
       fail-fast: true
@@ -98,12 +152,18 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-      - name: ffmpeg
-        run: sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg > /dev/null
-      - name: Playwright + headless Chromium
-        run: |
-          npm install --no-audit --no-fund --loglevel=error
-          npx playwright install --with-deps --only-shell chromium > /dev/null
+      - id: key
+        run: bash scripts/cloud-deps.sh key >> "$GITHUB_OUTPUT"
+      - uses: actions/cache/restore@v4
+        with:
+          path: |
+            ~/.cache/cloud-deps
+            ~/.cache/ms-playwright
+          key: ${{ steps.key.outputs.render }}
+          restore-keys: ${{ steps.key.outputs.render-older }}
+      - name: ffmpeg + Playwright + headless Chromium (from the cache)
+        timeout-minutes: 30
+        run: bash scripts/cloud-deps.sh render
       - name: Render frames ${{ matrix.shard.a }}s → ${{ matrix.shard.b }}s
         run: |
           cd "reels/$REEL"
@@ -118,17 +178,30 @@ jobs:
 
   join:
     needs: [plan, render]
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     env:
       REEL: ${{ inputs.reel }}
       FMT: ${{ needs.plan.outputs.fmt }}
     steps:
       - uses: actions/checkout@v4
         with:
-          sparse-checkout: reels/${{ inputs.reel }}/audio/mix.wav
+          sparse-checkout: |
+            reels/${{ inputs.reel }}/audio/mix.wav
+            package.json
+            scripts/cloud-deps.sh
           sparse-checkout-cone-mode: false
-      - name: ffmpeg
-        run: sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg > /dev/null
+      - id: key
+        run: bash scripts/cloud-deps.sh key >> "$GITHUB_OUTPUT"
+      - uses: actions/cache/restore@v4
+        with:
+          path: |
+            ~/.cache/cloud-deps
+            ~/.cache/ms-playwright
+          key: ${{ steps.key.outputs.render }}
+          restore-keys: ${{ steps.key.outputs.render-older }}
+      - name: ffmpeg (from the cache)
+        timeout-minutes: 20
+        run: bash scripts/cloud-deps.sh ffmpeg
       - uses: actions/download-artifact@v4
         with:
           pattern: part-*
@@ -146,7 +219,11 @@ jobs:
       - name: "Patch: keep the new parts, fill in the rest"
         if: ${{ inputs.reuse != '' }}
         run: |
-          for f in oldparts/part_*.mp4; do b=$(basename "$f"); [ -f "parts/$b" ] && echo "new  $b" || { cp "$f" parts/; echo "kept $b"; }; done
+          for f in oldparts/part_*.mp4; do
+            b=$(basename "$f")
+            if [ -f "parts/$b" ]; then cmp -s "$f" "parts/$b" && echo "new  $b (the same bytes as the old one)" || echo "new  $b (changed)"
+            else cp "$f" parts/; echo "kept $b"; fi
+          done
       - name: Stitch the parts, mux the mix
         run: |
           mkdir -p out
@@ -161,6 +238,7 @@ jobs:
             ffmpeg -hide_banner -loglevel error -y -f concat -safe 0 -i parts.txt -c:v copy -movflags +faststart "$OUT"
           fi
           ffprobe -v error -show_entries stream=codec_name,width,height,r_frame_rate,nb_frames:format=duration,size -of compact "$OUT" | tee -a "$GITHUB_STEP_SUMMARY"
+          sha256sum "$OUT" | tee -a "$GITHUB_STEP_SUMMARY"
       - uses: actions/upload-artifact@v4
         with:
           name: film-${{ inputs.reel }}-${{ inputs.mode }}

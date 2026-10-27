@@ -77,9 +77,26 @@ jobs:
         with:
           path: ~/.cache/huggingface
           key: hf-kokoro-v1
+      # espeak-ng from GitHub's cache, not Ubuntu's mirror (scripts/cloud-deps.sh); the first job on a new runner image
+      # fills it
+      - id: key
+        run: bash scripts/cloud-deps.sh key >> "$GITHUB_OUTPUT"
+      - id: espeak
+        uses: actions/cache/restore@v4
+        with:
+          path: ~/.cache/cloud-deps
+          key: ${{ steps.key.outputs.espeak-ng }}
+          restore-keys: ${{ steps.key.outputs.espeak-ng-older }}
+      - name: espeak-ng (from the cache)
+        timeout-minutes: 20
+        run: bash scripts/cloud-deps.sh espeak-ng
+      - if: steps.espeak.outputs.cache-hit != 'true'
+        uses: actions/cache/save@v4
+        with:
+          path: ~/.cache/cloud-deps
+          key: ${{ steps.key.outputs.espeak-ng }}
       - name: Kokoro (CPU)
         run: |
-          sudo apt-get update -qq && sudo apt-get install -y -qq espeak-ng > /dev/null
           pip install -q torch==2.6.0 --index-url "$TORCH_CPU"
           pip install -q kokoro==0.9.4 "transformers>=4.44,<4.50" soundfile
       - name: Generate
