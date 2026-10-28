@@ -1,0 +1,68 @@
+{
+ "note": "Reel 12: Cyclone Arnab. Arnab crossed the coast near Narsapur on 28 Oct 2026, a year to the day after Montha; the Bay of Bengal's late-October season, the steering, the surge (1977), and the root cause of the difference: warnings and shelters. Kokoro af_heart, speed 1.0. Numbers are written as spoken, so the display words match the voice's word tokens one to one. 148 words. Facts: docs/research.md. FIRST RUN: s01b and s08b are the plain-spelling variants of s01 and s08.",
+ "voice": "af_heart",
+ "speed": 1.0,
+ "lines": [
+  {
+   "id": "s01",
+   "text": "Cyclone Arnab hit Andhra Pradesh near Narsapur, on the twenty-eighth of October.",
+   "text_kokoro": "Cyclone [Arnab](/ˈɑɹnəb/) hit [Andhra](/ˈɑndɹə/) [Pradesh](/pɹədˈɛʃ/) near [Narsapur](/nˈɑɹsəpˌʊɹ/), on the twenty-eighth of October."
+  },
+  {
+   "id": "s02",
+   "text": "A year earlier, to the day, Cyclone Montha hit the same coast."
+  },
+  {
+   "id": "s03",
+   "text": "That's not a coincidence. It's a season."
+  },
+  {
+   "id": "s04",
+   "text": "All summer, monsoon winds tear storms apart. In October they drop, over a sea that's still warm."
+  },
+  {
+   "id": "s05",
+   "text": "And at this time of year, the Bay's storms are steered north-west. Straight at this coast."
+  },
+  {
+   "id": "s06",
+   "text": "The Bay of Bengal makes one in twenty of the world's cyclones, but historically, most of the deaths."
+  },
+  {
+   "id": "s07",
+   "text": "Its shallow, funnel-shaped sea piles up surges. In nineteen seventy-seven, a six-metre surge on this coast killed at least ten thousand people."
+  },
+  {
+   "id": "s08",
+   "text": "Arnab was a very severe cyclone. But this time, over fifty thousand people were moved before it hit.",
+   "text_kokoro": "[Arnab](/ˈɑɹnəb/) was a very severe cyclone. But this time, over fifty thousand people were moved before it hit."
+  },
+  {
+   "id": "s09",
+   "text": "The root cause of the difference? Not weaker storms. Warnings days ahead, and shelters built after that storm."
+  },
+  {
+   "id": "s10",
+   "text": "Next October, the Bay will be warm again."
+  },
+  {
+   "id": "s01b",
+   "text": "Cyclone Arnab hit Andhra Pradesh near Narsapur, on the twenty-eighth of October."
+  },
+  {
+   "id": "s08b",
+   "text": "Arnab was a very severe cyclone. But this time, over fifty thousand people were moved before it hit."
+  }
+ ],
+ "ref_text": "The night was cold and very quiet.",
+ "cast_lines": [],
+ "cast": [],
+ "take": [
+  {
+   "id": "k-heart",
+   "engine": "kokoro",
+   "voice": "af_heart",
+   "speed": 1.0
+  }
+ ]
+}
