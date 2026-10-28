@@ -204,150 +204,150 @@
       "pitch": 0.8
     },
     {
-      "at": 50.194,
+      "at": 48.01,
       "type": "pop",
-      "gain": 0.1,
+      "gain": 0.08,
       "what": "the cyclones appear",
       "pitch": 0.95
     },
     {
-      "at": 50.234,
+      "at": 48.07,
       "type": "pop",
-      "gain": 0.1,
+      "gain": 0.08,
       "what": "the cyclones appear",
       "pitch": 0.97
     },
     {
-      "at": 50.274,
+      "at": 48.13,
       "type": "pop",
-      "gain": 0.1,
+      "gain": 0.08,
       "what": "the cyclones appear",
       "pitch": 0.99
     },
     {
-      "at": 50.314,
+      "at": 48.19,
       "type": "pop",
-      "gain": 0.1,
+      "gain": 0.08,
       "what": "the cyclones appear",
       "pitch": 1.01
     },
     {
-      "at": 50.354,
+      "at": 48.25,
       "type": "pop",
-      "gain": 0.1,
+      "gain": 0.08,
       "what": "the cyclones appear",
       "pitch": 1.03
     },
     {
-      "at": 50.394,
+      "at": 48.31,
       "type": "pop",
-      "gain": 0.1,
+      "gain": 0.08,
       "what": "the cyclones appear",
       "pitch": 1.05
     },
     {
-      "at": 50.434,
+      "at": 48.37,
       "type": "pop",
-      "gain": 0.1,
+      "gain": 0.08,
       "what": "the cyclones appear",
       "pitch": 1.0699999999999998
     },
     {
-      "at": 50.474,
+      "at": 48.43,
       "type": "pop",
-      "gain": 0.1,
+      "gain": 0.08,
       "what": "the cyclones appear",
       "pitch": 1.0899999999999999
     },
     {
-      "at": 50.514,
+      "at": 48.49,
       "type": "pop",
-      "gain": 0.1,
+      "gain": 0.08,
       "what": "the cyclones appear",
       "pitch": 1.1099999999999999
     },
     {
-      "at": 50.554,
+      "at": 48.55,
       "type": "pop",
-      "gain": 0.1,
+      "gain": 0.08,
       "what": "the cyclones appear",
       "pitch": 1.13
     },
     {
-      "at": 50.594,
+      "at": 48.61,
       "type": "pop",
-      "gain": 0.1,
+      "gain": 0.08,
       "what": "the cyclones appear",
       "pitch": 1.15
     },
     {
-      "at": 50.634,
+      "at": 48.67,
       "type": "pop",
-      "gain": 0.1,
+      "gain": 0.08,
       "what": "the cyclones appear",
       "pitch": 1.17
     },
     {
-      "at": 50.674,
+      "at": 48.73,
       "type": "pop",
-      "gain": 0.1,
+      "gain": 0.08,
       "what": "the cyclones appear",
       "pitch": 1.19
     },
     {
-      "at": 50.714,
+      "at": 48.79,
       "type": "pop",
-      "gain": 0.1,
+      "gain": 0.08,
       "what": "the cyclones appear",
       "pitch": 1.21
     },
     {
-      "at": 50.754,
+      "at": 48.85,
       "type": "pop",
-      "gain": 0.1,
+      "gain": 0.08,
       "what": "the cyclones appear",
       "pitch": 1.23
     },
     {
-      "at": 50.794,
+      "at": 48.91,
       "type": "pop",
-      "gain": 0.1,
+      "gain": 0.08,
       "what": "the cyclones appear",
       "pitch": 1.25
     },
     {
-      "at": 50.834,
+      "at": 48.97,
       "type": "pop",
-      "gain": 0.1,
+      "gain": 0.08,
       "what": "the cyclones appear",
       "pitch": 1.27
     },
     {
-      "at": 50.874,
+      "at": 49.03,
       "type": "pop",
-      "gain": 0.1,
+      "gain": 0.08,
       "what": "the cyclones appear",
       "pitch": 1.29
     },
     {
-      "at": 50.914,
+      "at": 49.09,
       "type": "pop",
-      "gain": 0.1,
+      "gain": 0.08,
       "what": "the cyclones appear",
       "pitch": 1.31
     },
     {
-      "at": 50.954,
+      "at": 49.15,
       "type": "pop",
-      "gain": 0.1,
+      "gain": 0.08,
       "what": "the cyclones appear",
       "pitch": 1.33
     },
     {
-      "at": 51.294,
+      "at": 50.494,
       "type": "ping",
-      "gain": 0.4,
-      "what": "the Bay's one, orange",
+      "gain": 0.3,
+      "what": "the Bay's one turns red (on \"one\")",
       "pitch": 1.1
     },
     {

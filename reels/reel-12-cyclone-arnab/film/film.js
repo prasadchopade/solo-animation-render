@@ -307,8 +307,8 @@
     ground(g); grid(g);
     for (let i = 0; i < 20; i++) {
       const c = i % 5, r = Math.floor(i / 5), x = 170 + c * 175, y = 450 + r * 165, bay = i === 12;
-      const ki = hit(t, T.one - 0.2 + (bay ? 0.55 : i * 0.02), 'playful');
-      drawCyc(g, x, y, 68 * clamp(ki, 0, 1.2), t * SPIN * 1.5 + i, (bay ? 1 : 0.6) * (1 - kD * (bay ? 0.1 : 0.72)), { img: bay ? CYCR : CYC });
+      const ki = hit(t, T.cut[7] + 0.1 + i * 0.03, 'playful'), red = bay && t >= T.one - 0.04, pop = red ? 1 + 0.25 * Math.exp(-(t - T.one) * 8) : 1;
+      drawCyc(g, x, y, 68 * clamp(ki, 0, 1.2) * pop, t * SPIN * 1.5 + i, (red ? 1 : 0.6) * (1 - kD * (bay ? 0.1 : 0.72)), { img: red ? CYCR : CYC });   // all 20 appear on "The Bay of Bengal makes"; the Bay's turns red on "one"
     }
     if (kB > 0) {
       const bx = X0, by = 1080, bw = 860, bh = 54;
@@ -447,7 +447,7 @@
     shotCam(g, t, 15, { kicks: rows.map((r) => [r[3], 10]), push: 0.04 });
     ground(g); grid(g);
     rows.forEach(([text, t0, verdict, t1, c], i) => {
-      const k = hit(t, t0, 'default'), y = 520 + i * 210; if (k <= 0.01) return;
+      const k = hit(t, t0, 'default'), y = 660 + i * 210; if (k <= 0.01) return;
       g.save(); g.globalAlpha *= clamp(k * 3); g.translate(0, 30 * (1 - clamp(k)));
       font(g, 72, 700, 'condensed'); g.textAlign = 'left'; g.fillStyle = INK; g.fillText(text, X0, y); const w = g.measureText(text).width;
       if (i === 0) { const ks = clamp((t - (T.weaker - 0.05)) / 0.35); if (ks > 0) { g.strokeStyle = ACC; g.lineWidth = 9; g.lineCap = 'round'; g.beginPath(); g.moveTo(X0 - 8, y - 25); g.lineTo(X0 - 8 + (w + 16) * ks, y - 25); g.stroke(); } }
