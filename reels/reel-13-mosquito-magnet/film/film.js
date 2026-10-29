@@ -373,7 +373,8 @@
   function shLab(g, t) {                                        // 6 · the lab: 64 people, nylon stockings
     const T = times(); shotCam(g, t, 6, { push: 0.04 });
     ground(g, '#0a0f14'); grid(g, 0.08);
-    GRID.forEach((q, i) => { const k = hit(t, T.sixty - 0.12 + i * 0.012, 'playful'); if (k <= 0.01) return; stocking(g, q.x, q.y, 0.62 * clamp(k, 0, 1.2), 'rgba(236,232,225,0.82)', q.n, { a: clamp(k), size: 18 }); });
+    const span = Math.max(0.6, T.sixty - 0.1 - (T.cut[6] + 0.05));                    // the grid fills from the cut: 64 by "sixty-four"
+    GRID.forEach((q, i) => { const k = hit(t, T.cut[6] + 0.05 + span * i / 63, 'playful'); if (k <= 0.01) return; stocking(g, q.x, q.y, 0.62 * clamp(k, 0, 1.2), 'rgba(236,232,225,0.82)', q.n, { a: clamp(k), size: 18 }); });
     const kN = clamp((t - (T.nylon - 0.1)) / 0.3);
     mlabel(g, 'WORN ON THE FOREARM · 6 HOURS A DAY', X0, 1160, kN, { size: 26, c: AMB, bg: true });
     eyebrow(g, 'ROCKEFELLER UNIVERSITY, NEW YORK · CELL, 2022', t, T.cut[6] + 0.05);
@@ -428,9 +429,9 @@
   function shMargin(g, t) {                                     // 9 · 100× more attractive than last place
     const T = times(); shotCam(g, t, 9, { push: 0.04, kicks: [[T.placeE + 0.05, 12]] });
     ground(g, '#0a0f14'); grid(g, 0.08);
-    mlabel(g, 'SUBJECT 33', X0, 420, clamp((t - (T.cut[9] + 0.05)) / 0.2), { size: 36, c: ACC });
-    for (let i = 0; i < 100; i++) {                             // 100 mosquitoes for #33…
-      const k = clamp((t - (T.hundred9 - 0.1 + i * 0.006)) / 0.15); if (k <= 0) continue;
+    mlabel(g, 'SUBJECT 33', X0, 420, clamp((t - T.cut[9]) / 0.08), { size: 36, c: ACC });
+    for (let i = 0; i < 100; i++) {                             // 100 mosquitoes for #33, from the cut through "hundred"
+      const k = clamp((t - (T.cut[9] + i * Math.max(0.003, (T.hundred9 + 0.3 - T.cut[9]) / 100))) / 0.15); if (k <= 0) continue;
       mosquito(g, X0 + 30 + (i % 10) * 88, 480 + Math.floor(i / 10) * 52, 0.17 * k, t + i, { c: ACC, wing: 'rgba(255,143,120,0.4)' });
     }
     const kL = clamp((t - (T.last - 0.1)) / 0.25);              // …one for last place
@@ -570,6 +571,7 @@
         h4a: L('Then your heat.', TZ - 16, 140, { accent: [2] }),
         h5a: L('Everyone breathes.', TZ - 16, 110), h5b: L("Everyone's warm.", TZ + 114, 110),
         h5c: L('So why you?', TZ - 16, 170, { accent: [2] }),
+        h6x: L('A New York lab.', TZ - 16, 120),
         h6a: L('64 people.', TZ - 16, 150, { accent: [0] }), h6b: L('Nylon stockings.', TZ + 134, 120),
         h7a: L('Dengue mosquitoes', TZ - 16, 120), h7b: L('chose, two at a time.', TZ + 114, 96, { accent: [1] }),
         h8a: L('One kept winning.', TZ - 16, 120), h8b: L('Subject 33.', TZ + 114, 170, { accent: [1] }),
@@ -601,6 +603,7 @@
       R(L.h4a, wv('s04', 8, 9, 10), out(4), wv('s04', 8, 9, 10), [2]);
       R(L.h5a, wv('s05', 1, 2), T.so - 0.12, wv('s05', 1, 2)); R(L.h5b, wv('s05', 4, 5), T.so - 0.12, wv('s05', 4, 5));
       R(L.h5c, wv('s05', 6, 7, 8), out(5), wv('s05', 6, 7, 8), [2]);
+      R(L.h6x, wv('s06', 1, 2, 3, 4), T.sixty - 0.12, wv('s06', 1, 2, 3, 4));
       R(L.h6a, wv('s06', 5, 6), out(6), wv('s06', 5, 6), [0]); R(L.h6b, wv('s06', 8, 9), out(6), wv('s06', 8, 9));
       enter(t, S.m6, T.sixty + 0.1, out(6));
       R(L.h7a, wv('s07', 1, 2), out(7), wv('s07', 1, 2)); R(L.h7b, wv('s07', 3, 6, 7, 8, 9), out(7), wv('s07', 3, 6, 7, 8, 9), [1]);
