@@ -179,7 +179,7 @@ def wer(ref, hyp):
     for i in range(1, len(r) + 1):
         prev, d[0] = d[0], i
         for j in range(1, len(h) + 1):
-            cur = min(d[j] + 1, d[j - 1] + 1, prev + (r[i - 1] != h[j - 1]))
+            cur = min(d[j] + 1, d[j - 1] + 1, prev + (r[i - 1] != h[j - 1] and frozenset((r[i - 1], h[j - 1])) not in SAME_WORD))
             prev, d[j] = d[j], cur
     return d[len(h)], len(r)
 

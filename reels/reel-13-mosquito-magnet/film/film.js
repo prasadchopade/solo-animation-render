@@ -35,17 +35,17 @@
       everyone: wi('s05', 1), breathes: wi('s05', 2), warm: wi('s05', 5), so: wi('s05', 6), why: wi('s05', 7), you5: wi('s05', 8),
       lab: wi('s06', 4), sixty: wi('s06', 5), wore: wi('s06', 7), nylon: wi('s06', 8), arms: wi('s06', 12),
       dengue: wi('s07', 1), chose: wi('s07', 3), two: wi('s07', 6), time7: wi('s07', 9),
-      one8: wi('s08', 0), kept: wi('s08', 2), winning: wi('s08', 3), subject: wi('s08', 4), thirty: wi('s08', 5), thirtyE: we('s08', 5),
+      one8: wi('s08', 0), kept: wi('s08', 2), winning: wi('s08', 3), winningE: we('s08', 3), subject: wi('s08', 4), thirty: wi('s08', 5), thirtyE: we('s08', 5),
       hundred9: wi('s09', 1), attractive: wi('s09', 4), last: wi('s09', 6), place: wi('s09', 7), placeE: we('s09', 7),
       skin: wi('s10', 1), certain: wi('s10', 6), acids: wi('s10', 7), and10: wi('s10', 8), follow: wi('s10', 10), smell10: wi('s10', 12),
       damaged: wi('s11', 4), smell11: wi('s11', 7), still11: wi('s11', 8), found: wi('s11', 9), them11: wi('s11', 10),
-      three: wi('s12', 1), later: wi('s12', 3), magnets: wi('s12', 5), still12: wi('s12', 7),
+      three: wi('s12', 1), later: wi('s12', 3), magnets: wi('s12', 5), still12: wi('s12', 7), magnetsE: we('s12', 8),
       pick13: wi('s13', 4), theyll: wi('s13', 6), next: wi('s13', 9), too: wi('s13', 11), end: tb('end'),
     };
     const a = t.a;
     // the cuts (16 shots): each on a phrase of the voice, a beat before it
     t.cut = [0, a.s02 - 0.13, a.s03 - 0.15, a.s04 - 0.15, t.then4 - 0.13, a.s05 - 0.15, a.s06 - 0.15, a.s07 - 0.15, a.s08 - 0.15,
-      a.s09 - 0.15, a.s10 - 0.15, t.and10 - 0.12, a.s11 - 0.15, t.still11 - 0.12, a.s12 - 0.15, a.s13 - 0.15, t.end];
+      a.s09 - 0.06, a.s10 - 0.15, t.and10 - 0.12, a.s11 - 0.15, t.still11 - 0.12, a.s12 - 0.42, a.s13 - 0.15, t.end];
     T = t; return T;
   }
 
@@ -210,7 +210,7 @@
   }
   // the sensor panel (bottom left, above the text zone): CO2 · HEAT · ODOUR, levels 0..1, a red tick when a sense "fires"
   function sensors(g, lv, t, o = {}) {
-    const x0 = X0, y0 = 1108, names = ['CO₂', 'HEAT', 'ODOUR'];
+    const x0 = X0, y0 = 1004, names = ['CO₂', 'HEAT', 'ODOUR'];          // above the text zone's scrim, so it stays bright
     g.save(); g.globalAlpha *= o.a ?? 1;
     g.fillStyle = 'rgba(7,9,12,0.62)'; g.fillRect(x0 - 14, y0 - 34, 610, 92);
     names.forEach((n, i) => {
@@ -311,7 +311,7 @@
     reticle(g, sx, sy, 140, 168, 1, t, k > 0.5 ? 'TARGET CHOSEN' : 'TARGET LOCKED');
     const range = lerp(8.4, 6.1, u);
     mlabel(g, `RANGE ${range.toFixed(1)} M`, sx + 90, sy + 12, 1, { size: 26, c: INK, bg: 'rgba(7,9,12,0.7)' });
-    mlabel(g, 'BLOOD TASTED: 0.0 µL', X0, 1150, clamp((t - (T.tasted - 0.1)) / 0.25), { size: 34, c: ACC, bg: 'rgba(7,9,12,0.75)' });
+    mlabel(g, 'BLOOD TASTED: 0.0 µL', X0, 1075, clamp((t - (T.tasted - 0.1)) / 0.25), { size: 34, c: ACC, bg: 'rgba(7,9,12,0.75)' });
     hudTop(g, '◉ APPROACH', 'NO CONTACT YET', t, 1);
   }
   function shBreath(g, t) {                                     // 3 · your breath, from about ten metres
@@ -407,9 +407,9 @@
   }
   const BOARD = [[7, 0.24], [26, 0.21], [41, 0.17], [19, 0.12], [33, 1], [58, 0.09]];        // the starting order; 33 is 5th
   function shWinner(g, t) {                                     // 8 · one volunteer kept winning: Subject 33
-    const T = times(); shotCam(g, t, 8, { push: 0.04, kicks: [[T.subject - 0.06, 10]] });
+    const T = times(); shotCam(g, t, 8, { push: 0.04, kicks: [[T.thirtyE + 0.04, 10]] });
     ground(g, '#0a0f14'); grid(g, 0.08);
-    const climb = eio(clamp((t - (T.kept - 0.1)) / Math.max(0.6, T.subject - T.kept)));       // 33 climbs from 5th to 1st
+    const climb = eio(clamp((t - (T.kept - 0.1)) / Math.max(0.5, T.winningE - T.kept + 0.05)));   // 33 climbs from 5th to 1st by the ding
     BOARD.forEach(([n, v], i) => {
       const rank = n === 33 ? 4 - 4 * climb : i < 4 ? i + clamp(4 * climb - 3 + i) : i;      // each row steps down as 33 passes it
       const ry = 440 + rank * 112;
@@ -421,7 +421,7 @@
       g.fillStyle = red ? ACC : 'rgba(236,232,225,0.55)'; g.fillRect(X0 + 340, ry - 30, 330 * v * eo(clamp(k)), 30);
       g.restore();
     });
-    const kC = clamp((t - (T.subject - 0.06)) / 0.25);
+    const kC = clamp((t - (T.thirtyE + 0.04)) / 0.25);                                   // #1 lands with the ding, after "thirty-three."
     if (kC > 0) stamp(g, 868, 425, kC, '#1', ACC, -0.08, 64);
     eyebrow(g, 'MOST ATTRACTIVE TO MOSQUITOES · ROUND-ROBIN', t, T.cut[8] + 0.05);
   }
@@ -468,11 +468,18 @@
     mlabel(g, 'SKIN OIL (SEBUM)', 600, 1060, clamp((t - (T.skin)) / 0.3), { size: 26, c: AMB, bg: true });
     eyebrow(g, 'CARBOXYLIC ACIDS · FAR HIGHER ON THE MAGNETS’ SKIN', t, T.cut[10] + 0.05);
   }
+  const SCENT = (() => { const r = mulberry32(71), o = []; for (let i = 0; i < 90; i++) o.push({ x: 80 + r() * 920, ph: r(), sp: 0.25 + r() * 0.3, r: r() }); return o; })();
   function shFollow(g, t) {                                     // 11 · and mosquitoes follow that smell
     const T = times(); shotCam(g, t, 11, { push: 0.05, oy: 800 });
     skinBase(g, t);
     const wisp = (k, x0, ph) => Array.from({ length: 40 }, (_, i) => { const u = i / 39; return [x0 + Math.sin(u * 7 + ph + t * 1.4) * 60 * u, 960 - u * 700]; });
     const W1 = wisp(0, 560, 0.5);
+    g.save(); g.globalCompositeOperation = 'lighter';           // the smell itself: specks rising off the skin, densest over the plume
+    for (const q of SCENT) {
+      const age = (q.ph + t * q.sp) % 1, x = q.x + Math.sin(t * 1.2 + q.ph * 9) * 30 * age + (560 - q.x) * 0.35 * age, y = 960 - age * 760;
+      g.fillStyle = `rgba(255,178,58,${(0.5 * Math.sin(PI * age)).toFixed(3)})`; g.beginPath(); g.arc(x, y, 3 + 5 * q.r, 0, TAU); g.fill();
+    }
+    g.restore();
     g.save(); g.lineCap = 'round';
     for (const [x0, ph, a] of [[300, 1.3, 0.25], [560, 0.5, 0.75], [820, 2.2, 0.25]]) {
       const P = wisp(0, x0, ph); g.strokeStyle = `rgba(255,178,58,${a})`; g.lineWidth = 26; g.globalAlpha = 0.5; g.beginPath(); P.forEach(([x, y], i) => (i ? g.lineTo(x, y) : g.moveTo(x, y))); g.stroke();
@@ -483,6 +490,7 @@
     const [mx, my] = W1[idx], [nx] = W1[Math.max(0, idx - 1)];
     for (let k = idx + 1; k < 39; k += 3) { g.fillStyle = 'rgba(236,232,225,0.5)'; g.beginPath(); g.arc(W1[k][0], W1[k][1], 4, 0, TAU); g.fill(); }
     mosquito(g, mx, my, 0.85, t, { rot: nx >= mx ? 0.55 : -0.55, flip: nx < mx, c: INK });            // nose down the plume, facing its way
+    screen(g); sensors(g, [1, 1, clamp((t - T.cut[11]) / 0.5)], t, { hot: 2 });
     eyebrow(g, 'MOSQUITOES DETECT ACIDS WITH THEIR ANTENNAE', t, T.cut[11] + 0.05);
   }
   function glitchFrame(g, t, amt) {                             // the sense of smell breaking: bands shifted, the frame torn
@@ -501,7 +509,7 @@
     const amt = clamp((t - (T.damaged - 0.1)) / 0.25) * (0.6 + 0.4 * Math.sin(t * 23) ** 2);
     glitchFrame(g, t, amt);
     screen(g);
-    mlabel(g, 'OLFACTION: DAMAGED', X0, 1030, clamp((t - (T.damaged - 0.05)) / 0.2) * blink(t, 3), { size: 40, c: ACC, bg: 'rgba(7,9,12,0.8)' });
+    mlabel(g, 'OLFACTION: DAMAGED', X0, 925, clamp((t - (T.damaged - 0.05)) / 0.2) * blink(t, 3), { size: 40, c: ACC, bg: 'rgba(7,9,12,0.8)' });
     sensors(g, [1, 1, lerp(0.5, 0.05, clamp((t - T.damaged) / 0.4))], t, { bad: 2 });
     hudTop(g, '◉ SIGNAL LOST', 'GENE-EDITED MOSQUITOES', t, 1);
     const [rx, ry] = proj(c, ...head(PEOPLE[Math.floor(t * 5) % 5], t));
@@ -521,7 +529,7 @@
   function shYears(g, t) {                                      // 14 · three years later, still magnets
     const T = times(); shotCam(g, t, 14, { push: 0.04 });
     ground(g, '#0a0f14'); grid(g, 0.08);
-    const fl = clamp((t - (T.three - 0.25)) / Math.max(0.6, T.later - T.three + 0.3)) * 2, n = Math.min(2, Math.floor(fl)), fu = fl - Math.floor(fl);
+    const fl = clamp((t - (T.a.s12 - 0.4)) / 0.33) * 2, n = Math.min(2, Math.floor(fl)), fu = fl - Math.floor(fl);      // three pages in the gap, with their sounds
     const x = 140, y = 470, w = 520, h = 420;
     g.fillStyle = '#151b22'; g.fillRect(x, y, w, h); g.strokeStyle = 'rgba(236,232,225,0.6)'; g.lineWidth = 3; g.strokeRect(x, y, w, h);
     g.fillStyle = ACC; g.fillRect(x, y, w, 70);
@@ -529,7 +537,7 @@
     font(g, 190, 700, 'condensed'); g.textAlign = 'center'; g.fillStyle = INK; g.fillText(String(n + 1), x + w / 2, y + 330);
     mlabel(g, 'YEAR', x + w / 2, y + 140, 1, { size: 40, c: INK2, align: 'center' });
     if (n < 2 && fu > 0.02) { g.save(); g.translate(x, y + 70); g.scale(1, 1 - eio(clamp(fu * 1.4))); g.fillStyle = '#1d242c'; g.fillRect(0, 0, w, h - 70); g.restore(); }   // a page turns
-    const kB = clamp((t - (T.magnets - 0.1)) / 0.25);
+    const kB = clamp((t - (T.magnetsE + 0.05)) / 0.25);                                  // STILL lands after "magnets.", with its stamp
     g.save(); g.globalAlpha *= clamp((t - (T.cut[14] + 0.1)) / 0.2);
     g.fillStyle = 'rgba(255,59,31,0.16)'; g.fillRect(700, 560, 240, 230); g.strokeStyle = ACC; g.lineWidth = 3; g.strokeRect(700, 560, 240, 230);
     mlabel(g, 'SUBJECT 33', 820, 620, 1, { size: 26, c: ACC, align: 'center' });
