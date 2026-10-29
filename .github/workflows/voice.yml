@@ -3,9 +3,11 @@
 #   gh workflow run voice.yml -f reel=reel-2-38-witnesses -f task=cast          # audition the voices in vo_script.json "cast"
 #   gh workflow run voice.yml -f reel=reel-2-38-witnesses -f task=takes         # every line, several takes, with the "take" voice
 #   gh run download --name voice-reel-2-38-witnesses-cast                       # → audio/vo_lab/ (WAVs, report.md, casting reels)
+#   gh workflow run voice.yml -f reel=<reel> -f task=check                      # the words in the finished mix (audio/mix.wav)
 #
-# Kokoro-82M (Apache-2.0) and Chatterbox (MIT) run on CPU. Scoring: UTMOS22 predicted naturalness, Whisper word errors
-# against the script, pace and pitch range — see scripts/voice_lab.py.
+# Kokoro-82M (Apache-2.0) and Chatterbox (MIT) run on CPU. Scoring: UTMOS22 predicted naturalness, word errors against
+# the script by two Whisper models (small.en, large-v3), the sounds by a phoneme recogniser (wav2vec2 espeak, against
+# espeak-ng's phonemes), pace and pitch range — see scripts/voice_lab.py.
 name: Voice lab
 
 on:
@@ -15,9 +17,9 @@ on:
         description: Reel folder name under reels/
         required: true
       task:
-        description: cast = audition voices · takes = every line with the chosen voice
+        description: cast = audition voices · takes = every line with the chosen voice · check = the words in audio/mix.wav
         type: choice
-        options: [cast, takes]
+        options: [cast, takes, check]
         default: cast
       takes:
         description: Takes per line (task=takes)
@@ -51,6 +53,7 @@ jobs:
           SHARDS: ${{ inputs.shards }}
         run: |
           node -e '
+            if (process.env.TASK === "check") { require("fs").appendFileSync(process.env.GITHUB_OUTPUT, "kokoro=false\nchatterbox=false\nshards=[0]\n"); console.log("check: no voices to make"); process.exit(0); }
             const s = JSON.parse(require("fs").readFileSync(`reels/${process.env.REEL}/vo_script.json`, "utf8"));
             const list = process.env.TASK === "cast" ? s.cast : [].concat(s.take || []);
             if (!list.length) { console.log("::error::no take voice in vo_script.json"); process.exit(1); }
@@ -153,7 +156,7 @@ jobs:
     needs: [plan, kokoro, chatterbox]
     if: always() && needs.plan.result == 'success' && needs.kokoro.result != 'failure' && needs.chatterbox.result != 'failure' && needs.kokoro.result != 'cancelled' && needs.chatterbox.result != 'cancelled'
     runs-on: ubuntu-latest
-    timeout-minutes: 60
+    timeout-minutes: 90
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -166,12 +169,30 @@ jobs:
           path: |
             ~/.cache/huggingface
             ~/.cache/torch
-          key: hf-score-v1
+          key: hf-score-v2
+      # espeak-ng for ear 3's expected phonemes (phonemizer), from the same cache as the Kokoro job's
+      - id: key
+        run: bash scripts/cloud-deps.sh key >> "$GITHUB_OUTPUT"
+      - id: espeak
+        uses: actions/cache/restore@v4
+        with:
+          path: ~/.cache/cloud-deps
+          key: ${{ steps.key.outputs.espeak-ng }}
+          restore-keys: ${{ steps.key.outputs.espeak-ng-older }}
+      - name: espeak-ng (from the cache)
+        timeout-minutes: 20
+        run: bash scripts/cloud-deps.sh espeak-ng
+      - if: steps.espeak.outputs.cache-hit != 'true'
+        uses: actions/cache/save@v4
+        with:
+          path: ~/.cache/cloud-deps
+          key: ${{ steps.key.outputs.espeak-ng }}
       - name: Scorers (CPU)
         run: |
           pip install -q torch==2.6.0 torchaudio==2.6.0 --index-url "$TORCH_CPU"
-          pip install -q faster-whisper librosa soundfile
+          pip install -q faster-whisper librosa soundfile "transformers>=4.44,<4.50" phonemizer
       - uses: actions/download-artifact@v4
+        if: inputs.task != 'check'
         with:
           pattern: vo-*
           path: reels/${{ inputs.reel }}/audio/vo_lab
@@ -179,7 +200,8 @@ jobs:
       - name: Score
         run: |
           cd "reels/$REEL"
-          python ../../scripts/voice_lab.py score --task "$TASK"
+          if [ "$TASK" = check ]; then python ../../scripts/voice_lab.py check --audio audio/mix.wav
+          else python ../../scripts/voice_lab.py score --task "$TASK"; fi
           cat "audio/vo_lab/$TASK/report.md" >> "$GITHUB_STEP_SUMMARY"
       - uses: actions/upload-artifact@v4
         with:

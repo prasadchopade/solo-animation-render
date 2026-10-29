@@ -1,0 +1,28 @@
+{
+ "note": "Reel 13: Mosquito Magnet. Why mosquitoes pick some people: not sweet blood; breath, heat, then skin smell; the 2022 Cell study (64 people in nylon stockings, dengue mosquitoes choosing two at a time, Subject 33 about 100 times more attractive than last place, skin rich in certain acids, mosquitoes with a damaged sense of smell still found the magnets, the same over three years). Kokoro af_heart, speed 1.0. Numbers are written as words so the display words match the voice's tokens one to one. Spelling for the voice: 'meters' (the American voice reads it as written; the screen says METRES). Variants test the risky words: s07b spells dengue in phonemes, s08b spells Subject (the noun) in phonemes; the checks pick. Facts: docs/research.md.",
+ "voice": "af_heart",
+ "speed": 1.0,
+ "lines": [
+  {"id": "s01", "text": "Mosquitoes love some people a hundred times more than others."},
+  {"id": "s02", "text": "If that's you, it isn't your sweet blood."},
+  {"id": "s03", "text": "They pick you before they've tasted a drop."},
+  {"id": "s04", "text": "They follow your breath from ten meters away, then your heat."},
+  {"id": "s05", "text": "But everyone breathes, and everyone's warm. So why you?"},
+  {"id": "s06", "text": "In a New York lab, sixty-four people wore nylon stockings on their arms."},
+  {"id": "s07", "text": "Then dengue mosquitoes chose between them, two at a time."},
+  {"id": "s07b", "text": "Then dengue mosquitoes chose between them, two at a time.", "text_kokoro": "Then [dengue](/dˈɛŋɡi/) mosquitoes chose between them, two at a time."},
+  {"id": "s08", "text": "One volunteer kept winning. Subject thirty-three."},
+  {"id": "s08b", "text": "One volunteer kept winning. Subject thirty-three.", "text_kokoro": "One volunteer kept winning. [Subject](/sˈʌbʤɪkt/) thirty-three."},
+  {"id": "s09", "text": "A hundred times more attractive than last place."},
+  {"id": "s10", "text": "Their skin made far more of certain acids, and mosquitoes follow that smell."},
+  {"id": "s11", "text": "Even mosquitoes with a damaged sense of smell still found them."},
+  {"id": "s12", "text": "And three years later, the magnets were still magnets."},
+  {"id": "s13", "text": "So if they always pick you, they'll pick you next year too."}
+ ],
+ "ref_text": "The night was warm and very quiet.",
+ "cast_lines": [],
+ "cast": [],
+ "take": [
+  {"id": "k-heart", "engine": "kokoro", "voice": "af_heart", "speed": 1.0}
+ ]
+}

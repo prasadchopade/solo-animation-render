@@ -3,6 +3,7 @@
 
   python ../../scripts/voice_lab.py gen   --engine kokoro|chatterbox --task cast|takes [--takes 3] [--shard k/n]
   python ../../scripts/voice_lab.py score --task cast|takes
+  python ../../scripts/voice_lab.py check [--audio audio/mix.wav]     the words in the finished mix (below)
 
 Reads the reel's vo_script.json:
   lines       [{id, text}]                      the narration, one breath per line
@@ -24,6 +25,18 @@ Writes audio/vo_lab/:
                                          and cracking: creak % (vocal fry) and pitch breaks — the best take must be clean
   cast/casting_<line>.wav                every cast entry reading the same line, in report order, 0.8 s apart
   takes/best.json                        per voice, the best take per line: fewest word errors, then least damage, then UTMOS
+  takes/phonemes.md                      what Kokoro was told to say: every word's phonemes (misaki), to read before listening
+  check/report.md + report.json          `check`: every word of the placed narration (film/words.js) in the finished mix
+
+Three ears, each independent of the others (2026-10-29, the user: "please check the sound effects and pronunciation
+multiple times so that the audio is very clear"):
+  1. Whisper small.en          the quick ear (word errors, as before)
+  2. Whisper large-v3          a second, much larger model: it must hear the same words (VOICE_ASR2 to change it)
+  3. a phoneme recogniser      wav2vec2 trained on espeak phonemes, CTC with no language model (VOICE_PHONES): it
+                               hears sounds, not words, so it can't guess its way past a slurred or wrong sound the way
+                               Whisper can. Its phonemes are compared word by word with espeak-ng's for the script.
+`check` runs ears 1 and 2 on the whole mix three ways (as mixed; through a phone speaker: mono, 300 Hz–7 kHz, a little
+drive; in a noisy room: pink noise 12 dB under the mix), and ear 3 on each line of the mix.
 """
 import argparse, json, os, re, sys
 from pathlib import Path
@@ -68,7 +81,8 @@ def gen_kokoro(task, takes, shard):
             a = r.audio.numpy() if hasattr(r.audio, 'numpy') else np.asarray(r.audio)
             for t in (r.tokens or []):
                 if t.start_ts is None: continue
-                words.append({'w': t.text, 't0': round(off + t.start_ts, 3), 't1': round(off + t.end_ts, 3), 'ws': bool(t.whitespace)})
+                words.append({'w': t.text, 't0': round(off + t.start_ts, 3), 't1': round(off + t.end_ts, 3), 'ws': bool(t.whitespace),
+                              'ph': getattr(t, 'phonemes', None) or ''})          # what misaki told the voice to say
             chunks.append(a); off += len(a) / SR
         return np.concatenate(chunks), words
 
@@ -130,13 +144,31 @@ def num_words(n):
     if n < 20: return ONES[n]
     if n < 100: return TENS[n // 10 - 2] + ('' if n % 10 == 0 else ' ' + ONES[n % 10])
     if n < 1000: return ONES[n // 100] + ' hundred' + ('' if n % 100 == 0 else ' ' + num_words(n % 100))
+    if n < 1_000_000: return num_words(n // 1000) + ' thousand' + ('' if n % 1000 == 0 else ' ' + num_words(n % 1000))
     return str(n)
+
+
+def spoken_number(s):                    # as said: years as years ("1977" → nineteen seventy seven)
+    n = int(s)
+    if len(s) == 4 and (1100 <= n <= 1999 or 2010 <= n <= 2099):
+        hi, lo = divmod(n, 100)
+        return num_words(hi) + ' ' + ('hundred' if lo == 0 else ('oh ' + ONES[lo] if lo < 10 else num_words(lo)))
+    return num_words(n)
+
+
+def ordinal(n):
+    w = num_words(n).split(); last = w[-1]
+    w[-1] = {'one': 'first', 'two': 'second', 'three': 'third', 'five': 'fifth', 'eight': 'eighth', 'nine': 'ninth', 'twelve': 'twelfth'}.get(last) \
+        or (last[:-1] + 'ieth' if last.endswith('y') else last + 'th')
+    return ' '.join(w)
 
 
 def norm(s):
     if LANG != 'en':
         return re.sub(r'[।॥,.!?;:"“”‘’\'()–—-]+', ' ', s.lower()).split()
-    s = re.sub(r'\d+', lambda m: ' ' + num_words(int(m.group())) + ' ', s.lower().replace('%', ' percent'))
+    s = re.sub(r'(?<=\d),(?=\d{3}\b)', '', s.lower().replace('%', ' percent'))                 # 10,000 → 10000
+    s = re.sub(r'(\d+)(st|nd|rd|th)\b', lambda m: ' ' + ordinal(int(m.group(1))) + ' ', s)      # 28th → twenty eighth
+    s = re.sub(r'\d+', lambda m: ' ' + spoken_number(m.group()) + ' ', s)
     s = s.replace('-', ' ').replace("'", '').replace('’', '')
     return re.sub(r'[^a-z ]+', ' ', s).split()
 
@@ -171,12 +203,186 @@ def damage(y, sr, f0, voiced):
     return creak, jumps, 0
 
 
+# ---------------------------------------------------------------- ears 2 and 3
+ASR2 = os.environ.get('VOICE_ASR2', 'large-v3') if LANG == 'en' else ''
+PHONES = os.environ.get('VOICE_PHONES', 'facebook/wav2vec2-lv-60-espeak-cv-ft') if LANG == 'en' else ''
+SAY = spec.get('say', {})            # word → the phonemes ear 3 should expect (espeak style, space-separated), for names
+
+
+class Phones:
+    """Ear 3: the sounds, phoneme by phoneme, against espeak-ng's phonemes for the script (or vo_script.json "say").
+    Variants a listener would accept count as the same sound (flapped t/d, reduced vowels, length marks, r/ɹ);
+    dropping or adding a reduced vowel, a glottal stop or an h costs 0.4. A word of 3+ phonemes is flagged when half
+    its phonemes or more are wrong."""
+    SAME = [set(s.split()) for s in ('t d ɾ ʔ', 'ə ɐ ɪ ᵻ ʌ ɨ', 'ɚ ɜː ɝ ɜ', 'i iː', 'u uː ʊ', 'ɑ ɑː ɒ a', 'ɔ ɔː',
+                                     'oʊ əʊ o oː', 'eɪ e', 'l ɫ', 'ɹ r', 'n̩ n', 'l̩ l')]
+    SOFT = set('ə ɐ ɪ ᵻ ʌ ɨ ʔ ɾ h'.split())
+
+    @classmethod
+    def load(cls):
+        if not PHONES: return None
+        try: return cls()
+        except Exception as e:                    # the report says so; ears 1 and 2 still run
+            print(f'::warning::ear 3 (phonemes) unavailable: {e!r}', flush=True); return None
+
+    def __init__(self):
+        import torch
+        from transformers import Wav2Vec2FeatureExtractor, Wav2Vec2ForCTC, Wav2Vec2PhonemeCTCTokenizer
+        from phonemizer.backend import EspeakBackend
+        from phonemizer.separator import Separator
+        self.torch = torch
+        self.tok = Wav2Vec2PhonemeCTCTokenizer.from_pretrained(PHONES, do_phonemize=False)
+        self.fe = Wav2Vec2FeatureExtractor.from_pretrained(PHONES)
+        self.net = Wav2Vec2ForCTC.from_pretrained(PHONES).eval()
+        self.esp = EspeakBackend('en-us', language_switch='remove-flags')
+        self.sep = Separator(phone=' ', word='', syllable='')
+        self.cls = {p: i for i, s in enumerate(self.SAME) for p in s}
+
+    def sub(self, a, b): return 0.0 if a == b or (a in self.cls and self.cls.get(a) == self.cls.get(b)) else 1.0
+    def gap(self, p): return 0.4 if p in self.SOFT else 1.0
+
+    def heard(self, y16):
+        x = self.fe(y16, sampling_rate=16000, return_tensors='pt').input_values
+        with self.torch.no_grad(): ids = self.net(x).logits.argmax(-1)[0]
+        return [p for p in self.tok.decode(ids).split() if p != '|' and not p.startswith('<')]
+
+    def expected(self, text):
+        words = re.findall(r"[A-Za-z][A-Za-z'’-]*|\d+", text)
+        spoken = [re.sub(r'\d+', lambda m: num_words(int(m.group())), w).replace('-', ' ') for w in words]
+        ph = self.esp.phonemize(spoken, separator=self.sep, strip=True, njobs=1)
+        return words, [(SAY.get(w.lower().strip("'’")) or p).split() for w, p in zip(words, ph)]
+
+    def check(self, y16, text):
+        """(flagged words 'word: /expected/ → /heard/', phoneme error rate % of the line, heard phonemes)"""
+        words, exp = self.expected(text)
+        E = [(p, k) for k, ps in enumerate(exp) for p in ps]
+        H = self.heard(y16)
+        n, m = len(E), len(H)
+        D = np.zeros((n + 1, m + 1)); B = np.zeros((n + 1, m + 1), np.int8)
+        for i in range(1, n + 1): D[i, 0] = D[i - 1, 0] + self.gap(E[i - 1][0]); B[i, 0] = 1
+        for j in range(1, m + 1): D[0, j] = D[0, j - 1] + self.gap(H[j - 1]); B[0, j] = 2
+        for i in range(1, n + 1):
+            for j in range(1, m + 1):
+                c = (D[i - 1, j - 1] + self.sub(E[i - 1][0], H[j - 1]), D[i - 1, j] + self.gap(E[i - 1][0]), D[i, j - 1] + self.gap(H[j - 1]))
+                k = int(np.argmin(c)); D[i, j] = c[k]; B[i, j] = k
+        cost, got = [0.0] * len(words), [[] for _ in words]
+        i, j = n, m
+        while i > 0 or j > 0:                     # walk back: each sound's cost goes to the word it belongs to
+            k = B[i, j] if i > 0 and j > 0 else (1 if i > 0 else 2)
+            if k == 0: w = E[i - 1][1]; cost[w] += self.sub(E[i - 1][0], H[j - 1]); got[w].append(H[j - 1]); i -= 1; j -= 1
+            elif k == 1: w = E[i - 1][1]; cost[w] += self.gap(E[i - 1][0]); i -= 1
+            else: w = E[i - 1][1] if i > 0 else 0; cost[w] += self.gap(H[j - 1]); got[w].append(H[j - 1]); j -= 1
+        flags = [f"{words[k]}: /{' '.join(ps)}/ → /{' '.join(reversed(got[k]))}/" for k, ps in enumerate(exp)
+                 if len(ps) >= 3 and cost[k] / len(ps) >= 0.5]
+        return flags, round(100 * sum(cost) / max(1, len(E)), 1), ' '.join(H)
+
+
+def whisper2():
+    if not ASR2: return None
+    from faster_whisper import WhisperModel
+    return WhisperModel(ASR2, device='cpu', compute_type='int8')
+
+
+# the same word written another way: "a hundred" is written "100" (one hundred); British and American spellings
+SAME_WORD = {frozenset(p) for p in (('a', 'one'), ('metre', 'meter'), ('metres', 'meters'), ('favourite', 'favorite'),
+                                    ('favourites', 'favorites'), ('colour', 'color'), ('centre', 'center'), ('neighbour', 'neighbor'))}
+
+
+def align_words(exp, hyp):
+    """exp: [(token, display word index)], hyp: [(token, probability)] → ({missed display word index: what was heard
+    there}, [indices of words heard right but with probability < 0.5]). Two tokens may match one written together
+    ("north west" / "northwest", "up surges" / "upsurges")."""
+    n, m = len(exp), len(hyp)
+    eq = lambda a, b: a == b or frozenset((a, b)) in SAME_WORD
+    D = np.zeros((n + 1, m + 1)); D[:, 0] = np.arange(n + 1); D[0, :] = np.arange(m + 1)
+    B = np.zeros((n + 1, m + 1), np.int8); B[1:, 0] = 1; B[0, 1:] = 2
+    for i in range(1, n + 1):
+        for j in range(1, m + 1):
+            c = [D[i - 1, j - 1] + (0 if eq(exp[i - 1][0], hyp[j - 1][0]) else 1), D[i - 1, j] + 1, D[i, j - 1] + 1, 1e9, 1e9]
+            if i > 1 and exp[i - 2][0] + exp[i - 1][0] == hyp[j - 1][0]: c[3] = D[i - 2, j - 1]
+            if j > 1 and hyp[j - 2][0] + hyp[j - 1][0] == exp[i - 1][0]: c[4] = D[i - 1, j - 2]
+            k = int(np.argmin(c)); D[i, j] = c[k]; B[i, j] = k
+    bad, heard, low = set(), {}, set()
+    i, j = n, m
+    while i > 0 or j > 0:
+        k = B[i, j]
+        if k == 0:
+            w = exp[i - 1][1]
+            if not eq(exp[i - 1][0], hyp[j - 1][0]): bad.add(w); heard.setdefault(w, []).append(hyp[j - 1][0])
+            elif hyp[j - 1][1] < 0.5: low.add(w)
+            i -= 1; j -= 1
+        elif k == 1: bad.add(exp[i - 1][1]); i -= 1
+        elif k == 2:
+            w = exp[i - 1][1] if i > 0 else 0; heard.setdefault(w, []).append(hyp[j - 1][0]); j -= 1
+            if i > 0: bad.add(w)
+        elif k == 3: i -= 2; j -= 1
+        else: i -= 1; j -= 2
+    return {k: ' '.join(reversed(heard.get(k, []))) or '∅' for k in sorted(bad)}, sorted(low - bad)
+
+
+def pink(n, seed=13):
+    r = np.random.default_rng(seed); X = np.fft.rfft(r.standard_normal(n)); f = np.arange(len(X)); f[0] = 1
+    return np.fft.irfft(X / np.sqrt(f), n).astype(np.float32)
+
+
+def check(audio):
+    """The words in the finished mix: each word of film/words.js must be heard by ears 1 and 2 as mixed, through a
+    phone speaker and in a noisy room; ear 3 checks the sounds line by line. A word the takes' report heard right but
+    the mix loses is masked: change the sound under it, not the voice."""
+    import librosa, torch
+    from faster_whisper import WhisperModel
+    from scipy import signal
+    torch.set_num_threads(os.cpu_count() or 4)
+    W = json.loads(re.search(r'window\.WORDS\s*=\s*(\[.*\]);', Path('film/words.js').read_text(encoding='utf-8'), re.S).group(1))
+    y, sr = sf.read(audio, dtype='float32')
+    x = librosa.resample(y.mean(1) if y.ndim > 1 else y, orig_sr=sr, target_sr=16000).astype(np.float32)
+    hop = 320; rms = np.array([np.sqrt(np.mean(x[i:i + hop] ** 2)) for i in range(0, len(x) - hop, hop)])
+    act = float(np.sqrt(np.mean(rms[rms > rms.max() * 0.03] ** 2)))
+    ph_ = signal.sosfilt(signal.butter(4, [300, 7000], 'band', fs=16000, output='sos'), x)
+    ph_ = (np.tanh(ph_ / (np.abs(ph_).max() + 1e-9) * 2.0) * 0.5).astype(np.float32)          # a small speaker, driven
+    pn = pink(len(x)); pn *= act * 10 ** (-12 / 20) / (np.sqrt(np.mean(pn ** 2)) + 1e-12)
+    conds = {'as mixed': x, 'phone speaker': ph_, 'noisy room': (x + pn).astype(np.float32)}
+    ears = [('whisper small.en', WhisperModel('small.en', device='cpu', compute_type='int8'))]
+    if ASR2: ears.append((f'whisper {ASR2}', whisper2()))
+    exp = [(tok, k) for k, w in enumerate(W) for tok in norm(w['w'])]
+    out = LAB / 'check'; out.mkdir(parents=True, exist_ok=True)
+    rows = []
+    for cname, sig in conds.items():
+        for ename, m in ears:
+            segs, _ = m.transcribe(sig, beam_size=5, language='en', word_timestamps=True, condition_on_previous_text=False)
+            hyp = [(tok, w.probability) for s in segs for w in (s.words or []) for tok in norm(w.word)]
+            miss, low = align_words(exp, hyp)
+            rows.append({'condition': cname, 'ear': ename, 'words': len(W), 'missed': [{'line': W[k]['p'], 't': W[k]['t0'], 'word': W[k]['w'], 'heard': h} for k, h in miss.items()],
+                         'unsure': [{'line': W[k]['p'], 't': W[k]['t0'], 'word': W[k]['w']} for k in low]})
+            print(f"{cname:14s} {ename:22s} {len(W) - len(miss)}/{len(W)} words heard; missed: " + (', '.join(f"{W[k]['w']}@{W[k]['t0']:.1f}→{h}" for k, h in miss.items()) or 'none'), flush=True)
+    ph = Phones.load(); lines = []
+    if ph:
+        for lid in dict.fromkeys(w['p'] for w in W):
+            ws = [w for w in W if w['p'] == lid]
+            a, b = int(max(0, ws[0]['t0'] - 0.12) * 16000), int((ws[-1]['t1'] + 0.12) * 16000)
+            flags, per, heard = ph.check(x[a:b], ' '.join(w['w'] for w in ws))
+            lines.append({'line': lid, 'per': per, 'flags': flags, 'heard': heard})
+            print(f'{lid} phonemes {per:4.1f}% off  ' + ('; '.join(flags) or 'clean'), flush=True)
+    (out / 'report.json').write_text(json.dumps({'audio': audio, 'rows': rows, 'phonemes': lines}, indent=1, ensure_ascii=False), encoding='utf-8')
+    md = [f'# Voice check: {audio}', '', f'{len(W)} words placed (film/words.js). Ears 1 and 2 on the whole mix, three ways; ear 3 (phonemes) per line, as mixed.', '',
+          '| condition | ear | heard | missed (word @ s → heard) | unsure (p < 0.5) |', '|---|---|---|---|---|']
+    md += [f"| {r['condition']} | {r['ear']} | {r['words'] - len(r['missed'])}/{r['words']} | " + (', '.join(f"{x['word']} @{x['t']:.1f} → {x['heard']}" for x in r['missed']) or '—') +
+           ' | ' + (', '.join(f"{x['word']} @{x['t']:.1f}" for x in r['unsure']) or '—') + ' |' for r in rows]
+    if lines:
+        md += ['', '| line | phonemes off % | flagged words (/expected/ → /heard/) |', '|---|---|---|']
+        md += [f"| {l['line']} | {l['per']} | {'; '.join(l['flags']) or '—'} |" for l in lines]
+    elif PHONES: md += ['', 'Ear 3 could not load (see the log).']
+    (out / 'report.md').write_text('\n'.join(md) + '\n', encoding='utf-8')
+    print('\n'.join(md))
+
+
 def score(task):
     import librosa, torch
     from faster_whisper import WhisperModel
     torch.set_num_threads(os.cpu_count() or 4)
     mos = torch.hub.load('tarepan/SpeechMOS:v1.2.0', 'utmos22_strong', trust_repo=True).eval()
     asr = WhisperModel('small.en' if LANG == 'en' else 'small', device='cpu', compute_type='int8')
+    asr2, ph = whisper2(), Phones.load()
     root = LAB / task
     files = sorted(p for p in root.rglob('*.wav') if not p.name.startswith('casting_'))
     rows = []
@@ -198,11 +404,19 @@ def score(task):
         p10, p50, p90 = (np.percentile(f0, [10, 50, 90]) if len(f0) > 5 else (0, 0, 0))
         rng = 12 * np.log2(p90 / p10) if p10 > 0 else 0.0
         creak, jumps, _ = damage(y, sr, f0a, vflag)
+        extra = {'errors2': 0, 'heard2': '', 'unsure': [], 'phones': [], 'per': None, 'heard_ph': ''}
+        if asr2:                                                                   # ear 2: a second, bigger Whisper
+            s2 = list(asr2.transcribe(str(p), beam_size=5, language=LANG, word_timestamps=True, condition_on_previous_text=False)[0])
+            extra['heard2'] = ' '.join(s.text.strip() for s in s2); extra['errors2'] = wer(LINES[lid], extra['heard2'])[0]
+            extra['unsure'] = [w.word.strip() for s in s2 for w in (s.words or []) if w.probability < 0.5]
+        if ph:                                                                     # ear 3: the sounds
+            extra['phones'], extra['per'], extra['heard_ph'] = ph.check(y16.astype(np.float32), LINES[lid])
         rows.append({'who': who, 'line': lid, 'file': str(p), 'mos': round(m, 3), 'errors': errs, 'words': n, 'heard': hyp,
                      'dur': round(len(y) / sr, 2), 'wps': round(len(norm(LINES[lid])) / max(span, 0.3), 2),
                      'f0_hz': round(float(p50), 1), 'f0_range_st': round(float(rng), 1),
-                     'creak': round(creak, 1), 'jumps': jumps, 'damage': round(creak + 5 * jumps, 1)})
-        print(f"{who:16s} {lid:5s} MOS {m:4.2f}  err {errs}/{n}  creak {creak:4.1f}% jumps {jumps}  {rows[-1]['wps']:4.2f} w/s  | {hyp}", flush=True)
+                     'creak': round(creak, 1), 'jumps': jumps, 'damage': round(creak + 5 * jumps, 1), **extra})
+        print(f"{who:16s} {lid:5s} MOS {m:4.2f}  err {errs}+{extra['errors2']}/{n}  sounds {len(extra['phones'])} ({extra['per']}%)  creak {creak:4.1f}% jumps {jumps}  {rows[-1]['wps']:4.2f} w/s  | {hyp}"
+              + (f"  | {ASR2}: {extra['heard2']}" if asr2 and norm(extra['heard2']) != norm(hyp) else '') + (f"  | {'; '.join(extra['phones'])}" if extra['phones'] else ''), flush=True)
         wj = p.with_suffix('.words.json')                                          # Chatterbox, and Kokoro outside English,
         if task == 'takes' and (not wj.exists() or not json.loads(wj.read_text(encoding='utf-8')).get('words')):   # give no timings: use Whisper's
             words = [{'w': w.word.strip(), 't0': round(w.start, 3), 't1': round(w.end, 3), 'ws': True} for w in ws]
@@ -233,32 +447,52 @@ def score(task):
     else:
         best = {}
         voices = sorted({r['who'].split('/')[0] for r in rows})
-        md += ['| voice | mean MOS of best takes | lines with errors | cracked lines (creak > 3 % or a pitch break) | speaking time s |', '|---|---|---|---|---|']
+        # the best take: no word errors by either Whisper, then not cracked, then the fewest wrong sounds, then the least
+        # damage, then MOS
+        rank = lambda r: (r['errors'] + r.get('errors2', 0), r['damage'] > 3, len(r.get('phones') or []), r['damage'], -r['mos'])
+        md[2:2] = [f"err = word errors by ear 1 (Whisper small.en) + ear 2 (Whisper {ASR2 or 'off'}); sounds = words ear 3 (phonemes) flagged, "
+                   f"and its phoneme error rate for the line (lower is cleaner). {'Ear 3 could not load (see the log).' if PHONES and not ph else ''}"]
+        md += ['| voice | mean MOS of best takes | lines with errors | cracked lines (creak > 3 % or a pitch break) | lines with a flagged sound | speaking time s |', '|---|---|---|---|---|---|']
         for vc in voices:
             bl = {}
             for lid in LINES:
-                v = sorted([r for r in rows if r['line'] == lid and r['who'].startswith(vc + '/')], key=lambda r: (r['errors'], r['damage'] > 3, r['damage'], -r['mos']))
+                v = sorted([r for r in rows if r['line'] == lid and r['who'].startswith(vc + '/')], key=rank)
                 if v: bl[lid] = v[0]
             best[vc] = {lid: r['who'].split('/')[1] for lid, r in bl.items()}
-            md += [f"| {vc} | {np.mean([r['mos'] for r in bl.values()]):.2f} | {sum(1 for r in bl.values() if r['errors'])} | {sum(1 for r in bl.values() if r['damage'] > 3)} | {sum(r['dur'] for r in bl.values()):.1f} |"]
-        md += ['', '| line | take | MOS | errors | creak % | pitch breaks | w/s | heard |', '|---|---|---|---|---|---|---|---|']
+            md += [f"| {vc} | {np.mean([r['mos'] for r in bl.values()]):.2f} | {sum(1 for r in bl.values() if r['errors'] + r.get('errors2', 0))} | {sum(1 for r in bl.values() if r['damage'] > 3)} | "
+                   f"{sum(1 for r in bl.values() if r.get('phones'))} | {sum(r['dur'] for r in bl.values()):.1f} |"]
+        md += ['', '| line | take | MOS | err | sounds | creak % | pitch breaks | w/s | heard |', '|---|---|---|---|---|---|---|---|---|']
         for lid in LINES:
-            v = sorted([r for r in rows if r['line'] == lid], key=lambda r: (r['who'].split('/')[0], r['errors'], -r['mos']))
-            md += [f"| {lid} | {r['who']}{' ★' if best.get(r['who'].split('/')[0], {}).get(lid) == r['who'].split('/')[1] else ''} | {r['mos']:.2f} | {r['errors']}/{r['words']} | {r['creak']} | {r['jumps']} | {r['wps']:.2f} | {r['heard']} |" for r in v]
+            v = sorted([r for r in rows if r['line'] == lid], key=lambda r: (r['who'].split('/')[0], rank(r)))
+            md += [f"| {lid} | {r['who']}{' ★' if best.get(r['who'].split('/')[0], {}).get(lid) == r['who'].split('/')[1] else ''} | {r['mos']:.2f} | {r['errors']}+{r.get('errors2', 0)}/{r['words']} | "
+                   f"{len(r.get('phones') or [])} ({r.get('per')}%) | {r['creak']} | {r['jumps']} | {r['wps']:.2f} | {r['heard']}"
+                   + (f" · *{ASR2}:* {r['heard2']}" if r.get('heard2') and norm(r['heard2']) != norm(r['heard']) else '')
+                   + (f" · **sounds:** {'; '.join(r['phones'])}" if r.get('phones') else '') + (f" · unsure: {', '.join(r['unsure'])}" if r.get('unsure') else '') + ' |' for r in v]
         (root / 'best.json').write_text(json.dumps(best, indent=1), encoding='utf-8')
+        pm = ['# What Kokoro was told to say', '', "Every word's phonemes from misaki (Kokoro's G2P), per line, from the first take. Read them before listening: a wrong phoneme here is said wrong in every take.", '']
+        for lid in LINES:
+            f = next((q for q in sorted(root.rglob(f'{lid}/t1.words.json'))), None)
+            if not f: continue
+            ws = json.loads(f.read_text(encoding='utf-8')).get('words', [])
+            if any(w.get('ph') for w in ws): pm += [f"- **{lid}** " + ' '.join(f"{w['w']} /{w['ph']}/" for w in ws if w.get('ph'))]
+        if len(pm) > 4: (root / 'phonemes.md').write_text('\n'.join(pm) + '\n', encoding='utf-8')
     (root / 'report.md').write_text('\n'.join(md) + '\n', encoding='utf-8')
     print('\n'.join(md))
 
 
 if __name__ == '__main__':
+    if hasattr(sys.stdout, 'reconfigure'): sys.stdout.reconfigure(encoding='utf-8', errors='replace')   # Windows consoles
     ap = argparse.ArgumentParser()
-    ap.add_argument('cmd', choices=['gen', 'score'])
+    ap.add_argument('cmd', choices=['gen', 'score', 'check'])
     ap.add_argument('--engine', choices=['kokoro', 'chatterbox'])
-    ap.add_argument('--task', choices=['cast', 'takes'], required=True)
+    ap.add_argument('--task', choices=['cast', 'takes'])
     ap.add_argument('--takes', type=int, default=3)
     ap.add_argument('--shard', default='')
+    ap.add_argument('--audio', default='audio/mix.wav')
     a = ap.parse_args()
-    if a.cmd == 'score': score(a.task)
+    if a.cmd == 'check': check(a.audio)
+    elif not a.task: sys.exit('gen and score need --task')
+    elif a.cmd == 'score': score(a.task)
     elif a.engine == 'kokoro': gen_kokoro(a.task, a.takes, a.shard)
     elif a.engine == 'chatterbox': gen_chatterbox(a.task, a.takes, a.shard)
     else: sys.exit('gen needs --engine')
