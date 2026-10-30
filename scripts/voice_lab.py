@@ -104,8 +104,8 @@ def gen_kokoro(task, takes, shard):
         else:
             steps = [1.0, 0.96, 1.04, 0.92, 1.08][:takes]       # Kokoro is deterministic: takes differ by pace
             for lid in shard_of(ids, shard):
-                for k, m in enumerate(steps, 1):
-                    y, w = say(KTEXT(lid), e['voice'], round(e.get('speed', 1.0) * m, 3)); write(LAB / 'takes' / e['id'] / lid / f't{k}.wav', LINES[lid], y, w)
+                for k, m in enumerate(steps, 1):                # a line may set its own pace: {"speed": 0.88}
+                    y, w = say(KTEXT(lid), e['voice'], round(e.get('speed', 1.0) * DIRECT[lid].get('speed', 1.0) * m, 3)); write(LAB / 'takes' / e['id'] / lid / f't{k}.wav', LINES[lid], y, w)
 
 
 def gen_chatterbox(task, takes, shard):
@@ -170,7 +170,10 @@ def norm(s):
     s = re.sub(r'(\d+)(st|nd|rd|th)\b', lambda m: ' ' + ordinal(int(m.group(1))) + ' ', s)      # 28th → twenty eighth
     s = re.sub(r'\d+', lambda m: ' ' + spoken_number(m.group()) + ' ', s)
     s = s.replace('-', ' ').replace("'", '').replace('’', '')
-    return re.sub(r'[^a-z ]+', ' ', s).split()
+    w = re.sub(r'[^a-z ]+', ' ', s).split()
+    for i in range(len(w) - 2):                    # a year read two ways: "two thousand eighteen" = "twenty eighteen" (2018)
+        if w[i] == 'two' and w[i + 1] == 'thousand' and (w[i + 2] in ONES[10:] or w[i + 2] in TENS): w[i:i + 2] = ['twenty', '']
+    return [x for x in w if x]
 
 
 def wer(ref, hyp):
