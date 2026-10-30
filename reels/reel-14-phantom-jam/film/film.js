@@ -40,7 +40,7 @@
       japan: wi('s03', 6), nothing: wi('s03', 12), cars: wi('s04', 1), circle: wi('s04', 3), rule: wi('s04', 5), steady: wi('s04', 8),
       slowed: wi('s05', 3), little: wi('s05', 7), behind: wi('s06', 2), late: wi('s06', 6), braked: wi('s06', 8), harder: wi('s06', 9), next: wi('s06', 11),
       harder2: wi('s06', 12), still: wi('s06', 13), until: wi('s06', 14), stopped: wi('s06', 16), stoppedE: we('s06', 16), backwards: wi('s07', 4), bicycle: wi('s07', 10), knew: wi('s08', 6),
-      road9: wi('s09', 6), us: wi('s09', 8), late9: wi('s09', 13), yr10: wi('s10', 1), car10: wi('s10', 6), steady10: wi('s10', 14),
+      road9: wi('s09', 6), us: wi('s09', 8), late9: wi('s09', 13), yr10: wi('s10', 1), car10: wi('s10', 6), held10: wi('s10', 12), steady10: wi('s10', 14),
       faded: wi('s11', 2), gap: wi('s12', 3), ends: wi('s12', 10), jam12: wi('s12', 12), starts: wi('s13', 4), end: tb('end'),
     };
     const a = t.a;
@@ -51,7 +51,7 @@
     t.mapRoad = [[0, 12], [t.cut[2], 12 + t.cut[2]]];
     t.mapRing = [[t.cut[2], 0.5], [t.slowed - 0.15, 10], [t.little, 11.4], [t.behind, 11.9], [t.harder, 12.6], [t.next, 13.3], [t.stopped, 15.3],
       [t.cut[6], 16], [t.cut[7], 24], [t.cut[8], 27]];
-    t.mapStern9 = [[t.cut[9], 26], [t.cut[10], 39]];                            // the waves, before the car takes over at 40 s
+    t.mapStern9 = [[t.cut[9], 28], [t.held10 - 0.1, 40], [t.cut[10], 44]];       // the waves; the car takes over (40 s) on "held"
     t.mapStern10 = [[t.cut[10], 112], [t.cut[11], 116]];                        // 70 s later: calm
     t.mapFix = [[t.cut[11], 46], [t.starts - 0.2, 61], [t.end, 65.5]];
     T = t; return T;
@@ -342,7 +342,7 @@
     simClock(g, tS, rate, t);
   }
   function shCascade(g, t) {                                    // 5 · each one behind brakes harder, until someone stops
-    const T = times(), { tS, rate, s8, cx, cy, c } = ringShot(g, t, 5, { markSlowed: true, s0: 1.0, push: 0.05, kicks: [[T.stopped - 0.05, 10]] });
+    const T = times(), { tS, rate, s8, cx, cy, c } = ringShot(g, t, 5, { markSlowed: true, s0: 1.0, push: 0.05, kicks: [[T.stoppedE + 0.03, 10]] });   // the jolt with the squeal and the thud, after the word
     screen(g);
     const show = [[1, T.behind], [2, T.harder], [3, T.next], [4, T.until]];                         // followers 1..4 by the words
     for (const [k, tw] of show) {
@@ -367,7 +367,7 @@
     if (c) {
       const th = Math.atan2(sy, sx) + PI / 2, R2 = RR + 120, bx = cx + Math.cos(th) * R2, by = cy - Math.sin(th) * R2;
       const kB = clamp((t - (T.bicycle - 0.25)) / 0.3);
-      bicycle(g, bx, by, -th + PI / 2, 1.3, `rgba(255,59,31,${(0.35 + 0.65 * kB).toFixed(3)})`);            // it rides the other way (clockwise)
+      bicycle(g, bx, by, -th + PI / 2, 1.3 * (1 + 0.16 * Math.exp(-(((t - (lastE('s07') + 0.06)) / 0.09) ** 2))), `rgba(255,59,31,${(0.35 + 0.65 * kB).toFixed(3)})`);   // it rides the other way (clockwise); it bumps on its bell
       g.save(); g.strokeStyle = 'rgba(255,59,31,0.7)'; g.lineWidth = 6; g.lineCap = 'round';                  // the jam's direction: backwards
       g.beginPath(); g.arc(cx, cy, RR + 70, -th + 0.05, -th + 0.55); g.stroke();
       const ea = -th + 0.55, ex = cx + Math.cos(ea) * (RR + 70), ey = cy + Math.sin(ea) * (RR + 70);
@@ -399,22 +399,22 @@
     const T = times(); shotCam(g, t, 8, { push: 0.04, oy: 760 });
     ground(g, '#0a0d11'); grid(g, 0.06);
     const vs = kmh(RING.vSteady), names = ['THE FIRST DRIVER', 'BEHIND', 'NEXT', 'NEXT', 'NEXT'];
-    mlabel(g, 'HOW MUCH EACH DRIVER SLOWED, KM/H', X0, 460, clamp((t - (T.cut[8] + 0.05)) / 0.25), { size: 34, c: INK2 });
+    mlabel(g, 'HOW MUCH EACH DRIVER SLOWED, KM/H', X0, 460, clamp((t - (T.cut[8] - 0.25)) / 0.25), { size: 34, c: INK2 });   // there on the cut
     DIPS.forEach((v, k) => {
-      const d = vs - kmh(v), y = 515 + k * 132, kk = clamp((t - (T.cut[8] + 0.15 + k * 0.22)) / 0.3), BX = X0 + 380, BW = 470;
+      const d = vs - kmh(v), y = 515 + k * 132, kk = clamp((t - (T.cut[8] - 0.05 + k * 0.2)) / 0.3), BX = X0 + 380, BW = 470;
       if (kk <= 0) return;
       mlabel(g, names[k], X0, y + 50, kk, { size: 38, c: k === 0 ? AMB : INK });
       g.fillStyle = k === 4 ? ACC : 'rgba(236,232,225,0.88)'; g.fillRect(BX, y + 6, (BW * d / vs) * eo(kk), 62);
       mlabel(g, kmh(v) < 1 ? `−${d} · STOPPED` : `−${d}`, kmh(v) < 1 ? BX + (BW * d / vs) * eo(kk) - 16 : BX + 16 + (BW * d / vs) * eo(kk), y + 52, kk, { size: 44, c: kmh(v) < 1 ? '#07090c' : INK, align: kmh(v) < 1 ? 'right' : 'left' });
     });
-    eyebrow(g, 'FROM THE SIMULATION ABOVE', t, T.cut[8] + 0.05);
+    eyebrow(g, 'FROM THE SIMULATION ABOVE', t, T.cut[8] - 0.25);
   }
   function sternShot(g, t, i, calm) {                           // 9–10 · 2018: one self-driving car holds a steady speed
     const T = times(), map = calm ? T.mapStern10 : T.mapStern9, tS = keyed(map, t), rate = rateOf(map, t);
     const c = shotCam(g, t, i, { push: 0.04, oy: 760 });
     ringBg(g, 540, 760, SRR, SR, { label: calm ? 'NO WAVES' : '260 M · 22 CARS', labelA: 1 });
-    { const s0 = STERN.state(tS), [hx, hy] = ringPos(STERN, s0.x[STERN.av], 540, 760, SRR), gr = g.createRadialGradient(hx, hy, 0, hx, hy, 60);   // a halo round the self-driving car
-      gr.addColorStop(0, 'rgba(95,212,255,0.45)'); gr.addColorStop(1, 'rgba(95,212,255,0)'); g.fillStyle = gr; g.beginPath(); g.arc(hx, hy, 60, 0, TAU); g.fill(); }
+    { const s0 = STERN.state(tS), [hx, hy] = ringPos(STERN, s0.x[STERN.av], 540, 760, SRR), pz = Math.exp(-(((tS - STERN.tc) / 0.8) ** 2)), hr = 60 + 50 * pz;   // a halo round the self-driving car; it pulses when the car takes over
+      const gr = g.createRadialGradient(hx, hy, 0, hx, hy, hr); gr.addColorStop(0, `rgba(95,212,255,${(0.45 + 0.4 * pz).toFixed(3)})`); gr.addColorStop(1, 'rgba(95,212,255,0)'); g.fillStyle = gr; g.beginPath(); g.arc(hx, hy, hr, 0, TAU); g.fill(); }
     const s8 = ringCars(g, STERN, tS, 540, 760, SRR, SR, { paint: (k) => (k === STERN.av ? CYAN : PAINT[k % PAINT.length]), mark: (k) => (k === STERN.av ? CYAN : null) });
     const [x, y] = proj(c, ...ringPos(STERN, s8.x[STERN.av], 540, 760, SRR));
     screen(g);
