@@ -1,29 +1,103 @@
 {
- "note": "Reel 14: The Jam With No Cause. A Bengaluru jam with nothing at its front; Sugiyama et al. 2008 (22 cars, a 230 m circle, one rule: drive steadily) made one from nothing; a small slowdown amplifies car by car until someone stops; the jam travels backwards at about bicycle speed (15 +/- 5 km/h on highways); the root cause is our late reactions; Stern et al. 2018: one controlled car on a 260 m ring dampened the waves (up to 40% less fuel); leave a gap: you could end a jam, or start it (the loop). Kokoro af_heart, speed 1.0. Numbers as words. 'Bengaluru' is tested three ways: the plain spelling (s01), phonemes with the stress on BENG (s01b), on LU (s01c); the ears and the phonemes choose. Facts: docs/research.md.",
+ "note": "Reel 14: The Jam With No Cause. A Bengaluru jam with nothing at its front; Sugiyama et al. 2008 (22 cars, a 230 m circle, one rule: drive steadily) made one from nothing; a small slowdown amplifies car by car until someone stops; the jam travels backwards at about bicycle speed (15 +/- 5 km/h on highways); the root cause is our late reactions; Stern et al. 2018: one controlled car on a 260 m ring dampened the waves (up to 40% less fuel); leave a gap: you could end a jam, or start it (the loop). Kokoro af_heart, speed 1.0. Numbers as words. 'Bengaluru' (Kannada [beŋɡəɭuːɾu]): misaki's plain spelling reads /bˈɛŋɡələɹˌu/, 'BENG-guh-luh-roo', the long 'loo' lost; the phoneme ear heard the third syllable as ɚ/ᵻ/ɪ in s01, s01b, s01c. s01d–g add an Indian e, a long uː and a tapped ɾ (all in Kokoro's vocabulary; there is no retroflex ɭ). Facts: docs/research.md.",
  "voice": "af_heart",
  "speed": 1.0,
  "lines": [
-  {"id": "s01", "text": "This Bengaluru traffic jam has no cause."},
-  {"id": "s01b", "text": "This Bengaluru traffic jam has no cause.", "text_kokoro": "This [Bengaluru](/bˈɛŋɡəlˌuɹu/) traffic jam has no cause."},
-  {"id": "s01c", "text": "This Bengaluru traffic jam has no cause.", "text_kokoro": "This [Bengaluru](/bˌɛŋɡəlˈuɹu/) traffic jam has no cause."},
-  {"id": "s02", "text": "Follow it to the front: no accident, no signal, not even a pothole."},
-  {"id": "s03", "text": "In two thousand eight, scientists in Japan made a jam out of nothing."},
-  {"id": "s04", "text": "Twenty-two cars, one circle, one rule: keep a steady speed."},
-  {"id": "s05", "text": "Then one driver slowed down. Just a little."},
-  {"id": "s06", "text": "The one behind reacted a beat late and braked harder. The next, harder still, until someone stopped."},
-  {"id": "s07", "text": "And the jam moved backwards, about as fast as a bicycle."},
-  {"id": "s08", "text": "The driver who started it never knew."},
-  {"id": "s09", "text": "That's the root cause: not the road. It's us, braking a beat too late."},
-  {"id": "s10", "text": "In two thousand eighteen, one self-driving car on a ring like this held a steady speed."},
-  {"id": "s11", "text": "The waves faded."},
-  {"id": "s12", "text": "So leave a gap. You could be the one who ends a jam."},
-  {"id": "s13", "text": "Or the one who starts it."}
+  {
+   "id": "s01",
+   "text": "This Bengaluru traffic jam has no cause."
+  },
+  {
+   "id": "s01b",
+   "text": "This Bengaluru traffic jam has no cause.",
+   "text_kokoro": "This [Bengaluru](/bˈɛŋɡəlˌuɹu/) traffic jam has no cause."
+  },
+  {
+   "id": "s01c",
+   "text": "This Bengaluru traffic jam has no cause.",
+   "text_kokoro": "This [Bengaluru](/bˌɛŋɡəlˈuɹu/) traffic jam has no cause."
+  },
+  {
+   "id": "s01d",
+   "text": "This Bengaluru traffic jam has no cause.",
+   "text_kokoro": "This [Bengaluru](/bˈeŋɡəlˌuːɾu/) traffic jam has no cause."
+  },
+  {
+   "id": "s01e",
+   "text": "This Bengaluru traffic jam has no cause.",
+   "text_kokoro": "This [Bengaluru](/bˌeŋɡəlˈuːɾu/) traffic jam has no cause."
+  },
+  {
+   "id": "s01f",
+   "text": "This Bengaluru traffic jam has no cause.",
+   "text_kokoro": "This [Bengaluru](/bˈeŋɡɐlˌuːɾu/) traffic jam has no cause."
+  },
+  {
+   "id": "s01g",
+   "text": "This Bengaluru traffic jam has no cause.",
+   "text_kokoro": "This [Bengaluru](/bˈɛŋɡəlˈuːɹu/) traffic jam has no cause."
+  },
+  {
+   "id": "s02",
+   "text": "Follow it to the front: no accident, no signal, not even a pothole."
+  },
+  {
+   "id": "s03",
+   "text": "In two thousand eight, scientists in Japan made a jam out of nothing."
+  },
+  {
+   "id": "s04",
+   "text": "Twenty-two cars, one circle, one rule: keep a steady speed."
+  },
+  {
+   "id": "s05",
+   "text": "Then one driver slowed down. Just a little."
+  },
+  {
+   "id": "s06",
+   "text": "The one behind reacted a beat late and braked harder. The next, harder still, until someone stopped."
+  },
+  {
+   "id": "s07",
+   "text": "And the jam moved backwards, about as fast as a bicycle."
+  },
+  {
+   "id": "s08",
+   "text": "The driver who started it never knew."
+  },
+  {
+   "id": "s09",
+   "text": "That's the root cause: not the road. It's us, braking a beat too late."
+  },
+  {
+   "id": "s10",
+   "text": "In two thousand eighteen, one self-driving car on a ring like this held a steady speed."
+  },
+  {
+   "id": "s11",
+   "text": "The waves faded."
+  },
+  {
+   "id": "s12",
+   "text": "So leave a gap. You could be the one who ends a jam."
+  },
+  {
+   "id": "s13",
+   "text": "Or the one who starts it."
+  }
  ],
- "say": {"bengaluru": "b ɛ ŋ ɡ ə l uː ɹ uː"},
+ "say": {
+  "bengaluru": "b ɛ ŋ ɡ ə l uː ɹ uː"
+ },
  "ref_text": "The night was warm and very quiet.",
  "cast_lines": [],
  "cast": [],
  "take": [
-  {"id": "k-heart", "engine": "kokoro", "voice": "af_heart", "speed": 1.0}
+  {
+   "id": "k-heart",
+   "engine": "kokoro",
+   "voice": "af_heart",
+   "speed": 1.0
+  }
  ]
 }
