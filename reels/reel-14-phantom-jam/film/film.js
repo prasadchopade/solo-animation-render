@@ -18,7 +18,7 @@
   const INK = '#ece8e1', INK2 = '#8d949c', BG = '#07090c', ACC = '#ff3b1f', CYAN = '#5fd4ff', AMB = '#ffb23a';
 
   // ------------------------------------------------------------------ the simulations (computed once)
-  const RING = SC.sugiyama(), STERN = SC.stern(), ROAD = SC.road(3), FIX = SC.roadFix();
+  const RING = SC.sugiyama(), STERN = SC.stern(), ROAD = SC.road(3), FIX = SC.roadFix(), ONC = SC.oncoming();
   const kmh = (v) => Math.max(0, Math.round(v * 3.6));
   const DIPS = Array.from({ length: 5 }, (_, k) => RING.minV((RING.n - k) % RING.n, RING.tp, RING.tp + 3 + 1.8 * k));   // the slowed car, then 4 followers
 
@@ -179,36 +179,53 @@
   }
   const paintOf = (sim, i, salt = 0) => PAINT[(i * 7 + salt * 3) % PAINT.length];
 
-  // ------------------------------------------------------------------ the road (Bengaluru, at night): travel is up the screen
-  const LANE = 3.6;
-  const laneX = (l, s) => 540 + (l - 1) * LANE * s;
-  // world position x (m along the road) → screen y, for a camera at cx (m) with s px/m and the camera's anchor ay (px)
-  const ry = (x, cx, s, ay = 960) => ay - (x - cx) * s;
+  // ------------------------------------------------------------------ the road: a Bengaluru arterial at night, from above
+  // India drives on the left: our three lanes (travelling up the screen) are the left carriageway, the oncoming three
+  // (coming down) the right one; a planted median between them, footpaths with trees, rooftops with black water tanks.
+  const LANE = 3.5, MED = 2.2, FOOT = 2.6, HALF = MED / 2 + 3 * LANE;
+  const laneX = (l, s) => 540 - (MED / 2 + (2 - l + 0.5) * LANE) * s;            // l: 0 = the slow lane by the footpath … 2 = the fast lane
+  const oppX = (k, s) => 540 + (MED / 2 + (k + 0.5) * LANE) * s;                  // k: 0 = their fast lane … 2 = their slow lane
+  const ry = (x, cx, s, ay = 960) => ay - (x - cx) * s;                           // road position (m) → screen y
+  const hash = (a, b) => { const h = Math.sin(a * 12.9898 + b * 78.233) * 43758.5453; return h - Math.floor(h); };
   function roadBg(g, cx, s, o = {}) {
-    const ay = o.ay ?? 960, half = (1.5 * LANE + 2.4) * s;
+    const ay = o.ay ?? 960, top = cx + (ay + 400) / s, bot = cx - (H - ay + 400) / s;
     g.fillStyle = '#0b0d10'; g.fillRect(-400, -400, W + 800, H + 800);
-    const top = cx + (ay + 400) / s, bot = cx - (H - ay + 400) / s;
-    g.fillStyle = '#16191e'; g.fillRect(540 - half, -400, half * 2, H + 800);                                    // asphalt
-    g.fillStyle = '#1f2329'; g.fillRect(540 - half - 2.6 * s, -400, 2.6 * s, H + 800); g.fillRect(540 + half, -400, 2.6 * s, H + 800);   // footpaths
-    g.strokeStyle = 'rgba(236,232,225,0.55)'; g.lineWidth = Math.max(1.5, 0.15 * s);
-    g.beginPath(); g.moveTo(540 - 1.5 * LANE * s, -400); g.lineTo(540 - 1.5 * LANE * s, H + 400); g.moveTo(540 + 1.5 * LANE * s, -400); g.lineTo(540 + 1.5 * LANE * s, H + 400); g.stroke();
-    g.strokeStyle = 'rgba(236,232,225,0.4)';                                                                      // lane dashes, fixed to the road
-    for (const lx of [540 - 0.5 * LANE * s, 540 + 0.5 * LANE * s]) {
-      for (let x = Math.floor(bot / 9) * 9; x < top; x += 9) { const y0 = ry(x, cx, s, ay), y1 = ry(x + 3, cx, s, ay); g.beginPath(); g.moveTo(lx, y0); g.lineTo(lx, y1); g.stroke(); }
-    }
-    for (let x = Math.floor(bot / 34) * 34; x < top; x += 34) {                                                    // streetlights: warm pools
-      for (const side of [-1, 1]) {
-        const lx = 540 + side * (half + 1.3 * s), y = ry(x + (side > 0 ? 17 : 0), cx, s, ay), rr = 9 * s;
-        const gr = g.createRadialGradient(lx, y, 0, lx, y, rr); gr.addColorStop(0, 'rgba(255,170,80,0.14)'); gr.addColorStop(1, 'rgba(255,170,80,0)');
-        g.fillStyle = gr; g.beginPath(); g.arc(lx, y, rr, 0, TAU); g.fill();
-        g.fillStyle = '#ffd59a'; g.beginPath(); g.arc(lx, y, Math.max(2, 0.3 * s), 0, TAU); g.fill();
+    for (const side of [-1, 1]) {                                                  // the buildings beyond the footpaths, from above
+      const x0 = 540 + side * (HALF + FOOT + 1.2) * s;
+      for (let b = Math.floor(bot / 17) - 1; b * 17 < top + 17; b++) {
+        const w = 11 + hash(b, side) * 5, d = 10 + hash(b * 3, side) * 14, yA = ry(b * 17, cx, s, ay), yB = ry(b * 17 + w, cx, s, ay);
+        const xi = side < 0 ? x0 - d * s : x0, ww = d * s, tone = 26 + (hash(b, side * 5) * 16 | 0);
+        g.fillStyle = `rgb(${tone},${tone + 2},${tone + 6})`; g.fillRect(xi, yB, ww, yA - yB);
+        g.strokeStyle = 'rgba(0,0,0,0.35)'; g.lineWidth = Math.max(1, 0.1 * s); g.strokeRect(xi, yB, ww, yA - yB);
+        const n = hash(b * 5, side) > 0.55 ? 2 : 1;                                  // one or two black water tanks on every roof
+        for (let k = 0; k < n; k++) {
+          const tx = xi + ww * (0.25 + 0.5 * hash(b * 7 + k, side)), ty = yB + (yA - yB) * (0.25 + 0.5 * hash(b * 11 + k, side));
+          g.fillStyle = '#08090a'; g.beginPath(); g.arc(tx, ty, 0.85 * s, 0, TAU); g.fill();
+          g.strokeStyle = 'rgba(141,148,156,0.4)'; g.lineWidth = Math.max(1, 0.07 * s); g.beginPath(); g.arc(tx, ty, 0.85 * s, 0, TAU); g.stroke();
+        }
+        if (hash(b * 13, side) > 0.62) { g.fillStyle = 'rgba(255,196,120,0.45)'; g.fillRect(xi + ww * 0.15, yB + (yA - yB) * 0.72, 0.9 * s, 0.5 * s); }
       }
     }
-    for (let x = Math.floor(bot / 13) * 13; x < top; x += 13) {                                                    // trees along the footpath
-      for (const side of [-1, 1]) {
-        const h = Math.sin(x * 12.9898 + side * 78.233) * 43758.5453, jx = (h - Math.floor(h)) - 0.5;
-        g.fillStyle = 'rgba(28,44,32,0.92)'; g.beginPath(); g.arc(540 + side * (half + (4 + jx * 2) * s), ry(x + 6 * side, cx, s, ay), (2.6 + jx) * s, 0, TAU); g.fill();
-      }
+    g.fillStyle = '#20242a'; g.fillRect(540 - (HALF + FOOT) * s, -400, FOOT * s, H + 800); g.fillRect(540 + HALF * s, -400, FOOT * s, H + 800);   // footpaths
+    g.fillStyle = '#15181d'; g.fillRect(540 - HALF * s, -400, 3 * LANE * s, H + 800); g.fillRect(540 + (MED / 2) * s, -400, 3 * LANE * s, H + 800);  // carriageways
+    g.fillStyle = '#18241b'; g.fillRect(540 - (MED / 2) * s, -400, MED * s, H + 800);                                   // the median
+    g.strokeStyle = 'rgba(236,232,225,0.5)'; g.lineWidth = Math.max(1.5, 0.14 * s);
+    for (const ex of [540 - HALF * s, 540 - (MED / 2) * s, 540 + (MED / 2) * s, 540 + HALF * s]) { g.beginPath(); g.moveTo(ex, -400); g.lineTo(ex, H + 400); g.stroke(); }
+    g.strokeStyle = 'rgba(236,232,225,0.36)';                                       // lane dashes, fixed to the road
+    for (const lx of [laneX(0, s) + LANE / 2 * s, laneX(1, s) + LANE / 2 * s, oppX(0, s) + LANE / 2 * s, oppX(1, s) + LANE / 2 * s])
+      for (let x = Math.floor(bot / 9) * 9; x < top; x += 9) { g.beginPath(); g.moveTo(lx, ry(x, cx, s, ay)); g.lineTo(lx, ry(x + 3, cx, s, ay)); g.stroke(); }
+    for (let x = Math.floor(bot / 4) * 4; x < top; x += 4) {                         // shrubs on the median
+      const j = hash(x, 3); g.fillStyle = `rgba(${36 + j * 18 | 0},${62 + j * 26 | 0},${40 + j * 14 | 0},0.92)`;
+      g.beginPath(); g.arc(540 + (j - 0.5) * 0.5 * s, ry(x, cx, s, ay), (0.5 + 0.22 * j) * s, 0, TAU); g.fill();
+    }
+    for (let x = Math.floor(bot / 32) * 32; x < top; x += 32) {                      // streetlights on the median, pools on both fast lanes
+      const y = ry(x, cx, s, ay);
+      for (const lx of [540 - 3.4 * s, 540 + 3.4 * s]) { const rr = 8.5 * s, gr = g.createRadialGradient(lx, y, 0, lx, y, rr); gr.addColorStop(0, 'rgba(255,176,90,0.14)'); gr.addColorStop(1, 'rgba(255,176,90,0)'); g.fillStyle = gr; g.beginPath(); g.arc(lx, y, rr, 0, TAU); g.fill(); }
+      g.fillStyle = '#ffd59a'; g.beginPath(); g.arc(540, y, Math.max(2, 0.3 * s), 0, TAU); g.fill();
+    }
+    for (let x = Math.floor(bot / 11) * 11; x < top; x += 11) for (const side of [-1, 1]) {   // trees on the footpaths
+      const j = hash(x, side * 9); if (j < 0.25) continue;
+      g.fillStyle = 'rgba(24,40,28,0.92)'; g.beginPath(); g.arc(540 + side * (HALF + FOOT * 0.55) * s, ry(x + j * 4, cx, s, ay), (1.6 + j * 1.1) * s, 0, TAU); g.fill();
     }
   }
   function roadCars(g, sims, tSim, cx, s, o = {}) {
@@ -218,8 +235,15 @@
       for (let i = 0; i < sim.n; i++) {
         let x = st8.x[i]; x -= Math.floor((x - bot) / Lr) * Lr;                 // the loop: draw each vehicle once, nearest the camera
         if (x > top || x < bot) continue;
-        const mark = o.mark && o.mark(l, i);
-        vehicle(g, sim.kind[i], sim.len[i], laneX(l, s), ry(x, cx, s, ay), 0, s, { brake: brakeOf(st8.a[i], st8.v[i]), paint: paintOf(sim, i, l), mark, helmet: PAINT[(i + l) % PAINT.length] });
+        vehicle(g, sim.kind[i], sim.len[i], laneX(l, s), ry(x, cx, s, ay), 0, s, { brake: brakeOf(st8.a[i], st8.v[i]), paint: paintOf(sim, i, l), mark: o.mark && o.mark(l, i), helmet: PAINT[(i + l) % PAINT.length] });
+      }
+    });
+    ONC.forEach((sim, k) => {                                                     // the other carriageway, coming down, headlights first
+      const st8 = sim.state(tSim), Lr = sim.L;
+      for (let i = 0; i < sim.n; i++) {
+        let X = 260 * k - st8.x[i]; X -= Math.floor((X - bot) / Lr) * Lr;
+        if (X > top || X < bot) continue;
+        vehicle(g, sim.kind[i], sim.len[i], oppX(k, s), ry(X, cx, s, ay), PI, s, { brake: brakeOf(st8.a[i], st8.v[i]), paint: paintOf(sim, i, k + 3), helmet: PAINT[(i + k + 2) % PAINT.length] });
       }
     });
   }
@@ -260,14 +284,14 @@
   function shHook(g, t) {                                       // 0 · a Bengaluru jam, close: brake lights to the horizon
     const T = times(), tS = keyed(T.mapRoad, t), [back] = slowSpan(ROAD[1], tS);
     shotCam(g, t, 0, { push: 0.05, oy: 960 });
-    const s = 26, cx = back + 22;
+    const s = 34, cx = back + 16;
     roadBg(g, cx, s); roadCars(g, ROAD, tS, cx, s);
     eyebrow(g, 'BENGALURU · A TRAFFIC SIMULATION · 315 VEHICLES', t, -0.3);
   }
   function shRace(g, t) {                                       // 1 · follow it to the front: nothing there
     const T = times(), tS = keyed(T.mapRoad, t), [b0, f0] = slowSpan(ROAD[1], tS);
     const u = eio(clamp((t - T.cut[1]) / Math.max(1.2, T.pothole - 0.4 - T.cut[1])));
-    const cx = lerp(b0 + 22, f0 + 55, u), s = lerp(26, 13, u) / (1 + 3.2 * Math.sin(PI * u));   // pull out mid-race, land close at the front
+    const cx = lerp(b0 + 16, f0 + 26, u), s = lerp(34, 24, u) / (1 + 2.6 * Math.sin(PI * u));   // pull out mid-race, land close at the front
     shotCam(g, t, 1, { push: 0.0, oy: 960 });
     roadBg(g, cx, s); roadCars(g, ROAD, tS, cx, s);
     if (u > 0.2 && u < 0.85) { screen(g); g.save(); g.globalAlpha = 0.25 * Math.sin(PI * (u - 0.2) / 0.65); g.strokeStyle = INK; g.lineWidth = 2;  // speed lines
@@ -300,11 +324,16 @@
     simClock(g, tS, rate, t);
   }
   function shOne(g, t) {                                        // 4 · then one driver slowed down: just a little
-    const T = times(), { tS, rate, s8, cx, cy, c } = ringShot(g, t, 4, { markSlowed: true, s0: 1.0, push: 0.12 });
-    const [x, y] = proj(c, ...ringPos(RING, s8.x[RING.slowed], cx, cy, RR));
+    const T = times(), tS = keyed(T.mapRing, t), rate = rateOf(T.mapRing, t), s0 = RING.state(tS);
+    const [x0, y0] = ringPos(RING, s0.x[RING.slowed], 540, 760, RR), z = lerp(1.25, 1.7, eio(clamp((t - T.cut[4]) / Math.max(0.5, T.cut[5] - T.cut[4]))));
+    shotCam(g, t, 4, { push: 0, oy: 760 });
+    g.translate(540, 760); g.scale(z, z); g.translate(-lerp(540, x0, 0.75), -lerp(760, y0, 0.75));
+    ringBg(g, 540, 760, RR, RS);
+    const s8 = ringCars(g, RING, tS, 540, 760, RR, RS, { mark: (k) => (k === RING.slowed ? AMB : null) });
+    const m = g.getTransform(), pt = m.transformPoint(new DOMPoint(x0, y0));
     screen(g);
     const k = clamp((t - (T.slowed - 0.3)) / 0.3);
-    tag(g, x, y - 80, `THIS DRIVER · ${kmh(s8.v[RING.slowed])} KM/H`, AMB, k, 28);
+    tag(g, pt.x, pt.y - 95, `THIS DRIVER · ${kmh(s8.v[RING.slowed])} KM/H`, AMB, k, 30);
     eyebrow(g, `EVERY CAR AT ${kmh(RING.vSteady)} KM/H · THEN ONE BRAKES GENTLY`, t, T.cut[4] + 0.05);
     simClock(g, tS, rate, t);
   }
@@ -366,13 +395,13 @@
     const T = times(); shotCam(g, t, 8, { push: 0.04, oy: 760 });
     ground(g, '#0a0d11'); grid(g, 0.06);
     const vs = kmh(RING.vSteady), names = ['THE FIRST DRIVER', 'BEHIND', 'NEXT', 'NEXT', 'NEXT'];
-    mlabel(g, 'HOW MUCH EACH DRIVER SLOWED (KM/H)', X0, 470, clamp((t - (T.cut[8] + 0.05)) / 0.25), { size: 28, c: INK2 });
+    mlabel(g, 'HOW MUCH EACH DRIVER SLOWED, KM/H', X0, 450, clamp((t - (T.cut[8] + 0.05)) / 0.25), { size: 30, c: INK2 });
     DIPS.forEach((v, k) => {
-      const d = vs - kmh(v), y = 560 + k * 112, kk = clamp((t - (T.cut[8] + 0.15 + k * 0.22)) / 0.3);
+      const d = vs - kmh(v), y = 520 + k * 128, kk = clamp((t - (T.cut[8] + 0.15 + k * 0.22)) / 0.3);
       if (kk <= 0) return;
-      mlabel(g, names[k], X0, y + 34, kk, { size: 26, c: k === 0 ? AMB : INK });
-      g.fillStyle = k === 4 ? ACC : 'rgba(236,232,225,0.85)'; g.fillRect(X0 + 300, y + 6, (560 * d / vs) * eo(kk), 40);
-      mlabel(g, kmh(v) < 1 ? `−${d} · STOPPED` : `−${d}`, X0 + 312 + (560 * d / vs) * eo(kk), y + 36, kk, { size: 28, c: k === 4 ? ACC : INK });
+      mlabel(g, names[k], X0, y + 40, kk, { size: 30, c: k === 0 ? AMB : INK });
+      g.fillStyle = k === 4 ? ACC : 'rgba(236,232,225,0.88)'; g.fillRect(X0 + 330, y + 6, (520 * d / vs) * eo(kk), 52);
+      mlabel(g, kmh(v) < 1 ? `−${d} · STOPPED` : `−${d}`, X0 + 344 + (520 * d / vs) * eo(kk), y + 44, kk, { size: 32, c: k === 4 ? ACC : INK, align: kmh(v) < 1 ? 'right' : 'left' });
     });
     const kL = clamp((t - (T.late9 - 0.2)) / 0.3);
     mlabel(g, 'EACH REACTS A BEAT LATE, SO EACH BRAKES HARDER', X0, 1150, kL, { size: 26, c: ACC, bg: 'rgba(7,9,12,0.8)' });
@@ -382,6 +411,8 @@
     const T = times(), map = calm ? T.mapStern10 : T.mapStern9, tS = keyed(map, t), rate = rateOf(map, t);
     const c = shotCam(g, t, i, { push: 0.04, oy: 760 });
     ringBg(g, 540, 760, SRR, SR, { label: calm ? 'NO WAVES' : '260 M · 22 CARS', labelA: 1 });
+    { const s0 = STERN.state(tS), [hx, hy] = ringPos(STERN, s0.x[STERN.av], 540, 760, SRR), gr = g.createRadialGradient(hx, hy, 0, hx, hy, 60);   // a halo round the self-driving car
+      gr.addColorStop(0, 'rgba(95,212,255,0.45)'); gr.addColorStop(1, 'rgba(95,212,255,0)'); g.fillStyle = gr; g.beginPath(); g.arc(hx, hy, 60, 0, TAU); g.fill(); }
     const s8 = ringCars(g, STERN, tS, 540, 760, SRR, SR, { paint: (k) => (k === STERN.av ? CYAN : PAINT[k % PAINT.length]), mark: (k) => (k === STERN.av ? CYAN : null) });
     const [x, y] = proj(c, ...ringPos(STERN, s8.x[STERN.av], 540, 760, SRR));
     screen(g);
@@ -394,18 +425,18 @@
   function fixShot(g, t, i) {                                   // 11–12 · you leave a gap … or start the next jam
     const T = times(), tS = keyed(T.mapFix, t), rate = rateOf(T.mapFix, t), you = FIX[1].state(tS).x[FIX[1].av];
     const c = shotCam(g, t, i, { push: 0.03, oy: 960, kicks: i === 12 ? [[T.starts - 0.1, 8]] : [] });
-    const s = 7.2, cx = you + 52, P = (x, y) => proj(c, x, y);
-    roadBg(g, cx, s, { ay: 760 }); roadCars(g, FIX, tS, cx, s, { ay: 760, mark: (l, k) => (l === 1 && k === FIX[1].av ? INK : null) });
+    const s = 17, cx = you, P = (x, y) => proj(c, x, y);
+    roadBg(g, cx, s, { ay: 640 }); roadCars(g, FIX, tS, cx, s, { ay: 640, mark: (l, k) => (l === 1 && k === FIX[1].av ? INK : null) });
     screen(g);
-    const [lx1, yy] = P(laneX(1, s), ry(you, cx, s, 760));
+    const [lx1, yy] = P(laneX(1, s), ry(you, cx, s, 640));
     tag(g, lx1, yy + 60, i === 12 && tS >= FIX[1].tTap ? 'YOU · BRAKE' : 'YOU', i === 12 && tS >= FIX[1].tTap ? ACC : INK, 1, 28);
     if (i === 11) {
       const kG = clamp((t - (T.gap - 0.2)) / 0.3);
       if (kG > 0) {                                             // the gap ahead of you
         const ahead = FIX[1].state(tS); let gx = Infinity; for (let k = 0; k < FIX[1].n; k++) { let d = ahead.x[k] - you; d -= Math.floor(d / FIX[1].L) * FIX[1].L; if (d > 1 && d < gx) gx = d; }
-        const y1 = P(0, ry(you + gx - 2, cx, s, 760))[1], y0 = yy - 22;
-        g.save(); g.globalAlpha = kG; g.strokeStyle = INK; g.lineWidth = 3; g.setLineDash([8, 8]); g.beginPath(); g.moveTo(lx1 + 30, y0); g.lineTo(lx1 + 30, y1); g.stroke(); g.restore();
-        mlabel(g, 'A GAP', lx1 + 46, (y0 + y1) / 2, kG, { size: 26, c: INK, bg: 'rgba(7,9,12,0.8)' });
+        const y1 = P(0, ry(you + gx - 2, cx, s, 640))[1], y0 = yy - 40;
+        g.save(); g.globalAlpha = kG; g.strokeStyle = INK; g.lineWidth = 3; g.setLineDash([8, 8]); g.beginPath(); g.moveTo(lx1, y0); g.lineTo(lx1, Math.max(300, y1)); g.stroke(); g.restore();
+        mlabel(g, 'A GAP', lx1 - 70, (y0 + Math.max(300, y1)) / 2, kG, { size: 28, c: INK, align: 'right', bg: 'rgba(7,9,12,0.8)' });
       }
       mlabel(g, 'BEHIND YOU: NO BRAKING', 540, 1185, clamp((t - (T.ends - 0.2)) / 0.3), { size: 28, c: INK, align: 'center', bg: 'rgba(7,9,12,0.8)' });
     }

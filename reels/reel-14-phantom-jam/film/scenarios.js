@@ -68,7 +68,19 @@
     });
   }
 
-  const api = { HUMAN, CALM, AV, DT, steady, sugiyama, stern, road, roadFix };
+  // 5 · the other carriageway (India drives on the left: it is on the right of the screen, coming down): free traffic
+  function oncoming(seed = 9, T = 90) {
+    return Array.from({ length: 3 }, (_, l) => {
+      const L = 700, n = 26 - l * 4, r = TR.mulberry32(seed * 13 + l);
+      const kinds = (i) => MIX[(i * 3 + l * 7 + Math.floor(r() * 4)) % MIX.length];
+      const probe = TR.ring({ length: L, n, T: 0.1, dt: DT, ...CALM, kinds });
+      const gap = (L - probe.len.reduce((s, x) => s + x, 0)) / n, v = steady(gap, CALM);
+      return TR.ring({ length: L, n, T, dt: DT, ...CALM, kinds, driver: driver(CALM), vStart: () => v,
+        place: (len) => { const p = []; let acc = r() * 20; for (let i = 0; i < n; i++) { p.push(acc); acc += len[i] + gap + (r() - 0.5) * gap * 0.3; } return p; } });
+    });
+  }
+
+  const api = { HUMAN, CALM, AV, DT, steady, sugiyama, stern, road, roadFix, oncoming };
   if (typeof window !== 'undefined') window.SCENARIOS = api;
   if (typeof module !== 'undefined') module.exports = api;
 })();
