@@ -1,7 +1,7 @@
 {
   "note": "Single source of truth for picture + sound, in BEATS (120 bpm: beat = 0.5 s). film.js reads marks via film/data.js; sync.mjs turns sfx into cues.json; score.py reads marks for the music; vo.json places the narration. Every reel ends with the Root Cause end card: 'end' → 'done' = 3.0 s (6 beats), engine/endcard.",
   "title": "Reel 14: The Jam With No Cause",
-  "duration": 58.5,
+  "duration": 55.25,
   "fps": 30,
   "bpm": 120,
   "formats": [
@@ -24,10 +24,164 @@
   },
   "marks": {
     "hook": 0,
-    "end": 111.0,
-    "done": 117.0
+    "end": 104.5,
+    "done": 110.5
   },
   "sfx": [
+    {
+      "at": 0.0,
+      "type": "horn",
+      "gain": 0.5,
+      "what": "a car horn, before the first word",
+      "len": 0.3,
+      "pitch": 1.0,
+      "pan": -0.2
+    },
+    {
+      "at": 0.0,
+      "type": "idle",
+      "gain": 0.55,
+      "what": "traffic idling (a bed, below 250 Hz)",
+      "len": 8.29
+    },
+    {
+      "at": 0.0,
+      "type": "tyres",
+      "gain": 0.35,
+      "what": "tyres on the far carriageway (a bed, 60-250 Hz)",
+      "len": 8.29
+    },
+    {
+      "at": 0.32,
+      "type": "autohorn",
+      "gain": 0.42,
+      "what": "an auto's beep-beep",
+      "pitch": 1.0,
+      "pan": 0.3
+    },
+    {
+      "at": 6.46,
+      "type": "whoosh",
+      "gain": 0.3,
+      "what": "the camera rushes up the road (in the gap)",
+      "pitch": 0.8
+    },
+    {
+      "at": 10.316,
+      "type": "stamp",
+      "gain": 0.45,
+      "what": "NONE (accident)",
+      "pitch": 0.95,
+      "pan": 0
+    },
+    {
+      "at": 12.116,
+      "type": "stamp",
+      "gain": 0.45,
+      "what": "NONE (signal)",
+      "pitch": 1.0,
+      "pan": 0
+    },
+    {
+      "at": 14.09,
+      "type": "stamp",
+      "gain": 0.45,
+      "what": "NONE (pothole)",
+      "pitch": 1.05,
+      "pan": 0
+    },
+    {
+      "at": 16.57,
+      "type": "tyres",
+      "gain": 0.3,
+      "what": "tyres on the test track (a bed)",
+      "len": 24.82,
+      "pitch": 1.1
+    },
+    {
+      "at": 52.15,
+      "type": "squeal",
+      "gain": 0.42,
+      "what": "the car that stops (after \"stopped.\")",
+      "len": 0.45,
+      "pitch": 1.0,
+      "pan": 0
+    },
+    {
+      "at": 52.29,
+      "type": "thud",
+      "gain": 0.35,
+      "what": "the stop (low)",
+      "pitch": 1.2,
+      "pan": 0
+    },
+    {
+      "at": 60.35,
+      "type": "bicyclebell",
+      "gain": 0.45,
+      "what": "ting-ting (after \"bicycle.\")",
+      "pitch": 1.0,
+      "pan": 0
+    },
+    {
+      "at": 75.38,
+      "type": "whir",
+      "gain": 0.3,
+      "what": "the self-driving car (4-8 kHz)",
+      "len": 2.4,
+      "pitch": 1.0,
+      "pan": 0
+    },
+    {
+      "at": 89.73,
+      "type": "idle",
+      "gain": 0.5,
+      "what": "the road again (a bed)",
+      "len": 7.29
+    },
+    {
+      "at": 89.73,
+      "type": "tyres",
+      "gain": 0.3,
+      "what": "tyres (a bed)",
+      "len": 7.29
+    },
+    {
+      "at": 100.71,
+      "type": "squeal",
+      "gain": 0.4,
+      "what": "the car behind you brakes hard (after \"starts it.\")",
+      "len": 0.3,
+      "pitch": 1.1,
+      "pan": 0
+    },
+    {
+      "at": 101.53,
+      "type": "horn",
+      "gain": 0.38,
+      "what": "the jam behind you begins: horn 1",
+      "len": 0.3,
+      "pitch": 1.0,
+      "pan": -0.3
+    },
+    {
+      "at": 102.13,
+      "type": "autohorn",
+      "gain": 0.38,
+      "what": "the jam behind you begins: horn 2",
+      "len": 0.3,
+      "pitch": 1.06,
+      "pan": 0.35
+    },
+    {
+      "at": 102.63,
+      "type": "horn",
+      "gain": 0.38,
+      "what": "the jam behind you begins: horn 3",
+      "len": 0.3,
+      "pitch": 0.86,
+      "pan": 0.15
+    },
     {
       "at": "end",
       "type": "wav",

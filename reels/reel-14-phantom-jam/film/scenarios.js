@@ -51,21 +51,31 @@
     });
   }
 
-  // 4 · the same road in stop-and-go traffic; from tc, the middle lane's highlighted car ("you") leaves a gap and holds
-  // its speed: the 12 behind it stop braking (45–60 s: speed spread 1.6 km/h, no hard brakes; the lanes beside it 15 km/h).
-  // At tTap it goes back to driving like everyone else and taps the brakes: a new wave starts behind it (the loop).
-  function roadFix(tc = 10, tTap = 61) {
-    return Array.from({ length: 3 }, (_, l) => {
-      const L = 900, n = 80, r = TR.mulberry32(500 + l);
-      const kinds = (i) => MIX[(i * 5 + l * 3 + Math.floor(r() * 3)) % MIX.length];
-      const probe = TR.ring({ length: L, n, T: 0.1, dt: DT, ...CALM, kinds });
-      const gap = (L - probe.len.reduce((s, x) => s + x, 0)) / n, v = steady(gap, CALM);
-      const sim = TR.ring({ length: L, n, T: 90, dt: DT, ...CALM, kinds, driver: driver(CALM), vStart: () => v,
-        events: [{ i: 7 + l * 11, t0: 4 + l * 3.5, t1: 5.5 + l * 3.5, decel: 1.0 }, { i: 40 + l * 9, t0: 14 + l * 2, t1: 15.5 + l * 2, decel: 1.0 },
-          ...(l === 1 ? [{ i: 30, t0: tTap, t1: tTap + 1.0, decel: 2.5 }] : [])],
-        control: l === 1 ? { i: 30, t0: tc, t1: tTap, ...AV } : null });
-      return Object.assign(sim, { tc, tTap, av: l === 1 ? 30 : -1, vSteady: v });
-    });
+  // 4 · the ending, on the same road: three lanes going your way at one density (130 vehicles on a 1.8 km loop each), every
+  // vehicle starting at the steady speed with equal bumper gaps. The middle lane holds "you" (a car), keeping a gap of 3.5 s
+  // from the start (a FollowerStopper-style controller). At 44 s a driver 8 ahead of you brakes hard (2.5 m/s² for 3 s);
+  // the slowdown reaches you at ~51 s; you ease off (38 → 22 km/h) and nobody behind you stops, where without your gap the
+  // same slowdown stops the cars behind you by 54 s (docs/research.md). The road ahead clears; at tTap you tap the brakes
+  // (3.5 m/s² for 1 s) for no reason and drive on: the car behind brakes harder, the next harder still, and two stop by
+  // ~64.5 s, the jam left behind you. The side lanes, perturbed three times each, fall into stop-and-go.
+  function laneOf(seed, n, L, o = {}) {
+    const r = TR.mulberry32(seed), av = o.av ?? -1;
+    const kl = Array.from({ length: n }, (_, i) => (i === av ? 'car' : MIX[(i * 5 + 3 + Math.floor(r() * 3)) % MIX.length]));
+    const len = kl.map((k) => TR.KINDS[k]), sum = len.reduce((a, x) => a + x, 0);
+    let v = 8, gap = 9, G = 0;                                  // your gap G = s0 + 1 + Tav·v lets you cruise at the others' steady speed v
+    for (let k = 0; k < 40; k++) { if (o.Tav) G = CALM.s0 + 1 + o.Tav * v; gap = (L - sum - G) / (n - (o.Tav ? 1 : 0)); v = steady(gap, CALM); }
+    let ki = 0;
+    const place = (ln) => { const q = []; let acc = 0; for (let i = 0; i < n; i++) { q.push(acc); acc += (i === av ? G : gap) + ln[(i + 1) % n]; } return q; };   // X is a vehicle's front
+    const sim = TR.ring({ length: L, n, T: 70, dt: DT, ...CALM, kinds: () => kl[ki++], place, driver: driver(CALM), vStart: () => v,
+      events: o.events || [], control: o.control ? { ...o.control, u: v } : null });
+    return Object.assign(sim, { av, vSteady: v, G });
+  }
+  function roadFix(tTap = 61) {
+    return [0, 1, 2].map((l) => (l === 1
+      ? Object.assign(laneOf(501, 130, 1800, { av: 60, Tav: 3.5, events: [{ i: 68, t0: 44, t1: 47, decel: 2.5 }, { i: 60, t0: tTap, t1: tTap + 1, decel: 3.5 }],
+        control: { i: 60, t0: 0, t1: tTap, ...AV, Tav: 3.5 } }), { tTap })
+      : laneOf(700 + l, 130, 1800, { events: [{ i: 20 + l * 7, t0: 4 + l * 3, t1: 6 + l * 3, decel: 2.0 }, { i: 70 + l * 9, t0: 18 + l * 2, t1: 20 + l * 2, decel: 2.0 },
+        { i: 110 + l * 3, t0: 30 + l, t1: 32 + l, decel: 2.0 }] })));
   }
 
   // 5 · the other carriageway (India drives on the left: it is on the right of the screen, coming down): free traffic

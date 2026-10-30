@@ -53,7 +53,7 @@
       [t.cut[6], 16], [t.cut[7], 24], [t.cut[8], 27]];
     t.mapStern9 = [[t.cut[9], 26], [t.cut[10], 39]];                            // the waves, before the car takes over at 40 s
     t.mapStern10 = [[t.cut[10], 112], [t.cut[11], 116]];                        // 70 s later: calm
-    t.mapFix = [[t.cut[11], 46], [t.starts - 0.2, 61], [t.end, 64.5]];
+    t.mapFix = [[t.cut[11], 46], [t.starts - 0.2, 61], [t.end, 65.5]];
     T = t; return T;
   }
   const keyed = (keys, t) => {
@@ -113,7 +113,7 @@
     if (o.bg) { const w = g.measureText(s).width, x0 = o.align === 'center' ? x - w / 2 : o.align === 'right' ? x - w : x; g.fillStyle = o.bg === true ? 'rgba(7,9,12,0.82)' : o.bg; g.fillRect(x0 - 12, y - size * 0.95, w + 24, size * 1.38); }
     g.fillStyle = o.c || INK; g.fillText(s, x, y); g.restore();
   }
-  const eyebrow = (g, s, t, t0, c = INK2) => { screen(g); mlabel(g, s, X0, 330, clamp((t - t0) / 0.25), { size: 26, c, bg: 'rgba(7,9,12,0.6)' }); };
+  const eyebrow = (g, s, t, t0, c = INK2) => { screen(g); mlabel(g, s, X0, 330, clamp((t - t0) / 0.25), { size: 30, c, bg: 'rgba(7,9,12,0.6)' }); };
   function stamp(g, x, y, k, text, color, rot = -0.08, size = 64) {
     if (k <= 0.005) return;
     const s = 1 + 0.6 * (1 - eo(clamp(k / 0.6)));
@@ -124,7 +124,7 @@
   function simClock(g, tSim, rate, t) {                         // honest time: the simulation's own clock, and how fast it plays
     screen(g);
     const r = rate > 1.15 ? `${rate.toFixed(rate < 10 ? 1 : 0)}× SPEED` : rate < 0.87 ? 'SLOW MOTION' : 'REAL TIME';
-    mlabel(g, `SIM ${tSim.toFixed(1).padStart(5, ' ')} S · ${r}`, 940, 330, 1, { size: 24, c: INK2, align: 'right', bg: 'rgba(7,9,12,0.6)' });
+    mlabel(g, `SIM ${tSim.toFixed(1)} S · ${r}`, 940, 378, 1, { size: 24, c: INK2, align: 'right', bg: 'rgba(7,9,12,0.6)' });
   }
   const rateOf = (keys, t) => (keyed(keys, t + 0.05) - keyed(keys, t - 0.05)) / 0.1;
 
@@ -220,7 +220,7 @@
     }
     for (let x = Math.floor(bot / 32) * 32; x < top; x += 32) {                      // streetlights on the median, pools on both fast lanes
       const y = ry(x, cx, s, ay);
-      for (const lx of [540 - 3.4 * s, 540 + 3.4 * s]) { const rr = 8.5 * s, gr = g.createRadialGradient(lx, y, 0, lx, y, rr); gr.addColorStop(0, 'rgba(255,176,90,0.14)'); gr.addColorStop(1, 'rgba(255,176,90,0)'); g.fillStyle = gr; g.beginPath(); g.arc(lx, y, rr, 0, TAU); g.fill(); }
+      for (const lx of [540 - 3.4 * s, 540 + 3.4 * s]) { const rr = 8.5 * s, gr = g.createRadialGradient(lx, y, 0, lx, y, rr); gr.addColorStop(0, 'rgba(255,176,90,0.2)'); gr.addColorStop(1, 'rgba(255,176,90,0)'); g.fillStyle = gr; g.beginPath(); g.arc(lx, y, rr, 0, TAU); g.fill(); }
       g.fillStyle = '#ffd59a'; g.beginPath(); g.arc(540, y, Math.max(2, 0.3 * s), 0, TAU); g.fill();
     }
     for (let x = Math.floor(bot / 11) * 11; x < top; x += 11) for (const side of [-1, 1]) {   // trees on the footpaths
@@ -235,7 +235,7 @@
       for (let i = 0; i < sim.n; i++) {
         let x = st8.x[i]; x -= Math.floor((x - bot) / Lr) * Lr;                 // the loop: draw each vehicle once, nearest the camera
         if (x > top || x < bot) continue;
-        vehicle(g, sim.kind[i], sim.len[i], laneX(l, s), ry(x, cx, s, ay), 0, s, { brake: brakeOf(st8.a[i], st8.v[i]), paint: paintOf(sim, i, l), mark: o.mark && o.mark(l, i), helmet: PAINT[(i + l) % PAINT.length] });
+        vehicle(g, sim.kind[i], sim.len[i], laneX(l, s), ry(x - sim.len[i] / 2, cx, s, ay), 0, s, { brake: brakeOf(st8.a[i], st8.v[i]), paint: paintOf(sim, i, l), mark: o.mark && o.mark(l, i), helmet: PAINT[(i + l) % PAINT.length] });
       }
     });
     ONC.forEach((sim, k) => {                                                     // the other carriageway, coming down, headlights first
@@ -243,7 +243,7 @@
       for (let i = 0; i < sim.n; i++) {
         let X = 260 * k - st8.x[i]; X -= Math.floor((X - bot) / Lr) * Lr;
         if (X > top || X < bot) continue;
-        vehicle(g, sim.kind[i], sim.len[i], oppX(k, s), ry(X, cx, s, ay), PI, s, { brake: brakeOf(st8.a[i], st8.v[i]), paint: paintOf(sim, i, k + 3), helmet: PAINT[(i + k + 2) % PAINT.length] });
+        vehicle(g, sim.kind[i], sim.len[i], oppX(k, s), ry(X + sim.len[i] / 2, cx, s, ay), PI, s, { brake: brakeOf(st8.a[i], st8.v[i]), paint: paintOf(sim, i, k + 3), helmet: PAINT[(i + k + 2) % PAINT.length] });
       }
     });
   }
@@ -265,9 +265,9 @@
       const th = k / 24 * TAU, x = cx + Math.cos(th) * (R - w / 2 - 1.2 * s), y = cy - Math.sin(th) * (R - w / 2 - 1.2 * s);
       g.fillStyle = AMB; g.beginPath(); g.arc(x, y, Math.max(2.5, 0.3 * s), 0, TAU); g.fill();
     }
-    if (o.label) mlabel(g, o.label, cx, cy + 10, o.labelA ?? 1, { size: 26, c: INK2, align: 'center' });
+    if (o.label) mlabel(g, o.label, cx, cy + 11, o.labelA ?? 1, { size: 32, c: INK2, align: 'center' });
   }
-  const ringPos = (sim, x, cx, cy, R) => { const th = (x / sim.L) * TAU + PI / 2; return [cx + Math.cos(th) * R, cy - Math.sin(th) * R, -(th - PI / 2)]; };
+  const ringPos = (sim, x, cx, cy, R) => { const th = (x / sim.L) * TAU + PI / 2; return [cx + Math.cos(th) * R, cy - Math.sin(th) * R, -th]; };   // heading: along the track
   function ringCars(g, sim, tSim, cx, cy, R, s, o = {}) {
     const st8 = sim.state(tSim);
     for (let i = 0; i < sim.n; i++) {
@@ -291,15 +291,21 @@
   function shRace(g, t) {                                       // 1 · follow it to the front: nothing there
     const T = times(), tS = keyed(T.mapRoad, t), [b0, f0] = slowSpan(ROAD[1], tS);
     const u = eio(clamp((t - T.cut[1]) / Math.max(1.2, T.pothole - 0.4 - T.cut[1])));
-    const cx = lerp(b0 + 16, f0 + 26, u), s = lerp(34, 24, u) / (1 + 2.6 * Math.sin(PI * u));   // pull out mid-race, land close at the front
+    const s = lerp(34, 24, u) / (1 + 2.6 * Math.sin(PI * u)), cx = lerp(b0 + 16, f0 + 3 + 50 / 24, u);   // pull out mid-race; land with the front just above the text
     shotCam(g, t, 1, { push: 0.0, oy: 960 });
     roadBg(g, cx, s); roadCars(g, ROAD, tS, cx, s);
     if (u > 0.2 && u < 0.85) { screen(g); g.save(); g.globalAlpha = 0.25 * Math.sin(PI * (u - 0.2) / 0.65); g.strokeStyle = INK; g.lineWidth = 2;  // speed lines
       const r = mulberry32(Math.round(t * 30)); for (let k = 0; k < 18; k++) { const x = r() * W, y = r() * H; g.beginPath(); g.moveTo(x, y); g.lineTo(x, y + 90 + r() * 120); g.stroke(); } g.restore(); }
     screen(g);
-    const items = [['ACCIDENT', T.accident], ['SIGNAL', T.signal], ['POTHOLE', T.pothole]];
-    items.forEach(([w, tw], k) => { const kk = clamp((t - (tw - 0.05)) / 0.22); if (kk > 0) { mlabel(g, w, 300, 520 + k * 120, kk, { size: 44, c: INK, bg: 'rgba(7,9,12,0.75)' }); stamp(g, 640, 505 + k * 120, kk, 'NONE', ACC, -0.06, 44); } });
-    eyebrow(g, 'NOTHING BLOCKS THIS ROAD: NO OBSTACLE IN THE SIMULATION', t, T.cut[1] + 0.1);
+    // the jam's real front edge (the first slow vehicle from the front), marked; beyond it, nothing
+    const [, fNow] = slowSpan(ROAD[1], tS), yF = ry(fNow + 3, cx, s), kF = clamp((t - (T.accident - 0.5)) / 0.3);
+    if (kF > 0 && yF > 300 && yF < 1180) {
+      g.save(); g.globalAlpha = kF; g.strokeStyle = ACC; g.lineWidth = 4; g.setLineDash([16, 10]); g.beginPath(); g.moveTo(540 - HALF * s - 10, yF); g.lineTo(540 - MED / 2 * s + 10, yF); g.stroke(); g.restore();
+      mlabel(g, 'THE FRONT OF THE JAM', 540 - MED / 2 * s - 14, yF + 44, kF, { size: 34, c: ACC, align: 'right', bg: 'rgba(7,9,12,0.8)' });
+    }
+    const items = [['ACCIDENT', T.accident], ['SIGNAL', T.signal], ['POTHOLE', T.pothole]], y0 = Math.min(Math.max(420, yF - 420), 620);
+    items.forEach(([w, tw], k) => { const kk = clamp((t - (tw - 0.05)) / 0.22); if (kk > 0) { mlabel(g, w, 300, y0 + k * 110, kk, { size: 44, c: INK, bg: 'rgba(7,9,12,0.78)' }); stamp(g, 640, y0 - 15 + k * 110, kk, 'NONE', ACC, -0.06, 44); } });
+    eyebrow(g, 'NO OBSTACLE ANYWHERE ON THIS ROAD', t, T.cut[1] + 0.1);
     simClock(g, tS, 1, t);
   }
   function ringShot(g, t, i, o = {}) {                          // the ring, as the shots 2–7 frame it
@@ -318,8 +324,6 @@
   function shRule(g, t) {                                       // 3 · 22 cars, one circle, one rule
     const T = times(), { tS, rate } = ringShot(g, t, 3, { label: '230 M · 22 CARS', labelA: 1 });
     screen(g);
-    const kR = clamp((t - (T.rule - 0.1)) / 0.3);
-    mlabel(g, 'ONE RULE: KEEP A STEADY SPEED', 540, 1185, kR, { size: 30, c: INK, align: 'center', bg: 'rgba(7,9,12,0.8)' });
     eyebrow(g, 'THE TRACK AND THE CARS, SIMULATED', t, T.cut[3] + 0.05);
     simClock(g, tS, rate, t);
   }
@@ -333,7 +337,7 @@
     const m = g.getTransform(), pt = m.transformPoint(new DOMPoint(x0, y0));
     screen(g);
     const k = clamp((t - (T.slowed - 0.3)) / 0.3);
-    tag(g, pt.x, pt.y - 95, `THIS DRIVER · ${kmh(s8.v[RING.slowed])} KM/H`, AMB, k, 30);
+    tag(g, pt.x, pt.y - 100, `THIS DRIVER · ${kmh(s8.v[RING.slowed])} KM/H`, AMB, k, 36);
     eyebrow(g, `EVERY CAR AT ${kmh(RING.vSteady)} KM/H · THEN ONE BRAKES GENTLY`, t, T.cut[4] + 0.05);
     simClock(g, tS, rate, t);
   }
@@ -344,7 +348,7 @@
     for (const [k, tw] of show) {
       const i = (RING.n - k) % RING.n, [x, y] = proj(c, ...ringPos(RING, s8.x[i], cx, cy, RR)), a = clamp((t - (tw - 0.1)) / 0.25);
       const v = kmh(s8.v[i]); if (a <= 0) continue;
-      tag(g, x + (x < cx ? -90 : 90), y, v <= 1 ? 'STOPPED' : `${v} KM/H`, v <= 1 ? ACC : INK, a, 26);
+      tag(g, x + (x < cx ? 140 : -140), y + 12, v <= 1 ? 'STOPPED' : `${v} KM/H`, v <= 1 ? ACC : INK, a, 34);   // inside the ring: never off the frame
     }
     eyebrow(g, 'EACH DRIVER REACTS 0.6 S LATE (THE MODEL)', t, T.cut[5] + 0.05);
     simClock(g, tS, rate, t);
@@ -372,9 +376,9 @@
       g.beginPath(); g.arc(cx, cy, RR - 70, -th - 0.5, -th - 0.05, false); g.stroke();
       const fa = -th - 0.5, fx = cx + Math.cos(fa) * (RR - 70), fy = cy + Math.sin(fa) * (RR - 70);
       g.setLineDash([]); g.translate(fx, fy); g.rotate(fa + PI); g.fillStyle = 'rgba(236,232,225,0.75)'; g.beginPath(); g.moveTo(0, 14); g.lineTo(-11, -7); g.lineTo(11, -7); g.closePath(); g.fill(); g.restore();
-      screen(g); mlabel(g, 'THE JAM', bx, by + 70, 1, { size: 26, c: ACC, align: 'center', bg: 'rgba(7,9,12,0.8)' });
+      screen(g); mlabel(g, 'THE JAM', bx, by + 78, 1, { size: 34, c: ACC, align: 'center', bg: 'rgba(7,9,12,0.8)' });
     }
-    eyebrow(g, 'ON HIGHWAYS JAMS TRAVEL BACK AT 15 ± 5 KM/H · HERE ~10', t, T.cut[6] + 0.05);
+    eyebrow(g, 'ON HIGHWAYS: 15 ± 5 KM/H BACKWARDS · HERE ~10', t, T.cut[6] + 0.05);
     simClock(g, tS, rate, t);
   }
   function shNeverKnew(g, t) {                                  // 7 · the driver who started it never knew
@@ -385,9 +389,9 @@
     ringBg(g, 540, 760, RR, RS);
     const s8 = ringCars(g, RING, tS, 540, 760, RR, RS, { mark: (k) => (k === RING.slowed ? AMB : null) });
     screen(g);
-    tag(g, 540, 640, `THIS DRIVER · ${kmh(s8.v[RING.slowed])} KM/H · NO IDEA`, AMB, clamp((t - (T.cut[7] + 0.1)) / 0.25), 28);
+    tag(g, 540, 630, `THIS DRIVER · ${kmh(s8.v[RING.slowed])} KM/H · NO IDEA`, AMB, clamp((t - (T.cut[7] + 0.1)) / 0.25), 34);
     let jamBehind = 0; for (let i = 0; i < RING.n; i++) if (s8.v[i] < 2.2) jamBehind++;
-    mlabel(g, `${jamBehind} CARS STOPPED BEHIND, OUT OF SIGHT`, 540, 1150, clamp((t - (T.knew - 0.2)) / 0.25), { size: 26, c: ACC, align: 'center', bg: 'rgba(7,9,12,0.8)' });
+    mlabel(g, `${jamBehind} CARS STOPPED BEHIND, OUT OF SIGHT`, 540, 1165, clamp((t - (T.knew - 0.2)) / 0.25), { size: 32, c: ACC, align: 'center', bg: 'rgba(7,9,12,0.8)' });
     eyebrow(g, 'THE SIMULATION, FOLLOWING THE FIRST CAR', t, T.cut[7] + 0.05);
     simClock(g, tS, rate, t);
   }
@@ -395,16 +399,14 @@
     const T = times(); shotCam(g, t, 8, { push: 0.04, oy: 760 });
     ground(g, '#0a0d11'); grid(g, 0.06);
     const vs = kmh(RING.vSteady), names = ['THE FIRST DRIVER', 'BEHIND', 'NEXT', 'NEXT', 'NEXT'];
-    mlabel(g, 'HOW MUCH EACH DRIVER SLOWED, KM/H', X0, 450, clamp((t - (T.cut[8] + 0.05)) / 0.25), { size: 30, c: INK2 });
+    mlabel(g, 'HOW MUCH EACH DRIVER SLOWED, KM/H', X0, 460, clamp((t - (T.cut[8] + 0.05)) / 0.25), { size: 34, c: INK2 });
     DIPS.forEach((v, k) => {
-      const d = vs - kmh(v), y = 520 + k * 128, kk = clamp((t - (T.cut[8] + 0.15 + k * 0.22)) / 0.3);
+      const d = vs - kmh(v), y = 515 + k * 132, kk = clamp((t - (T.cut[8] + 0.15 + k * 0.22)) / 0.3), BX = X0 + 380, BW = 470;
       if (kk <= 0) return;
-      mlabel(g, names[k], X0, y + 40, kk, { size: 30, c: k === 0 ? AMB : INK });
-      g.fillStyle = k === 4 ? ACC : 'rgba(236,232,225,0.88)'; g.fillRect(X0 + 330, y + 6, (520 * d / vs) * eo(kk), 52);
-      mlabel(g, kmh(v) < 1 ? `−${d} · STOPPED` : `−${d}`, X0 + 344 + (520 * d / vs) * eo(kk), y + 44, kk, { size: 32, c: k === 4 ? ACC : INK, align: kmh(v) < 1 ? 'right' : 'left' });
+      mlabel(g, names[k], X0, y + 50, kk, { size: 38, c: k === 0 ? AMB : INK });
+      g.fillStyle = k === 4 ? ACC : 'rgba(236,232,225,0.88)'; g.fillRect(BX, y + 6, (BW * d / vs) * eo(kk), 62);
+      mlabel(g, kmh(v) < 1 ? `−${d} · STOPPED` : `−${d}`, kmh(v) < 1 ? BX + (BW * d / vs) * eo(kk) - 16 : BX + 16 + (BW * d / vs) * eo(kk), y + 52, kk, { size: 44, c: kmh(v) < 1 ? '#07090c' : INK, align: kmh(v) < 1 ? 'right' : 'left' });
     });
-    const kL = clamp((t - (T.late9 - 0.2)) / 0.3);
-    mlabel(g, 'EACH REACTS A BEAT LATE, SO EACH BRAKES HARDER', X0, 1150, kL, { size: 26, c: ACC, bg: 'rgba(7,9,12,0.8)' });
     eyebrow(g, 'FROM THE SIMULATION ABOVE', t, T.cut[8] + 0.05);
   }
   function sternShot(g, t, i, calm) {                           // 9–10 · 2018: one self-driving car holds a steady speed
@@ -416,29 +418,42 @@
     const s8 = ringCars(g, STERN, tS, 540, 760, SRR, SR, { paint: (k) => (k === STERN.av ? CYAN : PAINT[k % PAINT.length]), mark: (k) => (k === STERN.av ? CYAN : null) });
     const [x, y] = proj(c, ...ringPos(STERN, s8.x[STERN.av], 540, 760, SRR));
     screen(g);
-    tag(g, x, y + (y > 760 ? 80 : -70), tS >= STERN.tc ? 'SELF-DRIVING · STEADY' : 'SELF-DRIVING', CYAN, 1, 26);
+    { const dx = 540 - x, dy = 760 - y, dl = Math.hypot(dx, dy) || 1; tag(g, x + dx / dl * 125, y + dy / dl * 125 + 12, tS >= STERN.tc ? 'SELF-DRIVING · STEADY' : 'SELF-DRIVING', CYAN, 1, 32); }
     let stopped = 0; for (let k = 0; k < STERN.n; k++) if (s8.v[k] < 0.8) stopped++;
-    mlabel(g, `STOPPED NOW: ${stopped}`, 540, 1185, 1, { size: 28, c: stopped ? ACC : INK, align: 'center', bg: 'rgba(7,9,12,0.8)' });
+    mlabel(g, `STOPPED NOW: ${stopped}`, 540, 1185, 1, { size: 34, c: stopped ? ACC : INK, align: 'center', bg: 'rgba(7,9,12,0.8)' });
     eyebrow(g, calm ? 'THE 2018 EXPERIMENT: UP TO 40% LESS FUEL' : 'STERN ET AL. · UNIVERSITY OF ARIZONA · 2018', t, T.cut[i] + 0.05);
     simClock(g, tS, rate, t);
   }
   function fixShot(g, t, i) {                                   // 11–12 · you leave a gap … or start the next jam
-    const T = times(), tS = keyed(T.mapFix, t), rate = rateOf(T.mapFix, t), you = FIX[1].state(tS).x[FIX[1].av];
+    const T = times(), tS = keyed(T.mapFix, t), rate = rateOf(T.mapFix, t), F1 = FIX[1], av = F1.av, st = F1.state(tS), you = st.x[av];
+    let cx = you;                                               // the camera rides with you; from the tap it glides to a stop: you drive on, the jam stays in the shot
+    if (tS > F1.tTap) { const s0 = F1.state(F1.tTap); cx = s0.x[av] + s0.v[av] * 1.2 * (1 - Math.exp(-(tS - F1.tTap) / 1.2)); }
     const c = shotCam(g, t, i, { push: 0.03, oy: 960, kicks: i === 12 ? [[T.starts - 0.1, 8]] : [] });
-    const s = 17, cx = you, P = (x, y) => proj(c, x, y);
-    roadBg(g, cx, s, { ay: 640 }); roadCars(g, FIX, tS, cx, s, { ay: 640, mark: (l, k) => (l === 1 && k === FIX[1].av ? INK : null) });
+    // shot 11 opens with you low in the frame, the road ahead in view (the slowdown you absorb), then glides back to the
+    // traffic behind you; shot 12 is closer, you a third of the way down
+    const s = i === 11 ? 15 : 17, ay = i === 11 ? lerp(1000, 640, eio(clamp((t - (T.ends - 0.6)) / 0.9))) : 640, P = (x, y) => proj(c, x, y);
+    roadBg(g, cx, s, { ay }); roadCars(g, FIX, tS, cx, s, { ay, mark: (l, k) => (l === 1 && k === av ? INK : null) });
     screen(g);
-    const [lx1, yy] = P(laneX(1, s), ry(you, cx, s, 640));
-    tag(g, lx1, yy + 60, i === 12 && tS >= FIX[1].tTap ? 'YOU · BRAKE' : 'YOU', i === 12 && tS >= FIX[1].tTap ? ACC : INK, 1, 28);
+    const [lx1, yF] = P(laneX(1, s), ry(you, cx, s, ay)), yR = P(laneX(1, s), ry(you - F1.len[av], cx, s, ay))[1];
+    const braking = i === 12 && tS >= F1.tTap && tS < F1.tTap + 1.2;
+    tag(g, lx1, yR + 46, braking ? 'YOU · BRAKE' : 'YOU', braking ? ACC : INK, 1, 36);
     if (i === 11) {
       const kG = clamp((t - (T.gap - 0.2)) / 0.3);
-      if (kG > 0) {                                             // the gap ahead of you
-        const ahead = FIX[1].state(tS); let gx = Infinity; for (let k = 0; k < FIX[1].n; k++) { let d = ahead.x[k] - you; d -= Math.floor(d / FIX[1].L) * FIX[1].L; if (d > 1 && d < gx) gx = d; }
-        const y1 = P(0, ry(you + gx - 2, cx, s, 640))[1], y0 = yy - 40;
-        g.save(); g.globalAlpha = kG; g.strokeStyle = INK; g.lineWidth = 3; g.setLineDash([8, 8]); g.beginPath(); g.moveTo(lx1, y0); g.lineTo(lx1, Math.max(300, y1)); g.stroke(); g.restore();
-        mlabel(g, 'A GAP', lx1 - 70, (y0 + Math.max(300, y1)) / 2, kG, { size: 28, c: INK, align: 'right', bg: 'rgba(7,9,12,0.8)' });
+      if (kG > 0) {                                             // the gap ahead of you: your front bumper to the next one's rear
+        const j = (av + 1) % F1.n; let xr = st.x[j] - F1.len[j]; xr -= Math.floor((xr - you) / F1.L) * F1.L;
+        const y1 = Math.max(400, P(0, ry(xr, cx, s, ay))[1] + 6), y0 = yF - 6;
+        g.save(); g.globalAlpha = kG; g.strokeStyle = INK; g.lineWidth = 3; g.setLineDash([8, 8]); g.beginPath(); g.moveTo(lx1, y0); g.lineTo(lx1, y1); g.stroke(); g.restore();
+        mlabel(g, 'A GAP', lx1 - 60, (y0 + y1) / 2 + 12, kG, { size: 34, c: INK, align: 'right', bg: 'rgba(7,9,12,0.8)' });
       }
-      mlabel(g, 'BEHIND YOU: NO BRAKING', 540, 1185, clamp((t - (T.ends - 0.2)) / 0.3), { size: 28, c: INK, align: 'center', bg: 'rgba(7,9,12,0.8)' });
+      mlabel(g, 'BEHIND YOU: NO ONE STOPS', 540, 1185, clamp((t - (T.ends - 0.2)) / 0.3), { size: 34, c: INK, align: 'center', bg: 'rgba(7,9,12,0.8)' });
+    } else {                                                    // after the tap: who stops behind you
+      let shown = 0;
+      for (let j = 1; j <= 8 && shown < 2; j++) {
+        const k = (av - j + F1.n) % F1.n; if (st.v[k] >= 0.3) continue;
+        let x = st.x[k] - F1.len[k] / 2; x -= Math.floor((x - you + 200) / F1.L) * F1.L;
+        const [, y] = P(0, ry(x, cx, s, ay)); if (y > 1120 || y < 420) continue;
+        tag(g, lx1 - 175, y + 12, 'STOPPED', ACC, 1, 32); shown++;
+      }
     }
     eyebrow(g, 'BENGALURU · SIMULATED · THE MIDDLE LANE IS YOU', t, T.cut[i] + 0.05);
     simClock(g, tS, rate, t);
@@ -453,20 +468,20 @@
       S.g = canvas(root); under(root);
       const L = (text, y, size, o = {}) => line(root, text, { x: X0, y, size, ...o });
       S.L = {
-        h0a: L('This Bengaluru', TZ - 16, 130), h0b: L('traffic jam has no cause.', TZ + 124, 92, { accent: [3, 4] }),
-        h1a: L('Follow it to the front.', TZ - 16, 104),
-        h2a: L('2008, Japan:', TZ - 16, 130), h2b: L('a jam out of nothing.', TZ + 124, 110, { accent: [4] }),
-        h3a: L('22 cars. One circle.', TZ - 16, 116), h3b: L('One rule: steady speed.', TZ + 114, 110, { accent: [2, 3] }),
-        h4a: L('One driver slows.', TZ - 16, 124), h4b: L('Just a little.', TZ + 124, 124, { accent: [2] }),
-        h5a: L('The one behind', TZ - 16, 124), h5b: L('brakes harder.', TZ + 124, 124, { accent: [1] }),
-        h5c: L('Harder still,', TZ - 16, 124), h5d: L('until someone stops.', TZ + 124, 110, { accent: [2] }),
-        h6a: L('The jam moves', TZ - 16, 140), h6b: L('backwards.', TZ + 134, 150, { accent: [0] }),
-        h7a: L('The driver who started it', TZ - 16, 92), h7b: L('never knew.', TZ + 104, 140, { accent: [1] }),
-        h8a: L('Not the road.', TZ - 16, 140), h8b: L('Us, braking too late.', TZ + 134, 110, { accent: [2, 3] }),
-        h9a: L('2018: one self-driving car', TZ - 16, 92), h9b: L('held a steady speed.', TZ + 104, 110, { accent: [2, 3] }),
-        h10a: L('The waves faded.', TZ - 16, 150, { accent: [2] }),
+        h0a: L('This Bengaluru', TZ - 16, 130), h0b: L('traffic jam has no cause.', TZ + 124, 86, { accent: [3, 4] }),
+        h1a: L('Follow it to the front.', TZ - 16, 94),
+        h2a: L('2008, Japan:', TZ - 16, 130), h2b: L('a jam out of nothing.', TZ + 124, 103, { accent: [4] }),
+        h3a: L('22 cars. One circle.', TZ - 16, 108), h3b: L('One rule: steady speed.', TZ + 110, 93, { accent: [2, 3] }),
+        h4a: L('One driver slowed.', TZ - 16, 116), h4b: L('Just a little.', TZ + 124, 124, { accent: [2] }),
+        h5a: L('The one behind', TZ - 16, 124), h5b: L('braked harder.', TZ + 124, 124, { accent: [1] }),
+        h5c: L('Harder still,', TZ - 16, 124), h5d: L('until someone stopped.', TZ + 124, 94, { accent: [2] }),
+        h6a: L('The jam moved', TZ - 16, 140), h6b: L('backwards.', TZ + 134, 150, { accent: [0] }),
+        h7a: L('The driver who started it', TZ - 16, 85), h7b: L('never knew.', TZ + 104, 140, { accent: [1] }),
+        h8a: L('Not the road.', TZ - 16, 140), h8b: L('Us, braking too late.', TZ + 134, 105, { accent: [2, 3] }),
+        h9a: L('2018: one self-driving car', TZ - 16, 82), h9b: L('held a steady speed.', TZ + 100, 106, { accent: [2, 3] }),
+        h10a: L('The waves faded.', TZ - 16, 132, { accent: [2] }),
         h11a: L('Leave a gap.', TZ - 16, 150), h11b: L('End a jam.', TZ + 134, 150, { accent: [0] }),
-        h12a: L('Or start one.', TZ - 16, 170, { accent: [1] }),
+        h12a: L('Or start one.', TZ - 16, 164, { accent: [1] }),
       };
       S.L.h2a.words[0].classList.add('tnum'); S.L.h9a.words[0].classList.add('tnum'); S.L.h3a.words[0].classList.add('tnum');
     },
