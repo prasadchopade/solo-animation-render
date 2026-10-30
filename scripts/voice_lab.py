@@ -289,7 +289,7 @@ def whisper2():
 # the same word written another way: "a hundred" is written "100" (one hundred); British and American spellings;
 # homophones no ear can tell apart (braking / breaking)
 SAME_WORD = {frozenset(p) for p in (('a', 'one'), ('braking', 'breaking'), ('metre', 'meter'), ('metres', 'meters'), ('favourite', 'favorite'),
-                                    ('favourites', 'favorites'), ('colour', 'color'), ('centre', 'center'), ('neighbour', 'neighbor'))}
+                                    ('favourites', 'favorites'), ('colour', 'color'), ('centre', 'center'), ('centres', 'centers'), ('neighbour', 'neighbor'))}
 
 
 def align_words(exp, hyp):
