@@ -286,8 +286,9 @@ def whisper2():
     return WhisperModel(ASR2, device='cpu', compute_type='int8')
 
 
-# the same word written another way: "a hundred" is written "100" (one hundred); British and American spellings
-SAME_WORD = {frozenset(p) for p in (('a', 'one'), ('metre', 'meter'), ('metres', 'meters'), ('favourite', 'favorite'),
+# the same word written another way: "a hundred" is written "100" (one hundred); British and American spellings;
+# homophones no ear can tell apart (braking / breaking)
+SAME_WORD = {frozenset(p) for p in (('a', 'one'), ('braking', 'breaking'), ('metre', 'meter'), ('metres', 'meters'), ('favourite', 'favorite'),
                                     ('favourites', 'favorites'), ('colour', 'color'), ('centre', 'center'), ('neighbour', 'neighbor'))}
 
 
@@ -348,12 +349,16 @@ def check(audio):
     ears = [('whisper small.en', WhisperModel('small.en', device='cpu', compute_type='int8'))]
     if ASR2: ears.append((f'whisper {ASR2}', whisper2()))
     exp = [(tok, k) for k, w in enumerate(W) for tok in norm(w['w'])]
+    for i in range(len(exp) - 2):                 # the year rule across placed words too: "two thousand eighteen" = "twenty eighteen"
+        if exp[i][0] == 'two' and exp[i + 1][0] == 'thousand' and (exp[i + 2][0] in ONES[10:] or exp[i + 2][0] in TENS): exp[i], exp[i + 1] = ('twenty', exp[i][1]), ('', exp[i + 1][1])
+    exp = [e for e in exp if e[0]]
     out = LAB / 'check'; out.mkdir(parents=True, exist_ok=True)
     rows = []
     for cname, sig in conds.items():
         for ename, m in ears:
             segs = list(m.transcribe(sig, beam_size=5, language='en', word_timestamps=True, condition_on_previous_text=False)[0])
             hyp = [(tok, w.probability) for s in segs for w in (s.words or []) for tok in norm(w.word)]
+            hyp = [h for i, h in enumerate(hyp) if not (i and h[0] == hyp[i - 1][0] and h[1] < 0.3)]   # Whisper's unsure echo of the word before ("stopped. stopped." in a silence)
             miss, low = align_words(exp, hyp)
             rows.append({'condition': cname, 'ear': ename, 'words': len(W), 'missed': [{'line': W[k]['p'], 't': W[k]['t0'], 'word': W[k]['w'], 'heard': h} for k, h in miss.items()],
                          'unsure': [{'line': W[k]['p'], 't': W[k]['t0'], 'word': W[k]['w']} for k in low],

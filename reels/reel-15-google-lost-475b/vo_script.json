@@ -1,0 +1,26 @@
+{
+ "note": "Reel 15: Google Lost $475 Billion in a Day. Alphabet's stock fell 12.6% on 29 Oct 2026 after its Q3 results: about $475 billion of market value, the second-biggest one-day loss for a US-listed company (only Nvidia, ~$593 billion in Jan 2025, lost more; Yahoo Finance/Bloomberg). The paradox: sales +25%, Cloud +103%. The why: Search & other is half of revenue ($63.4B of $127.6B); AI Mode queries grow, and Google said AI Mode monetizes lower (Philipp Schindler on the call); capex $51.4B in Q3 (~$558M a day); free cash flow negative two quarters running (Q2 -$5.9B, Q3 -$9.1B). The ending: not broke ($265B in cash and securities), but is Google's AI eating Google? Facts and sources: docs/research.md. Kokoro af_heart, speed 1.0 (memory: narration pace). Numbers as words. 'data centres' is spelt 'centers' for the American voice (text_kokoro).",
+ "voice": "af_heart",
+ "speed": 1.0,
+ "lines": [
+  { "id": "s01", "text": "Google just lost four hundred and seventy-five billion dollars. In one day." },
+  { "id": "s02", "text": "Only Nvidia has ever lost more." },
+  { "id": "s03", "text": "Strange, because Google's sales had just grown twenty-five percent." },
+  { "id": "s04", "text": "Its cloud business more than doubled." },
+  { "id": "s05", "text": "So why the crash?" },
+  { "id": "s06", "text": "The answer is in your search bar. Half of Google's money comes from search ads." },
+  { "id": "s07", "text": "But more searches now happen in AI Mode, where Google's AI just answers you." },
+  { "id": "s08", "text": "And Google admitted AI Mode earns less." },
+  { "id": "s09", "text": "Then there's the bill: fifty-one billion dollars in three months, on AI data centres.", "text_kokoro": "Then there's the bill: fifty-one billion dollars in three months, on AI data centers." },
+  { "id": "s10", "text": "Over half a billion dollars a day." },
+  { "id": "s11", "text": "Two quarters in a row, Google spent more cash than it brought in." },
+  { "id": "s12", "text": "It's paying for the very AI that's eating into its search ads." },
+  { "id": "s13", "text": "Google isn't going broke." },
+  { "id": "s14", "text": "But Wall Street now has one question: is Google's AI eating Google?" }
+ ],
+ "say": { "nvidia": "ɛ n v ɪ d i ə" },
+ "ref_text": "The night was warm and very quiet.",
+ "cast_lines": [],
+ "cast": [],
+ "take": [{ "id": "k-heart", "engine": "kokoro", "voice": "af_heart", "speed": 1.0 }]
+}
