@@ -352,11 +352,12 @@ def check(audio):
     rows = []
     for cname, sig in conds.items():
         for ename, m in ears:
-            segs, _ = m.transcribe(sig, beam_size=5, language='en', word_timestamps=True, condition_on_previous_text=False)
+            segs = list(m.transcribe(sig, beam_size=5, language='en', word_timestamps=True, condition_on_previous_text=False)[0])
             hyp = [(tok, w.probability) for s in segs for w in (s.words or []) for tok in norm(w.word)]
             miss, low = align_words(exp, hyp)
             rows.append({'condition': cname, 'ear': ename, 'words': len(W), 'missed': [{'line': W[k]['p'], 't': W[k]['t0'], 'word': W[k]['w'], 'heard': h} for k, h in miss.items()],
-                         'unsure': [{'line': W[k]['p'], 't': W[k]['t0'], 'word': W[k]['w']} for k in low]})
+                         'unsure': [{'line': W[k]['p'], 't': W[k]['t0'], 'word': W[k]['w']} for k in low],
+                         'text': [{'t0': round(w.start, 2), 'w': w.word.strip(), 'p': round(w.probability, 2)} for s in segs for w in (s.words or [])]})   # what the ear wrote, word by word
             print(f"{cname:14s} {ename:22s} {len(W) - len(miss)}/{len(W)} words heard; missed: " + (', '.join(f"{W[k]['w']}@{W[k]['t0']:.1f}→{h}" for k, h in miss.items()) or 'none'), flush=True)
     ph = Phones.load(); lines = []
     if ph:
