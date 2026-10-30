@@ -32,6 +32,7 @@
   const lastE = (p) => (has(p) ? words(p)[words(p).length - 1].t1 : at(p) + 2.5);
   const LINES = ['s01', 's02', 's03', 's04', 's05', 's06', 's07', 's08', 's09', 's10', 's11', 's12', 's13'];
   let T = null;
+  let LBL = null;                                              // the label layer (above the text zone's shade), set every frame
   function times() {
     if (T) return T;
     const t = {
@@ -106,12 +107,12 @@
     for (let x = 40; x < W; x += 80) { g.beginPath(); g.moveTo(x, -200); g.lineTo(x, H + 200); g.stroke(); }
     for (let y = 40; y < H; y += 80) { g.beginPath(); g.moveTo(-200, y); g.lineTo(W + 200, y); g.stroke(); }
   }
-  function mlabel(g, s, x, y, a = 1, o = {}) {
+  function mlabel(g, s, x, y, a = 1, o = {}) {                 // drawn on the label layer, with g's transform and alpha
     if (a <= 0.01) return;
-    const size = o.size || 26;
-    g.save(); g.globalAlpha *= a; font(g, size, o.w || 700, 'normal', 'Mono'); g.letterSpacing = '0.06em'; g.textAlign = o.align || 'left';
-    if (o.bg) { const w = g.measureText(s).width, x0 = o.align === 'center' ? x - w / 2 : o.align === 'right' ? x - w : x; g.fillStyle = o.bg === true ? 'rgba(7,9,12,0.82)' : o.bg; g.fillRect(x0 - 12, y - size * 0.95, w + 24, size * 1.38); }
-    g.fillStyle = o.c || INK; g.fillText(s, x, y); g.restore();
+    const q = LBL || g, size = o.size || 26;
+    q.save(); q.setTransform(g.getTransform()); q.globalAlpha = g.globalAlpha * a; font(q, size, o.w || 700, 'normal', 'Mono'); q.letterSpacing = '0.06em'; q.textAlign = o.align || 'left';
+    if (o.bg) { const w = q.measureText(s).width, x0 = o.align === 'center' ? x - w / 2 : o.align === 'right' ? x - w : x; q.fillStyle = o.bg === true ? 'rgba(7,9,12,0.82)' : o.bg; q.fillRect(x0 - 12, y - size * 0.95, w + 24, size * 1.38); }
+    q.fillStyle = o.c || INK; q.fillText(s, x, y); q.restore();
   }
   const eyebrow = (g, s, t, t0, c = INK2) => { screen(g); mlabel(g, s, X0, 330, clamp((t - t0) / 0.25), { size: 30, c, bg: 'rgba(7,9,12,0.6)' }); };
   function stamp(g, x, y, k, text, color, rot = -0.08, size = 64) {
@@ -301,7 +302,7 @@
     const [, fNow] = slowSpan(ROAD[1], tS), yF = ry(fNow + 3, cx, s), kF = clamp((t - (T.accident - 0.5)) / 0.3);
     if (kF > 0 && yF > 300 && yF < 1180) {
       g.save(); g.globalAlpha = kF; g.strokeStyle = ACC; g.lineWidth = 4; g.setLineDash([16, 10]); g.beginPath(); g.moveTo(540 - HALF * s - 10, yF); g.lineTo(540 - MED / 2 * s + 10, yF); g.stroke(); g.restore();
-      mlabel(g, 'THE FRONT OF THE JAM', 540 - MED / 2 * s - 14, yF + 44, kF, { size: 34, c: ACC, align: 'right', bg: 'rgba(7,9,12,0.8)' });
+      if (yF < 1120) mlabel(g, 'THE FRONT OF THE JAM', 540 - MED / 2 * s - 14, yF + 44, kF, { size: 34, c: ACC, align: 'right', bg: 'rgba(7,9,12,0.8)' });
     }
     const items = [['ACCIDENT', T.accident], ['SIGNAL', T.signal], ['POTHOLE', T.pothole]], y0 = Math.min(Math.max(420, yF - 420), 620);
     items.forEach(([w, tw], k) => { const kk = clamp((t - (tw - 0.05)) / 0.22); if (kk > 0) { mlabel(g, w, 300, y0 + k * 110, kk, { size: 44, c: INK, bg: 'rgba(7,9,12,0.78)' }); stamp(g, 640, y0 - 15 + k * 110, kk, 'NONE', ACC, -0.06, 44); } });
@@ -404,7 +405,7 @@
       const d = vs - kmh(v), y = 515 + k * 132, kk = clamp((t - (T.cut[8] - 0.05 + k * 0.2)) / 0.3), BX = X0 + 380, BW = 470;
       if (kk <= 0) return;
       mlabel(g, names[k], X0, y + 50, kk, { size: 38, c: k === 0 ? AMB : INK });
-      g.fillStyle = k === 4 ? ACC : 'rgba(236,232,225,0.88)'; g.fillRect(BX, y + 6, (BW * d / vs) * eo(kk), 62);
+      { const q = LBL || g; q.save(); q.setTransform(g.getTransform()); q.globalAlpha = g.globalAlpha; q.fillStyle = k === 4 ? ACC : 'rgba(236,232,225,0.88)'; q.fillRect(BX, y + 6, (BW * d / vs) * eo(kk), 62); q.restore(); }   // on the label layer: the last bar sits in the shade
       mlabel(g, kmh(v) < 1 ? `−${d} · STOPPED` : `−${d}`, kmh(v) < 1 ? BX + (BW * d / vs) * eo(kk) - 16 : BX + 16 + (BW * d / vs) * eo(kk), y + 52, kk, { size: 44, c: kmh(v) < 1 ? '#07090c' : INK, align: kmh(v) < 1 ? 'right' : 'left' });
     });
     eyebrow(g, 'FROM THE SIMULATION ABOVE', t, T.cut[8] - 0.25);
@@ -465,7 +466,7 @@
   scene({
     name: 'film', from: 'hook', to: 'end',
     build(root, S) {
-      S.g = canvas(root); under(root);
+      S.g = canvas(root); under(root); S.g2 = canvas(root);       // the scene, the text zone's shade, the labels
       const L = (text, y, size, o = {}) => line(root, text, { x: X0, y, size, ...o });
       S.L = {
         h0a: L('This Bengaluru', TZ - 16, 130), h0b: L('traffic jam has no cause.', TZ + 124, 86, { accent: [3, 4] }),
@@ -486,7 +487,7 @@
       S.L.h2a.words[0].classList.add('tnum'); S.L.h9a.words[0].classList.add('tnum'); S.L.h3a.words[0].classList.add('tnum');
     },
     run(t, b, S) {
-      const T = times(), L = S.L, g = S.g, c = T.cut; clear(g);
+      const T = times(), L = S.L, g = S.g, c = T.cut; clear(g); clear(S.g2); LBL = S.g2;
       let i = 0; while (i < SHOTS.length - 1 && t >= c[i + 1]) i++;
       SHOTS[i](g, t);
       const out = (k) => c[k + 1] - 0.05;
