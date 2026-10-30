@@ -170,9 +170,9 @@
     const T = times(); shotCam(g, t, 1, { push: 0.03 });
     ground(g, '#090b0f'); grid(g, 0.05);
     screen(g);
-    mlabel(g, 'BIGGEST ONE-DAY LOSSES OF STOCK MARKET VALUE', X0, 470, clamp((t - T.cut[1]) / 0.2), { size: 28, c: INK2 });
-    mlabel(g, 'US-LISTED COMPANIES · YAHOO FINANCE / BLOOMBERG DATA', X0, 508, clamp((t - T.cut[1]) / 0.2), { size: 22, c: INK3 });
-    const rows = [['#1 NVIDIA', 593, 'MON 27 JAN 2025 · DEEPSEEK', INK, T.cut[1] + 0.05], ['#2 ALPHABET (GOOGLE)', 475, 'THU 29 OCT 2026', ACC, T.nvidia + 0.25]];
+    mlabel(g, 'BIGGEST ONE-DAY LOSSES OF STOCK MARKET VALUE', X0, 470, clamp((t - T.cut[1] + 0.12) / 0.2), { size: 28, c: INK2 });
+    mlabel(g, 'US-LISTED COMPANIES · YAHOO FINANCE / BLOOMBERG DATA', X0, 508, clamp((t - T.cut[1] + 0.12) / 0.2), { size: 22, c: INK3 });
+    const rows = [['#1 NVIDIA', 593, 'MON 27 JAN 2025 · DEEPSEEK', INK, T.cut[1] - 0.1], ['#2 ALPHABET (GOOGLE)', 475, 'THU 29 OCT 2026', ACC, T.nvidia + 0.25]];
     rows.forEach(([name, v, when, c, t0], i) => {
       const y = 600 + i * 230, kk = eo(clamp((t - t0) / 0.5)); if (t < t0) return;
       big(g, name, X0, y, 58, c, { a: clamp((t - t0) / 0.15) });
@@ -198,8 +198,8 @@
     crashChart(g, 1, 0.12, { bare: true });                     // the crash, still there behind it
     screen(g);
     const kp = eo(clamp((t - (T.cut[2] + 0.25)) / Math.max(0.6, T.pct25 + 0.1 - T.cut[2] - 0.25)));   // counts from the cut, lands on "twenty-five"
-    big(g, `+${Math.round(25 * kp)}%`, 540, 560, 190, GRN, { align: 'center', a: clamp((t - T.cut[2]) / 0.2), glow: 'rgba(61,220,132,0.35)' });
-    mlabel(g, 'ALPHABET REVENUE · JUL–SEP, YEAR ON YEAR', 540, 612, clamp((t - T.cut[2]) / 0.2), { size: 26, c: INK2, align: 'center' });
+    big(g, `+${Math.round(25 * kp)}%`, 540, 560, 190, GRN, { align: 'center', a: clamp((t - T.cut[2] + 0.12) / 0.2), glow: 'rgba(61,220,132,0.35)' });
+    mlabel(g, 'ALPHABET REVENUE · JUL–SEP, YEAR ON YEAR', 540, 612, clamp((t - T.cut[2] + 0.12) / 0.2), { size: 26, c: INK2, align: 'center' });
     bars2(g, t, T.a.s03 + 0.2, 102.3, 127.6, [['Q3 2025', '$102.3B'], ['Q3 2026', '$127.6B']], GRN, 340);
   }
   function shCloud(g, t) {                                      // 3 · cloud more than doubled
@@ -208,15 +208,15 @@
     crashChart(g, 1, 0.12, { bare: true });
     screen(g);
     const kp = eo(clamp((t - (T.cut[3] + 0.2)) / Math.max(0.6, T.doubled + 0.1 - T.cut[3] - 0.2)));   // lands on "doubled"
-    big(g, `+${Math.round(103 * kp)}%`, 540, 560, 190, GRN, { align: 'center', a: clamp((t - T.cut[3]) / 0.2), glow: 'rgba(61,220,132,0.35)' });
-    mlabel(g, 'GOOGLE CLOUD REVENUE · YEAR ON YEAR', 540, 612, clamp((t - T.cut[3]) / 0.2), { size: 26, c: INK2, align: 'center' });
+    big(g, `+${Math.round(103 * kp)}%`, 540, 560, 190, GRN, { align: 'center', a: clamp((t - T.cut[3] + 0.12) / 0.2), glow: 'rgba(61,220,132,0.35)' });
+    mlabel(g, 'GOOGLE CLOUD REVENUE · YEAR ON YEAR', 540, 612, clamp((t - T.cut[3] + 0.12) / 0.2), { size: 26, c: INK2, align: 'center' });
     bars2(g, t, T.a.s04 + 0.1, 15.2, 30.7, [['Q3 2025', '$15.2B'], ['Q3 2026', '$30.7B']], GRN, 380);
   }
   function shWhy(g, t) {                                        // 4 · so why the crash?
     const T = times(); shotCam(g, t, 4, { push: 0.05, kicks: [[T.crash - 0.04, 10]] });
     ground(g, '#090b0f'); grid(g, 0.05);
     screen(g);
-    const k1 = eo(clamp((t - T.cut[4]) / 0.3)), k2 = eo(clamp((t - (T.crash - 0.15)) / 0.3));
+    const k1 = eo(clamp((t - T.cut[4] + 0.12) / 0.3)), k2 = eo(clamp((t - (T.crash - 0.15)) / 0.3));
     arrowHead(g, 300, 530 - 40 * k1, -PI / 2, 64, GRN);
     big(g, 'SALES +25%', 300, 690, 84, GRN, { align: 'center', a: k1 });
     big(g, 'CLOUD +103%', 300, 790, 84, GRN, { align: 'center', a: k1 });
@@ -308,7 +308,7 @@
     const T = times(); shotCam(g, t, 7, { push: 0.04 });
     ground(g, '#090b0f'); grid(g, 0.05);
     screen(g);
-    const k = eo(clamp((t - T.cut[7]) / 0.35));
+    const k = eo(clamp((t - T.cut[7] + 0.15) / 0.35));
     g.save(); g.globalAlpha = k; g.fillStyle = '#10141a'; rr(g, 90, 470, 900, 560, 30); g.fill(); g.strokeStyle = '#262d36'; g.lineWidth = 2; rr(g, 90, 470, 900, 560, 30); g.stroke(); g.restore();
     big(g, '“', 140, 640, 200, INK3, { a: k });
     const L1 = ['…the strong growth in AI Mode', 'queries had an impact because of'], L2a = 'the ', L2b = 'lower monetization', L3 = 'we were seeing in AI Mode.”';
@@ -374,11 +374,11 @@
     ground(g, '#090b0f'); grid(g, 0.05);
     screen(g);
     const zero = 860, sc = 11, data = [['Q4 2025', 24.6], ['Q1 2026', 10.1], ['Q2 2026', -5.9], ['Q3 2026', -9.1]], w = 150, x0 = 150, gap = 70;
-    mlabel(g, 'FREE CASH FLOW, $ BILLION', X0, 455, clamp((t - T.cut[10]) / 0.2), { size: 28, c: INK2 });
-    mlabel(g, 'CASH FROM THE BUSINESS − CASH SPENT ON BUILDING', X0, 492, clamp((t - T.cut[10]) / 0.2), { size: 22, c: INK3 });
+    mlabel(g, 'FREE CASH FLOW, $ BILLION', X0, 455, clamp((t - T.cut[10] + 0.12) / 0.2), { size: 28, c: INK2 });
+    mlabel(g, 'CASH FROM THE BUSINESS − CASH SPENT ON BUILDING', X0, 492, clamp((t - T.cut[10] + 0.12) / 0.2), { size: 22, c: INK3 });
     g.strokeStyle = INK2; g.lineWidth = 3; g.beginPath(); g.moveTo(110, zero); g.lineTo(980, zero); g.stroke();
     data.forEach(([q, v], i) => {
-      const t0 = T.cut[10] + 0.1 + i * 0.3 + (i >= 2 ? Math.max(0, T.spent - T.cut[10] - 1.0) : 0), kk = eo(clamp((t - t0) / 0.45)), h = Math.abs(v) * sc * kk, x = x0 + i * (w + gap);
+      const t0 = T.cut[10] - 0.1 + i * 0.3 + (i >= 2 ? Math.max(0, T.spent - T.cut[10] - 1.0) : 0), kk = eo(clamp((t - t0) / 0.45)), h = Math.abs(v) * sc * kk, x = x0 + i * (w + gap);
       if (t < t0) return;
       g.fillStyle = v > 0 ? GRN : ACC; v > 0 ? g.fillRect(x, zero - h, w, h) : g.fillRect(x, zero, w, h);
       big(g, `${v > 0 ? '+' : '−'}$${Math.abs(v).toFixed(1)}B`, x + w / 2, v > 0 ? zero - h - 18 : zero + h + 62, 48, v > 0 ? GRN : ACC, { align: 'center', a: clamp(kk * 3) });
@@ -390,7 +390,7 @@
     ground(g, '#090b0f'); grid(g, 0.05);
     screen(g);
     const cx = 540, cy = 760, R = 290, node = [-PI / 2, PI / 6, 5 * PI / 6], P = (th, r = R) => [cx + Math.cos(th) * r, cy + Math.sin(th) * r];
-    const kIn = eo(clamp((t - T.cut[11]) / 0.4)), kEat = clamp((t - (T.eating - 0.15)) / 0.3);
+    const kIn = eo(clamp((t - T.cut[11] + 0.15) / 0.4)), kEat = clamp((t - (T.eating - 0.15)) / 0.3);
     const arc = (a0, a1, c, k, wid = 10) => { g.strokeStyle = c; g.lineWidth = wid; g.lineCap = 'round'; g.beginPath(); g.arc(cx, cy, R, a0, lerp(a0, a1, k)); g.stroke(); if (k > 0.98) arrowHead(g, ...P(a1), a1 + PI / 2, 20, c); };
     arc(node[0] + 0.32, node[1] - 0.32, AMB, kIn);                                     // ads → data centres (pays for)
     arc(node[1] + 0.32, node[2] - 0.32, BLU, eo(clamp((t - T.cut[11] - 0.35) / 0.4)));  // data centres → AI Mode
@@ -417,9 +417,9 @@
     const T = times(); shotCam(g, t, 12, { push: 0.03 });
     ground(g, '#090b0f'); grid(g, 0.05);
     screen(g);
-    const k = eo(clamp((t - T.cut[12]) / 0.5));
+    const k = eo(clamp((t - T.cut[12] + 0.2) / 0.5));
     for (let i = 0; i < 12; i++) {                              // a stack of gold bars rising
-      const kk = eo(clamp((t - T.cut[12] - i * 0.05) / 0.35)), row = Math.floor(i / 3), col = i % 3, x = 330 + col * 150 + (row % 2) * 75, y = 1000 - row * 62 - 30 * (1 - kk);
+      const kk = eo(clamp((t - T.cut[12] + 0.12 - i * 0.05) / 0.35)), row = Math.floor(i / 3), col = i % 3, x = 330 + col * 150 + (row % 2) * 75, y = 1000 - row * 62 - 30 * (1 - kk);
       if (kk <= 0) continue;
       g.save(); g.globalAlpha = kk; const gr = g.createLinearGradient(x, y, x, y + 54); gr.addColorStop(0, '#ffd77a'); gr.addColorStop(1, '#c98a1d'); g.fillStyle = gr;
       g.beginPath(); g.moveTo(x + 14, y); g.lineTo(x + 126, y); g.lineTo(x + 140, y + 54); g.lineTo(x, y + 54); g.closePath(); g.fill(); g.restore();
@@ -433,7 +433,7 @@
     const T = times(); shotCam(g, t, 13, { push: 0.05 });
     ground(g, '#090b0f'); grid(g, 0.04);
     screen(g);
-    const x = 90, y = 640, w = 900, h = 130, k = eo(clamp((t - T.cut[13]) / 0.35));
+    const x = 90, y = 640, w = 900, h = 130, k = eo(clamp((t - T.cut[13] + 0.15) / 0.35));
     g.save(); g.globalAlpha = k; g.fillStyle = '#20262e'; rr(g, x, y, w, h, 65); g.fill(); g.strokeStyle = '#3a4350'; g.lineWidth = 2; rr(g, x, y, w, h, 65); g.stroke(); g.restore();
     glass(g, x + 72, y + 58, 20, '#9aa3ad');
     const shown = QQ.filter((_, i) => t >= wi('s14', 7 + i) - 0.03).join(' ');

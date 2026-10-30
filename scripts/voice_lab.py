@@ -167,12 +167,14 @@ def norm(s):
     if LANG != 'en':
         return re.sub(r'[।॥,.!?;:"“”‘’\'()–—-]+', ' ', s.lower()).split()
     s = re.sub(r'(?<=\d),(?=\d{3}\b)', '', s.lower().replace('%', ' percent'))                 # 10,000 → 10000
+    s = re.sub(r'\$\s*(\d+(?:\.\d+)?)\s*(trillion|billion|million|thousand)?', lambda m: f" {m.group(1)} {m.group(2) or ''} dollars ", s)   # $51 billion → 51 billion dollars
     s = re.sub(r'(\d+)(st|nd|rd|th)\b', lambda m: ' ' + ordinal(int(m.group(1))) + ' ', s)      # 28th → twenty eighth
     s = re.sub(r'\d+', lambda m: ' ' + spoken_number(m.group()) + ' ', s)
     s = s.replace('-', ' ').replace("'", '').replace('’', '')
     w = re.sub(r'[^a-z ]+', ' ', s).split()
     for i in range(len(w) - 2):                    # a year read two ways: "two thousand eighteen" = "twenty eighteen" (2018)
         if w[i] == 'two' and w[i + 1] == 'thousand' and (w[i + 2] in ONES[10:] or w[i + 2] in TENS): w[i:i + 2] = ['twenty', '']
+    w = [x for i, x in enumerate(w) if not (x == 'and' and i and w[i - 1] == 'hundred')]   # "four hundred and seventy" = "four hundred seventy"
     return [x for x in w if x]
 
 
@@ -324,6 +326,17 @@ def align_words(exp, hyp):
     return {k: ' '.join(reversed(heard.get(k, []))) or '∅' for k in sorted(bad)}, sorted(low - bad)
 
 
+def merge_money(hw):
+    """[(word, probability)] with "$475" + "billion" joined into one word, so norm reads it as 475 billion dollars"""
+    out = []
+    for word, pr in hw:
+        if out and out[-1][0].strip().startswith('$') and word.strip().lower().strip('.,!?;:') in ('trillion', 'billion', 'million', 'thousand'):
+            out[-1] = (out[-1][0].strip() + ' ' + word.strip(), min(out[-1][1], pr))
+        else:
+            out.append((word, pr))
+    return out
+
+
 def pink(n, seed=13):
     r = np.random.default_rng(seed); X = np.fft.rfft(r.standard_normal(n)); f = np.arange(len(X)); f[0] = 1
     return np.fft.irfft(X / np.sqrt(f), n).astype(np.float32)
@@ -351,13 +364,15 @@ def check(audio):
     exp = [(tok, k) for k, w in enumerate(W) for tok in norm(w['w'])]
     for i in range(len(exp) - 2):                 # the year rule across placed words too: "two thousand eighteen" = "twenty eighteen"
         if exp[i][0] == 'two' and exp[i + 1][0] == 'thousand' and (exp[i + 2][0] in ONES[10:] or exp[i + 2][0] in TENS): exp[i], exp[i + 1] = ('twenty', exp[i][1]), ('', exp[i + 1][1])
-    exp = [e for e in exp if e[0]]
+    exp = [e for i, e in enumerate(exp) if e[0] and not (e[0] == 'and' and i and exp[i - 1][0] == 'hundred')]   # "hundred and" read either way
     out = LAB / 'check'; out.mkdir(parents=True, exist_ok=True)
     rows = []
     for cname, sig in conds.items():
         for ename, m in ears:
             segs = list(m.transcribe(sig, beam_size=5, language='en', word_timestamps=True, condition_on_previous_text=False)[0])
-            hyp = [(tok, w.probability) for s in segs for w in (s.words or []) for tok in norm(w.word)]
+            hw = [(w.word, w.probability) for s in segs for w in (s.words or [])]
+            hw = merge_money(hw)
+            hyp = [(tok, pr) for word, pr in hw for tok in norm(word)]
             hyp = [h for i, h in enumerate(hyp) if not (i and h[0] == hyp[i - 1][0] and h[1] < 0.3)]   # Whisper's unsure echo of the word before ("stopped. stopped." in a silence)
             miss, low = align_words(exp, hyp)
             rows.append({'condition': cname, 'ear': ename, 'words': len(W), 'missed': [{'line': W[k]['p'], 't': W[k]['t0'], 'word': W[k]['w'], 'heard': h} for k, h in miss.items()],
