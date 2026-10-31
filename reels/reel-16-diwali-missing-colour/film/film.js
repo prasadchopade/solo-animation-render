@@ -229,10 +229,11 @@
     g.fillStyle = gr; g.beginPath(); g.arc(x, y, r, 0, TAU); g.fill();
     font(g, r * 0.95, 700, 'condensed'); g.textAlign = 'center'; g.fillStyle = '#0b0d14'; g.fillText(sym, x, y + r * 0.33); g.restore();
   }
-  function gavel(g, x, y, ang) {                               // a judge's gavel, our drawing
+  function gavel(g, x, y, ang) {                               // a judge's gavel, our drawing: (x, y) is the grip, the head 200 px out
     g.save(); g.translate(x, y); g.rotate(ang);
-    g.fillStyle = '#7a4a2a'; g.fillRect(-10, -10, 230, 20); g.fillStyle = '#5a361e'; rr(g, -70, -46, 120, 92, 14); g.fill();
-    g.fillStyle = '#c99a5a'; g.fillRect(-72, -46, 10, 92); g.fillRect(40, -46, 10, 92); g.restore();
+    g.fillStyle = '#7a4a2a'; rr(g, -172, -8, 172, 16, 8); g.fill(); g.fillStyle = '#5a361e'; g.beginPath(); g.arc(0, 0, 13, 0, TAU); g.fill();
+    g.fillStyle = '#5a361e'; rr(g, -232, -65, 64, 130, 8); g.fill();
+    g.fillStyle = '#c99a5a'; rr(g, -236, -65, 72, 12, 5); g.fill(); rr(g, -236, 53, 72, 12, 5); g.fill(); g.restore();
   }
   function crackerBox(g, x, y, s, a = 1) {                     // a box of "green crackers": our own label, a leaf
     g.save(); g.globalAlpha *= a; g.translate(x, y); g.scale(s, s);
@@ -305,7 +306,7 @@
     shotCam(g, t, i, { push: 0.03, oy: 700 });
     sky(g); city(g, t);
     g.fillStyle = 'rgba(5,6,12,0.55)'; g.fillRect(-400, -400, W + 800, 1520);
-    gauge(g, 190, 430, 560, heat, { kW: opts.kW ?? 0 });
+    gauge(g, 190, 430, 560, heat, { kW: opts.kW ?? 0, win: opts.win });
     const b = blueAt(heat), T = times();
     const r = mulberry32(51), cx = 640, cy = 640;
     g.save(); g.globalCompositeOperation = 'lighter';
@@ -335,9 +336,11 @@
     eyebrow(g, 'TOO COOL: IT BARELY GLOWS', t, T.cut[6] + 0.05);
   }
   function shWindow(g, t) {                                    // 7 · fireworks burn hot; blue lives in a tiny window
-    const T = times(), kW = eo(clamp((t - (T.window - 0.5)) / 0.4));
-    const heat = t < T.burn ? 0.1 + 0.5 * eo(clamp((t - T.cut[7]) / 0.6)) : lerp(0.6, 0.54, clamp((t - T.burn) / 0.8));
-    lab(g, t, 7, heat, { kW });
+    const T = times(), so = wi('s08', 6), tiny = wi('s08', 11);
+    const heat = 0.1 + 0.45 * eo(clamp((t - T.cut[7]) / 0.6)) + 0.37 * eio(clamp((t - (T.burn - 0.1)) / 0.5))   // up into blue, then white
+      - 0.72 * eio(clamp((t - so) / 0.5)) + 0.34 * eo(clamp((t - so - 0.5) / 0.5));                              // down past the window, back in
+    const kW = eo(clamp((t - (tiny - 0.3)) / 0.35)), hw = lerp(0.2, 0.06, eio(clamp((t - (tiny - 0.3)) / 0.55)));
+    lab(g, t, 7, heat, { kW, win: [0.54 - hw, 0.54 + hw] });
     screen(g);
     if (kW > 0) { mlabel(g, 'THE BLUE WINDOW', 300, 430 + 560 * (1 - 0.54) + 10, kW, { size: 28, c: FW.blue, bg: 'rgba(7,9,12,0.75)' }); mlabel(g, 'WHITE', 300, 520, kW, { size: 24, c: INK }); mlabel(g, 'FAINT', 300, 940, kW, { size: 24, c: '#5a6aa0' }); }
     eyebrow(g, 'HOT ENOUGH TO FLY AND BURST · COOL ENOUGH TO STAY BLUE', t, T.cut[7] + 0.05);
@@ -375,14 +378,17 @@
     screen(g); eyebrow(g, 'INDIA', t, T.cut[10] + 0.05);
   }
   function shBan(g, t) {                                       // 11 · 2018: the Supreme Court banned barium; barium makes green
-    const T = times(), slam = T.banned - 0.05; shotCam(g, t, 11, { push: 0.03, oy: 700, kicks: [[slam + 0.12, 14]] });
+    const T = times(), slam = T.banned - 0.05; shotCam(g, t, 11, { push: 0.03, oy: 700, kicks: [[slam, 14]] });
     sky(g); city(g, t); g.fillStyle = 'rgba(5,6,12,0.62)'; g.fillRect(-400, -400, W + 800, 1520);
-    const kT = eo(clamp((t - T.cut[11] + 0.1) / 0.35));
-    tile(g, 540, 640, 1.0, 'Ba', 56, 'BARIUM', FW.green, kT);
-    const u = clamp((t - (slam - 0.35)) / 0.35), ang = lerp(-1.1, 0.05, u * u);
-    if (t > slam - 0.6) gavel(g, 770, 420, ang);
-    const kS = t > slam ? 1 : 0;
-    if (kS) { g.save(); g.translate(540, 640); g.rotate(-0.12); g.strokeStyle = ACC; g.lineWidth = 10; g.strokeRect(-210, -60, 420, 120); font(g, 96, 700, 'condensed'); g.textAlign = 'center'; g.fillStyle = ACC; g.fillText('BANNED', 0, 34); g.restore(); }
+    const kT = eo(clamp((t - T.cut[11] + 0.1) / 0.35)), kD = eo(clamp((t - slam) / 0.3));
+    const flinch = t > slam ? 0.06 * Math.max(0, 1 - Math.abs(t - slam - 0.05) / 0.12) : 0;
+    tile(g, 540, 640, 1 - flinch, 'Ba', 56, 'BARIUM', FW.green, kT * (1 - 0.5 * kD));
+    const kIn = eo(clamp((t - (T.y2018 + 0.2)) / 0.8)), wind = eio(clamp((t - (slam - 0.6)) / 0.3)), u = clamp((t - (slam - 0.3)) / 0.3);
+    let ang = 0.55 + 0.04 * Math.sin((t - T.y2018) * 5) * (1 - wind) + 0.2 * wind;     // raised, hovering, then the wind-up
+    if (u > 0) ang = lerp(0.75, 0, u * u);                                                // the swing, faster as it falls
+    if (t > slam) ang = 0.15 * Math.sin(Math.PI * clamp((t - slam) / 0.32));             // a small rebound; then it rests on the tile
+    if (kIn > 0) gavel(g, 780 + 560 * (1 - kIn), 445, ang);
+    if (t > slam) { g.save(); g.translate(540, 640); g.rotate(-0.12); g.fillStyle = 'rgba(7,9,12,0.55)'; g.fillRect(-210, -60, 420, 120); g.strokeStyle = ACC; g.lineWidth = 10; g.strokeRect(-210, -60, 420, 120); font(g, 96, 700, 'condensed'); g.textAlign = 'center'; g.fillStyle = ACC; g.fillText('BANNED', 0, 34); g.restore(); }
     screen(g);
     mlabel(g, 'SUPREME COURT OF INDIA · ORDER OF 31 OCT 2018:', 540, 930, clamp((t - (T.y2018 - 0.1)) / 0.3), { size: 22, c: INK2, align: 'center' });
     mlabel(g, '“BARIUM SALTS IN THE MANUFACTURE OF FIRECRACKERS', 540, 966, clamp((t - (T.y2018 - 0.1)) / 0.3), { size: 22, c: INK, align: 'center' });
@@ -426,7 +432,7 @@
         h2a: L('Red. Orange. Yellow. Green.', TZ - 16, 80, { tones: ['red', 'orange', 'yellow', 'green'] }),
         h3a: L('But a true blue?', TZ - 16, 120, { accent: [3], tone: 'blue' }), h3b: L('Almost impossible.', TZ + 120, 116),
         h4a: L('Blue comes from copper.', TZ - 16, 90, { accent: [3], tone: 'copper' }),
-        h5a: L('Too hot:', TZ - 16, 130), h5b: L('blue turns white.', TZ + 124, 116, { accent: [0], tone: 'blue' }),
+        h5a: L('Blue is fragile.', TZ - 16, 116, { accent: [0], tone: 'blue' }), h5b: L('Too hot: turns white.', TZ + 120, 100, { accent: [1] }),
         h6a: L('Too cool:', TZ - 16, 130), h6b: L('it barely glows.', TZ + 124, 116),
         h7a: L('Fireworks burn hot.', TZ - 16, 108), h7b: L('Blue: a tiny window.', TZ + 120, 104, { accent: [0, 3], tone: 'blue' }),
         h8a: L('Makers add chlorine,', TZ - 16, 104), h8b: L('even from plastic.', TZ + 116, 112, { accent: [2] }),
@@ -450,7 +456,7 @@
       R(L.h2a, wv('s03', 0, 3, 5, 7), out(2), wv('s03', 0, 3, 5, 7));
       R(L.h3a, wv('s04', 0, 1, 2, 3), out(3), wv('s04', 0, 1, 2, 3), [3]); R(L.h3b, wv('s04', 4, 5), out(3), wv('s04', 4, 5));
       R(L.h4a, wv('s05', 0, 1, 2, 3), out(4), wv('s05', 0, 1, 2, 3), [3]);
-      R(L.h5a, wv('s06', 5, 6), out(5), wv('s06', 5, 6)); R(L.h5b, [wi('s06', 2), wi('s06', 9), T.white], out(5), [wi('s06', 2), wi('s06', 9), T.white], [0]);
+      R(L.h5a, wv('s06', 2, 3, 4), out(5), wv('s06', 2, 3, 4), [0]); R(L.h5b, wv('s06', 5, 6, 9, 12), out(5), wv('s06', 5, 6, 9, 12), [1]);
       R(L.h6a, wv('s07', 0, 1), out(6), wv('s07', 0, 1)); R(L.h6b, wv('s07', 3, 4, 5), out(6), wv('s07', 3, 4, 5));
       R(L.h7a, wv('s08', 1, 4, 5), out(7), wv('s08', 1, 4, 5)); R(L.h7b, wv('s08', 7, 10, 11, 12), out(7), wv('s08', 7, 10, 11, 12), [0, 3]);
       R(L.h8a, wv('s09', 0, 2, 3), out(8), wv('s09', 0, 2, 3)); R(L.h8b, wv('s09', 4, 5, 6), out(8), wv('s09', 4, 5, 6), [2]);

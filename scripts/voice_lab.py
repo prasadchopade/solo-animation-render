@@ -365,18 +365,20 @@ def check(audio):
     for i in range(len(exp) - 2):                 # the year rule across placed words too: "two thousand eighteen" = "twenty eighteen"
         if exp[i][0] == 'two' and exp[i + 1][0] == 'thousand' and (exp[i + 2][0] in ONES[10:] or exp[i + 2][0] in TENS): exp[i], exp[i + 1] = ('twenty', exp[i][1]), ('', exp[i + 1][1])
     exp = [e for i, e in enumerate(exp) if e[0] and not (e[0] == 'and' and i and exp[i - 1][0] == 'hundred')]   # "hundred and" read either way
-    out = LAB / 'check'; out.mkdir(parents=True, exist_ok=True)
+    end = max(w['t1'] for w in W) + 1.0          # past the last placed word: the end card's music, where Whisper signs off
+    out = LAB / 'check'; out.mkdir(parents=True, exist_ok=True)   # ("thanks for watching"); aligned, it would blame the last word
     rows = []
     for cname, sig in conds.items():
         for ename, m in ears:
             segs = list(m.transcribe(sig, beam_size=5, language='en', word_timestamps=True, condition_on_previous_text=False)[0])
-            hw = [(w.word, w.probability) for s in segs for w in (s.words or [])]
+            hw = [(w.word, w.probability) for s in segs for w in (s.words or []) if w.start <= end]
+            after = ' '.join(w.word.strip() for s in segs for w in (s.words or []) if w.start > end)
             hw = merge_money(hw)
             hyp = [(tok, pr) for word, pr in hw for tok in norm(word)]
             hyp = [h for i, h in enumerate(hyp) if not (i and h[0] == hyp[i - 1][0] and h[1] < 0.3)]   # Whisper's unsure echo of the word before ("stopped. stopped." in a silence)
             miss, low = align_words(exp, hyp)
             rows.append({'condition': cname, 'ear': ename, 'words': len(W), 'missed': [{'line': W[k]['p'], 't': W[k]['t0'], 'word': W[k]['w'], 'heard': h} for k, h in miss.items()],
-                         'unsure': [{'line': W[k]['p'], 't': W[k]['t0'], 'word': W[k]['w']} for k in low],
+                         'unsure': [{'line': W[k]['p'], 't': W[k]['t0'], 'word': W[k]['w']} for k in low], 'after': after,
                          'text': [{'t0': round(w.start, 2), 'w': w.word.strip(), 'p': round(w.probability, 2)} for s in segs for w in (s.words or [])]})   # what the ear wrote, word by word
             print(f"{cname:14s} {ename:22s} {len(W) - len(miss)}/{len(W)} words heard; missed: " + (', '.join(f"{W[k]['w']}@{W[k]['t0']:.1f}→{h}" for k, h in miss.items()) or 'none'), flush=True)
     ph = Phones.load(); lines = []
@@ -392,6 +394,8 @@ def check(audio):
           '| condition | ear | heard | missed (word @ s → heard) | unsure (p < 0.5) |', '|---|---|---|---|---|']
     md += [f"| {r['condition']} | {r['ear']} | {r['words'] - len(r['missed'])}/{r['words']} | " + (', '.join(f"{x['word']} @{x['t']:.1f} → {x['heard']}" for x in r['missed']) or '—') +
            ' | ' + (', '.join(f"{x['word']} @{x['t']:.1f}" for x in r['unsure']) or '—') + ' |' for r in rows]
+    if any(r['after'] for r in rows):
+        md += ['', f'Written after the narration (from {end:.1f} s; no voice there, not scored): ' + '; '.join(f"{r['condition']}, {r['ear']}: \"{r['after']}\"" for r in rows if r['after'])]
     if lines:
         md += ['', '| line | phonemes off % | flagged words (/expected/ → /heard/) |', '|---|---|---|']
         md += [f"| {l['line']} | {l['per']} | {'; '.join(l['flags']) or '—'} |" for l in lines]
