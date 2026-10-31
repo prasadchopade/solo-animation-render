@@ -264,6 +264,11 @@
     font(g, 40, 700, 'normal', 'Mono'); g.textAlign = 'center';
     if ((o.l ?? 0) > 0) { g.save(); g.globalAlpha *= o.l; g.fillStyle = '#3a2a18'; g.fillText('K.L. GUJRAL', -iw * 0.24, h / 2 - 38); g.restore(); }
     if ((o.r ?? 0) > 0) { g.save(); g.globalAlpha *= o.r; g.fillStyle = '#3a2a18'; g.fillText('K.L. JAGGI', iw * 0.24, h / 2 - 38); g.restore(); }
+    if ((o.sweep ?? 0) > 0 && o.sweep < 1) {                    // a warm light passing over the print
+      g.save(); g.beginPath(); g.rect(-w / 2, -h / 2, w, h); g.clip(); g.globalCompositeOperation = 'lighter';
+      const sx = lerp(-w, w, o.sweep), sg = g.createLinearGradient(sx - 160, -h / 2, sx + 160, h / 2);
+      sg.addColorStop(0, 'rgba(255,200,130,0)'); sg.addColorStop(0.5, 'rgba(255,200,130,0.22)'); sg.addColorStop(1, 'rgba(255,200,130,0)'); g.fillStyle = sg; g.fillRect(-w / 2, -h / 2, w, h); g.restore();
+    }
     g.restore();
   }
 
@@ -311,7 +316,9 @@
     const tableAt = (x, y, s) => { g.fillStyle = '#efe6d6'; g.beginPath(); g.ellipse(x, y, 150 * s, 40 * s, 0, 0, TAU); g.fill(); g.fillStyle = '#d8ccb8'; g.fillRect(x - 150 * s, y, 300 * s, 70 * s); };
     for (const [x, y, s] of [[200, 690, 0.6], [540, 690, 0.6], [880, 690, 0.6]]) { bust(g, x - 70, y - 10, 0.75); bust(g, x + 70, y - 10, 0.75); tableAt(x, y, s); }
     for (const [x, y, s] of [[300, 840, 0.85], [800, 840, 0.85]]) { bust(g, x - 90, y - 10, 1.0, '#140a05'); bust(g, x + 95, y - 12, 1.0, '#140a05'); tableAt(x, y, s); }
-    const cl = g.createLinearGradient(0, 930, 0, 1300); cl.addColorStop(0, '#e9dfcc'); cl.addColorStop(1, '#6a5f50'); g.fillStyle = cl; g.fillRect(-400, 930, W + 800, 600); g.fillStyle = 'rgba(0,0,0,0.15)'; g.fillRect(-400, 930, W + 800, 6);   // the front table's cloth
+    const cl = g.createLinearGradient(0, 930, 0, 1250); cl.addColorStop(0, '#8a2016'); cl.addColorStop(1, '#2a0806'); g.fillStyle = cl; g.fillRect(-400, 930, W + 800, 600);   // the front table: red, like the room's velvet
+    g.fillStyle = 'rgba(255,190,150,0.18)'; g.fillRect(-400, 930, W + 800, 4);
+    g.fillStyle = '#f3ece0'; g.beginPath(); g.ellipse(380, 1010, 160, 40, 0, 0, TAU); g.fill();                     // a white plate under the handi
     bowl(g, 380, 960, 110, t, { steamA: 0.8 });
     const kC = o.cap ?? 0;                                                                      // the cap and the rose, on "Nehru"
     if (kC > 0) {
@@ -442,9 +449,13 @@
   function shPhoto(g, t) {                                     // 2 · Kundan Lal Gujral and Kundan Lal Jaggi: two friends from Peshawar
     const T = times(); shotCam(g, t, 2, { push: 0.07, oy: 640, drift: 3 });
     wall(g, '#120b07', '#24150c', [540, 640, 700, '#ffb070', 0.14]);
-    photo(g, 540, 775, 770, 770, t, { l: pop(t, T.gujral - 0.05), r: pop(t, T.jaggi - 0.05) });
+    const kIn = eo(clamp((t - T.cut[2]) / 0.5)), sc = lerp(1.12, 1, kIn);                       // the print drops onto the table and settles
+    g.save(); g.translate(540, 775); g.scale(sc, sc); g.translate(-540, -775);
+    photo(g, 540, 775, 770, 770, t, { rot: lerp(-0.1, -0.035, kIn), l: pop(t, T.gujral - 0.05), r: pop(t, T.jaggi - 0.05), sweep: clamp((t - (T.friends - 0.2)) / 0.9) });
+    g.restore();
     const fl = 1 - clamp((t - T.cut[2]) / 0.35); if (fl > 0) { screen(g); g.fillStyle = `rgba(255,248,236,${(0.6 * fl).toFixed(3)})`; g.fillRect(0, 0, W, H); }
     eyebrow(g, 'PESHAWAR · THE 1930s (OUR DRAWING)', t, T.cut[2] + 0.05);
+    screen(g); mlabel(g, 'PESHAWAR', 540, 470, pop(t, T.pesh3 - 0.05), { size: 40, c: BUT, align: 'center', bg: 'rgba(13,9,7,0.75)', edge: BUT });
   }
   function shTrain(g, t) {                                     // 3 · 1947: Partition brought them to Delhi
     const T = times(), u = clamp((t - T.cut[3]) / Math.max(1, T.cut[4] - T.cut[3])); shotCam(g, t, 3, { push: 0.02, oy: 760, drift: 2 });
@@ -489,7 +500,10 @@
   function shCourt(g, t) {                                     // 7 · since 2024, in court over who invented butter chicken
     const T = times(); shotCam(g, t, 7, { push: 0.05, oy: 700, kicks: [[T.court7 - 0.05, 9]] });
     courtroom(g, t);
-    plate(g, 270, 1080, 0.55, 'GUJRAL', { shine: 0.3 }); plate(g, 810, 1080, 0.55, 'JAGGI', { shine: 0.7 });
+    const kS = eo(clamp((t - T.cut[7]) / 0.55));                                                // the two sides take their places
+    plate(g, 270 - 420 * (1 - kS), 1080, 0.55, 'GUJRAL', { shine: 0.3 }); plate(g, 810 + 420 * (1 - kS), 1080, 0.55, 'JAGGI', { shine: 0.7 });
+    const kY = pop(t, T.y2024 - 0.08, 0.3) * (1 - clamp((t - (T.court7 - 0.2)) / 0.25));       // "2024" stands over the bench until "court"
+    if (kY > 0) big(g, '2024', 540, 600, 220, BUT, { align: 'center', a: kY, glow: 'rgba(255,181,46,0.35)' });
     const kB = pop(t, T.bc7 - 0.1, 0.35);
     if (kB > 0) { bowl(g, 540, 600 - 40 * (1 - kB), 120, t, { steamA: kB }); }
     screen(g);
@@ -573,13 +587,15 @@
     screen(g); mlabel(g, 'NEXT HEARING: 3 DEC 2026', 540, 990, pop(t, T.decided + 0.2), { size: 36, c: INK, align: 'center', bg: 'rgba(13,9,7,0.8)' });
   }
   function shCertain(g, t) {                                   // 13 · but whoever wins, one thing is certain
-    const T = times(); shotCam(g, t, 13, { push: 0.05, oy: 700 });
-    wall(g, '#0c0806', '#1e110a', [540, 520, 620, '#ffcf80', 0.3]);
-    g.save(); g.globalCompositeOperation = 'lighter'; const sp = g.createLinearGradient(0, 0, 0, 1100); sp.addColorStop(0, 'rgba(255,214,150,0.16)'); sp.addColorStop(1, 'rgba(255,214,150,0)');
+    const T = times(); shotCam(g, t, 13, { push: 0.08, oy: 700 });
+    const u = t - T.cut[13], kC = eio(clamp((t - (T.certain - 0.25)) / 0.45));                  // it teeters until "certain", then holds level
+    wall(g, '#0c0806', '#1e110a', [540, 520, 620, '#ffcf80', 0.3 + 0.15 * kC]);
+    g.save(); g.globalCompositeOperation = 'lighter'; const sp = g.createLinearGradient(0, 0, 0, 1100); sp.addColorStop(0, `rgba(255,214,150,${(0.16 + 0.1 * kC).toFixed(3)})`); sp.addColorStop(1, 'rgba(255,214,150,0)');
     g.fillStyle = sp; g.beginPath(); g.moveTo(470, -100); g.lineTo(610, -100); g.lineTo(1000, 1100); g.lineTo(80, 1100); g.closePath(); g.fill(); g.restore();
-    balance(g, 540, 400, 0.18 * Math.sin((t - T.cut[13]) * 2.4) * Math.exp(-(t - T.cut[13]) * 1.1), t, {
-      left: (x, y) => plate(g, x, y - 2, 0.5, 'KUNDAN LAL', { sub: 'GUJRAL', subA: 1, shine: 0.4 }),
-      right: (x, y) => plate(g, x, y - 2, 0.5, 'KUNDAN LAL', { sub: 'JAGGI', subA: 1, shine: 0.6 }),
+    const tilt = (0.2 * Math.sin(u * 2.4) * Math.exp(-u * 0.9) + 0.07 * Math.sin(u * 3.3 + 1)) * (1 - kC);
+    balance(g, 540, 400, tilt, t, {
+      left: (x, y) => plate(g, x, y - 2, 0.5, 'KUNDAN LAL', { sub: 'GUJRAL', subA: 1, shine: clamp((t - (T.whoever - 0.1)) / 0.8) }),
+      right: (x, y) => plate(g, x, y - 2, 0.5, 'KUNDAN LAL', { sub: 'JAGGI', subA: 1, shine: clamp((t - (T.wins - 0.1)) / 0.8) }),
     });
   }
   function shFinale(g, t) {                                    // 14 · butter chicken was invented by Kundan Lal (the first line again)

@@ -130,6 +130,14 @@
       "pan": 0
     },
     {
+      "at": 47.49,
+      "type": "clink",
+      "gain": 0.3,
+      "what": "2024 appears over the bench (high)",
+      "pitch": 1.1,
+      "pan": 0
+    },
+    {
       "at": 51.026,
       "type": "thunk",
       "gain": 0.6,
