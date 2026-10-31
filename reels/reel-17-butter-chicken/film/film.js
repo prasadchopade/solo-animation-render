@@ -35,8 +35,8 @@
       families: wi('s06', 2), rival: wi('s06', 4),
       y2024: wi('s07', 2), court7: wi('s07', 7), who: wi('s07', 9), bc7: wi('s07', 11),
       lawsuit: wi('s08', 1), n2: wi('s08', 3), n7: wi('s08', 5), n50: wi('s08', 8), pages: wi('s08', 9), long8: wi('s08', 10), e8: lastE('s08'),
-      gujrals: wi('s09', 1), pesh9: wi('s09', 3), leftover: wi('s09', 4), saved: wi('s09', 6), gravy: wi('s09', 9), next: wi('s09', 12),
-      jaggis: wi('s10', 1), delhi10: wi('s10', 3), late: wi('s10', 4), guests: wi('s10', 5), little10: wi('s10', 8), chicken10: wi('s10', 9),
+      gujrals: wi('s09', 1), pesh9: wi('s09', 4), leftover: wi('s09', 5), saved: wi('s09', 7), gravy: wi('s09', 10), next: wi('s09', 13),
+      jaggis: wi('s10', 1), delhi10: wi('s10', 4), late: wi('s10', 5), guests: wi('s10', 6), little10: wi('s10', 8), chicken10: wi('s10', 10),
       much: wi('s11', 1), little11: wi('s11', 5), either: wi('s11', 6), root: wi('s11', 9), leftovers: wi('s11', 12),
       years: wi('s12', 2), court12: wi('s12', 5), decided: wi('s12', 8), e12: lastE('s12'),
       whoever: wi('s13', 1), wins: wi('s13', 2), certain: wi('s13', 6),
@@ -317,8 +317,9 @@
     if (kC > 0) {
       g.save(); g.globalAlpha *= kC; g.translate(740, 985 - 30 * (1 - kC));
       g.fillStyle = 'rgba(0,0,0,0.3)'; g.beginPath(); g.ellipse(0, 6, 120, 18, 0, 0, TAU); g.fill();
-      g.fillStyle = '#f6f3ec'; g.beginPath(); g.moveTo(-110, 0); g.lineTo(-92, -70); g.quadraticCurveTo(0, -96, 92, -70); g.lineTo(110, 0); g.closePath(); g.fill();
-      g.strokeStyle = '#d8d2c4'; g.lineWidth = 4; g.beginPath(); g.moveTo(-104, -22); g.lineTo(104, -22); g.stroke(); g.beginPath(); g.moveTo(-60, -84); g.quadraticCurveTo(0, -60, 60, -84); g.stroke();
+      g.fillStyle = '#f6f3ec'; g.beginPath(); g.moveTo(-135, 0); g.lineTo(-118, -46); g.quadraticCurveTo(-60, -60, 0, -52); g.quadraticCurveTo(60, -60, 118, -46); g.lineTo(135, 0); g.closePath(); g.fill();
+      g.fillStyle = '#e4ded0'; g.beginPath(); g.moveTo(-135, 0); g.lineTo(-128, -22); g.lineTo(128, -22); g.lineTo(135, 0); g.closePath(); g.fill();
+      g.strokeStyle = '#cfc8b8'; g.lineWidth = 3; g.beginPath(); g.moveTo(-118, -46); g.quadraticCurveTo(0, -40, 118, -46); g.stroke();
       g.translate(150, -6); g.strokeStyle = '#2f6a22'; g.lineWidth = 5; g.beginPath(); g.moveTo(0, 0); g.lineTo(60, -10); g.stroke();
       g.fillStyle = '#c4161c'; g.beginPath(); g.arc(-6, -4, 20, 0, TAU); g.fill(); g.fillStyle = '#e8303a'; g.beginPath(); g.arc(-10, -8, 11, 0, TAU); g.fill();
       g.restore();
@@ -435,13 +436,13 @@
     const k2 = hit(t, T.two - 0.06, 'heavy'), dx = 300 * eio(clamp(k2));
     plate(g, 540 - dx, 1075, 0.7, 'KUNDAN LAL', { shine: 0.5 + 0.5 * Math.sin(t) });
     if (k2 > 0.01) plate(g, 540 + dx, 1075, 0.7, 'KUNDAN LAL', { a: clamp(k2 * 2.5), shine: clamp((t - T.two) / 0.8) });
-    screen(g); mlabel(g, '×2', 540, 900, pop(t, T.two + 0.1), { size: 44, c: ACC, align: 'center', bg: 'rgba(13,9,7,0.7)' });
+    screen(g); mlabel(g, '×2', 540, 900, pop(t, T.two + 0.1), { size: 56, c: ACC, align: 'center', bg: 'rgba(13,9,7,0.7)' });
   }
   function shPhoto(g, t) {                                     // 2 · Kundan Lal Gujral and Kundan Lal Jaggi: two friends from Peshawar
     const T = times(); shotCam(g, t, 2, { push: 0.07, oy: 640, drift: 3 });
     wall(g, '#120b07', '#24150c', [540, 640, 700, '#ffb070', 0.14]);
     photo(g, 540, 720, 800, 800, t, { l: pop(t, T.gujral - 0.05), r: pop(t, T.jaggi - 0.05) });
-    const fl = 1 - clamp((t - T.cut[2]) / 0.35); if (fl > 0) { screen(g); g.fillStyle = `rgba(255,248,236,${(0.85 * fl).toFixed(3)})`; g.fillRect(0, 0, W, H); }
+    const fl = 1 - clamp((t - T.cut[2]) / 0.35); if (fl > 0) { screen(g); g.fillStyle = `rgba(255,248,236,${(0.6 * fl).toFixed(3)})`; g.fillRect(0, 0, W, H); }
     eyebrow(g, 'PESHAWAR · THE 1930s (OUR DRAWING)', t, T.cut[2] + 0.05);
   }
   function shTrain(g, t) {                                     // 3 · 1947: Partition brought them to Delhi
@@ -458,20 +459,20 @@
     }
     train(g, nx, 872, 0.62, t);
     screen(g);
-    for (const [x, s] of [[120, 'PESHAWAR'], [960, 'DELHI']]) { mlabel(g, s, x, 960, 1, { size: 28, c: INK, align: 'center', bg: 'rgba(13,9,7,0.7)' }); }
+    for (const [x, s] of [[150, 'PESHAWAR'], [930, 'DELHI']]) { mlabel(g, s, x, 960, 1, { size: 34, c: INK, align: 'center', bg: 'rgba(13,9,7,0.7)' }); }
     big(g, '1947', 540, 560, 260, rgba(CREAM, 0.9), { align: 'center', a: pop(t, T.cut[3] + 0.05, 0.4), glow: 'rgba(255,170,90,0.4)' });
-    mlabel(g, 'PARTITION', 540, 640, pop(t, T.partition, 0.3), { size: 34, c: INK2, align: 'center' });
+    mlabel(g, 'PARTITION', 540, 650, pop(t, T.partition, 0.3), { size: 44, c: INK, align: 'center' });
   }
   function shFacade(g, t) {                                    // 4 · where they ran one restaurant together: Moti Mahal
     const T = times(); shotCam(g, t, 4, { push: 0.05, oy: 640 });
     facade(g, t, { sign: clamp((t - (T.moti - 0.25)) / 0.25) * 0.85 + 0.15 });
     eyebrow(g, 'DARYAGANJ, DELHI · 1947', t, T.cut[4] + 0.05);
-    screen(g); mlabel(g, 'GUJRAL + JAGGI · PARTNERS', 540, 1000, pop(t, T.one4 - 0.1), { size: 28, c: BUT, align: 'center', bg: 'rgba(13,9,7,0.75)' });
+    screen(g); mlabel(g, 'GUJRAL + JAGGI · PARTNERS', 540, 1000, pop(t, T.one4 - 0.1), { size: 34, c: BUT, align: 'center', bg: 'rgba(13,9,7,0.75)' });
   }
   function shDining(g, t) {                                    // 5 · its butter chicken got so famous, even Nehru came to eat
     const T = times(); shotCam(g, t, 5, { push: 0.05, oy: 900 });
     dining(g, t, { cap: pop(t, T.nehru - 0.1, 0.35) });
-    screen(g); mlabel(g, 'JAWAHARLAL NEHRU, PRIME MINISTER', 740, 880, pop(t, T.nehru + 0.15), { size: 26, c: INK, align: 'center', bg: 'rgba(13,9,7,0.75)' });
+    screen(g); mlabel(g, 'JAWAHARLAL NEHRU · PRIME MINISTER', 540, 860, pop(t, T.nehru + 0.15), { size: 32, c: INK, align: 'center', bg: 'rgba(13,9,7,0.75)' });
     eyebrow(g, 'MOTI MAHAL · THE 1950s', t, T.cut[5] + 0.05);
   }
   function shRivals(g, t) {                                    // 6 · today, their families run rival restaurants
@@ -491,9 +492,9 @@
     const kB = pop(t, T.bc7 - 0.1, 0.35);
     if (kB > 0) { bowl(g, 540, 600 - 40 * (1 - kB), 120, t, { steamA: kB }); }
     screen(g);
-    mlabel(g, 'EXHIBIT A', 540, 520, pop(t, T.bc7 + 0.2), { size: 26, c: BUT, align: 'center', bg: 'rgba(13,9,7,0.75)', edge: BUT });
-    mlabel(g, 'DELHI HIGH COURT · CS(COMM) 26/2024', 540, 960, pop(t, T.court7 - 0.05), { size: 26, c: INK, align: 'center', bg: 'rgba(13,9,7,0.8)' });
-    mlabel(g, 'RUPA GUJRAL & ORS. v. DARYAGANJ HOSPITALITY PVT. LTD.', 540, 1000, pop(t, T.court7 + 0.1), { size: 20, c: INK2, align: 'center' });
+    mlabel(g, 'EXHIBIT A', 540, 515, pop(t, T.bc7 + 0.2), { size: 34, c: BUT, align: 'center', bg: 'rgba(13,9,7,0.75)', edge: BUT });
+    mlabel(g, 'DELHI HIGH COURT · CS(COMM) 26/2024', 540, 950, pop(t, T.court7 - 0.05), { size: 32, c: INK, align: 'center', bg: 'rgba(13,9,7,0.8)' });
+    mlabel(g, 'GUJRAL FAMILY v. DARYAGANJ (JAGGI FAMILY)', 540, 1000, pop(t, T.court7 + 0.1), { size: 26, c: INK2, align: 'center' });
     eyebrow(g, 'SINCE JANUARY 2024', t, T.y2024 - 0.1);
   }
   function shStack(g, t) {                                     // 8 · the lawsuit is 2,752 pages long
@@ -504,7 +505,7 @@
     bowl(g, 810, 1050, 95, t, { steamA: 0.7 });
     screen(g);
     big(g, n.toLocaleString('en-IN'), 470, Math.max(400, 1100 - hgt - 60), 120, BUT, { align: 'center', glow: 'rgba(255,181,46,0.4)' });
-    mlabel(g, 'PAGES', 470, Math.max(445, 1100 - hgt - 15), pop(t, T.n2), { size: 30, c: INK, align: 'center', bg: 'rgba(13,9,7,0.6)' });
+    mlabel(g, 'PAGES', 470, Math.max(445, 1100 - hgt - 15), pop(t, T.n2), { size: 34, c: INK, align: 'center', bg: 'rgba(13,9,7,0.6)' });
     mlabel(g, 'THE LAWSUIT · SOURCE: NPR, REUTERS', 540, 1160, pop(t, T.lawsuit), { size: 22, c: INK2, align: 'center' });
   }
   function shGujral(g, t) {                                    // 9 · the Gujrals say: Peshawar; leftover chicken, saved in a gravy for the next day
@@ -513,16 +514,16 @@
     wall(g, mix('#0c0a14', '#2a1a0c', day), mix('#1a1420', '#4a2a12', day));
     g.fillStyle = mix('#1a2440', '#ffd890', day); g.fillRect(700, 300, 220, 260); g.strokeStyle = '#1a0f08'; g.lineWidth = 10; g.strokeRect(700, 300, 220, 260); g.beginPath(); g.moveTo(810, 300); g.lineTo(810, 560); g.stroke();
     if (day < 0.5) { g.fillStyle = rgba('#f4f0e0', 1 - 2 * day); g.beginPath(); g.arc(770, 360, 24, 0, TAU); g.fill(); } else { glow(g, 810, 430, 300, '#ffd890', (day - 0.5) * 0.8); g.fillStyle = rgba('#fff3c4', (day - 0.5) * 2); g.beginPath(); g.arc(860, 470, 34, 0, TAU); g.fill(); }
-    clockFace(g, 200, 380, 70, day > 0.5 ? 9 : 11, day > 0.5 ? 0 : 40);
+    clockFace(g, 170, 600, 64, day > 0.5 ? 9 : 11, day > 0.5 ? 0 : 40);
     table(g, 830); tandoor(g, 210, 860, 0.9, t, 0.35);
     const kL = pop(t, T.leftover - 0.1), drop = clamp((t - (T.saved - 0.1)) / 0.6);
     tray(g, 470, 900, 380, 4, t, { dry: true, off: (i) => { const d = clamp(drop * 1.6 - i * 0.2); return [lerp(0, 330 - (470 + (i - 1.5) * 82), eio(d)), -180 * Math.sin(PI * d) + 40 * eio(d), 1 - clamp((d - 0.85) / 0.15)]; } });
     pot(g, 800, 880, 150, t, { steamA: 0.3 + 0.7 * clamp(drop * 2) });
     screen(g);
-    mlabel(g, "THE GUJRAL FAMILY'S ACCOUNT", 540, 400, pop(t, T.gujrals - 0.1), { size: 28, c: BUT, align: 'center', bg: 'rgba(13,9,7,0.8)', edge: BUT });
-    mlabel(g, 'PESHAWAR', 470, 470, pop(t, T.pesh9 - 0.05), { size: 26, c: INK, align: 'center', bg: 'rgba(13,9,7,0.7)' });
-    mlabel(g, 'LEFTOVER, DRYING OUT', 470, 1010, kL * (1 - clamp(drop * 3)), { size: 24, c: INK2, align: 'center', bg: 'rgba(13,9,7,0.7)' });
-    mlabel(g, 'THE NEXT DAY', 810, 610, day, { size: 26, c: INK, align: 'center', bg: 'rgba(13,9,7,0.7)' });
+    mlabel(g, "THE GUJRAL FAMILY'S ACCOUNT", 540, 400, pop(t, T.gujrals - 0.1), { size: 36, c: BUT, align: 'center', bg: 'rgba(13,9,7,0.8)', edge: BUT });
+    mlabel(g, 'PESHAWAR', 470, 480, pop(t, T.pesh9 - 0.05), { size: 34, c: INK, align: 'center', bg: 'rgba(13,9,7,0.7)' });
+    mlabel(g, 'LEFTOVER, DRYING OUT', 470, 1010, kL * (1 - clamp(drop * 3)), { size: 32, c: INK, align: 'center', bg: 'rgba(13,9,7,0.7)' });
+    mlabel(g, 'THE NEXT DAY', 810, 615, day, { size: 34, c: INK, align: 'center', bg: 'rgba(13,9,7,0.7)' });
   }
   function shJaggi(g, t) {                                     // 10 · the Jaggis say: Delhi; late guests, and too little chicken
     const T = times(); shotCam(g, t, 10, { push: 0.04, oy: 760 });
@@ -533,16 +534,16 @@
     g.fillStyle = '#5a3218'; g.fillRect(640, 320, 260 * (1 - 0.8 * kD), 540);
     const kG = clamp((t - (T.guests - 0.25)) / 0.9);
     for (let i = 0; i < 7; i++) { const u = clamp(kG * 1.6 - i * 0.1); if (u <= 0) continue; man(g, lerp(780, 160 + i * 92, eo(u)), 880, 0.36 + (i % 3) * 0.02, { c: '#120905', cap: i % 3 === 1 }); }
-    clockFace(g, 230, 380, 70, 10, 55);
+    clockFace(g, 170, 560, 64, 10, 55);
     table(g, 860);
     const kL = pop(t, T.little10 - 0.1), kS = clamp((t - (T.chicken10 + 0.1)) / 0.7);
     g.fillStyle = '#efe6d6'; g.beginPath(); g.ellipse(400, 990, 200, 54, 0, 0, TAU); g.fill();
     for (let i = 0; i < 3; i++) piece(g, 330 + i * 70, 978, 44, 26, i * 0.4, 120 + i);
     if (kS > 0) { g.save(); g.globalAlpha = clamp(kS * 2); g.fillStyle = '#e8622a'; g.beginPath(); g.ellipse(400, 992, 190 * eo(kS), 48 * eo(kS), 0, 0, TAU); g.fill(); g.restore(); for (let i = 0; i < 3; i++) piece(g, 330 + i * 70, 980, 44, 26, i * 0.4, 120 + i, { sub: true }); }
     screen(g);
-    mlabel(g, "THE JAGGI FAMILY'S ACCOUNT", 540, 400, pop(t, T.jaggis - 0.1), { size: 28, c: BUT, align: 'center', bg: 'rgba(13,9,7,0.8)', edge: BUT });
-    mlabel(g, 'DELHI', 780, 470, pop(t, T.delhi10 - 0.05), { size: 26, c: INK, align: 'center', bg: 'rgba(13,9,7,0.7)' });
-    mlabel(g, 'TOO LITTLE', 400, 1110, kL, { size: 28, c: ACC, align: 'center', bg: 'rgba(13,9,7,0.75)' });
+    mlabel(g, "THE JAGGI FAMILY'S ACCOUNT", 540, 400, pop(t, T.jaggis - 0.1), { size: 36, c: BUT, align: 'center', bg: 'rgba(13,9,7,0.8)', edge: BUT });
+    mlabel(g, 'DELHI', 770, 480, pop(t, T.delhi10 - 0.05), { size: 34, c: INK, align: 'center', bg: 'rgba(13,9,7,0.7)' });
+    mlabel(g, 'NOT ENOUGH', 400, 1100, kL, { size: 36, c: ACC, align: 'center', bg: 'rgba(13,9,7,0.75)' });
   }
   function shScales(g, t) {                                    // 11 · too much chicken, or too little; either way, the root cause was leftovers
     const T = times(); shotCam(g, t, 11, { push: 0.03, oy: 700 });
@@ -557,9 +558,9 @@
     });
     if (kE > 0) pot(g, 540, 1020, 130 + 20 * pour, t, { steamA: kE });
     screen(g);
-    mlabel(g, 'TOO MUCH', 250, 720, pop(t, T.much - 0.05) * (1 - kE), { size: 30, c: INK, align: 'center', bg: 'rgba(13,9,7,0.7)' });
-    mlabel(g, 'TOO LITTLE', 830, 720, pop(t, T.little11 - 0.05) * (1 - kE), { size: 30, c: INK, align: 'center', bg: 'rgba(13,9,7,0.7)' });
-    mlabel(g, 'LEFTOVERS', 540, 900, pop(t, T.leftovers - 0.05), { size: 40, c: BUT, align: 'center', bg: 'rgba(13,9,7,0.8)', edge: BUT });
+    mlabel(g, 'TOO MUCH', 250, 720, pop(t, T.much - 0.05) * (1 - kE), { size: 38, c: INK, align: 'center', bg: 'rgba(13,9,7,0.7)' });
+    mlabel(g, 'TOO LITTLE', 830, 720, pop(t, T.little11 - 0.05) * (1 - kE), { size: 38, c: INK, align: 'center', bg: 'rgba(13,9,7,0.7)' });
+    mlabel(g, 'LEFTOVERS', 540, 890, pop(t, T.leftovers - 0.05), { size: 48, c: BUT, align: 'center', bg: 'rgba(13,9,7,0.8)', edge: BUT });
   }
   const DATES = [['JAN 2024', '16'], ['MAY 2024', '29'], ['JUL 2024', '25'], ['MAR 2026', '13'], ['MAY 2026', '18'], ['JUL 2026', '21'], ['SEP 2026', '23'], ['DEC 2026', '3']];   // dates in the court's orders
   function shCalendar(g, t) {                                  // 12 · nearly three years on, the court still hasn't decided
@@ -568,7 +569,7 @@
     const u = clamp((t - (T.cut[12] + 0.1)) / Math.max(0.8, T.court12 - T.cut[12])), k = Math.min(DATES.length - 1, Math.floor(u * (DATES.length - 1) + 0.0001));
     for (let i = 0; i <= k; i++) { const dt = DATES[i]; calendar(g, 540 + (i - k) * 14, 640 + (i - k) * 10, 1.25, dt[0], dt[1], i === k ? 1 : 0.5, { rot: ((i * 0.37) % 0.12) - 0.06 }); }
     stampMark(g, 540, 640, 0.9, 'NO VERDICT', ACC, clamp((t - (T.e12 - 0.07)) / 0.35));   // lands in the gap after "decided.", with its stamp
-    screen(g); mlabel(g, 'NEXT HEARING: 3 DEC 2026 · DELHI HC ORDER OF 23 SEP 2026', 540, 1000, pop(t, T.decided + 0.2), { size: 22, c: INK, align: 'center', bg: 'rgba(13,9,7,0.8)' });
+    screen(g); mlabel(g, 'NEXT HEARING: 3 DEC 2026', 540, 990, pop(t, T.decided + 0.2), { size: 36, c: INK, align: 'center', bg: 'rgba(13,9,7,0.8)' });
   }
   function shCertain(g, t) {                                   // 13 · but whoever wins, one thing is certain
     const T = times(); shotCam(g, t, 13, { push: 0.05, oy: 700 });
@@ -576,8 +577,8 @@
     g.save(); g.globalCompositeOperation = 'lighter'; const sp = g.createLinearGradient(0, 0, 0, 1100); sp.addColorStop(0, 'rgba(255,214,150,0.16)'); sp.addColorStop(1, 'rgba(255,214,150,0)');
     g.fillStyle = sp; g.beginPath(); g.moveTo(470, -100); g.lineTo(610, -100); g.lineTo(1000, 1100); g.lineTo(80, 1100); g.closePath(); g.fill(); g.restore();
     balance(g, 540, 400, 0.18 * Math.sin((t - T.cut[13]) * 2.4) * Math.exp(-(t - T.cut[13]) * 1.1), t, {
-      left: (x, y) => plate(g, x, y - 2, 0.42, 'KUNDAN LAL', { sub: 'GUJRAL', subA: 1, shine: 0.4 }),
-      right: (x, y) => plate(g, x, y - 2, 0.42, 'KUNDAN LAL', { sub: 'JAGGI', subA: 1, shine: 0.6 }),
+      left: (x, y) => plate(g, x, y - 2, 0.5, 'KUNDAN LAL', { sub: 'GUJRAL', subA: 1, shine: 0.4 }),
+      right: (x, y) => plate(g, x, y - 2, 0.5, 'KUNDAN LAL', { sub: 'JAGGI', subA: 1, shine: 0.6 }),
     });
   }
   function shFinale(g, t) {                                    // 14 · butter chicken was invented by Kundan Lal (the first line again)
@@ -599,17 +600,17 @@
       S.L = {
         h0a: L('Butter chicken was', TZ - 16, 112), h0b: L('invented by Kundan Lal.', TZ + 116, 90, { accent: [2, 3], tone: 'butter' }),
         h1a: L('Just one problem:', TZ - 16, 120), h1b: L('there were two.', TZ + 120, 120, { accent: [2], tone: 'red' }),
-        h2a: L('Gujral and Jaggi.', TZ - 16, 120, { accent: [0, 2], tone: 'butter' }), h2b: L('Friends from Peshawar.', TZ + 120, 104),
+        h2a: L('Gujral and Jaggi.', TZ - 16, 120, { accent: [0, 2], tone: 'butter' }), h2b: L('Friends from Peshawar.', TZ + 120, 92),
         h3a: L('1947: Partition.', TZ - 16, 120), h3b: L('Delhi. Moti Mahal.', TZ + 120, 116, { accent: [1, 2], tone: 'butter' }),
         h4a: L('So famous,', TZ - 16, 130), h4b: L('even Nehru came.', TZ + 124, 120, { accent: [1], tone: 'butter' }),
-        h5a: L('Today:', TZ - 16, 130), h5b: L('rival restaurants.', TZ + 124, 120, { accent: [0], tone: 'red' }),
+        h5a: L('Today:', TZ - 16, 130), h5b: L('rival restaurants.', TZ + 124, 114, { accent: [0], tone: 'red' }),
         h6a: L('Since 2024,', TZ - 16, 130), h6b: L('in court.', TZ + 124, 130, { accent: [1], tone: 'red' }),
         h7a: L('The lawsuit:', TZ - 16, 130), h7b: L('2,752 pages.', TZ + 124, 130, { accent: [0], tone: 'butter' }),
-        h8a: L('The Gujrals: Peshawar.', TZ - 16, 100, { accent: [1, 2], tone: 'butter' }), h8b: L('Leftovers, saved for later.', TZ + 112, 92),
-        h9a: L('The Jaggis: Delhi.', TZ - 16, 112, { accent: [1, 2], tone: 'butter' }), h9b: L('Late guests, little chicken.', TZ + 116, 92),
-        h10a: L('Too much, or too little:', TZ - 16, 100), h10b: L('it began with leftovers.', TZ + 112, 100, { accent: [3], tone: 'butter' }),
-        h11a: L('Nearly three years on:', TZ - 16, 104), h11b: L('no verdict.', TZ + 116, 130, { accent: [0, 1], tone: 'red' }),
-        h12a: L('But whoever wins,', TZ - 16, 120), h12b: L('one thing is certain.', TZ + 120, 112),
+        h8a: L('Gujrals: Peshawar.', TZ - 16, 110, { accent: [0, 1], tone: 'butter' }), h8b: L('Leftovers, saved.', TZ + 116, 110),
+        h9a: L('Jaggis: Delhi.', TZ - 16, 120, { accent: [0, 1], tone: 'butter' }), h9b: L('Not enough chicken.', TZ + 120, 108),
+        h10a: L('Too much, or too little:', TZ - 16, 92), h10b: L('it began with leftovers.', TZ + 108, 88, { accent: [3], tone: 'butter' }),
+        h11a: L('Nearly three years on:', TZ - 16, 94), h11b: L('no verdict.', TZ + 116, 130, { accent: [0, 1], tone: 'red' }),
+        h12a: L('But whoever wins,', TZ - 16, 116), h12b: L('one thing is certain.', TZ + 120, 106),
         h13a: L('Butter chicken was', TZ - 16, 112), h13b: L('invented by Kundan Lal.', TZ + 116, 90, { accent: [2, 3], tone: 'butter' }),
       };
       for (const k of ['h3a', 'h6a', 'h7b']) S.L[k].words.forEach((w) => w.classList.add('tnum'));
@@ -618,6 +619,7 @@
       const T = times(), L = S.L, g = S.g, c = T.cut; clear(g); clear(S.g2); LBL = S.g2;
       let i = 0; while (i < SHOTS.length - 1 && t >= c[i + 1]) i++;
       SHOTS[i](g, t);
+      screen(g); const vg = g.createRadialGradient(540, 780, 360, 540, 860, 1250); vg.addColorStop(0, 'rgba(0,0,0,0)'); vg.addColorStop(1, 'rgba(0,0,0,0.42)'); g.fillStyle = vg; g.fillRect(0, 0, W, H);   // the vignette, as in AI171
       const out = (p) => { const k = LINES.indexOf(p); return k < LINES.length - 1 ? T.a[LINES[k + 1]] - 0.2 : T.end - 0.05; };
       const R = (Lx, tins, tout, lit, acc = []) => { rise(t, Lx, tins.map((x) => x - 0.06), tout); light(t, Lx, lit, acc); };
       rise(t, L.h0a, [-0.5, -0.45, -0.4], out('s01')); light(t, L.h0a, wv('s01', 0, 1, 2));
@@ -629,8 +631,8 @@
       R(L.h5a, wv('s06', 0), out('s06'), wv('s06', 0)); R(L.h5b, wv('s06', 4, 5), out('s06'), wv('s06', 4, 5), [0]);
       R(L.h6a, wv('s07', 1, 2), out('s07'), wv('s07', 1, 2)); R(L.h6b, wv('s07', 6, 7), out('s07'), wv('s07', 6, 7), [1]);
       R(L.h7a, wv('s08', 0, 1), out('s08'), wv('s08', 0, 1)); R(L.h7b, [T.n2, T.pages], out('s08'), [T.n50, T.pages], [0]);
-      R(L.h8a, wv('s09', 0, 1, 3), out('s09'), wv('s09', 0, 1, 3), [1, 2]); R(L.h8b, wv('s09', 4, 6, 10, 12), out('s09'), wv('s09', 4, 6, 10, 12));
-      R(L.h9a, wv('s10', 0, 1, 3), out('s10'), wv('s10', 0, 1, 3), [1, 2]); R(L.h9b, wv('s10', 4, 5, 8, 9), out('s10'), wv('s10', 4, 5, 8, 9));
+      R(L.h8a, wv('s09', 1, 4), out('s09'), wv('s09', 1, 4), [0, 1]); R(L.h8b, wv('s09', 5, 7), out('s09'), wv('s09', 5, 7));
+      R(L.h9a, wv('s10', 1, 4), out('s10'), wv('s10', 1, 4), [0, 1]); R(L.h9b, wv('s10', 8, 9, 10), out('s10'), wv('s10', 8, 9, 10));
       R(L.h10a, wv('s11', 0, 1, 3, 4, 5), out('s11'), wv('s11', 0, 1, 3, 4, 5)); R(L.h10b, [T.either, T.root, T.root + 0.1, T.leftovers], out('s11'), [T.either, T.root, T.root + 0.1, T.leftovers], [3]);
       R(L.h11a, wv('s12', 0, 1, 2), out('s12'), wv('s12', 0, 1, 2)); R(L.h11b, [wi('s12', 6), wi('s12', 6) + 0.05], out('s12'), [T.decided, T.decided], [0, 1]);
       R(L.h12a, wv('s13', 0, 1, 2), out('s13'), wv('s13', 0, 1, 2)); R(L.h12b, wv('s13', 3, 4, 5, 6), out('s13'), wv('s13', 3, 4, 5, 6));
