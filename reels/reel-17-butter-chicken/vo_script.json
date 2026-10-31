@@ -4,6 +4,53 @@
  "speed": 1.0,
  "lines": [
   {
+   "id": "s01",
+   "text": "Butter chicken was invented by Kundan Lal.",
+   "text_kokoro": "Butter chicken was invented by [Kundan](/kˈʊndən/) [Lal](/lˈɑːl/)."
+  },
+  {
+   "id": "s01b",
+   "text": "Butter chicken was invented by Kundan Lal.",
+   "text_kokoro": "Butter chicken was invented by [Kundan](/kˈʌndən/) [Lal](/lˈɑːl/)."
+  },
+  {
+   "id": "s01c",
+   "text": "Butter chicken was invented by Kundan Lal."
+  },
+  {
+   "id": "s02",
+   "text": "There's just one problem. There were two of them."
+  },
+  {
+   "id": "s03",
+   "text": "Kundan Lal Gujral, and Kundan Lal Jaggi. Two friends from Peshawar.",
+   "text_kokoro": "[Kundan](/kˈʊndən/) [Lal](/lˈɑːl/) [Gujral](/ɡʊʤɹˈɑːl/), and [Kundan](/kˈʊndən/) [Lal](/lˈɑːl/) [Jaggi](/ʤˈʌɡi/). Two friends from [Peshawar](/pAʃˈɑːwəɹ/)."
+  },
+  {
+   "id": "s03b",
+   "text": "Kundan Lal Gujral, and Kundan Lal Jaggi. Two friends from Peshawar.",
+   "text_kokoro": "[Kundan](/kˈʊndən/) [Lal](/lˈɑːl/) [Gujral](/ɡˈʊʤɹɑːl/), and [Kundan](/kˈʊndən/) [Lal](/lˈɑːl/) [Jaggi](/ʤˈʌɡiː/). Two friends from [Peshawar](/pɛʃˈɑːwəɹ/)."
+  },
+  {
+   "id": "s03c",
+   "text": "Kundan Lal Gujral, and Kundan Lal Jaggi. Two friends from Peshawar."
+  },
+  {
+   "id": "s03d",
+   "text": "Kundan Lal Gujral, and Kundan Lal Jaggi. Two friends from Peshawar.",
+   "text_kokoro": "[Kundan](/kˈʊndən/) [Lal](/lˈɑːl/) [Gujral](/ɡʊʤəɹˈɑːl/), and [Kundan](/kˈʊndən/) [Lal](/lˈɑːl/) [Jaggi](/ʤˈʌɡi/). Two friends from [Peshawar](/pɛʃˈɑːwɑɹ/)."
+  },
+  {
+   "id": "s03e",
+   "text": "Kundan Lal Gujral, and Kundan Lal Jaggi. Two friends from Peshawar.",
+   "text_kokoro": "[Kundan](/kˈʊndən/) [Lal](/lˈɑːl/) [Gujral](/ɡˈʊʤɹɑːl/), and [Kundan](/kˈʊndən/) [Lal](/lˈɑːl/) [Jaggi](/ʤˈʌɡi/). Two friends from [Peshawar](/pAʃˈɑːvəɹ/)."
+  },
+  {
+   "id": "s03f",
+   "text": "Kundan Lal Gujral, and Kundan Lal Jaggi. Two friends from Peshawar.",
+   "text_kokoro": "[Kundan](/kˈʊndən/) [Lal](/lˈɑːl/) [Gujral](/ɡʊʤTˈɑːl/), and [Kundan](/kˈʊndən/) [Lal](/lˈɑːl/) [Jaggi](/ʤˈʌɡi/). Two friends from [Peshawar](/pɛʃˈɑːwˌɔɹ/)."
+  },
+  {
    "id": "s03g",
    "text": "Kundan Lal Gujral and Kundan Lal Jaggi. Two friends from Peshawar.",
    "text_kokoro": "[Kundan](/kˈʊndən/) [Lal](/lˈɑːl/) [Gujral](/ɡˈʊʤɹɑːl/) and [Kundan](/kˈʊndən/) [Lal](/lˈɑːl/) [Jaggi](/ʤˈʌɡi/). Two friends from [Peshawar](/pAʃˈɑːvəɹ/)."
@@ -17,6 +64,110 @@
    "id": "s03k",
    "text": "Two friends from Peshawar: Kundan Lal Gujral, and Kundan Lal Jaggi.",
    "text_kokoro": "Two friends from [Peshawar](/pAʃˈɑːvəɹ/): [Kundan](/kˈʊndən/) [Lal](/lˈɑːl/) [Gujral](/ɡˈʊʤɹɑːl/), and [Kundan](/kˈʊndən/) [Lal](/lˈɑːl/) [Jaggi](/ʤˈʌɡi/)."
+  },
+  {
+   "id": "s04",
+   "text": "Partition brought them to Delhi, where they ran one restaurant together: Moti Mahal.",
+   "text_kokoro": "Partition brought them to Delhi, where they ran one restaurant together: [Moti](/mˈOti/) [Mahal](/mˈɛhɛl/)."
+  },
+  {
+   "id": "s04b",
+   "text": "Partition brought them to Delhi, where they ran one restaurant together: Moti Mahal.",
+   "text_kokoro": "Partition brought them to Delhi, where they ran one restaurant together: [Moti](/mˈOti/) [Mahal](/məhˈɑːl/)."
+  },
+  {
+   "id": "s04c",
+   "text": "Partition brought them to Delhi, where they ran one restaurant together: Moti Mahal."
+  },
+  {
+   "id": "s05",
+   "text": "Its butter chicken got so famous, even Nehru came to eat.",
+   "text_kokoro": "Its butter chicken got so famous, even [Nehru](/nˈAɹuː/) came to eat."
+  },
+  {
+   "id": "s05c",
+   "text": "Its butter chicken got so famous, even Nehru came to eat."
+  },
+  {
+   "id": "s06",
+   "text": "Today, their families run rival restaurants."
+  },
+  {
+   "id": "s07",
+   "text": "And since twenty twenty-four, they've been in court over who invented butter chicken."
+  },
+  {
+   "id": "s08",
+   "text": "The lawsuit is two thousand seven hundred and fifty-two pages long."
+  },
+  {
+   "id": "s09",
+   "text": "The Gujrals say: Peshawar. Leftover chicken, saved in a gravy for the next day.",
+   "text_kokoro": "The [Gujrals](/ɡʊʤɹˈɑːlz/) say: [Peshawar](/pAʃˈɑːwəɹ/). Leftover chicken, saved in a gravy for the next day."
+  },
+  {
+   "id": "s09b",
+   "text": "The Gujrals say: Peshawar. Leftover chicken, saved in a gravy for the next day.",
+   "text_kokoro": "The [Gujrals](/ɡˈʊʤɹɑːlz/) say: [Peshawar](/pɛʃˈɑːwəɹ/). Leftover chicken, saved in a gravy for the next day."
+  },
+  {
+   "id": "s09d",
+   "text": "The Gujral family says: Peshawar. Leftover chicken, saved in a gravy for the next day.",
+   "text_kokoro": "The [Gujral](/ɡʊʤəɹˈɑːl/) family says: [Peshawar](/pɛʃˈɑːwɑɹ/). Leftover chicken, saved in a gravy for the next day."
+  },
+  {
+   "id": "s09e",
+   "text": "The Gujral family says: Peshawar. Leftover chicken, saved in a gravy for the next day.",
+   "text_kokoro": "The [Gujral](/ɡˈʊʤɹɑːl/) family says: [Peshawar](/pAʃˈɑːvəɹ/). Leftover chicken, saved in a gravy for the next day."
+  },
+  {
+   "id": "s09f",
+   "text": "The Gujral family says: Peshawar. Leftover chicken, saved in a gravy for the next day.",
+   "text_kokoro": "The [Gujral](/ɡʊʤTˈɑːl/) family says: [Peshawar](/pɛʃˈɑːwˌɔɹ/). Leftover chicken, saved in a gravy for the next day."
+  },
+  {
+   "id": "s10",
+   "text": "The Jaggis say: Delhi. Late guests, and too little chicken.",
+   "text_kokoro": "The [Jaggis](/ʤˈʌɡiz/) say: Delhi. Late guests, and too little chicken."
+  },
+  {
+   "id": "s10b",
+   "text": "The Jaggis say: Delhi. Late guests, and too little chicken.",
+   "text_kokoro": "The [Jaggis](/ʤˈʌɡiːz/) say: Delhi. Late guests, and too little chicken."
+  },
+  {
+   "id": "s10d",
+   "text": "The Jaggi family says: Delhi. Late guests, and not enough chicken.",
+   "text_kokoro": "The [Jaggi](/ʤˈʌɡi/) family says: Delhi. Late guests, and not enough chicken."
+  },
+  {
+   "id": "s11",
+   "text": "Too much chicken, or too little. Either way, the root cause was leftovers."
+  },
+  {
+   "id": "s12",
+   "text": "Nearly three years on, the court still hasn't decided."
+  },
+  {
+   "id": "s13",
+   "text": "But whoever wins, one thing is certain."
+  },
+  {
+   "id": "s13b",
+   "text": "But whoever wins, one thing is certain.",
+   "text_kokoro": "But whoever wins, one thing is [certain](/sˈɜɹtən/)."
+  },
+  {
+   "id": "s14",
+   "text": "Butter chicken was invented by Kundan Lal.",
+   "text_kokoro": "Butter chicken was invented by [Kundan](/kˈʊndən/) [Lal](/lˈɑːl/).",
+   "speed": 0.96
+  },
+  {
+   "id": "s14b",
+   "text": "Butter chicken was invented by Kundan Lal.",
+   "text_kokoro": "Butter chicken was invented by [Kundan](/kˈʌndən/) [Lal](/lˈɑːl/).",
+   "speed": 0.96
   }
  ],
  "say": {

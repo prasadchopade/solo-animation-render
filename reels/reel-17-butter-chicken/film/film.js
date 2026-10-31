@@ -315,9 +315,10 @@
     bowl(g, 380, 960, 110, t, { steamA: 0.8 });
     const kC = o.cap ?? 0;                                                                      // the cap and the rose, on "Nehru"
     if (kC > 0) {
-      g.save(); g.globalAlpha *= kC; g.translate(740, 985 - 30 * (1 - kC));
+      g.save(); g.globalAlpha *= kC; g.translate(730, 985 - 30 * (1 - kC)); g.scale(1.35, 1.35);
       g.fillStyle = 'rgba(0,0,0,0.3)'; g.beginPath(); g.ellipse(0, 6, 120, 18, 0, 0, TAU); g.fill();
-      g.fillStyle = '#f6f3ec'; g.beginPath(); g.moveTo(-135, 0); g.lineTo(-118, -46); g.quadraticCurveTo(-60, -60, 0, -52); g.quadraticCurveTo(60, -60, 118, -46); g.lineTo(135, 0); g.closePath(); g.fill();
+      g.fillStyle = '#f6f3ec'; g.beginPath(); g.moveTo(-140, 0); g.lineTo(-128, -40); g.quadraticCurveTo(-70, -72, 0, -64); g.quadraticCurveTo(70, -72, 128, -40); g.lineTo(140, 0); g.closePath(); g.fill();
+      g.strokeStyle = '#bdb6a6'; g.lineWidth = 3; g.beginPath(); g.moveTo(0, -64); g.lineTo(0, -26); g.stroke();
       g.fillStyle = '#e4ded0'; g.beginPath(); g.moveTo(-135, 0); g.lineTo(-128, -22); g.lineTo(128, -22); g.lineTo(135, 0); g.closePath(); g.fill();
       g.strokeStyle = '#cfc8b8'; g.lineWidth = 3; g.beginPath(); g.moveTo(-118, -46); g.quadraticCurveTo(0, -40, 118, -46); g.stroke();
       g.translate(150, -6); g.strokeStyle = '#2f6a22'; g.lineWidth = 5; g.beginPath(); g.moveTo(0, 0); g.lineTo(60, -10); g.stroke();
@@ -441,7 +442,7 @@
   function shPhoto(g, t) {                                     // 2 · Kundan Lal Gujral and Kundan Lal Jaggi: two friends from Peshawar
     const T = times(); shotCam(g, t, 2, { push: 0.07, oy: 640, drift: 3 });
     wall(g, '#120b07', '#24150c', [540, 640, 700, '#ffb070', 0.14]);
-    photo(g, 540, 720, 800, 800, t, { l: pop(t, T.gujral - 0.05), r: pop(t, T.jaggi - 0.05) });
+    photo(g, 540, 775, 770, 770, t, { l: pop(t, T.gujral - 0.05), r: pop(t, T.jaggi - 0.05) });
     const fl = 1 - clamp((t - T.cut[2]) / 0.35); if (fl > 0) { screen(g); g.fillStyle = `rgba(255,248,236,${(0.6 * fl).toFixed(3)})`; g.fillRect(0, 0, W, H); }
     eyebrow(g, 'PESHAWAR · THE 1930s (OUR DRAWING)', t, T.cut[2] + 0.05);
   }
@@ -493,8 +494,8 @@
     if (kB > 0) { bowl(g, 540, 600 - 40 * (1 - kB), 120, t, { steamA: kB }); }
     screen(g);
     mlabel(g, 'EXHIBIT A', 540, 515, pop(t, T.bc7 + 0.2), { size: 34, c: BUT, align: 'center', bg: 'rgba(13,9,7,0.75)', edge: BUT });
-    mlabel(g, 'DELHI HIGH COURT · CS(COMM) 26/2024', 540, 950, pop(t, T.court7 - 0.05), { size: 32, c: INK, align: 'center', bg: 'rgba(13,9,7,0.8)' });
-    mlabel(g, 'GUJRAL FAMILY v. DARYAGANJ (JAGGI FAMILY)', 540, 1000, pop(t, T.court7 + 0.1), { size: 26, c: INK2, align: 'center' });
+    mlabel(g, 'DELHI HIGH COURT · CS(COMM) 26/2024', 540, 840, pop(t, T.court7 - 0.05), { size: 32, c: INK, align: 'center', bg: 'rgba(13,9,7,0.8)' });
+    mlabel(g, 'GUJRAL FAMILY v. DARYAGANJ (JAGGI FAMILY)', 540, 892, pop(t, T.court7 + 0.1), { size: 26, c: INK2, align: 'center' });
     eyebrow(g, 'SINCE JANUARY 2024', t, T.y2024 - 0.1);
   }
   function shStack(g, t) {                                     // 8 · the lawsuit is 2,752 pages long
