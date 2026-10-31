@@ -4,13 +4,85 @@
  "speed": 1.0,
  "lines": [
   {
+   "id": "s01",
+   "text": "Diwali's sky is missing a colour.",
+   "text_kokoro": "[Diwali's](/dɪvˈɑːliz/) sky is missing a color."
+  },
+  {
+   "id": "s01b",
+   "text": "Diwali's sky is missing a colour.",
+   "text_kokoro": "[Diwali's](/diːvˈɑːliz/) sky is missing a color."
+  },
+  {
+   "id": "s01c",
+   "text": "Diwali's sky is missing a colour.",
+   "text_kokoro": "Diwali's sky is missing a color."
+  },
+  {
+   "id": "s02",
+   "text": "Every colour up there is a burning metal.",
+   "text_kokoro": "Every color up there is a burning metal."
+  },
+  {
+   "id": "s03",
+   "text": "Red is strontium. Orange, calcium. Yellow, sodium. Green, barium."
+  },
+  {
+   "id": "s04",
+   "text": "But a true blue? Almost impossible to find."
+  },
+  {
+   "id": "s05",
+   "text": "Blue comes from copper."
+  },
+  {
+   "id": "s06",
+   "text": "And copper's blue is fragile. Too hot, and it washes out to white."
+  },
+  {
    "id": "s07",
    "text": "Too cool, and it barely glows.",
    "speed": 0.95
   },
   {
+   "id": "s08",
+   "text": "But fireworks have to burn hot. So blue lives in a tiny window."
+  },
+  {
+   "id": "s09",
+   "text": "Makers even add chlorine, sometimes from plastic, to help it glow."
+  },
+  {
+   "id": "s10",
+   "text": "A perfect blue is the holy grail of fireworks."
+  },
+  {
+   "id": "s11",
+   "text": "And in India, green has a problem too."
+  },
+  {
    "id": "s12",
    "text": "In two thousand eighteen, India's Supreme Court banned barium from firecrackers. Barium makes green."
+  },
+  {
+   "id": "s13",
+   "text": "So the green in green crackers means less pollution, not the colour.",
+   "text_kokoro": "So the green in green crackers means less pollution, not the color."
+  },
+  {
+   "id": "s14",
+   "text": "If you spot a deep blue this Diwali, you're watching the hardest colour in chemistry.",
+   "text_kokoro": "If you spot a deep blue this [Diwali](/dɪvˈɑːli/), you're watching the hardest color in chemistry."
+  },
+  {
+   "id": "s14b",
+   "text": "If you spot a deep blue this Diwali, you're watching the hardest colour in chemistry.",
+   "text_kokoro": "If you spot a deep blue this [Diwali](/diːvˈɑːli/), you're watching the hardest color in chemistry."
+  },
+  {
+   "id": "s14c",
+   "text": "If you spot a deep blue this Diwali, you're watching the hardest colour in chemistry.",
+   "text_kokoro": "If you spot a deep blue this Diwali, you're watching the hardest color in chemistry."
   }
  ],
  "say": {

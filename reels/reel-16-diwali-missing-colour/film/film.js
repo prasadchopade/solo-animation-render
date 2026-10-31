@@ -129,7 +129,7 @@
     g.fillStyle = '#fff6dc'; g.beginPath(); g.arc(hx, hy, 5, 0, TAU); g.fill(); g.restore();
   }
   function show(g, t, list) {                                  // a list of { x, y, t0, col, ... }: rockets, glows, bursts
-    for (const b of list) { if (b.rise !== false) rocket(g, b.x + (b.dx ?? 0), 1180, b.x, b.y, t, b.t0 - (b.rise ?? 0.7), b.t0, b.col === FW.white ? FW.gold : b.col); skyGlow(g, b.x, b.y, b.glowCol || b.col, t, b.t0, b.life ?? 1.6, b.glow ?? 0.2); }
+    for (const b of list) { if (b.rise !== false) rocket(g, b.x + (b.dx ?? 0), b.y0 ?? 1180, b.x, b.y, t, b.t0 - (b.rise ?? 0.7), b.t0, b.col === FW.white ? FW.gold : b.col); skyGlow(g, b.x, b.y, b.glowCol || b.col, t, b.t0, b.life ?? 1.6, b.glow ?? 0.2); }
     for (const b of list) burst(g, b.x, b.y, t, b.t0, b);
   }
 
@@ -327,7 +327,7 @@
     eyebrow(g, 'TOO HOT: THE BLUE WASHES OUT (PBS NOVA)', t, T.cut[5] + 0.05);
   }
   function shCool(g, t) {                                      // 6 · too cool, and it's too faint to see
-    const T = times(), heat = lerp(0.95, 0.1, eio(clamp((t - T.cut[6]) / Math.max(0.6, T.faint - T.cut[6] + 0.2))));
+    const T = times(), heat = lerp(0.55, 0.1, eio(clamp((t - T.cut[6] - 0.1) / Math.max(0.6, T.faint - T.cut[6] + 0.1))));
     lab(g, t, 6, heat);
     screen(g);
     mlabel(g, '← COOLER', 300, 1000, clamp((t - T.cool) / 0.3), { size: 28, c: '#7fa0ff' });
@@ -365,8 +365,6 @@
     city(g, t, { lit: FW.deep, lk: clamp((t - T.cut[9] - 0.15) / 0.4) });
     glyph(g, 300, 1112, 0.86, t, { look: [0.4, -0.9], mood: 'aha', mouth: 'o' });
     screen(g);
-    const kg = eo(clamp((t - (T.grail - 0.2)) / 0.4));
-    mlabel(g, 'THE HOLY GRAIL OF FIREWORKS', 540, 920, kg, { size: 30, c: '#bcd0ff', align: 'center', bg: 'rgba(7,9,12,0.6)' });
   }
   function shIndia(g, t) {                                     // 10 · and in India, green has a problem too
     const T = times(); shotCam(g, t, 10, { push: 0.04, oy: 900 });
@@ -389,28 +387,30 @@
     mlabel(g, 'SUPREME COURT OF INDIA · ORDER OF 31 OCT 2018:', 540, 930, clamp((t - (T.y2018 - 0.1)) / 0.3), { size: 22, c: INK2, align: 'center' });
     mlabel(g, '“BARIUM SALTS IN THE MANUFACTURE OF FIRECRACKERS', 540, 966, clamp((t - (T.y2018 - 0.1)) / 0.3), { size: 22, c: INK, align: 'center' });
     mlabel(g, 'WILL NOT BE USED”', 540, 1000, clamp((t - (T.y2018 - 0.1)) / 0.3), { size: 22, c: INK, align: 'center' });
-    mlabel(g, 'BARIUM = GREEN', 540, 1060, clamp((t - (T.makes - 0.1)) / 0.3), { size: 30, c: FW.green, align: 'center', bg: 'rgba(7,9,12,0.8)' });
   }
   function shGreenCracker(g, t) {                              // 12 · the green in green crackers means less pollution, not the colour
     const T = times(); shotCam(g, t, 12, { push: 0.03, oy: 900 });
     sky(g);
     const tB = T.pollution - 0.2;
-    show(g, t, [{ x: 600, y: 470, t0: tB, col: FW.gold, seed: 81, n: 80, v: 460, glitter: true, rise: 0.6, dx: 0 }, { x: 600, y: 470, t0: tB + 0.25, col: FW.red, seed: 82, n: 50, v: 300, rise: false }]);
+    show(g, t, [{ x: 600, y: 470, t0: tB, col: FW.gold, seed: 81, n: 110, v: 560, glitter: true, rise: 0.75, dx: -60, y0: 1020 }, { x: 600, y: 470, t0: tB + 0.25, col: FW.red, seed: 82, n: 60, v: 360, rise: false }]);
     city(g, t);
-    crackerBox(g, 720, 1040, 0.55, eo(clamp((t - T.cut[12] + 0.1) / 0.35)));
+    crackerBox(g, 540, 1052, 0.6, eo(clamp((t - T.cut[12] + 0.15) / 0.35)));
     glyph(g, 300, 1112, 0.86, t, { look: t > tB ? [0.6, -0.9] : [0.9, 0.2], mood: t > T.colour13 - 0.3 ? 'skeptical' : 'neutral', prop: false, armR: [1.0, 0.2] });
     screen(g);
     mlabel(g, '"GREEN" = LOWER EMISSIONS (CSIR-NEERI)', 540, 860, clamp((t - (T.pollution - 0.1)) / 0.3), { size: 26, c: '#7fe0a0', align: 'center', bg: 'rgba(7,9,12,0.75)' });
   }
   function shFinale(g, t) {                                    // 13 · spot a deep blue this Diwali: the hardest colour in chemistry
     const T = times(); shotCam(g, t, 13, { push: 0.05, oy: 900 });
-    const tb0 = T.blue14 - 0.25, kL = clamp((t - tb0) / 0.5) * (1 - 0.4 * clamp((t - tb0 - 2.6) / 1.5));
+    const tb0 = T.blue14 - 0.25, kL = clamp((t - tb0) / 0.5);
     sky(g, FW.deep, kL);
     show(g, t, [{ x: 250, y: 480, t0: T.cut[13] - 0.2, col: FW.red, seed: 91, rise: false }, { x: 820, y: 420, t0: T.cut[13] + 0.3, col: FW.gold, seed: 92, glitter: true },
       { x: 560, y: 520, t0: tb0, col: FW.deep, seed: 93, n: 120, v: 580, life: 3.0, glow: 0.42, rise: 0.6 },
-      { x: 560, y: 520, t0: tb0 + 0.4, col: '#a8c0ff', seed: 94, n: 64, v: 320, life: 2.4, glitter: true, rise: false, glow: 0 }]);
+      { x: 560, y: 520, t0: tb0 + 0.4, col: '#a8c0ff', seed: 94, n: 64, v: 320, life: 2.4, glitter: true, rise: false, glow: 0 },
+      { x: 300, y: 380, t0: T.hardest - 0.25, col: FW.deep, seed: 95, n: 110, v: 520, life: 2.8, glow: 0.36, rise: 0.55 },
+      { x: 820, y: 560, t0: T.hardest + 0.25, col: FW.blue, seed: 96, n: 90, v: 460, life: 2.6, glow: 0.3, rise: 0.55 },
+      { x: 300, y: 380, t0: T.hardest + 0.15, col: '#a8c0ff', seed: 97, n: 50, v: 260, life: 2.2, glitter: true, rise: false, glow: 0 }]);
     city(g, t, { lit: FW.deep, lk: kL });
-    glyph(g, 300, 1112, 0.86, t, { look: t > tb0 ? [0.45, -0.95] : [Math.sin(t * 1.5) * 0.8, -0.6], mood: t > tb0 + 0.2 ? 'happy' : 'skeptical', armL: t > tb0 + 0.3 ? [2.5, -0.6] : [0.35, 0.2] });
+    glyph(g, 300, 1112, 0.86, t, { look: t > tb0 ? [0.45, -0.95] : [Math.sin(t * 1.5) * 0.8, -0.6], mood: t > tb0 + 0.2 ? 'happy' : 'skeptical', armL: t > tb0 + 0.3 ? [2.6, -0.5] : [0.35, 0.2], armR: t > T.hardest ? [2.3, -0.4] : [1.55, -0.3] });
   }
   const SHOTS = [shSky, shMetal, shPalette, shNoBlue, shCopper, shHot, shCool, shWindow, shChlorine, shGrail, shIndia, shBan, shGreenCracker, shFinale];
 
@@ -428,7 +428,7 @@
         h4a: L('Blue comes from copper.', TZ - 16, 90, { accent: [3], tone: 'copper' }),
         h5a: L('Too hot:', TZ - 16, 130), h5b: L('blue turns white.', TZ + 124, 116, { accent: [0], tone: 'blue' }),
         h6a: L('Too cool:', TZ - 16, 130), h6b: L('it barely glows.', TZ + 124, 116),
-        h7a: L('Blue lives in', TZ - 16, 130), h7b: L('a tiny window.', TZ + 124, 130, { accent: [2], tone: 'blue' }),
+        h7a: L('Fireworks burn hot.', TZ - 16, 108), h7b: L('Blue: a tiny window.', TZ + 120, 104, { accent: [0, 3], tone: 'blue' }),
         h8a: L('Makers add chlorine,', TZ - 16, 104), h8b: L('even from plastic.', TZ + 116, 112, { accent: [2] }),
         h9a: L('The holy grail', TZ - 16, 130, { accent: [1, 2], tone: 'blue' }), h9b: L('of fireworks.', TZ + 124, 130),
         h10a: L("India's green", TZ - 16, 130, { accent: [1], tone: 'green' }), h10b: L('has a problem too.', TZ + 124, 112),
@@ -452,11 +452,11 @@
       R(L.h4a, wv('s05', 0, 1, 2, 3), out(4), wv('s05', 0, 1, 2, 3), [3]);
       R(L.h5a, wv('s06', 5, 6), out(5), wv('s06', 5, 6)); R(L.h5b, [wi('s06', 2), wi('s06', 9), T.white], out(5), [wi('s06', 2), wi('s06', 9), T.white], [0]);
       R(L.h6a, wv('s07', 0, 1), out(6), wv('s07', 0, 1)); R(L.h6b, wv('s07', 3, 4, 5), out(6), wv('s07', 3, 4, 5));
-      R(L.h7a, wv('s08', 7, 8, 9), out(7), wv('s08', 7, 8, 9)); R(L.h7b, wv('s08', 10, 11, 12), out(7), wv('s08', 10, 11, 12), [2]);
+      R(L.h7a, wv('s08', 1, 4, 5), out(7), wv('s08', 1, 4, 5)); R(L.h7b, wv('s08', 7, 10, 11, 12), out(7), wv('s08', 7, 10, 11, 12), [0, 3]);
       R(L.h8a, wv('s09', 0, 2, 3), out(8), wv('s09', 0, 2, 3)); R(L.h8b, wv('s09', 4, 5, 6), out(8), wv('s09', 4, 5, 6), [2]);
       R(L.h9a, wv('s10', 4, 5, 6), out(9), wv('s10', 4, 5, 6), [1, 2]); R(L.h9b, wv('s10', 7, 8), out(9), wv('s10', 7, 8));
       R(L.h10a, wv('s11', 2, 3), out(10), wv('s11', 2, 3), [1]); R(L.h10b, wv('s11', 4, 5, 6, 7), out(10), wv('s11', 4, 5, 6, 7));
-      R(L.h11a, [T.y2018, T.barium, T.banned], out(11), [T.y2018, T.barium, T.banned], [2]); R(L.h11b, wv('s12', 11, 12, 13), out(11), wv('s12', 11, 12, 13), [2]);
+      R(L.h11a, [T.y2018, T.banned - 0.05, T.banned], out(11), [T.y2018, T.banned - 0.05, T.banned], [2]); R(L.h11b, wv('s12', 11, 12, 13), out(11), wv('s12', 11, 12, 13), [2]);
       R(L.h12a, [T.gc, wi('s13', 5)], out(12), [T.gc, wi('s13', 5)], [0]); R(L.h12b, wv('s13', 7, 8), out(12), wv('s13', 7, 8));
       R(L.h13a, wv('s14', 2, 3, 4, 5), T.end - 0.05, wv('s14', 2, 3, 4, 5), [3]); R(L.h13b, wv('s14', 11, 12, 13, 14), T.end - 0.05, wv('s14', 11, 12, 13, 14));
     },
