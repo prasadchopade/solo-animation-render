@@ -1,118 +1,47 @@
 {
- "note": "Reel 17: Butter Chicken's Two Inventors. Butter chicken is credited to Kundan Lal: Kundan Lal Gujral (c.1902-1997) or Kundan Lal Jaggi (1924-2018), friends and partners from Peshawar who, after Partition, ran Moti Mahal in Daryaganj, Delhi (Nehru among its diners: Reuters 2024). Their families now run rival chains (Moti Mahal Delux; Daryaganj), and since January 2024 they have been in the Delhi High Court (Rupa Gujral & Ors v Daryaganj Hospitality, CS(COMM) 26/2024; a 2,752-page suit: NPR, Reuters). The Gujrals say Gujral made it in Peshawar to save leftover tandoori chicken in a gravy for the next day; the Jaggis say Jaggi made it in Delhi to stretch a few pieces for late guests (NPR 2024). On 23 Sep 2026 the hearing was deferred to 3 Dec 2026 (Delhi HC order). Facts: docs/research.md. Kokoro af_heart, speed 1.0. Indian names are planned by hand (memory: indian-word-pronunciation): कुंदन लाल [kʊndən laːl] 'KOON-dun LAAL', गुजराल [ɡʊdʒraːl] 'goo-JRAAL', जग्गी [dʒəɡːiː] 'JUG-gee', पेशावर [peːʃaːʋər] 'pay-SHAA-war', मोती महल [moːtiː mɛɦɛl] 'MO-tee MEH-hel', नेहरू [neːɦruː] 'NAY-roo'. The b lines try the other plan, the c lines Kokoro's own (the plain spelling), for the ears to judge.",
+ "note": "Reel 17: Butter Chicken's Two Inventors. Butter chicken is credited to Kundan Lal: Kundan Lal Gujral (c.1902-1997) or Kundan Lal Jaggi (1924-2018), friends and partners from Peshawar who, after Partition, ran Moti Mahal in Daryaganj, Delhi (Nehru among its diners: Reuters 2024). Their families now run rival chains (Moti Mahal Delux; Daryaganj), and since January 2024 they have been in the Delhi High Court (Rupa Gujral & Ors v Daryaganj Hospitality, CS(COMM) 26/2024; a 2,752-page suit: NPR, Reuters). The Gujrals say Gujral made it in Peshawar to save leftover tandoori chicken in a gravy for the next day; the Jaggis say Jaggi made it in Delhi to stretch a few pieces for late guests (NPR 2024). On 23 Sep 2026 the hearing was deferred to 3 Dec 2026 (Delhi HC order). Facts: docs/research.md. Kokoro af_heart, speed 1.0. Indian names are planned by hand (memory: indian-word-pronunciation): कुंदन लाल [kʊndən laːl] 'KOON-dun LAAL', गुजराल [ɡʊdʒraːl] 'goo-JRAAL', जग्गी [dʒəɡːiː] 'JUG-gee', पेशावर [peːʃaːʋər] 'pay-SHAA-war', मोती महल [moːtiː mɛɦɛl] 'MO-tee MEH-hel', नेहरू [neːɦruː] 'NAY-roo'. The b lines try the other plan, the c lines Kokoro's own (the plain spelling), for the ears to judge. Round 1 (run 41227181066): Kundan Lal plan A was heard 'k ʌ n d ə n l ɑː l' and written 'Kundan Lal' by large-v3 (plain: 'Cunden Lau'); Jaggi 'dʒ ʌ ɡ i'; Moti Mahal and Nehru right with their plans (plain: 'Modi Mahal', 'Nero'). Gujral lost its j in the dʒɹ cluster ('ɡ ə d ɹ ɑː l', small.en 'Gedral'), the plural 'Gujrals' became 'good draws', Peshawar glided to 'pay-SHOW-er' ('p eɪ ʃ aʊ ɚ', once 'pay shower'), 'certain.' was clipped to 'cert' at the line's end, and 'Jaggis'/'Delhi'/'too little' were written 'Juggies'/'deli'/'two little' (the sounds were right). Round 2 (s03d-f, s09d-f, s10d, s13b): three new plans each for Gujral (/ɡʊʤəɹˈɑːl/, /ɡˈʊʤɹɑːl/, /ɡʊʤTˈɑːl/) and Peshawar (/pɛʃˈɑːwɑɹ/, /pAʃˈɑːvəɹ/, /pɛʃˈɑːwˌɔɹ/), s09/s10 as 'The Gujral family says' / 'The Jaggi family says', s10's 'not enough chicken', a crisper 'certain'.",
  "voice": "af_heart",
  "speed": 1.0,
  "lines": [
   {
-   "id": "s01",
-   "text": "Butter chicken was invented by Kundan Lal.",
-   "text_kokoro": "Butter chicken was invented by [Kundan](/kˈʊndən/) [Lal](/lˈɑːl/)."
-  },
-  {
-   "id": "s01b",
-   "text": "Butter chicken was invented by Kundan Lal.",
-   "text_kokoro": "Butter chicken was invented by [Kundan](/kˈʌndən/) [Lal](/lˈɑːl/)."
-  },
-  {
-   "id": "s01c",
-   "text": "Butter chicken was invented by Kundan Lal."
-  },
-  {
-   "id": "s02",
-   "text": "There's just one problem. There were two of them."
-  },
-  {
-   "id": "s03",
+   "id": "s03d",
    "text": "Kundan Lal Gujral, and Kundan Lal Jaggi. Two friends from Peshawar.",
-   "text_kokoro": "[Kundan](/kˈʊndən/) [Lal](/lˈɑːl/) [Gujral](/ɡʊʤɹˈɑːl/), and [Kundan](/kˈʊndən/) [Lal](/lˈɑːl/) [Jaggi](/ʤˈʌɡi/). Two friends from [Peshawar](/pAʃˈɑːwəɹ/)."
+   "text_kokoro": "[Kundan](/kˈʊndən/) [Lal](/lˈɑːl/) [Gujral](/ɡʊʤəɹˈɑːl/), and [Kundan](/kˈʊndən/) [Lal](/lˈɑːl/) [Jaggi](/ʤˈʌɡi/). Two friends from [Peshawar](/pɛʃˈɑːwɑɹ/)."
   },
   {
-   "id": "s03b",
+   "id": "s03e",
    "text": "Kundan Lal Gujral, and Kundan Lal Jaggi. Two friends from Peshawar.",
-   "text_kokoro": "[Kundan](/kˈʊndən/) [Lal](/lˈɑːl/) [Gujral](/ɡˈʊʤɹɑːl/), and [Kundan](/kˈʊndən/) [Lal](/lˈɑːl/) [Jaggi](/ʤˈʌɡiː/). Two friends from [Peshawar](/pɛʃˈɑːwəɹ/)."
+   "text_kokoro": "[Kundan](/kˈʊndən/) [Lal](/lˈɑːl/) [Gujral](/ɡˈʊʤɹɑːl/), and [Kundan](/kˈʊndən/) [Lal](/lˈɑːl/) [Jaggi](/ʤˈʌɡi/). Two friends from [Peshawar](/pAʃˈɑːvəɹ/)."
   },
   {
-   "id": "s03c",
-   "text": "Kundan Lal Gujral, and Kundan Lal Jaggi. Two friends from Peshawar."
+   "id": "s03f",
+   "text": "Kundan Lal Gujral, and Kundan Lal Jaggi. Two friends from Peshawar.",
+   "text_kokoro": "[Kundan](/kˈʊndən/) [Lal](/lˈɑːl/) [Gujral](/ɡʊʤTˈɑːl/), and [Kundan](/kˈʊndən/) [Lal](/lˈɑːl/) [Jaggi](/ʤˈʌɡi/). Two friends from [Peshawar](/pɛʃˈɑːwˌɔɹ/)."
   },
   {
-   "id": "s04",
-   "text": "Partition brought them to Delhi, where they ran one restaurant together: Moti Mahal.",
-   "text_kokoro": "Partition brought them to Delhi, where they ran one restaurant together: [Moti](/mˈOti/) [Mahal](/mˈɛhɛl/)."
+   "id": "s09d",
+   "text": "The Gujral family says: Peshawar. Leftover chicken, saved in a gravy for the next day.",
+   "text_kokoro": "The [Gujral](/ɡʊʤəɹˈɑːl/) family says: [Peshawar](/pɛʃˈɑːwɑɹ/). Leftover chicken, saved in a gravy for the next day."
   },
   {
-   "id": "s04b",
-   "text": "Partition brought them to Delhi, where they ran one restaurant together: Moti Mahal.",
-   "text_kokoro": "Partition brought them to Delhi, where they ran one restaurant together: [Moti](/mˈOti/) [Mahal](/məhˈɑːl/)."
+   "id": "s09e",
+   "text": "The Gujral family says: Peshawar. Leftover chicken, saved in a gravy for the next day.",
+   "text_kokoro": "The [Gujral](/ɡˈʊʤɹɑːl/) family says: [Peshawar](/pAʃˈɑːvəɹ/). Leftover chicken, saved in a gravy for the next day."
   },
   {
-   "id": "s04c",
-   "text": "Partition brought them to Delhi, where they ran one restaurant together: Moti Mahal."
+   "id": "s09f",
+   "text": "The Gujral family says: Peshawar. Leftover chicken, saved in a gravy for the next day.",
+   "text_kokoro": "The [Gujral](/ɡʊʤTˈɑːl/) family says: [Peshawar](/pɛʃˈɑːwˌɔɹ/). Leftover chicken, saved in a gravy for the next day."
   },
   {
-   "id": "s05",
-   "text": "Its butter chicken got so famous, even Nehru came to eat.",
-   "text_kokoro": "Its butter chicken got so famous, even [Nehru](/nˈAɹuː/) came to eat."
+   "id": "s10d",
+   "text": "The Jaggi family says: Delhi. Late guests, and not enough chicken.",
+   "text_kokoro": "The [Jaggi](/ʤˈʌɡi/) family says: Delhi. Late guests, and not enough chicken."
   },
   {
-   "id": "s05c",
-   "text": "Its butter chicken got so famous, even Nehru came to eat."
-  },
-  {
-   "id": "s06",
-   "text": "Today, their families run rival restaurants."
-  },
-  {
-   "id": "s07",
-   "text": "And since twenty twenty-four, they've been in court over who invented butter chicken."
-  },
-  {
-   "id": "s08",
-   "text": "The lawsuit is two thousand seven hundred and fifty-two pages long."
-  },
-  {
-   "id": "s09",
-   "text": "The Gujrals say: Peshawar. Leftover chicken, saved in a gravy for the next day.",
-   "text_kokoro": "The [Gujrals](/ɡʊʤɹˈɑːlz/) say: [Peshawar](/pAʃˈɑːwəɹ/). Leftover chicken, saved in a gravy for the next day."
-  },
-  {
-   "id": "s09b",
-   "text": "The Gujrals say: Peshawar. Leftover chicken, saved in a gravy for the next day.",
-   "text_kokoro": "The [Gujrals](/ɡˈʊʤɹɑːlz/) say: [Peshawar](/pɛʃˈɑːwəɹ/). Leftover chicken, saved in a gravy for the next day."
-  },
-  {
-   "id": "s10",
-   "text": "The Jaggis say: Delhi. Late guests, and too little chicken.",
-   "text_kokoro": "The [Jaggis](/ʤˈʌɡiz/) say: Delhi. Late guests, and too little chicken."
-  },
-  {
-   "id": "s10b",
-   "text": "The Jaggis say: Delhi. Late guests, and too little chicken.",
-   "text_kokoro": "The [Jaggis](/ʤˈʌɡiːz/) say: Delhi. Late guests, and too little chicken."
-  },
-  {
-   "id": "s11",
-   "text": "Too much chicken, or too little. Either way, the root cause was leftovers."
-  },
-  {
-   "id": "s12",
-   "text": "Nearly three years on, the court still hasn't decided."
-  },
-  {
-   "id": "s13",
-   "text": "But whoever wins, one thing is certain."
-  },
-  {
-   "id": "s14",
-   "text": "Butter chicken was invented by Kundan Lal.",
-   "text_kokoro": "Butter chicken was invented by [Kundan](/kˈʊndən/) [Lal](/lˈɑːl/).",
-   "speed": 0.96
-  },
-  {
-   "id": "s14b",
-   "text": "Butter chicken was invented by Kundan Lal.",
-   "text_kokoro": "Butter chicken was invented by [Kundan](/kˈʌndən/) [Lal](/lˈɑːl/).",
-   "speed": 0.96
+   "id": "s13b",
+   "text": "But whoever wins, one thing is certain.",
+   "text_kokoro": "But whoever wins, one thing is [certain](/sˈɜɹtən/)."
   }
  ],
  "say": {
@@ -125,7 +54,8 @@
   "peshawar": "p e ʃ ɑː w ə r",
   "moti": "m oː t i",
   "mahal": "m ɛ h ɛ l",
-  "nehru": "n e h r uː"
+  "nehru": "n e h r uː",
+  "certain": "s ɜː t ə n"
  },
  "ref_text": "The night was warm and very quiet.",
  "cast_lines": [],
