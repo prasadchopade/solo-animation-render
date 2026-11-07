@@ -1,40 +1,150 @@
 {
- "note": "Reel 26: You're the Judge. Episode 4 of 'You're the test subject' after reel 20 (witness), reel 23 (suspect) and reel 25 (detective). The narrator is the series voice (af_heart), talking to you, the judge. The prosecutor (p01, p02) and the man on trial (d01) are cast in the voice lab and placed from the cast reads (Kokoro is deterministic, so a cast read is take t1). Both numbers come before the vote (n02: two crore; p01: one in ten thousand), and the setup states the condition (n03: nobody saw his face; n04: the blood is all there is), so the catch (n06) holds whichever way you voted. The vote ends on the number (n05), not on the plea. The prosecutor says the fallacy (p02); the narrator never says anything false. Script 2, after a fresh reviewer: a new robbery at night (episode 3's had witnesses); 'Your Honour' (a trial court, not a film); no jail line (half of the two thousand are women); 'narrows it down' (the blood isn't worthless); 'you've met before' (hundreds of the two thousand have moles); 'real judges' (Lindsey et al. pp. 150-151); 'the thief' in the last question. 'crore' and 'sahab' are planned by hand (d01 plain, d01b planned: pick by ear and the phoneme ear). Facts and wording: docs/research.md. Read audio/vo_lab/takes/phonemes.md after every run.",
+ "note": "Reel 26: You're the Judge. Episode 4 of 'You're the test subject' after reel 20 (witness), reel 23 (suspect) and reel 25 (detective). The narrator is the series voice (af_heart), talking to you, the judge. The prosecutor (p01, p02) and the man on trial (d01) are cast in the voice lab and placed from the cast reads (Kokoro is deterministic, so a cast read is take t1). Both numbers come before the vote (n02: two crore; p01: one in ten thousand), and the setup states the condition (n03: nobody saw his face; n04: the blood is all there is), so the catch (n06) holds whichever way you voted. The vote ends on the number (n05), not on the plea. The prosecutor says the fallacy (p02); the narrator never says anything false. Script 2, after a fresh reviewer: a new robbery at night (episode 3's had witnesses); 'Your Honour' (a trial court, not a film); no jail line (half of the two thousand are women); 'narrows it down' (the blood isn't worthless); 'you've met before' (hundreds of the two thousand have moles); 'real judges' (Lindsey et al. pp. 150-151); 'the thief' in the last question. 'crore' and 'sahab' are planned by hand (d01 plain, d01b planned: pick by ear and the phoneme ear). Facts and wording: docs/research.md. Read audio/vo_lab/takes/phonemes.md after every run. Voice run 1 (8 Nov): Misaki said 'narrows' /nˈɛɹOz/ ('nerrows') and flapped 'prosecutor's' and 'sitting'; planned by hand for run 2. Cast: the prosecutor is am_michael (clean; bm_lewis was heard with a full stop after 'chance' by one ear), the man on trial am_adam reading d01b; the Hindi voices creaked over 3 % and read the phoneme brackets aloud.",
  "voice": "af_heart",
  "speed": 1.0,
  "ref_text": "The night was cold and very quiet. Most of the street was asleep, and the lamps hummed over the empty road. Somewhere far away, a train rolled past, and then the silence came back.",
- "cast_lines": ["p01", "p02", "d01", "d01b"],
+ "cast_lines": [
+  "p01",
+  "p02",
+  "d01",
+  "d01b"
+ ],
  "cast": [
-  {"id": "s-omega", "engine": "kokoro", "voice": "hm_omega", "speed": 1.0},
-  {"id": "s-psi", "engine": "kokoro", "voice": "hm_psi", "speed": 1.0},
-  {"id": "s-daniel", "engine": "kokoro", "voice": "bm_daniel", "speed": 1.0},
-  {"id": "s-lewis", "engine": "kokoro", "voice": "bm_lewis", "speed": 1.0},
-  {"id": "s-fable", "engine": "kokoro", "voice": "bm_fable", "speed": 1.0},
-  {"id": "s-michael", "engine": "kokoro", "voice": "am_michael", "speed": 1.0},
-  {"id": "s-onyx", "engine": "kokoro", "voice": "am_onyx", "speed": 1.0},
-  {"id": "s-adam", "engine": "kokoro", "voice": "am_adam", "speed": 1.0}
+  {
+   "id": "s-omega",
+   "engine": "kokoro",
+   "voice": "hm_omega",
+   "speed": 1.0
+  },
+  {
+   "id": "s-psi",
+   "engine": "kokoro",
+   "voice": "hm_psi",
+   "speed": 1.0
+  },
+  {
+   "id": "s-daniel",
+   "engine": "kokoro",
+   "voice": "bm_daniel",
+   "speed": 1.0
+  },
+  {
+   "id": "s-lewis",
+   "engine": "kokoro",
+   "voice": "bm_lewis",
+   "speed": 1.0
+  },
+  {
+   "id": "s-fable",
+   "engine": "kokoro",
+   "voice": "bm_fable",
+   "speed": 1.0
+  },
+  {
+   "id": "s-michael",
+   "engine": "kokoro",
+   "voice": "am_michael",
+   "speed": 1.0
+  },
+  {
+   "id": "s-onyx",
+   "engine": "kokoro",
+   "voice": "am_onyx",
+   "speed": 1.0
+  },
+  {
+   "id": "s-adam",
+   "engine": "kokoro",
+   "voice": "am_adam",
+   "speed": 1.0
+  }
  ],
  "take": [
-  {"id": "k-heart", "engine": "kokoro", "voice": "af_heart", "speed": 1.0}
+  {
+   "id": "k-heart",
+   "engine": "kokoro",
+   "voice": "af_heart",
+   "speed": 1.0
+  }
  ],
  "lines": [
-  {"id": "n01", "text": "You're the judge."},
-  {"id": "n02", "text": "In a city of two crore people, someone robbed a woman at a chai stall.", "text_kokoro": "In a city of two [crore](/kɹˈɔɹ/) people, someone robbed a woman at a chai stall."},
-  {"id": "n03", "text": "Nobody saw his face, but he cut his hand on a glass, and the blood matches this man."},
-  {"id": "p01", "text": "Your Honour, only one person in ten thousand has this blood."},
-  {"id": "p02", "text": "That's a one in ten thousand chance it was someone else."},
-  {"id": "n04", "text": "The blood is all there is. Guilty, or not guilty?"},
-  {"id": "d01", "text": "Judge sahab, I wasn't there."},
-  {"id": "d01b", "text": "Judge sahab, I wasn't there.", "text_kokoro": "Judge [sahab](/sˈɑːhəb/), I wasn't there."},
-  {"id": "n05", "text": "One in ten thousand. And he matches."},
-  {"id": "n06", "text": "You had two numbers. Did you put them together?"},
-  {"id": "n07", "text": "Two crore people. One in ten thousand of them.", "text_kokoro": "Two [crore](/kɹˈɔɹ/) people. One in ten thousand of them."},
-  {"id": "n08", "text": "That's two thousand people with his blood."},
-  {"id": "n09", "text": "So the blood narrows it down to two thousand. It can't tell you which one."},
-  {"id": "n10", "text": "It's called the prosecutor's fallacy, and it fools real judges too."},
-  {"id": "n11", "text": "One of those two thousand, you've met before."},
-  {"id": "n12", "text": "Four films. Same thief. Still free."},
-  {"id": "n13", "text": "Now try it on the friend who's good at maths. Don't tell them it's maths."},
-  {"id": "n14", "text": "So. Where was the thief sitting?"}
+  {
+   "id": "n01",
+   "text": "You're the judge."
+  },
+  {
+   "id": "n02",
+   "text": "In a city of two crore people, someone robbed a woman at a chai stall.",
+   "text_kokoro": "In a city of two [crore](/kɹˈɔɹ/) people, someone robbed a woman at a chai stall."
+  },
+  {
+   "id": "n03",
+   "text": "Nobody saw his face, but he cut his hand on a glass, and the blood matches this man."
+  },
+  {
+   "id": "p01",
+   "text": "Your Honour, only one person in ten thousand has this blood."
+  },
+  {
+   "id": "p02",
+   "text": "That's a one in ten thousand chance it was someone else."
+  },
+  {
+   "id": "n04",
+   "text": "The blood is all there is. Guilty, or not guilty?"
+  },
+  {
+   "id": "d01",
+   "text": "Judge sahab, I wasn't there."
+  },
+  {
+   "id": "d01b",
+   "text": "Judge sahab, I wasn't there.",
+   "text_kokoro": "Judge [sahab](/sˈɑːhəb/), I wasn't there."
+  },
+  {
+   "id": "n05",
+   "text": "One in ten thousand. And he matches."
+  },
+  {
+   "id": "n06",
+   "text": "You had two numbers. Did you put them together?"
+  },
+  {
+   "id": "n07",
+   "text": "Two crore people. One in ten thousand of them.",
+   "text_kokoro": "Two [crore](/kɹˈɔɹ/) people. One in ten thousand of them."
+  },
+  {
+   "id": "n08",
+   "text": "That's two thousand people with his blood."
+  },
+  {
+   "id": "n09",
+   "text": "So the blood narrows it down to two thousand. It can't tell you which one.",
+   "text_kokoro": "So the blood [narrows](/nˈæɹOz/) it down to two thousand. It can't tell you which one."
+  },
+  {
+   "id": "n10",
+   "text": "It's called the prosecutor's fallacy, and it fools real judges too.",
+   "text_kokoro": "It's called the [prosecutor's](/pɹˈɑsɪkjˌutəɹz/) fallacy, and it fools real judges too."
+  },
+  {
+   "id": "n11",
+   "text": "One of those two thousand, you've met before."
+  },
+  {
+   "id": "n12",
+   "text": "Four films. Same thief. Still free."
+  },
+  {
+   "id": "n13",
+   "text": "Now try it on the friend who's good at maths. Don't tell them it's maths."
+  },
+  {
+   "id": "n14",
+   "text": "So. Where was the thief sitting?",
+   "text_kokoro": "So. Where was the thief [sitting](/sˈɪtɪŋ/)?"
+  }
  ]
 }

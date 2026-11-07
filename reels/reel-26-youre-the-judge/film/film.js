@@ -147,7 +147,7 @@
     g.strokeStyle = 'rgba(90,45,25,0.26)'; g.lineWidth = 3.5; g.lineCap = 'round'; for (const k of [-1, 1]) { g.beginPath(); g.moveTo(k * 22, ny - 18); g.quadraticCurveTo(k * 31, ny, k * 25, ny + 10); g.stroke(); }
     for (const k of [-1, 1]) { ell(g, k * 13, ny + 9, 8, 4.6, k * 0.25); g.fillStyle = '#4a2416'; g.fill(); }
     g.fillStyle = 'rgba(255,240,226,0.1)'; ell(g, -5, ny - 8, 10, 15); g.fill();
-    if (L.mole) { g.fillStyle = '#2a1710'; ell(g, L.mole[0], L.mole[1], 9.5, 9); g.fill(); }
+    if (L.mole) { const mr = L.moleR ?? 9.5; g.fillStyle = '#2a1710'; ell(g, L.mole[0], L.mole[1], mr, mr * 0.95); g.fill(); }
     const eo = { ew: L.ew, eh: L.eh, ir: 17, look: o.look, lidW: L.lidW };
     eye(g, -1, -ex, ey, close, eo); eye(g, 1, ex, ey, close, eo);
     g.strokeStyle = L.hair; g.lineCap = 'round'; g.lineWidth = L.brow;
@@ -446,7 +446,7 @@
   // the man on trial: an auto driver in khaki, a thick moustache, grey at the temples, worried. No mole, no cut.
   const AUTO = { skin: '#a8714a', skinD: '#7d4f30', skinH: '#c68f66', hair: '#16110d', style: 'side', must: 'thick', stub: 0.4, brow: 15, browTilt: -13, jaw: 1.03, ew: 45, eh: 26 };
   // the prosecutor: glasses, grey hair, sure of himself
-  const PROS = { skin: '#d2a47c', skinD: '#a77754', skinH: '#e9c19b', hair: '#5d5650', style: 'neat', must: null, stub: 0, brow: 12, browTilt: 8, jaw: 1.0, ew: 40, eh: 21, specs: true };
+  const PROS = { skin: '#c4916a', skinD: '#99674a', skinH: '#dcae88', hair: '#6a645e', style: 'neat', must: 'thin', stub: 0, brow: 13, browTilt: 8, jaw: 1.02, ew: 43, eh: 25, specs: true };
   // the public gallery (the thief is TWO: reel 25's number two, reel 20's thief, the mole)
   const G_OLD = { skin: '#b98256', skinD: '#8f5c38', skinH: '#d29d74', hair: '#e9e5dc', style: 'side', must: 'thick', stub: 0, brow: 13, browTilt: 2, jaw: 1.02, ew: 42, eh: 22 };
   const G_BUN = { skin: '#d6a07a', skinD: '#aa7552', skinH: '#ecc29c', hair: '#1a120e', style: 'det', must: null, stub: 0, brow: 9, browTilt: -2, jaw: 0.92, ew: 45, eh: 26, lip: '#a33a40', bindi: true, ear: true, lidW: 8 };
@@ -578,9 +578,14 @@
       g.strokeStyle = '#1f2128'; g.lineCap = 'round'; g.lineWidth = 120; g.beginPath(); g.moveTo(sx, sy); g.lineTo(ex, ey); g.stroke();
       g.lineWidth = 104; g.beginPath(); g.moveTo(ex, ey); g.lineTo(hx, hy + 70); g.stroke();
       g.fillStyle = '#f4f2ea'; ell(g, hx, hy + 60, 56, 26); g.fill();
-      g.fillStyle = PROS.skin; ell(g, hx, hy, 50, 58); g.fill();
-      R(g, hx - 17, hy - 140, 34, 120, 17); g.fill();
-      g.strokeStyle = 'rgba(90,50,30,0.35)'; g.lineWidth = 3; g.beginPath(); g.moveTo(hx - 30, hy - 12); g.quadraticCurveTo(hx, hy + 2, hx + 34, hy - 10); g.stroke();
+      // an index finger, unmistakably: it rises from the thumb side of the fist; the other three are curled, the thumb across them
+      const ink = 'rgba(90,50,30,0.45)';
+      g.fillStyle = PROS.skin; ell(g, hx, hy, 54, 58); g.fill();
+      g.save(); g.translate(hx - 30, hy - 40); g.rotate(-0.12); R(g, -17, -128, 34, 140, 17); g.fill(); g.strokeStyle = ink; g.lineWidth = 3; g.stroke();
+      g.strokeStyle = 'rgba(90,50,30,0.3)'; g.beginPath(); g.moveTo(-10, -70); g.lineTo(10, -70); g.moveTo(-10, -30); g.lineTo(10, -30); g.stroke(); g.restore();
+      for (let i = 0; i < 3; i++) { g.fillStyle = PROS.skinH; ell(g, hx + 28, hy - 36 + i * 30, 30, 17, 0.1); g.fill(); g.strokeStyle = ink; g.lineWidth = 3; g.stroke(); }
+      g.strokeStyle = PROS.skinD; g.lineWidth = 28; g.lineCap = 'round'; g.beginPath(); g.moveTo(hx - 46, hy + 18); g.lineTo(hx + 4, hy - 10); g.stroke();
+      g.strokeStyle = PROS.skin; g.lineWidth = 22; g.beginPath(); g.moveTo(hx - 46, hy + 18); g.lineTo(hx + 4, hy - 10); g.stroke();
     }
     head(g, PROS, o);
     g.restore();
@@ -600,17 +605,18 @@
     g.restore();
   }
   // the gallery: who sits where. FRONT row (big), BACK row (small). The thief is on the right, front row.
-  const THIEF = { x: 868, y: 1030, s: 0.34 };
+  const THIEF = { x: 868, y: 1034, s: 0.37 };
+  const TWO_G = { ...TWO, moleR: 16 };            // his face is small in the gallery: a bigger mole, so it reads on a phone
   function gallery(g, t, o = {}) {
     if (o.empty) return;
     const bl = (p, off) => blinkAt(t, p, off);
     sitter(g, G_YOUNG, 372, 968, 0.24, '#5b8fd1', t, { close: bl(3.7, 0.4), look: [4, 2] });
     sitter(g, G_OLD, 704, 962, 0.24, '#f1efe8', t, { close: bl(4.3, 2.0), look: [-4, 2], frown: 0.3 });
-    sitter(g, G_BUN, 948, 968, 0.24, '#3e9a6e', t, { close: bl(3.1, 1.2), look: [-6, 2] });
+    sitter(g, G_OLD, 948, 968, 0.24, '#3e9a6e', t, { close: bl(3.1, 1.2), look: [-6, 2] });
     // the bar between the public and the court, behind the front row's knees
-    victim(g, 292, 1030, 0.31, t, { look: [8, 2] });                     // the woman who was robbed (reels 20 and 25)
+    sitter(g, G_BUN, 292, 1034, 0.31, '#7c5bb0', t, { close: bl(3.3, 2.4), look: [8, 2], frown: 0.2 });
     sitter(g, PLAIN, 742, 1036, 0.31, '#d96f6a', t, { close: bl(2.9, 0.7), look: [-10, 3] });
-    sitter(g, TWO, THIEF.x, THIEF.y, THIEF.s, null, t, { close: bl(4.6, 3.1), look: [0, 1], smile: 0.55 });
+    sitter(g, TWO_G, THIEF.x, THIEF.y, THIEF.s, null, t, { close: bl(4.6, 3.1), look: [0, 1], smile: 0.55 });
   }
   function bar(g, t, o = {}) {                     // the rail in front of the gallery, and the solid wood under it
     g.fillStyle = lg(g, 0, 1104, 0, 1700, [0, '#9a6a3e'], [0.35, '#7a4c28'], [1, '#5b3519']); g.fillRect(0, 1118, W, 600);
@@ -708,9 +714,14 @@
     for (const [px, py, rr] of P) { g.save(); g.translate(px, py); g.rotate(rr); g.fillStyle = 'rgba(226,232,235,0.75)'; g.beginPath(); g.moveTo(-50, 34); g.lineTo(46, 22); g.lineTo(6, -46); g.closePath(); g.fill(); g.stroke(); g.restore(); }
     // the blood: a smear down the biggest piece, and drops on the bag
     g.fillStyle = '#b3141c';
-    g.beginPath(); g.moveTo(-96, 60); g.bezierCurveTo(-60, 20, 10, 40, 40, 80); g.bezierCurveTo(30, 120, -40, 140, -70, 170); g.bezierCurveTo(-110, 150, -120, 100, -96, 60); g.fill();
-    for (const [dx, dy, r0] of [[-20, 180, 14], [60, 150, 10], [-150, 40, 16], [120, 230, 12], [-60, 250, 9]]) { ell(g, dx, dy, r0, r0 * 1.15); g.fill(); }
-    g.fillStyle = 'rgba(255,255,255,0.35)'; ell(g, -70, 80, 12, 6, -0.4); g.fill();
+    // a smear wiped along the big piece's jagged edge, with runs dripping down the glass
+    g.beginPath(); g.moveTo(-118, 70); g.lineTo(-84, 92); g.lineTo(-56, 52); g.lineTo(-30, 12); g.lineTo(-6, 58); g.lineTo(16, 84);
+    g.bezierCurveTo(10, 104, -8, 100, -16, 118); g.bezierCurveTo(-24, 134, -40, 112, -52, 124); g.bezierCurveTo(-66, 140, -84, 118, -100, 126); g.bezierCurveTo(-116, 120, -124, 96, -118, 70); g.closePath(); g.fill();
+    g.lineCap = 'round'; g.strokeStyle = '#b3141c';
+    for (const [dx, y0, len, w0] of [[-92, 120, 70, 12], [-48, 122, 44, 9], [-20, 116, 92, 10]]) { g.lineWidth = w0; g.beginPath(); g.moveTo(dx, y0); g.lineTo(dx + 2, y0 + len); g.stroke(); ell(g, dx + 2, y0 + len + 4, w0 * 0.8, w0); g.fill(); }
+    for (const [dx, dy, r0] of [[60, 160, 7], [-150, 40, 9], [120, 230, 6], [-70, 250, 5], [24, 215, 4]]) { ell(g, dx, dy, r0, r0 * 1.1); g.fill(); }
+    g.fillStyle = '#7d0a10'; g.beginPath(); g.moveTo(-100, 92); g.lineTo(-62, 74); g.lineTo(-36, 50); g.lineTo(-30, 86); g.bezierCurveTo(-50, 104, -84, 110, -100, 92); g.fill();
+    g.fillStyle = 'rgba(255,255,255,0.4)'; ell(g, -78, 80, 10, 4, -0.5); g.fill();
     g.save(); g.translate(170, -80); g.rotate(-0.6); g.fillStyle = '#b3141c'; g.beginPath(); g.moveTo(-30, 20); g.quadraticCurveTo(0, -6, 30, 14); g.quadraticCurveTo(10, 30, -30, 20); g.fill(); ell(g, 6, 30, 10, 13); g.fill(); g.restore();
     g.restore();
   }
@@ -730,28 +741,55 @@
     txt(g, '=', 0, 46, 80, INK, { align: 'center' });
     g.restore();
   }
-  function witnessBox(g, t) {                     // the witness box, empty
-    g.fillStyle = lg(g, 0, 0, 0, H, [0, '#f2dfbe'], [1, '#e2c595']); g.fillRect(0, 0, W, H);
-    g.fillStyle = 'rgba(120,80,40,0.18)'; g.fillRect(0, 1180, W, 740);
-    g.fillStyle = lg(g, 0, 800, 0, 1500, [0, '#9a6a3e'], [1, '#5b3519']); R(g, 230, 860, 600, 640, 14); g.fill();
-    g.fillStyle = '#c69060'; R(g, 210, 840, 640, 40, 14); g.fill();
-    g.strokeStyle = 'rgba(30,14,4,0.35)'; g.lineWidth = 6; R(g, 280, 940, 500, 480, 12); g.stroke();
-    g.fillStyle = '#6e4423'; R(g, 340, 600, 380, 250, 12); g.fill();               // the empty chair's back
-    g.fillStyle = PAPER; R(g, 380, 1040, 300, 80, 10); g.fill(); g.strokeStyle = INK; g.lineWidth = 4; g.stroke();
-    txt(g, 'WITNESS', 530, 1098, 54, INK, { align: 'center' });
+  // the robbery: another chai stall, at night. A new woman (this is a new robbery); a man running off, his face never seen
+  const NEWV = { skin: '#c99a76', skinD: '#9e6f4f', skinH: '#e2b896', hair: '#9a948c', style: 'det', must: null, stub: 0, brow: 9, browTilt: -12, jaw: 0.95, ew: 46, eh: 28, lip: '#9a3a3e', bindi: true, ear: true, lidW: 8 };
+  function nightStreet(g, t) {
+    if (!ST) makeStreet();
+    g.drawImage(ST.bg, 0, 0);
+    g.save(); g.globalCompositeOperation = 'multiply'; g.fillStyle = '#3a4a86'; g.fillRect(0, 0, W, H); g.restore();
+    g.save(); g.globalCompositeOperation = 'lighter';
+    for (let i = 0; i < 10; i++) { const u = i / 9, bx = lerp(8, 470, u), by = 716 + 44 * Math.sin(u * Math.PI) - 8 * u + 14; g.fillStyle = rg(g, bx, by, 2, 70, [0, 'rgba(255,200,120,0.5)'], [1, 'rgba(255,200,120,0)']); g.fillRect(bx - 70, by - 70, 140, 140); }
+    g.fillStyle = rg(g, 230, 900, 20, 520, [0, 'rgba(255,170,90,0.28)'], [1, 'rgba(255,170,90,0)']); g.fillRect(0, 380, 760, 1100);
+    g.restore();
   }
-  function cctv(g, t) {                            // a monitor with nothing on it
-    g.fillStyle = '#20242b'; g.fillRect(0, 0, W, H);
-    g.fillStyle = '#3a3f48'; R(g, 140, 620, 780, 640, 30); g.fill(); g.fillStyle = '#111317'; R(g, 180, 660, 700, 520, 14); g.fill();
-    const r = mulberry32(700 + Math.round(t * 30));
-    for (let i = 0; i < 1400; i++) { const v = Math.floor(r() * 200); g.fillStyle = `rgb(${v},${v},${v})`; g.fillRect(184 + r() * 692, 664 + r() * 512, 3 + r() * 6, 2); }
-    g.fillStyle = 'rgba(17,19,23,0.55)'; g.fillRect(184, 664, 692, 512);
-    txt(g, 'NO SIGNAL', 530, 948, 64, '#cfd3da', { kind: 'mono', align: 'center' });
-    g.fillStyle = '#e8402a'; ell(g, 222, 702, 10, 10); g.fill(); txt(g, 'CAM 2 · CHAI STALL', 246, 712, 30, '#cfd3da', { kind: 'mono' });
+  function shockedWoman(g, x, y, s, t) {          // the woman who was robbed tonight, a hand at her mouth
+    g.save(); g.translate(x, y); g.scale(s, s);
+    g.fillStyle = lg(g, -270, 160, 270, 900, [0, '#2f8f6a'], [1, '#1f6b4e']);
+    g.beginPath(); g.moveTo(-280, 1100); g.lineTo(-270, 420); g.bezierCurveTo(-260, 260, -180, 210, -90, 196); g.lineTo(90, 196); g.bezierCurveTo(180, 210, 260, 260, 270, 420); g.lineTo(280, 1100); g.closePath(); g.fill();
+    g.fillStyle = '#e8b84a'; g.beginPath(); g.moveTo(-240, 250); g.quadraticCurveTo(-40, 200, 150, 260); g.lineTo(150, 296); g.quadraticCurveTo(-40, 236, -240, 290); g.closePath(); g.fill();
+    const nw = 60; g.fillStyle = NEWV.skin; g.beginPath(); g.moveTo(-nw, 120); g.lineTo(-nw - 6, 230); g.quadraticCurveTo(0, 290, nw + 6, 230); g.lineTo(nw, 120); g.closePath(); g.fill();
+    head(g, NEWV, { look: [16, 4], close: 0, op: 0.12, worry: -10 });
+    g.strokeStyle = '#2f8f6a'; g.lineWidth = 96; g.lineCap = 'round'; g.beginPath(); g.moveTo(-250, 520); g.lineTo(-150, 330); g.stroke();
+    g.fillStyle = NEWV.skin; ell(g, -66, 150, 54, 64, 0.5); g.fill();
+    g.restore();
   }
-
+  function runner(g, x, y, s, t) {                 // a dark figure running away from you, his back to you
+    const ph = t * 9.5, a = Math.sin(ph), b = Math.cos(ph);
+    g.save(); g.translate(x, y); g.scale(s, s); g.fillStyle = '#121420';
+    g.lineCap = 'round'; g.strokeStyle = '#121420';
+    g.lineWidth = 46; g.beginPath(); g.moveTo(-20, 260); g.lineTo(-40 + 70 * a, 420); g.lineTo(-30 + 40 * a, 560); g.stroke();
+    g.beginPath(); g.moveTo(20, 260); g.lineTo(40 - 70 * a, 420); g.lineTo(30 - 40 * a, 560); g.stroke();
+    R(g, -70, 40, 140, 240, 50); g.fill();
+    g.lineWidth = 34; g.beginPath(); g.moveTo(-60, 70); g.lineTo(-110 - 50 * b, 180); g.stroke(); g.beginPath(); g.moveTo(60, 70); g.lineTo(110 + 50 * b, 170); g.stroke();
+    ell(g, 0, -10, 50, 58); g.fill();
+    g.restore();
+  }
   // ------------------------------------------------------------------ the city, and its two thousand
   let CITY = null;
+  const CH = { x: 700, y: 1600, s: 1.0 };          // the courthouse, in the city's near row
+  function courthouse(g, x, y, s) {                // white columns, a dome, a clock: the court you're sitting in
+    g.save(); g.translate(x, y); g.scale(s, s);
+    g.fillStyle = '#efe6d2'; g.fillRect(-150, -300, 300, 300);
+    g.fillStyle = '#dccfb4'; g.fillRect(-170, -320, 340, 26); g.fillRect(-160, -20, 320, 20);
+    g.beginPath(); g.moveTo(-176, -320); g.lineTo(0, -400); g.lineTo(176, -320); g.closePath(); g.fillStyle = '#e8dcc4'; g.fill();
+    g.fillStyle = '#f4ecdc'; ell(g, 0, -430, 70, 70); g.fill(); g.fillRect(-70, -430, 140, 40);
+    g.fillStyle = '#c9b48c'; g.fillRect(-4, -520, 8, 50); ell(g, 0, -520, 10, 10); g.fill();
+    ell(g, 0, -360, 22, 22); g.fillStyle = '#fbf6e8'; g.fill(); g.strokeStyle = '#6b4224'; g.lineWidth = 3; g.stroke();
+    g.fillStyle = '#fbf6ec'; for (let i = 0; i < 6; i++) g.fillRect(-130 + i * 50, -290, 18, 270);
+    g.fillStyle = 'rgba(40,50,60,0.72)'; for (const k of [-1, 1]) R(g, k * 52 - 20, -130, 40, 70, 6), g.fill();
+    g.fillStyle = 'rgba(0,0,0,0.12)'; g.fillRect(130, -300, 20, 300);
+    g.restore();
+  }
   function makeCity() {
     const bg = offscreen(W, H), g = bg.getContext('2d');
     g.fillStyle = lg(g, 0, 0, 0, 900, [0, '#e9895a'], [0.55, '#f6c084'], [1, '#fde4bb']); g.fillRect(0, 0, W, H);
@@ -761,14 +799,20 @@
       skyline(g, 0, y0, W, h0, 30 + i, { base: 1.0, sc, noSky: true, noGround: true, noBack: i > 0 });
       if (i < LAY.length - 1) { g.fillStyle = `rgba(246,200,150,${0.32 - i * 0.04})`; g.fillRect(0, y0 - 40, W, H); }
     });
+    courthouse(g, CH.x, CH.y, CH.s);
     g.fillStyle = lg(g, 0, 1640, 0, H, [0, '#5a5552'], [1, '#3d3937']); g.fillRect(0, 1640, W, 300);
     g.fillStyle = 'rgba(255,190,110,0.1)'; g.fillRect(0, 0, W, H);
     const r = mulberry32(2000), dots = [];
     for (let i = 0; i < 2000; i++) {
       const u = r(), y = 420 + Math.pow(u, 0.8) * 1200;              // more of them low down, where the city is near
-      dots.push({ x: 16 + r() * (W - 32), y, d: r(), p: r() * TAU });
+      let x = 16 + r() * (W - 32);
+      if (Math.abs(x - CH.x) < 150 * CH.s && y > CH.y - 380 * CH.s) x = (x < CH.x ? CH.x - 150 * CH.s : CH.x + 150 * CH.s) + (x < CH.x ? -20 : 20);   // the court holds only its two
+      dots.push({ x, y, d: r(), p: r() * TAU });
     }
     dots.sort((a, b) => a.d - b.d);
+    // two of the two thousand are in the courthouse: the man on trial, and the man in the gallery
+    dots[620] = { x: CH.x - 52 * CH.s, y: CH.y - 96 * CH.s, d: dots[620].d, p: 1.1 };
+    dots[1440] = { x: CH.x + 52 * CH.s, y: CH.y - 96 * CH.s, d: dots[1440].d, p: 2.3 };
     const sprite = offscreen(48, 48), sg = sprite.getContext('2d');
     sg.fillStyle = rg(sg, 24, 24, 1, 24, [0, 'rgba(255,60,40,0.9)'], [0.3, 'rgba(255,40,30,0.35)'], [1, 'rgba(255,40,30,0)']); sg.fillRect(0, 0, 48, 48);
     sg.fillStyle = '#ff3a26'; sg.beginPath(); sg.arc(24, 24, 7, 0, TAU); sg.fill();
@@ -791,31 +835,6 @@
     g.globalAlpha = 1;
     g.restore();
   }
-  // a jail as big as a stadium: tiers of cells, a face in each
-  let JAIL = null;
-  function makeJail() {
-    const bg = offscreen(W, H), g = bg.getContext('2d');
-    g.fillStyle = lg(g, 0, 0, 0, H, [0, '#2a2d34'], [1, '#14161a']); g.fillRect(0, 0, W, H);
-    const r = mulberry32(77), skins = ['#e2b48d', '#c99068', '#b27a54', '#8d5a3a', '#d6a07a', '#a8714a'];
-    let y = H - 40, s = 190, count = 0;
-    while (y > 120 && s > 6) {
-      const n = Math.ceil(W / s) + 1, off = (r() - 0.5) * s;
-      for (let i = 0; i < n; i++) {
-        const x = off + i * s;
-        g.fillStyle = '#0d0e11'; g.fillRect(x + s * 0.06, y - s * 0.9, s * 0.88, s * 0.84);
-        g.fillStyle = skins[Math.floor(r() * skins.length)]; ell(g, x + s / 2, y - s * 0.46, s * 0.17, s * 0.2); g.fill();
-        g.fillStyle = '#16110d'; g.beginPath(); g.ellipse(x + s / 2, y - s * 0.56, s * 0.18, s * 0.13, 0, Math.PI, TAU); g.fill();
-        g.fillStyle = '#e46a2a'; g.fillRect(x + s * 0.3, y - s * 0.27, s * 0.4, s * 0.21);
-        g.fillStyle = '#6f747d'; for (let b = 1; b < 5; b++) g.fillRect(x + s * 0.06 + b * s * 0.176 - s * 0.02, y - s * 0.9, s * 0.04, s * 0.84);
-        count++;
-      }
-      g.fillStyle = '#4a4e57'; g.fillRect(0, y - s * 0.06, W, s * 0.08);
-      y -= s; s *= 0.86;
-    }
-    g.fillStyle = lg(g, 0, 0, 0, 500, [0, 'rgba(20,22,26,1)'], [1, 'rgba(20,22,26,0)']); g.fillRect(0, 0, W, 500);
-    JAIL = { bg, count };
-  }
-
   // ------------------------------------------------------------------ timing: the narration's words
   const at = (p) => words(p)[0].t0;
   const wi = (p, i) => words(p)[Math.min(i, words(p).length - 1)].t0;
@@ -824,15 +843,15 @@
   function times() {
     if (T) return T;
     T = {
-      titleOut: en('n01'), n02: at('n02'), crore: wi('n02', 4), stall: wi('n02', 6), n03: at('n03'), glassW: wi('n03', 6), matchW: wi('n03', 8), n03e: en('n03'),
-      p01: at('p01'), tenK: wi('p01', 6), p01e: en('p01'), p02: at('p02'), p02e: en('p02'),
-      n04: at('n04'), n04e: en('n04'), n05: at('n05'), vid: wi('n05', 2), blood: wi('n05', 4), n05e: en('n05'), d01: at('d01'), d01e: en('d01'),
-      n06: at('n06'), put: wi('n06', 4), n07: at('n07'), tenK2: wi('n07', 5), n08: at('n08'), twoK: wi('n08', 1), n08e: en('n08'),
-      n09: at('n09'), which: wi('n09', 6), n10: at('n10'), jail: wi('n10', 8), allW: wi('n10', 10), n11: at('n11'), fallacy: wi('n11', 4), lawyers: wi('n11', 9),
-      n12: at('n12'), mole: wi('n12', 7), n13: at('n13'), same: wi('n13', 2), free: wi('n13', 4), n14: at('n14'), maths: wi('n14', 8),
-      n15: at('n15'), where: wi('n15', 1), end: tb('end'),
+      titleOut: en('n01'), n02: at('n02'), crore: wi('n02', 4), stall: wi('n02', 7), n03: at('n03'), cut: wi('n03', 4), matchW: wi('n03', 12), matches: wi('n03', 15), n03e: en('n03'),
+      p01: at('p01'), tenK: wi('p01', 6), p01e: en('p01'), p02: at('p02'), elseW: wi('p02', 7), p02e: en('p02'),
+      n04: at('n04'), guilty: wi('n04', 6), n04e: en('n04'), d01: at('d01'), d01e: en('d01'), n05: at('n05'), heM: wi('n05', 4), n05e: en('n05'),
+      n06: at('n06'), put: wi('n06', 4), n07: at('n07'), tenK2: wi('n07', 5), n08: at('n08'), twoK: wi('n08', 1),
+      n09: at('n09'), which: wi('n09', 13), n10: at('n10'), fallacy: wi('n10', 3), judges: wi('n10', 8),
+      n11: at('n11'), met: wi('n11', 5), n12: at('n12'), same: wi('n12', 2), free: wi('n12', 4),
+      n13: at('n13'), good: wi('n13', 7), dont: wi('n13', 10), n14: at('n14'), where: wi('n14', 1), end: tb('end'),
     };
-    T.clock0 = T.n04e + 0.08; T.clock1 = T.d01e + 0.45; T.bang = T.clock1 + 0.12;
+    T.clock0 = T.n04e + 0.08; T.clock1 = T.n05e + 0.45;
     return T;
   }
   function talkP(t, pid) {                         // a mouth for one phrase only
@@ -865,23 +884,11 @@
   }
   function askOverlay(g, t) {                      // the question, the buttons and the clock, over whatever is on screen
     const TT = times();
-    if (t < TT.n04 - 0.05 || t > TT.bang + 0.4) return;
+    if (t < TT.guilty - 0.05 || t > TT.clock1 + 0.4) return;
     const a = 1 - clamp((t - TT.clock1) / 0.25);
-    if (a > 0) title(g, 'GUILTY OR NOT GUILTY?', 392, 104, YEL, t, TT.n04 - 0.05, { a });
-    choices(g, t, TT.n04 + 0.25, TT.clock1);
+    if (a > 0) title(g, 'GUILTY OR NOT GUILTY?', 392, 104, YEL, t, TT.guilty - 0.05, { a });
+    choices(g, t, TT.guilty + 0.2, TT.clock1);
     timerBar(g, t, TT.clock0, TT.clock1);
-  }
-
-  // the woman who was robbed, in the gallery (victim() from reel 25 without its haze)
-  function herSeat(g, x, y, s, t, o = {}) {
-    g.save(); g.translate(x, y); g.scale(s, s);
-    g.fillStyle = lg(g, -260, 160, 260, 900, [0, '#f4c430'], [1, '#d99a1a']);
-    g.beginPath(); g.moveTo(-280, 1100); g.lineTo(-270, 420); g.bezierCurveTo(-260, 260, -180, 210, -90, 196); g.lineTo(90, 196); g.bezierCurveTo(180, 210, 260, 260, 270, 420); g.lineTo(280, 1100); g.closePath(); g.fill();
-    g.fillStyle = lg(g, -270, 180, 120, 700, [0, '#e0457b'], [1, '#b12a5e']); g.beginPath(); g.moveTo(-250, 260); g.quadraticCurveTo(-60, 190, 110, 240); g.lineTo(-40, 620); g.lineTo(-210, 560); g.closePath(); g.fill();
-    const nw = 60; g.fillStyle = HER.skin; g.beginPath(); g.moveTo(-nw, 120); g.lineTo(-nw - 6, 230); g.quadraticCurveTo(0, 290, nw + 6, 230); g.lineTo(nw, 120); g.closePath(); g.fill();
-    head(g, HER, { look: o.look || [0, 2], close: blinkAt(t, 2.7, 0.6), frown: 0.6, worry: -4 });
-    g.strokeStyle = HER.hair; g.lineWidth = 34; g.lineCap = 'round'; g.beginPath(); g.moveTo(150, 40); g.quadraticCurveTo(190, 220, 150, 420); g.stroke();
-    g.restore();
   }
   // a speech bubble whose tail points at (tx, ty), above or below
   function say(g, s, x, y, t, t0, o = {}) {
@@ -897,10 +904,10 @@
     g.restore();
   }
 
-  // ------------------------------------------------------------------ 1 · frame 0, the city, the stall
+  // ------------------------------------------------------------------ 1 · frame 0, and the city in the window behind him
   function shotOpen(g, t) {
-    const TT = times(), k = sstep(TT.n02 - 0.1, TT.n02 + 1.1, t);
-    court(g, t, { ...camOn(530, 560, 1.75, k) });
+    const TT = times(), k = sstep(TT.n02 - 0.1, TT.n02 + 1.4, t);
+    court(g, t, { ...camOn(520, 900, 1.08, k) });
     const out = sstep(TT.titleOut - 0.05, TT.titleOut + 0.15, t);
     if (out < 1) {
       g.save(); g.globalAlpha = 1 - out;
@@ -908,65 +915,63 @@
       txt(g, 'JUDGE', 513, 520, 180, YEL, { align: 'center', fit: 860, stroke: INK, sw: 0.14 });
       g.restore();
     }
-    if (t >= TT.crore - 0.08) { title(g, '2 CRORE', 430, 190, YEL, t, TT.crore - 0.08); title(g, 'PEOPLE', 560, 110, CREAM, t, TT.crore + 0.08); }
+    if (t >= TT.crore - 0.08) {
+      title(g, '2 CRORE PEOPLE', 420, 150, YEL, t, TT.crore - 0.08);
+      title(g, '20,000,000', 520, 76, CREAM, t, TT.crore + 0.12);
+    }
     return 0;
   }
-  function shotStall(g, t) {
-    const TT = times();
-    if (!ST) makeStreet();
-    const z = 1.42 + 0.04 * sstep(TT.stall, TT.n03, t);
+  // ------------------------------------------------------------------ 2 · the robbery: another stall, at night. Nobody saw his face.
+  function shotNight(g, t) {
+    const TT = times(), z = 1.36 + 0.05 * sstep(TT.stall, TT.cut, t);
     g.save(); g.translate(513, 1000); g.scale(z, z); g.translate(-470, -900);
-    g.drawImage(ST.bg, 0, 0); steam(g, 348, 880, t, 0.8); seller(g, t);
-    herSeat(g, 640, 760, 0.62, t, { look: [-8, 2] });
-    policeTape(g, -30, 1044, 480, 1000); policeTape(g, 520, 1036, 1120, 1012);
+    nightStreet(g, t);
+    seller(g, t);
+    g.save(); g.globalCompositeOperation = 'multiply'; g.fillStyle = 'rgba(80,96,160,0.55)'; g.fillRect(0, 600, 470, 420); g.restore();
+    if (t >= TT.n03 - 0.1) { const u = clamp((t - (TT.n03 - 0.1)) / 1.4); runner(g, lerp(930, 1010, u), lerp(780, 742, u), lerp(0.62, 0.42, u), t); }
+    shockedWoman(g, 650, 760, 0.6, t);
     g.restore();
-    g.fillStyle = lg(g, 0, 1350, 0, H, [0, 'rgba(60,40,24,0)'], [1, 'rgba(60,40,24,0.5)']); g.fillRect(0, 1350, W, 570);
+    g.fillStyle = lg(g, 0, 1300, 0, H, [0, 'rgba(10,14,30,0)'], [1, 'rgba(10,14,30,0.6)']); g.fillRect(0, 1300, W, 620);
     shards(g, 9, 560, 1440);
-    title(g, 'ROBBED HERE', 400, 130, CREAM, t, TT.stall - 0.02);
-    return flashAt(t, TT.stall - 0.05) * 0.35;
+    if (t < TT.n03 - 0.05) title(g, 'ROBBED', 400, 150, CREAM, t, TT.stall - 0.02);
+    else title(g, 'NOBODY SAW HIS FACE', 400, 104, CREAM, t, TT.n03 - 0.05);
+    return flashAt(t, TT.stall - 0.05) * 0.3;
   }
-  // ------------------------------------------------------------------ 2 · the glass, the match
+  // ------------------------------------------------------------------ 3 · he cut his hand on a glass, and the blood matches this man
   function shotBag(g, t) {
     const TT = times();
     g.fillStyle = lg(g, 0, 0, 0, H, [0, '#7a4a26'], [1, '#4a2a12']); g.fillRect(0, 0, W, H);
     g.fillStyle = 'rgba(255,220,170,0.1)'; for (let i = 0; i < 7; i++) g.fillRect(0, 300 + i * 230, W, 4);
-    evidenceBag(g, 513, 1010, 1.3 + 0.04 * sstep(TT.n03, TT.matchW, t), t);
-    title(g, "THE ROBBER'S BLOOD", 420, 110, CREAM, t, wi('n03', 3) - 0.05);
-    return flashAt(t, TT.n03 - 0.05) * 0.35;
+    evidenceBag(g, 513, 1010, 1.3 + 0.04 * sstep(TT.cut, TT.matchW, t), t);
+    title(g, "THE ROBBER'S BLOOD", 420, 110, CREAM, t, wi('n03', 7) - 0.05);
+    return flashAt(t, TT.cut - 0.05) * 0.35;
   }
   function shotMatch(g, t) {
     const TT = times(), k = sstep(TT.matchW - 0.1, TT.matchW + 0.7, t);
     court(g, t, { ...camOn(513, 980, 1.32, k), dLook: [0, 3], dWorry: -8 });
-    labCard(g, 513, 1360, 1.0, t, wi('n03', 10) - 0.05);
-    if (t >= TT.n03e - 0.25) stamp(g, 'MATCH', 513, 1450, t, TT.n03e - 0.2, RED, 120, -0.08, 'rgba(255,255,255,0.95)');
+    labCard(g, 513, 1360, 1.0, t, TT.matchW + 0.1);
+    if (t >= TT.matches - 0.06) stamp(g, 'MATCH', 513, 1450, t, TT.matches - 0.04, RED, 120, -0.08, 'rgba(255,255,255,0.95)');
     return flashAt(t, TT.matchW - 0.05) * 0.3;
   }
-  // ------------------------------------------------------------------ 3 · the prosecutor
+  // ------------------------------------------------------------------ 4 · the prosecutor
   function shotPros(g, t) {
     const TT = times(), k = sstep(TT.p01 - 0.15, TT.p01 + 0.5, t);
     const pt = sstep(TT.p01 + 0.25, TT.p01 + 0.75, t) * (1 - sstep(TT.p02e - 0.2, TT.p02e + 0.2, t));
-    court(g, t, { ...camOn(176, 1090, 1.72, k), point: pt, pOp: talkP(t, 'p01') || talkP(t, 'p02'), pLook: t >= TT.p02 - 0.1 ? [2, 1] : [14, 2], pSmile: 0.45 });
+    court(g, t, { ...camOn(300, 1090, 1.72, k), point: pt, pOp: talkP(t, 'p01') || talkP(t, 'p02'), pLook: t >= TT.p02 - 0.1 ? [2, 1] : [14, 2], pSmile: 0.45 });
     if (t < TT.p02 - 0.05) {
       if (t >= TT.tenK - 0.08) { title(g, '1 IN 10,000', 430, 190, YEL, t, TT.tenK - 0.08); title(g, 'HAVE THIS BLOOD', 548, 84, CREAM, t, TT.tenK + 0.1); }
     } else {
       say(g, '"A 1 IN 10,000 CHANCE', 513, 404, t, TT.p02 - 0.04, { w: 800, h: 100, size: 64, tx: 330, ty: 820 });
-      if (t >= wi('p02', 7) - 0.05) title(g, 'IT WAS SOMEONE ELSE."', 540, 92, CREAM, t, wi('p02', 7) - 0.05);
+      if (t >= TT.elseW - 0.05) title(g, 'IT WAS SOMEONE ELSE."', 540, 92, CREAM, t, TT.elseW - 0.05);
     }
     return flashAt(t, TT.p01 - 0.05) * 0.25;
   }
-  // ------------------------------------------------------------------ 4 · guilty or not guilty?
+  // ------------------------------------------------------------------ 5 · the blood is all there is. Guilty, or not guilty?
   function shotAsk(g, t) {
-    court(g, t, { z: 1.03, cx: 513, cy: 960, dLook: [0, 2], dWorry: -6 });
-    return 0;
-  }
-  function shotNo(g, t) {
     const TT = times();
-    if (t < TT.vid - 0.05) { witnessBox(g, t); stamp(g, 'NO WITNESS', 513, 1420, t, TT.n05, RED, 116, -0.06, 'rgba(255,255,255,0.95)'); return flashAt(t, TT.n05 - 0.05) * 0.3; }
-    if (t < TT.blood - 0.05) { cctv(g, t); stamp(g, 'NO VIDEO', 513, 1420, t, TT.vid, RED, 116, -0.06, 'rgba(255,255,255,0.95)'); return flashAt(t, TT.vid - 0.05) * 0.3; }
-    g.fillStyle = lg(g, 0, 0, 0, H, [0, '#7a4a26'], [1, '#4a2a12']); g.fillRect(0, 0, W, H);
-    evidenceBag(g, 513, 1010, 1.0, t);
-    stamp(g, 'JUST THE BLOOD', 513, 1420, t, TT.blood, RED, 104, -0.06, 'rgba(255,255,255,0.95)');
-    return flashAt(t, TT.blood - 0.05) * 0.3;
+    court(g, t, { z: 1.03, cx: 513, cy: 960, dLook: [0, 2], dWorry: -6 });
+    stamp(g, 'ONLY THE BLOOD', 513, 1430, t, TT.n04 + 0.1, RED, 104, -0.06, 'rgba(255,255,255,0.95)');
+    return 0;
   }
   function shotPlea(g, t) {
     const TT = times(), k = sstep(TT.d01 - 0.15, TT.d01 + 0.35, t);
@@ -974,46 +979,52 @@
     say(g, 'JUDGE SAHAB, I WASN\'T THERE.', 513, 1390, t, TT.d01 - 0.04, { w: 820, h: 104, size: 60, tx: 513, ty: 1100 });
     return 0;
   }
-  // time's up: both choices fade, and your gavel comes down
-  function shotBang(g, t) {
-    const TT = times();
-    const up = sstep(TT.clock1 - 0.25, TT.bang - 0.06, t) * (1 - sstep(TT.bang - 0.06, TT.bang, t));
-    court(g, t, { z: 1.02, cx: 513, cy: 960, up, shake: shakeAt(t, [TT.bang], 18), dLook: [0, 2], dWorry: -10, dFrown: 0.8, dSweat: 1 });
-    return flashAt(t, TT.bang) * 0.25;
+  // "One in ten thousand. And he matches." The narrator leans on the number as the clock runs out.
+  function shotLean(g, t) {
+    const TT = times(), k = sstep(TT.n05 - 0.2, TT.n05 + 0.5, t);
+    court(g, t, { ...camOn(513, 960, lerp(1.55, 1.22, k), 1), dLook: [0, 2], dWorry: -12, dFrown: 0.8, dSweat: 1 });
+    title(g, '1 IN 10,000', 1330, 170, YEL, t, TT.n05 - 0.02);
+    if (t >= TT.heM - 0.05) stamp(g, 'HE MATCHES', 513, 1470, t, TT.heM - 0.03, RED, 96, -0.06, 'rgba(255,255,255,0.95)');
+    return 0;
   }
-  // ------------------------------------------------------------------ 5 · you had two numbers
-  function numCard(g, s1, s2, x, y, t, t0, sc = 1, col = YEL) {
-    if (t < t0) return;
+  // time's up: both choices fade. Nobody picks for you.
+  function shotTimeUp(g, t) {
+    court(g, t, { z: 1.03, cx: 513, cy: 960, dLook: [0, 2], dWorry: -10, dFrown: 0.8, dSweat: 1 });
+    return 0;
+  }
+  // ------------------------------------------------------------------ 6 · you had two numbers. Did you put them together?
+  function numCard(g, s1, s2, x, y, t, t0, sc = 1, col = YEL, a = 1) {
+    if (t < t0 || a <= 0) return;
     const k = pop(t, t0);
-    g.save(); g.translate(x, y); g.scale(sc * lerp(0.7, 1, k), sc * lerp(0.7, 1, k)); g.globalAlpha *= clamp((t - t0) * 8);
+    g.save(); g.translate(x, y); g.scale(sc * lerp(0.7, 1, k), sc * lerp(0.7, 1, k)); g.globalAlpha *= clamp((t - t0) * 8) * a;
     g.fillStyle = 'rgba(0,0,0,0.3)'; R(g, -196, -106, 400, 224, 22); g.fill();
     g.fillStyle = INK; R(g, -204, -118, 400, 224, 22); g.fill(); g.strokeStyle = col; g.lineWidth = 6; g.stroke();
-    txt(g, s1, -4, 22, 116, col, { align: 'center', fit: 360 });
+    txt(g, s1, -4, 22, 108, col, { align: 'center', fit: 360 });
     txt(g, s2, -4, 84, 40, CREAM, { kind: 'semi', align: 'center', fit: 360 });
     g.restore();
   }
   function shotNumbers(g, t) {
     const TT = times();
     court(g, t, { z: 1.03, cx: 513, cy: 960, dLook: [0, 2], dWorry: -8 });
-    g.fillStyle = 'rgba(16,12,10,0.62)'; g.fillRect(0, 0, W, H);
-    const m = sstep(TT.n07 - 0.1, TT.n07 + 0.45, t);
-    const ax = lerp(290, 513, m), ay = lerp(860, 760, m), bx = lerp(736, 513, m), by = lerp(860, 1040, m);
-    numCard(g, '2 CRORE', 'PEOPLE IN THE CITY', ax, ay, t, TT.n06 + 0.05, lerp(0.9, 1.05, m));
-    numCard(g, '1 IN 10,000', 'HAVE HIS BLOOD', bx, by, t, TT.n06 + 0.2, lerp(0.9, 1.05, m), '#ff7a5c');
+    g.fillStyle = 'rgba(16,12,10,0.66)'; g.fillRect(0, 0, W, H);
+    const fade = 1 - sstep(TT.n07 - 0.1, TT.n07 + 0.2, t);
+    numCard(g, '2 CRORE', '20,000,000 PEOPLE', 290, 880, t, TT.n06 + 0.05, 0.92, YEL, fade);
+    numCard(g, '1 IN 10,000', 'HAVE HIS BLOOD', 736, 880, t, TT.n06 + 0.2, 0.92, '#ff7a5c', fade);
     if (t < TT.n07 - 0.05) {
       title(g, 'YOU HAD TWO NUMBERS.', 410, 96, CREAM, t, TT.n06 - 0.05);
-      if (t >= TT.put - 0.05) title(g, 'DID YOU PUT THEM TOGETHER?', 1300, 78, YEL, t, TT.put - 0.05);
-    } else if (t >= TT.tenK2 - 0.05) {
-      g.strokeStyle = CREAM; g.lineWidth = 8; g.beginPath(); g.moveTo(330, 1206); g.lineTo(lerp(330, 696, sstep(TT.tenK2 - 0.05, TT.tenK2 + 0.3, t)), 1206); g.stroke();
-      txt(g, '= ?', 513, 1330, 120, CREAM, { align: 'center', a: sstep(TT.tenK2, TT.tenK2 + 0.2, t) });
+      if (t >= TT.put - 0.05) title(g, 'DID YOU PUT THEM TOGETHER?', 1240, 78, YEL, t, TT.put - 0.05);
+    } else {
+      title(g, '20,000,000', 760, 170, YEL, t, TT.n07 - 0.02);
+      if (t >= TT.tenK2 - 0.06) title(g, '÷ 10,000', 940, 150, '#ff7a5c', t, TT.tenK2 - 0.06);
+      if (t >= TT.tenK2 + 0.35) { g.strokeStyle = CREAM; g.lineWidth = 8; g.beginPath(); g.moveTo(250, 1010); g.lineTo(lerp(250, 776, sstep(TT.tenK2 + 0.35, TT.tenK2 + 0.6, t)), 1010); g.stroke(); txt(g, '= ?', 513, 1150, 130, CREAM, { align: 'center', a: sstep(TT.tenK2 + 0.5, TT.tenK2 + 0.7, t) }); }
     }
     return flashAt(t, TT.n06 - 0.05) * 0.2;
   }
-  // ------------------------------------------------------------------ 6 · two thousand people with his blood
+  // ------------------------------------------------------------------ 7 · two thousand people with his blood
   function shotCity(g, t) {
     const TT = times();
     const n = 2000 * sstep(TT.twoK - 0.25, TT.twoK + 0.9, t), z = lerp(1.3, 1.0, sstep(TT.n08 - 0.05, TT.n08 + 0.9, t));
-    const pulse = sstep(TT.n09, TT.n09 + 0.4, t);
+    const pulse = sstep(TT.which - 0.2, TT.which + 0.3, t);
     city(g, t, n, { z, pulse, dim: 0.6 * sstep(TT.n08, TT.twoK, t) });
     if (t >= TT.twoK - 0.08) {
       const cnt = Math.round(n);
@@ -1021,100 +1032,64 @@
       txt(g, cnt.toLocaleString('en-US'), 513, 470, 190, '#ff5a3a', { align: 'center', stroke: INK, sw: 0.08 });
       txt(g, 'PEOPLE WITH HIS BLOOD', 513, 560, 64, CREAM, { align: 'center', fit: 660, a: sstep(TT.twoK + 0.2, TT.twoK + 0.45, t) });
     }
-    if (t >= TT.which - 0.05) title(g, 'WHICH ONE?', 1420, 150, YEL, t, TT.which - 0.05);
+    if (t >= TT.which - 0.05) title(g, 'WHICH ONE?', 1440, 150, YEL, t, TT.which - 0.05);
     return flashAt(t, TT.n08 - 0.05) * 0.35;
   }
-  function shotJail(g, t) {
-    const TT = times();
-    if (!JAIL) makeJail();
-    const k = sstep(TT.n10 - 0.05, TT.n11, t), z = lerp(1.0, 1.18, k);
-    g.save(); g.translate(513, 1500); g.scale(z, z); g.translate(-513, -1500 - 120 * k); g.drawImage(JAIL.bg, 0, 0); g.restore();
-    title(g, 'TO BE SURE,', 380, 96, CREAM, t, TT.n10 - 0.05);
-    if (t >= TT.jail - 0.05) { title(g, 'JAIL ALL', 506, 140, YEL, t, TT.jail - 0.05); title(g, '2,000', 660, 190, '#ff5a3a', t, TT.allW - 0.03); }
-    return flashAt(t, TT.n10 - 0.05) * 0.3;
-  }
-  // ------------------------------------------------------------------ 7 · the name of it
+  // ------------------------------------------------------------------ 8 · the name of it
   function shotFallacy(g, t) {
     const TT = times();
     g.fillStyle = '#f1e9d8'; g.fillRect(0, 0, W, H);
     g.save(); g.globalAlpha = 0.16; advocate(g, 820, 1230, 0.86, t, { look: [-8, 2], smile: 0.4, point: 1 }); g.restore();
-    txt(g, "IT'S CALLED", 513, 640, 56, '#6b665c', { kind: 'semi', align: 'center', a: clamp((t - TT.n11) * 4) });
+    txt(g, "IT'S CALLED", 513, 640, 56, '#6b665c', { kind: 'semi', align: 'center', a: clamp((t - TT.n10) * 4) });
     title(g, "THE PROSECUTOR'S", 790, 118, INK, t, TT.fallacy - 0.12, { stroke: '#f1e9d8', sw: 0.02 });
     title(g, 'FALLACY', 960, 210, RED, t, TT.fallacy + 0.15, { stroke: '#f1e9d8', sw: 0.02 });
-    if (t >= TT.lawyers - 0.06) title(g, 'IT FOOLS LAWYERS TOO', 1130, 84, INK, t, TT.lawyers - 0.06, { stroke: '#f1e9d8', sw: 0.02 });
-    txt(g, 'THOMPSON & SCHUMANN, 1987 · LINDSEY, HERTWIG & GIGERENZER, 2003', 513, 1500, 30, '#6b665c', { kind: 'semi', align: 'center', fit: 860, a: clamp((t - TT.n11) * 3) });
-    return flashAt(t, TT.n11 - 0.05) * 0.3;
+    if (t >= TT.judges - 0.06) title(g, 'IT FOOLS REAL JUDGES TOO', 1130, 84, INK, t, TT.judges - 0.06, { stroke: '#f1e9d8', sw: 0.02 });
+    txt(g, 'THOMPSON & SCHUMANN, 1987 · LINDSEY, HERTWIG & GIGERENZER, 2003', 513, 1500, 30, '#6b665c', { kind: 'semi', align: 'center', fit: 860, a: clamp((t - TT.n10) * 3) });
+    return flashAt(t, TT.n10 - 0.05) * 0.3;
   }
-  // ------------------------------------------------------------------ 8 · one of them has a mole: the same thief, four films
-  function thumbFrame(n) {                         // the first frame of each film, drawn once
-    const c = offscreen(W, H), g = c.getContext('2d'), t = 0;
-    if (!ST) makeStreet();
-    const tt = (a, b, sz = 156) => { txt(g, a, 513, 356, 104, CREAM, { align: 'center', stroke: INK, sw: 0.14 }); txt(g, b, 513, 506, sz, YEL, { align: 'center', fit: 860, stroke: INK, sw: 0.14 }); };
-    if (n === 0) {
-      g.drawImage(ST.bg, 0, 0); steam(g, 348, 880, t, 0.8); seller(g, t); womanBack(g, 556, 862, 0.76);
-      chaiHand(g, 790, 1440, 1.08, -0.04, true); tt('YOU ARE THE', 'ONLY WITNESS');
-    } else if (n === 1) {
-      g.drawImage(ST.bg, 0, 0); seller(g, t); policeTape(g, -30, 1044, 480, 1000); policeTape(g, 800, 1046, 1120, 1018);
-      seated(g, DET, 610, 862, 1.13, { kind: 'shirt', pocket: false, body: lg(g, -340, 168, 340, 588, [0, '#32466e'], [1, '#1f2c49']), look: [0, 1], smile: 0.5 });
-      table(g, 1206); chaiHand(g, 880, 1560, 0.92, -0.04, true); tt('YOU ARE THE', 'ONLY SUSPECT');
-    } else if (n === 2) {
-      g.drawImage(ST.bg, 0, 0); seller(g, t); policeTape(g, -30, 1044, 480, 1000); policeTape(g, 640, 1030, 1120, 1012);
-      seated(g, ONE, 286, 872, 1.0, { kind: 'jacket', look: [0, 1], frown: 0.45, sweat: 1, t });
-      seated(g, TWO, 740, 872, 1.0, { kind: 'shirt', look: [0, 1], smile: 0.4, t });
-      table(g); tent(g, 286, 1414, 1); tent(g, 740, 1414, 2); chaiHand(g, 880, 1615, 0.92, -0.04, true); tt('YOU ARE THE', 'DETECTIVE', 170);
-    } else {
-      court(g, 0.4, { z: 1.0 }); txt(g, "YOU'RE THE", 513, 360, 104, CREAM, { align: 'center', stroke: INK, sw: 0.14 }); txt(g, 'JUDGE', 513, 520, 180, YEL, { align: 'center', fit: 860, stroke: INK, sw: 0.14 });
-    }
-    return c;
-  }
-  let THUMBS = null;
-  function womanBack(g, x, y, s) {                 // reel 20's woman at the counter, from behind (its first frame)
-    g.save(); g.translate(x, y); g.scale(s, s);
-    g.fillStyle = 'rgba(30,20,12,0.26)'; ell(g, 0, 756, 150, 22); g.fill();
-    g.fillStyle = '#d8d2c8'; R(g, -70, 420, 62, 330, 26); g.fill(); R(g, 8, 420, 62, 330, 26); g.fill();
-    const arm = (k, a) => { g.save(); g.translate(k * 108, 96); g.rotate(a); g.fillStyle = lg(g, -26, 0, 26, 180, [0, '#f4c430'], [1, '#d99a1a']); R(g, -27, -6, 54, 186, 26); g.fill(); g.fillStyle = '#c98e68'; R(g, -21, 170, 42, 120, 20); g.fill(); ell(g, 0, 296, 24, 30); g.fill(); g.restore(); };
-    arm(-1, 0.42); arm(1, -0.1);
-    g.fillStyle = lg(g, -130, 40, 130, 520, [0, '#f4c430'], [1, '#d99a1a']); g.beginPath(); g.moveTo(-108, 70); g.bezierCurveTo(-130, 200, -118, 380, -128, 520); g.lineTo(128, 520); g.bezierCurveTo(118, 380, 130, 200, 108, 70); g.quadraticCurveTo(0, 40, -108, 70); g.closePath(); g.fill();
-    g.fillStyle = lg(g, -130, 40, 40, 400, [0, '#e0457b'], [1, '#b12a5e']); g.beginPath(); g.moveTo(-108, 66); g.quadraticCurveTo(-30, 50, 40, 70); g.lineTo(-60, 380); g.lineTo(-136, 340); g.closePath(); g.fill();
-    ell(g, 0, 8, 62, 74); g.fillStyle = '#17100c'; g.fill();
-    g.fillStyle = '#c98e68'; R(g, -26, 56, 52, 30, 10); g.fill();
-    g.fillStyle = '#17100c'; for (let i = 0; i < 7; i++) { ell(g, Math.sin(i * 0.9) * 5, 70 + i * 40, 20 - i * 1.2, 22); g.fill(); }
-    g.strokeStyle = '#7a0f18'; g.lineWidth = 11; g.beginPath(); g.moveTo(84, 70); g.quadraticCurveTo(118, 200, 112, 280); g.stroke(); g.fillStyle = lg(g, 40, 270, 200, 420, [0, '#d42330'], [1, '#8d0f1a']); R(g, 46, 270, 142, 124, 18); g.fill();
+  // ------------------------------------------------------------------ 9 · one of those two thousand, you've met before. Four films, same thief.
+  function faceTile(g, i, x, y, w, h) {            // his face in each film; the fourth is a question
+    g.save(); g.beginPath(); g.roundRect(x, y, w, h, 10); g.clip();
+    const bgs = [lg(g, 0, y, 0, y + h, [0, '#ee8f58'], [1, '#fde4bb']), '#c9c6bd', lg(g, 0, y, 0, y + h, [0, '#f7c384'], [1, '#e8a868']), '#efe2c6'];
+    g.fillStyle = bgs[i]; g.fillRect(x, y, w, h);
+    if (i === 1) { g.strokeStyle = 'rgba(40,40,40,0.25)'; g.lineWidth = 2; for (let k = 0; k < 8; k++) { g.beginPath(); g.moveTo(x, y + 20 + k * 30); g.lineTo(x + w, y + 20 + k * 30); g.stroke(); } }
+    if (i < 3) {
+      const L = i === 0 ? THIEF20 : TWO, body = i === 0 ? lg(g, -320, 168, 320, 760, [0, '#37a18a'], [1, '#237a68']) : i === 1 ? lg(g, -320, 168, 320, 760, [0, '#f07a2b'], [1, '#c4561a']) : undefined;
+      seated(g, L, x + w / 2, y + h * 0.5, 0.42, { kind: 'shirt', pocket: false, body, look: [0, 1], smile: i === 2 ? 0.45 : 0.1 });
+    } else txt(g, '?', x + w / 2, y + h * 0.66, 220, '#b9a27a', { align: 'center' });
     g.restore();
   }
   function shotThief(g, t) {
     const TT = times();
-    const zin = sstep(TT.n12 - 0.05, TT.mole - 0.1, t), port = sstep(TT.mole - 0.35, TT.mole - 0.05, t);
     if (!CITY) makeCity();
-    const D = CITY.dots[1234];
-    if (port < 1) { g.save(); g.globalAlpha = 1 - port; city(g, t, 2000, { z: lerp(1.0, 4.5, zin * zin), cx: D.x, cy: D.y, dim: 0.6, dotS: lerp(1, 0.22, zin) }); g.restore(); }
+    const D = CITY.dots[1440];                      // his light: in the courthouse
+    const zin = sstep(TT.n11 - 0.05, TT.met - 0.1, t), port = sstep(TT.met - 0.35, TT.met - 0.05, t);
+    if (port < 1) { g.save(); g.globalAlpha = 1 - port; city(g, t, 2000, { z: lerp(1.0, 5.5, zin * zin), cx: D.x, cy: D.y, dim: 0.6, dotS: lerp(1, 0.2, zin) }); g.restore(); }
     if (port > 0) {
       g.save(); g.globalAlpha = port;
       g.fillStyle = '#1a1c22'; g.fillRect(0, 0, W, H);
-      g.fillStyle = rg(g, 513, 940, 40, 700, [0, 'rgba(255,70,50,0.28)'], [1, 'rgba(255,70,50,0)']); g.fillRect(0, 0, W, H);
-      seated(g, TWO, 513, 930, 1.32, { kind: 'shirt', pocket: false, look: [0, 1], smile: 0.5, close: blinkAt(t, 3.3, 0.4), t });
+      g.fillStyle = rg(g, 513, 1010, 40, 700, [0, 'rgba(255,70,50,0.28)'], [1, 'rgba(255,70,50,0)']); g.fillRect(0, 0, W, H);
+      seated(g, TWO, 513, 1010, 1.25, { kind: 'shirt', pocket: false, look: [0, 1], smile: 0.5, close: blinkAt(t, 3.3, 0.4), t });
       g.restore();
-      if (t >= TT.mole - 0.06) { const k = pop(t, TT.mole - 0.06); g.strokeStyle = RED; g.lineWidth = 10; ell(g, 513 + 84 * 1.32, 930 + 62 * 1.32, 44 * lerp(1.8, 1, k), 44 * lerp(1.8, 1, k)); g.stroke(); }
     }
-    if (t >= TT.n13 - 0.06) {
-      if (!THUMBS) THUMBS = [0, 1, 2, 3].map(thumbFrame);
+    if (t >= TT.n12 - 0.06) {
       const labs = ['WITNESS', 'SUSPECT', 'DETECTIVE', 'JUDGE'];
       for (let i = 0; i < 4; i++) {
-        const t0 = TT.n13 - 0.06 + i * 0.12, k = pop(t, t0), x = 152 + i * 242, y = 300, w = 210, h = 373;
+        const t0 = TT.n12 - 0.06 + i * 0.1, k = pop(t, t0), w = 206, h = 250, x = 112 + i * 222, y = 300;
         if (t < t0) continue;
-        g.save(); g.translate(x + w / 2, y + h / 2); g.scale(lerp(0.6, 1, k), lerp(0.6, 1, k)); g.globalAlpha = clamp((t - t0) * 8);
-        g.fillStyle = CREAM; R(g, -w / 2 - 6, -h / 2 - 6, w + 12, h + 12, 10); g.fill();
-        g.drawImage(THUMBS[i], 0, 0, W, H, -w / 2, -h / 2, w, h);
-        g.fillStyle = 'rgba(12,12,16,0.85)'; R(g, -w / 2, h / 2 - 44, w, 44, 0); g.fill();
-        txt(g, `${i + 1} · ${labs[i]}`, 0, h / 2 - 12, 28, CREAM, { align: 'center', fit: w - 16 });
+        g.save(); g.translate(x + w / 2, y + h / 2); g.scale(lerp(0.6, 1, k), lerp(0.6, 1, k)); g.globalAlpha = clamp((t - t0) * 8); g.translate(-(x + w / 2), -(y + h / 2));
+        g.fillStyle = CREAM; R(g, x - 6, y - 6, w + 12, h + 12, 12); g.fill();
+        faceTile(g, i, x, y, w, h);
+        g.fillStyle = 'rgba(12,12,16,0.85)'; R(g, x, y + h - 42, w, 42, 0); g.fill();
+        txt(g, `${i + 1} · ${labs[i]}`, x + w / 2, y + h - 12, 28, CREAM, { align: 'center', fit: w - 16 });
         g.restore();
       }
     }
-    if (t >= TT.same - 0.06) stamp(g, 'SAME THIEF', 513, 1330, t, TT.same - 0.04, RED, 140, -0.08, 'rgba(255,255,255,0.95)');
-    if (t >= TT.free - 0.06) title(g, 'STILL FREE.', 1490, 120, YEL, t, TT.free - 0.06);
-    return flashAt(t, TT.mole - 0.2) * 0.3 + flashAt(t, TT.n13 - 0.06) * 0.2;
+    if (t >= TT.same - 0.06) { const k = pop(t, TT.same - 0.06); g.strokeStyle = RED; g.lineWidth = 10; ell(g, 513 + 84 * 1.25, 1010 + 62 * 1.25, 42 * lerp(1.8, 1, k), 42 * lerp(1.8, 1, k)); g.stroke(); stamp(g, 'SAME THIEF', 513, 1400, t, TT.same - 0.04, RED, 136, -0.08, 'rgba(255,255,255,0.95)'); }
+    if (t >= TT.free - 0.06) title(g, 'STILL FREE.', 1526, 112, YEL, t, TT.free - 0.06);
+    return flashAt(t, TT.met - 0.2) * 0.3 + flashAt(t, TT.n12 - 0.06) * 0.2;
   }
-  // ------------------------------------------------------------------ 9 · the dare: the friend who's good at maths
+  // ------------------------------------------------------------------ 10 · the dare: the friend who's good at maths
   const TEE = (g) => lg(g, -340, 168, 340, 588, [0, '#f2a93a'], [1, '#d58a22']);
   function calculator(g, x, y, s, rot) {
     g.save(); g.translate(x, y); g.rotate(rot); g.scale(s, s);
@@ -1132,16 +1107,17 @@
     calculator(g, 790, 1150, 0.95, 0.12);
     g.fillStyle = FRIEND.skin; ell(g, 760, 1290, 70, 52, 0.2); g.fill();
     chaiHand(g, 880, 1600 + 3 * Math.sin(t * 1.1), 0.92, -0.04, true);
-    say(g, "I'M GOOD AT MATHS.", 513, 430, t, TT.maths - 0.05, { tx: 540, ty: 640, w: 760 });
-    return flashAt(t, TT.n14 - 0.05) * 0.3;
+    say(g, "I'M GOOD AT MATHS.", 513, 430, t, TT.good - 0.05, { tx: 540, ty: 640, w: 760 });
+    if (t >= TT.dont - 0.05) title(g, "DON'T TELL THEM IT'S MATHS.", 1460, 78, YEL, t, TT.dont - 0.05);
+    return flashAt(t, TT.n13 - 0.05) * 0.3;
   }
-  // ------------------------------------------------------------------ 10 · the last line: the courtroom, empty now
+  // ------------------------------------------------------------------ 11 · the last line: the courtroom, everyone gone
   function shotLast(g, t) {
     const TT = times();
-    court(g, t, { z: 1.0 + 0.02 * sstep(TT.n15, TT.end, t), cx: 513, cy: 960, emptyGallery: true, emptyDock: true, noPros: true });
+    court(g, t, { z: 1.0 + 0.02 * sstep(TT.n14, TT.end, t), cx: 513, cy: 960, emptyGallery: true, emptyDock: true, noPros: true });
     txt(g, "YOU'RE THE TEST SUBJECT", 513, 330, 54, CREAM, { align: 'center', fit: 860, stroke: INK, sw: 0.2 });
-    if (t >= TT.where - 0.05) { title(g, 'WHERE WAS', 452, 120, CREAM, t, TT.where - 0.05); title(g, 'HE SITTING?', 590, 150, YEL, t, TT.where + 0.12); }
-    return flashAt(t, TT.n15 - 0.14) * 0.4;
+    if (t >= TT.where - 0.05) { title(g, 'WHERE WAS THE', 452, 116, CREAM, t, TT.where - 0.05); title(g, 'THIEF SITTING?', 596, 150, YEL, t, TT.where + 0.12); }
+    return flashAt(t, TT.n14 - 0.14) * 0.4;
   }
 
   // ================================================================ the film
@@ -1154,20 +1130,19 @@
       g.save();
       let fl = 0;
       if (t < TT.stall - 0.05) fl = shotOpen(g, t);
-      else if (t < TT.n03 - 0.05) fl = shotStall(g, t);
+      else if (t < TT.cut - 0.05) fl = shotNight(g, t);
       else if (t < TT.matchW - 0.05) fl = shotBag(g, t);
       else if (t < TT.p01 - 0.05) fl = shotMatch(g, t);
       else if (t < TT.n04 - 0.05) fl = shotPros(g, t);
-      else if (t < TT.n05 - 0.05) fl = shotAsk(g, t);
-      else if (t < TT.d01 - 0.05) fl = shotNo(g, t);
-      else if (t < TT.clock1 - 0.2) fl = shotPlea(g, t);
-      else if (t < TT.n06 - 0.05) fl = shotBang(g, t);
+      else if (t < TT.d01 - 0.05) fl = shotAsk(g, t);
+      else if (t < TT.n05 - 0.05) fl = shotPlea(g, t);
+      else if (t < TT.clock1 - 0.1) fl = shotLean(g, t);
+      else if (t < TT.n06 - 0.05) fl = shotTimeUp(g, t);
       else if (t < TT.n08 - 0.05) fl = shotNumbers(g, t);
       else if (t < TT.n10 - 0.05) fl = shotCity(g, t);
-      else if (t < TT.n11 - 0.05) fl = shotJail(g, t);
-      else if (t < TT.n12 - 0.05) fl = shotFallacy(g, t);
-      else if (t < TT.n14 - 0.05) fl = shotThief(g, t);
-      else if (t < TT.n15 - 0.15) fl = shotFriend(g, t);
+      else if (t < TT.n11 - 0.05) fl = shotFallacy(g, t);
+      else if (t < TT.n13 - 0.05) fl = shotThief(g, t);
+      else if (t < TT.n14 - 0.15) fl = shotFriend(g, t);
       else fl = shotLast(g, t);
       askOverlay(g, t);
       if (fl > 0.002) { g.fillStyle = `rgba(255,253,244,${fl})`; g.fillRect(0, 0, W, H); }
