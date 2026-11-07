@@ -760,7 +760,11 @@
     const nw = 60; g.fillStyle = NEWV.skin; g.beginPath(); g.moveTo(-nw, 120); g.lineTo(-nw - 6, 230); g.quadraticCurveTo(0, 290, nw + 6, 230); g.lineTo(nw, 120); g.closePath(); g.fill();
     head(g, NEWV, { look: [16, 4], close: 0, op: 0.12, worry: -10 });
     g.strokeStyle = '#2f8f6a'; g.lineWidth = 96; g.lineCap = 'round'; g.beginPath(); g.moveTo(-250, 520); g.lineTo(-150, 330); g.stroke();
-    g.fillStyle = NEWV.skin; ell(g, -66, 150, 54, 64, 0.5); g.fill();
+    g.save(); g.translate(-30, 126); g.rotate(0.35);
+    g.fillStyle = NEWV.skin; ell(g, -30, 30, 46, 52); g.fill();
+    for (let i = 0; i < 4; i++) { R(g, -46 + i * 26, -46, 24, 70, 12); g.fill(); }
+    g.strokeStyle = NEWV.skinD; g.lineWidth = 3; for (let i = 1; i < 4; i++) { g.beginPath(); g.moveTo(-46 + i * 26, -36); g.lineTo(-46 + i * 26, 12); g.stroke(); }
+    g.restore();
     g.restore();
   }
   function runner(g, x, y, s, t) {                 // a dark figure running away from you, his back to you
@@ -806,7 +810,8 @@
     for (let i = 0; i < 2000; i++) {
       const u = r(), y = 420 + Math.pow(u, 0.8) * 1200;              // more of them low down, where the city is near
       let x = 16 + r() * (W - 32);
-      if (Math.abs(x - CH.x) < 150 * CH.s && y > CH.y - 380 * CH.s) x = (x < CH.x ? CH.x - 150 * CH.s : CH.x + 150 * CH.s) + (x < CH.x ? -20 : 20);   // the court holds only its two
+      for (let tries = 0; tries < 8 && Math.abs(x - CH.x) < 170 * CH.s && y > CH.y - 560 * CH.s; tries++) x = 16 + r() * (W - 32);   // the court holds only its two
+      if (Math.abs(x - CH.x) < 170 * CH.s && y > CH.y - 560 * CH.s) x = (x + 400) % (W - 32) + 16;
       dots.push({ x, y, d: r(), p: r() * TAU });
     }
     dots.sort((a, b) => a.d - b.d);
@@ -822,8 +827,8 @@
   // n: how many of the two thousand are lit (0..2000), pulse: 0..1 they breathe together
   function city(g, t, n, o = {}) {
     if (!CITY) makeCity();
-    const z = o.z ?? 1, cx = o.cx ?? 540, cy = o.cy ?? 960;
-    g.save(); g.translate(cx, cy); g.scale(z, z); g.translate(-cx, -cy);
+    const z = o.z ?? 1, cx = o.cx ?? 540, cy = o.cy ?? 960, ax = o.ax ?? cx, ay = o.ay ?? cy;
+    g.save(); g.translate(ax, ay); g.scale(z, z); g.translate(-cx, -cy);
     g.drawImage(CITY.bg, 0, 0);
     if (o.dim) { g.fillStyle = `rgba(20,14,24,${0.35 * o.dim})`; g.fillRect(0, 0, W, H); }
     const pulse = o.pulse || 0, s0 = (o.dotS ?? 1) * 0.42;                 // a dot is about 6 px across, its glow 20
@@ -928,8 +933,8 @@
     nightStreet(g, t);
     seller(g, t);
     g.save(); g.globalCompositeOperation = 'multiply'; g.fillStyle = 'rgba(80,96,160,0.55)'; g.fillRect(0, 600, 470, 420); g.restore();
-    if (t >= TT.n03 - 0.1) { const u = clamp((t - (TT.n03 - 0.1)) / 1.4); runner(g, lerp(930, 1010, u), lerp(780, 742, u), lerp(0.62, 0.42, u), t); }
-    shockedWoman(g, 650, 760, 0.6, t);
+    if (t >= TT.stall + 0.3) { const u = clamp((t - (TT.stall + 0.3)) / 2.4); runner(g, lerp(700, 790, u), lerp(770, 728, u), lerp(0.56, 0.36, u), t); }
+    shockedWoman(g, 545, 770, 0.6, t);
     g.restore();
     g.fillStyle = lg(g, 0, 1300, 0, H, [0, 'rgba(10,14,30,0)'], [1, 'rgba(10,14,30,0.6)']); g.fillRect(0, 1300, W, 620);
     shards(g, 9, 560, 1440);
@@ -950,7 +955,7 @@
     const TT = times(), k = sstep(TT.matchW - 0.1, TT.matchW + 0.7, t);
     court(g, t, { ...camOn(513, 980, 1.32, k), dLook: [0, 3], dWorry: -8 });
     labCard(g, 513, 1360, 1.0, t, TT.matchW + 0.1);
-    if (t >= TT.matches - 0.06) stamp(g, 'MATCH', 513, 1450, t, TT.matches - 0.04, RED, 120, -0.08, 'rgba(255,255,255,0.95)');
+    if (t >= TT.n03e - 0.02) stamp(g, 'MATCH', 513, 1450, t, TT.n03e, RED, 120, -0.08, 'rgba(255,255,255,0.95)');     // in the gap after "this man", with its sound
     return flashAt(t, TT.matchW - 0.05) * 0.3;
   }
   // ------------------------------------------------------------------ 4 · the prosecutor
@@ -1064,7 +1069,13 @@
     if (!CITY) makeCity();
     const D = CITY.dots[1440];                      // his light: in the courthouse
     const zin = sstep(TT.n11 - 0.05, TT.met - 0.1, t), port = sstep(TT.met - 0.35, TT.met - 0.05, t);
-    if (port < 1) { g.save(); g.globalAlpha = 1 - port; city(g, t, 2000, { z: lerp(1.0, 5.5, zin * zin), cx: D.x, cy: D.y, dim: 0.6, dotS: lerp(1, 0.2, zin) }); g.restore(); }
+    if (port < 1) {
+      const ax = lerp(D.x, 513, sstep(0, 0.6, zin)), ay = lerp(D.y, 960, sstep(0, 0.6, zin));
+      g.save(); g.globalAlpha = 1 - port; city(g, t, 2000, { z: lerp(1.0, 5.5, zin * zin), cx: D.x, cy: D.y, ax, ay, dim: 0.6, dotS: lerp(1, 0.2, zin) });
+      const rr = lerp(14, 120, zin);                // his light, the one you dive into, stays a light
+      g.globalCompositeOperation = 'lighter'; g.fillStyle = rg(g, ax, ay, 1, rr, [0, 'rgba(255,90,60,0.95)'], [0.35, 'rgba(255,50,30,0.5)'], [1, 'rgba(255,40,30,0)']); g.fillRect(ax - rr, ay - rr, rr * 2, rr * 2);
+      g.restore();
+    }
     if (port > 0) {
       g.save(); g.globalAlpha = port;
       g.fillStyle = '#1a1c22'; g.fillRect(0, 0, W, H);
@@ -1075,7 +1086,7 @@
     if (t >= TT.n12 - 0.06) {
       const labs = ['WITNESS', 'SUSPECT', 'DETECTIVE', 'JUDGE'];
       for (let i = 0; i < 4; i++) {
-        const t0 = TT.n12 - 0.06 + i * 0.1, k = pop(t, t0), w = 206, h = 250, x = 112 + i * 222, y = 300;
+        const t0 = TT.n12 - 0.06 + i * 0.1, k = pop(t, t0), w = 196, h = 244, x = 100 + i * 210, y = 300;     // x 100–926: inside the safe zone
         if (t < t0) continue;
         g.save(); g.translate(x + w / 2, y + h / 2); g.scale(lerp(0.6, 1, k), lerp(0.6, 1, k)); g.globalAlpha = clamp((t - t0) * 8); g.translate(-(x + w / 2), -(y + h / 2));
         g.fillStyle = CREAM; R(g, x - 6, y - 6, w + 12, h + 12, 12); g.fill();
