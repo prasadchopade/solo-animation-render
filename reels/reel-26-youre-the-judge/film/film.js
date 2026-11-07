@@ -797,6 +797,7 @@
     if (f.hair === 'short' || f.hair === 'grey') { g.beginPath(); g.ellipse(hx, hy - 3.2 * s, 8.4 * s, 7 * s, 0, Math.PI * 1.02, Math.PI * 1.98); g.fill(); R(g, hx - 8.4 * s, hy - 4.6 * s, 16.8 * s, 2.8 * s, 1.4 * s); g.fill(); }
     else if (f.hair === 'side') { g.beginPath(); g.ellipse(hx, hy - 3.4 * s, 8.6 * s, 7.4 * s, 0, Math.PI, TAU); g.fill(); g.beginPath(); g.moveTo(hx - 8.6 * s, hy - 3 * s); g.quadraticCurveTo(hx - 2 * s, hy - 7 * s, hx + 3 * s, hy - 5.2 * s); g.lineTo(hx + 8.6 * s, hy - 3 * s); g.fill(); }
     else if (f.hair === 'long' || f.hair === 'bun') { g.beginPath(); g.ellipse(hx, hy - 3 * s, 8.6 * s, 7.6 * s, 0, Math.PI, TAU); g.fill(); if (f.hair === 'bun') { ell(g, hx, hy - 10.6 * s, 4 * s, 3.4 * s); g.fill(); } }
+    else if (f.hair === 'pigtails') { g.beginPath(); g.ellipse(hx, hy - 3 * s, 8.6 * s, 7.6 * s, 0, Math.PI, TAU); g.fill(); for (const k of [-1, 1]) { ell(g, hx + k * 9.6 * s, hy + 1.5 * s, 2.6 * s, 4.4 * s, k * 0.3); g.fill(); } }
     if (f.temples) { g.fillStyle = 'rgba(220,214,204,0.9)'; g.fillRect(hx - 8.4 * s, hy - 4 * s, 1.6 * s, 3 * s); g.fillRect(hx + 6.8 * s, hy - 4 * s, 1.6 * s, 3 * s); }
     g.fillStyle = '#1a120c'; for (const k of [-1, 1]) { ell(g, hx + k * 3.3 * s, hy + 0.2 * s, 1.15 * s, 1.15 * s); g.fill(); }
     g.strokeStyle = 'rgba(40,20,10,0.75)'; g.lineWidth = 0.7 * s; g.lineCap = 'round';
@@ -814,18 +815,23 @@
     const skins = ['#c99068', '#b27a54', '#a8714a', '#8d5a3a', '#d6a07a', '#c48e66', '#e2b48d', '#9d6747', '#6b4128'];
     const hairs = ['#16110d', '#1a120e', '#2a1a10', '#3a2a1e'];
     const shirts = ['#5b8fd1', '#f1efe8', '#d96f6a', '#3e9a6e', '#e8b84a', '#7c5bb0', '#c9845a', '#9aa0a8', '#2f4d7a', '#e0457b', '#58a56a', '#f07a2b', '#b9667f'];
-    const styles = ['short', 'short', 'side', 'side', 'long', 'bun', 'grey', 'bald'];
+    // everyone with his blood: men, women, children, the old. The match says nothing about which.
     for (let row = 0; row < GRID.rows; row++) for (let col = 0; col < GRID.cols; col++) {
       const x = col * GRID.cw, y = row * GRID.ch, cx = x + GRID.cw / 2, cy = y + GRID.ch / 2;
       g.fillStyle = (row + col) % 2 ? '#efe9d9' : '#ebe4d2'; g.fillRect(x + 0.6, y + 0.6, GRID.cw - 1.2, GRID.ch - 1.2);
       g.save(); g.beginPath(); g.rect(x + 0.6, y + 0.6, GRID.cw - 1.2, GRID.ch - 1.2); g.clip();
-      const hair = styles[Math.floor(r() * styles.length)], woman = hair === 'long' || hair === 'bun';
-      let f = { skin: skins[Math.floor(r() * skins.length)], hc: hair === 'grey' ? '#cfc9bf' : hairs[Math.floor(r() * hairs.length)], hair, shirt: shirts[Math.floor(r() * shirts.length)],
-        must: !woman && r() < 0.45 ? (r() < 0.5 ? 'thick' : 'thin') : null, bindi: woman && r() < 0.55, specs: r() < 0.14 };
-      if (f.must && hair === 'grey') f.mustC = '#cfc9bf';
+      const u = r(), who = u < 0.22 ? 'child' : u < 0.61 ? 'woman' : 'man', old = who !== 'child' && r() < 0.26;
+      const grey = '#cfc9bf', dark = hairs[Math.floor(r() * hairs.length)];
+      let hair;
+      if (who === 'child') hair = r() < 0.5 ? 'short' : 'pigtails';
+      else if (who === 'woman') hair = r() < 0.6 ? 'long' : 'bun';
+      else hair = old ? (r() < 0.5 ? 'grey' : 'bald') : (r() < 0.5 ? 'short' : 'side');
+      let f = { skin: skins[Math.floor(r() * skins.length)], hc: old ? grey : dark, hair, shirt: shirts[Math.floor(r() * shirts.length)],
+        must: who === 'man' && r() < 0.5 ? (r() < 0.5 ? 'thick' : 'thin') : null, bindi: who === 'woman' && r() < 0.55, specs: who !== 'child' && r() < (old ? 0.4 : 0.1), kid: who === 'child' };
+      if (f.must && old) f.mustC = grey;
       if (col === DEF_CELL[0] && row === DEF_CELL[1]) f = { skin: AUTO.skin, hc: AUTO.hair, hair: 'side', shirt: '#c9ab66', collar: '#b89a58', must: 'thick', temples: true, worry: true };
       if (col === THIEF_CELL[0] && row === THIEF_CELL[1]) f = { skin: TWO.skin, hc: TWO.hair, hair: 'side', shirt: '#b8d3ea', collar: '#e7f1fa', must: 'thin', mole: true };
-      miniPerson(g, cx, cy + 1.5, 1.0, f);
+      if (f.kid) miniPerson(g, cx, cy + 7, 0.76, f); else miniPerson(g, cx, cy + 1.5, 1.0, f);     // a child: smaller, lower in the frame
       g.restore();
     }
     CROWD2K = { c };
