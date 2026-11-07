@@ -605,7 +605,7 @@
     g.restore();
   }
   // the gallery: who sits where. FRONT row (big), BACK row (small). The thief is on the right, front row.
-  const THIEF = { x: 868, y: 1034, s: 0.37 };
+  const THIEF = { x: 850, y: 1004, s: 0.44 };      // the largest face in the gallery: on a phone his mole and plaster can be found
   const TWO_G = { ...TWO, moleR: 16 };            // his face is small in the gallery: a bigger mole, so it reads on a phone
   function gallery(g, t, o = {}) {
     if (o.empty) return;
@@ -615,7 +615,7 @@
     sitter(g, G_OLD, 948, 968, 0.24, '#3e9a6e', t, { close: bl(3.1, 1.2), look: [-6, 2] });
     // the bar between the public and the court, behind the front row's knees
     sitter(g, G_BUN, 292, 1034, 0.31, '#7c5bb0', t, { close: bl(3.3, 2.4), look: [8, 2], frown: 0.2 });
-    sitter(g, PLAIN, 742, 1036, 0.31, '#d96f6a', t, { close: bl(2.9, 0.7), look: [-10, 3] });
+    sitter(g, PLAIN, 716, 1036, 0.31, '#d96f6a', t, { close: bl(2.9, 0.7), look: [-10, 3] });
     sitter(g, TWO_G, THIEF.x, THIEF.y, THIEF.s, null, t, { close: bl(4.6, 3.1), look: [0, 1], smile: 0.55 });
   }
   function bar(g, t, o = {}) {                     // the rail in front of the gallery, and the solid wood under it
@@ -624,7 +624,7 @@
     g.fillStyle = 'rgba(0,0,0,0.18)'; g.fillRect(0, 1124, W, 10);
     g.fillStyle = lg(g, 0, 1100, 0, 1124, [0, '#c08c58'], [1, '#875a33']); R(g, -10, 1100, W + 20, 24, 10); g.fill();
     g.fillStyle = 'rgba(255,230,190,0.35)'; g.fillRect(0, 1102, W, 4);
-    if (!o.empty) thiefHand(g, THIEF.x - 44, 1104, 0.42);
+    if (!o.empty) thiefHand(g, THIEF.x - 52, 1104, 0.5);
   }
   // the dock: rails and posts; his hands on the top rail (no plaster on either)
   function dock(g, t, o = {}) {
@@ -784,7 +784,7 @@
   const GRID = { cols: 40, rows: 50, cw: W / 40, ch: H / 50 };
   const DEF_CELL = [19, 24], THIEF_CELL = [28, 34];
   const cellXY = ([c, r]) => [(c + 0.5) * GRID.cw, (r + 0.5) * GRID.ch];
-  const GS = 2;                                    // the sheet is drawn at 2x, so the camera can start close on one face
+  const GS = 3;                                    // the sheet is drawn at 3x, so the camera can open close on one face
   let CROWD2K = null;
   function miniPerson(g, x, y, s, f) {             // one small portrait, centred on (x, y); s: pixels per unit
     const hx = x, hy = y - 5 * s;
@@ -845,9 +845,10 @@
     g.fillStyle = '#e6dfcc'; g.fillRect(0, 0, W, H);
     g.translate(ax, ay); g.scale(z, z); g.translate(-fx, -fy);
     g.drawImage(CROWD2K.c, 0, 0, W * GS, H * GS, 0, 0, W, H);
-    if (o.hl > 0) {
-      const [dx, dy] = cellXY(DEF_CELL);
-      g.strokeStyle = YEL; g.lineWidth = 3.2 / Math.max(1, z * 0.5); g.globalAlpha = clamp(o.hl);
+    for (const [cell, col, a] of (o.frames || (o.hl > 0 ? [[DEF_CELL, YEL, o.hl]] : []))) {
+      if (a <= 0) continue;
+      const [dx, dy] = cellXY(cell);
+      g.strokeStyle = col; g.lineWidth = 4.5 / Math.max(1, z * 0.5); g.globalAlpha = clamp(a);
       R(g, dx - GRID.cw / 2 + 0.5, dy - GRID.ch / 2 + 0.5, GRID.cw - 1, GRID.ch - 1, 3); g.stroke(); g.globalAlpha = 1;
     }
     g.restore();
@@ -896,9 +897,9 @@
   }
   function timerBar(g, t, t0, t1) {              // drains from both ends to the middle, one colour: it points at neither button
     if (t < t0 || t >= t1) return;
-    const u = clamp((t1 - t) / (t1 - t0)), half = 393 * u;
-    R(g, 120, 572, 786, 20, 10); g.fillStyle = 'rgba(20,16,10,0.55)'; g.fill();
-    if (half > 1) { R(g, 513 - half, 572, half * 2, 20, 10); g.fillStyle = '#ffb347'; g.fill(); }
+    const u = clamp((t1 - t) / (t1 - t0)), half = 380 * u;
+    R(g, 120, 572, 786, 34, 17); g.fillStyle = 'rgba(20,16,10,0.78)'; g.fill();
+    if (half > 2) { R(g, 513 - half, 578, half * 2, 22, 11); g.fillStyle = '#ffb347'; g.fill(); }
   }
   function askOverlay(g, t) {                      // the question, the buttons and the clock, over whatever is on screen
     const TT = times();
@@ -926,7 +927,7 @@
   // ------------------------------------------------------------------ 1 · frame 0, and the city in the window behind him
   function shotOpen(g, t) {
     const TT = times(), k = sstep(TT.n02 - 0.1, TT.n02 + 1.4, t);
-    court(g, t, { ...camOn(540, 900, 1.05, k) });
+    court(g, t, { ...camOn(530, 960, 1.05, k) });
     const out = sstep(TT.titleOut - 0.05, TT.titleOut + 0.15, t);
     if (out < 1) {
       g.save(); g.globalAlpha = 1 - out;
@@ -936,7 +937,7 @@
     }
     if (t >= TT.crore - 0.08) {
       title(g, '2 CRORE PEOPLE', 420, 150, YEL, t, TT.crore - 0.08);
-      title(g, '20,000,000', 520, 76, CREAM, t, TT.crore + 0.12);
+      title(g, '20,000,000', 530, 92, CREAM, t, TT.crore + 0.12);
     }
     return 0;
   }
@@ -1051,16 +1052,19 @@
       title(g, 'WHICH ONE?', 1420, 170, YEL, t, TT.which - 0.05);
       return flashAt(t, TT.itCant - 0.05) * 0.25;
     }
-    const out = sstep(TT.n08 - 0.05, TT.twoK + 0.7, t), z = lerp(3.4, 1.0, out) + 0.05 * sstep(TT.n09, TT.itCant, t);
-    crowd(g, t, { z, focus: DEF_CELL, hl: 1 - sstep(TT.twoK + 0.9, TT.twoK + 1.5, t) * 0.6 });
+    // it opens on his face: the court close-up dissolves into his small portrait, framed in yellow; then the camera pulls back
+    const t0 = TT.n08 - 0.05, mix = sstep(t0, t0 + 0.4, t), out = sstep(t0 + 0.25, TT.twoK + 1.7, t);
+    const z = lerp(7.0, 1.55, out) - 0.12 * sstep(TT.twoK + 1.7, TT.itCant, t);
+    crowd(g, t, { z, focus: DEF_CELL, hl: 1 });
+    if (mix < 1) { g.save(); g.globalAlpha = 1 - mix; court(g, t, { ...camOn(513, 940, 1.75, 1), dLook: [0, 1], dWorry: -12, dFrown: 0.8, dSweat: 1 }); g.restore(); }
     if (t >= TT.twoK - 0.08) {
-      const n = Math.round(2000 * sstep(TT.twoK - 0.1, TT.twoK + 0.6, t));
-      g.fillStyle = 'rgba(14,10,10,0.78)'; R(g, 160, 296, 706, 300, 28); g.fill();
+      const n = Math.round(2000 * sstep(TT.twoK - 0.1, TT.twoK + 0.5, t));
+      g.fillStyle = 'rgba(14,10,10,0.8)'; R(g, 160, 296, 706, 300, 28); g.fill();
       txt(g, n.toLocaleString('en-US'), 513, 470, 190, '#ff5a3a', { align: 'center', stroke: INK, sw: 0.08 });
-      txt(g, 'PEOPLE WITH HIS BLOOD', 513, 560, 64, CREAM, { align: 'center', fit: 660, a: sstep(TT.twoK + 0.2, TT.twoK + 0.45, t) });
+      txt(g, 'PEOPLE WITH HIS BLOOD', 513, 564, 72, CREAM, { align: 'center', fit: 670, a: sstep(TT.twoK + 0.2, TT.twoK + 0.45, t) });
     }
     if (t >= TT.n09 - 0.05) title(g, 'OUT OF 2 CRORE', 1440, 110, CREAM, t, TT.n09 - 0.05);
-    return flashAt(t, TT.n08 - 0.05) * 0.35;
+    return flashAt(t, t0) * 0.2;
   }
   // ------------------------------------------------------------------ 8 · the name of it: the prosecutor's own sentence, stamped
   function shotFallacy(g, t) {
@@ -1068,7 +1072,7 @@
     prosShot(g, t, { z: 1.04, pLook: [0, 1], pSmile: 0.2 });
     g.fillStyle = 'rgba(16,12,10,0.35)'; g.fillRect(0, 0, W, H);
     say(g, QUOTE, 513, 452, t, TT.n10 - 0.4, { w: 880, size: 70, tx: 470, ty: 900 });
-    if (t >= TT.fallacy - 0.08) stamp(g, "PROSECUTOR'S FALLACY", 513, 470, t, TT.fallacy - 0.06, RED, 92, -0.08, 'rgba(255,255,255,0.92)');
+    if (t >= TT.fallacy - 0.08) stamp(g, "PROSECUTOR'S FALLACY", 513, 664, t, TT.fallacy - 0.06, RED, 92, -0.06, 'rgba(255,255,255,0.92)');     // under the bubble, not over it
     if (t >= TT.judges - 0.06) title(g, 'IT FOOLS REAL JUDGES TOO', 1440, 84, YEL, t, TT.judges - 0.06);
     return flashAt(t, TT.n10 - 0.05) * 0.25;
   }
@@ -1098,10 +1102,10 @@
   const PORT = { x: 513, y: 940, s: 1.1 }, PH = [700, 1300, 0.9];
   function shotThief(g, t) {
     const TT = times();
-    const zin = sstep(TT.n11 - 0.05, TT.met - 0.1, t), port = sstep(TT.met - 0.3, TT.met, t);
+    const zin = sstep(TT.n11 - 0.1, TT.met + 0.1, t), port = sstep(TT.met - 0.1, TT.met + 0.2, t);
     if (port < 1) {
       g.save(); g.globalAlpha = 1 - port;
-      crowd(g, t, { z: lerp(1.0, 7.0, zin * zin), focus: THIEF_CELL });
+      crowd(g, t, { z: lerp(1.5, 7.0, zin), focus: THIEF_CELL, frames: [[THIEF_CELL, RED, sstep(TT.n11, TT.n11 + 0.3, t)]] });
       g.restore();
     }
     if (port > 0) {
@@ -1120,8 +1124,9 @@
         g.save(); g.translate(x + w / 2, y + h / 2); g.scale(lerp(0.6, 1, k), lerp(0.6, 1, k)); g.globalAlpha = clamp((t - t0) * 8); g.translate(-(x + w / 2), -(y + h / 2));
         g.fillStyle = CREAM; R(g, x - 6, y - 6, w + 12, h + 12, 12); g.fill();
         faceTile(g, i, x, y, w, h);
-        g.fillStyle = 'rgba(12,12,16,0.85)'; R(g, x, y + h - 52, w, 52, 0); g.fill();
-        txt(g, `${i + 1} · ${labs[i]}`, x + w / 2, y + h - 13, 40, CREAM, { align: 'center', fit: w - 14 });
+        g.fillStyle = 'rgba(12,12,16,0.85)'; R(g, x, y + h - 54, w, 54, 0); g.fill();
+        txt(g, labs[i], x + w / 2, y + h - 12, 46, CREAM, { align: 'center', fit: w - 14 });
+        ell(g, x + 30, y + 30, 26, 26); g.fillStyle = INK; g.fill(); txt(g, String(i + 1), x + 30, y + 45, 44, YEL, { align: 'center' });
         g.restore();
       }
     }
@@ -1162,7 +1167,7 @@
   function shotLast(g, t) {
     const TT = times();
     court(g, t, { z: 1.0 + 0.02 * sstep(TT.n14, TT.end, t), cx: 513, cy: 960, emptyGallery: true, emptyDock: true, noPros: true });
-    txt(g, "YOU'RE THE TEST SUBJECT", 513, 330, 54, CREAM, { align: 'center', fit: 860, stroke: INK, sw: 0.2 });
+    txt(g, "YOU'RE THE TEST SUBJECT", 513, 338, 64, CREAM, { align: 'center', fit: 860, stroke: INK, sw: 0.2 });
     if (t >= TT.where - 0.05) { title(g, 'WHERE WAS THE', 452, 116, CREAM, t, TT.where - 0.05); title(g, 'THIEF SITTING?', 596, 150, YEL, t, TT.where + 0.12); }
     return flashAt(t, TT.n14 - 0.14) * 0.4;
   }
