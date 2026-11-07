@@ -210,7 +210,7 @@ def damage(y, sr, f0, voiced):
 
 # ---------------------------------------------------------------- ears 2 and 3
 ASR2 = os.environ.get('VOICE_ASR2', 'large-v3') if LANG == 'en' else ''
-PHONES = os.environ.get('VOICE_PHONES', 'facebook/wav2vec2-lv-60-espeak-cv-ft') if LANG == 'en' else ''
+PHONES = os.environ.get('VOICE_PHONES', 'facebook/wav2vec2-lv-60-espeak-cv-ft') if LANG in ('en', 'hi') else ''
 SAY = spec.get('say', {})            # word → the phonemes ear 3 should expect (espeak style, space-separated), for names
 
 
@@ -239,7 +239,7 @@ class Phones:
         self.tok = Wav2Vec2PhonemeCTCTokenizer.from_pretrained(PHONES, do_phonemize=False)
         self.fe = Wav2Vec2FeatureExtractor.from_pretrained(PHONES)
         self.net = Wav2Vec2ForCTC.from_pretrained(PHONES).eval()
-        self.esp = EspeakBackend('en-us', language_switch='remove-flags')
+        self.esp = EspeakBackend('hi' if LANG == 'hi' else 'en-us', language_switch='remove-flags')
         self.sep = Separator(phone=' ', word='', syllable='')
         self.cls = {p: i for i, s in enumerate(self.SAME) for p in s}
 
@@ -252,6 +252,10 @@ class Phones:
         return [p for p in self.tok.decode(ids).split() if p != '|' and not p.startswith('<')]
 
     def expected(self, text):
+        if LANG == 'hi':                          # the whole word, as written; espeak reads Devanagari itself
+            words = [w for w in re.sub(r'[।॥,.!?;:"“”‘’\'()–—…-]+', ' ', text).split() if w]
+            ph = self.esp.phonemize(words, separator=self.sep, strip=True, njobs=1)
+            return words, [p.split() for p in ph]
         words = re.findall(r"[A-Za-z][A-Za-z'’-]*|\d+", text)
         spoken = [re.sub(r'\d+', lambda m: num_words(int(m.group())), w).replace('-', ' ') for w in words]
         ph = self.esp.phonemize(spoken, separator=self.sep, strip=True, njobs=1)
@@ -359,8 +363,11 @@ def check(audio):
     ph_ = (np.tanh(ph_ / (np.abs(ph_).max() + 1e-9) * 2.0) * 0.5).astype(np.float32)          # a small speaker, driven
     pn = pink(len(x)); pn *= act * 10 ** (-12 / 20) / (np.sqrt(np.mean(pn ** 2)) + 1e-12)
     conds = {'as mixed': x, 'phone speaker': ph_, 'noisy room': (x + pn).astype(np.float32)}
-    ears = [('whisper small.en', WhisperModel('small.en', device='cpu', compute_type='int8'))]
-    if ASR2: ears.append((f'whisper {ASR2}', whisper2()))
+    if LANG == 'en':
+        ears = [('whisper small.en', WhisperModel('small.en', device='cpu', compute_type='int8'))]
+        if ASR2: ears.append((f'whisper {ASR2}', whisper2()))
+    else:                                         # the English model hears nothing in Hindi: both ears listen in the reel's language
+        ears = [(f'whisper {n}', WhisperModel(n, device='cpu', compute_type='int8')) for n in ('small', os.environ.get('VOICE_ASR2', 'large-v3'))]
     exp = [(tok, k) for k, w in enumerate(W) for tok in norm(w['w'])]
     for i in range(len(exp) - 2):                 # the year rule across placed words too: "two thousand eighteen" = "twenty eighteen"
         if exp[i][0] == 'two' and exp[i + 1][0] == 'thousand' and (exp[i + 2][0] in ONES[10:] or exp[i + 2][0] in TENS): exp[i], exp[i + 1] = ('twenty', exp[i][1]), ('', exp[i + 1][1])
@@ -370,7 +377,8 @@ def check(audio):
     rows = []
     for cname, sig in conds.items():
         for ename, m in ears:
-            segs = list(m.transcribe(sig, beam_size=5, language='en', word_timestamps=True, condition_on_previous_text=False)[0])
+            kw = {} if LANG == 'en' else {'no_speech_threshold': None}   # a long pause full of crickets must not swallow the words around it
+            segs = list(m.transcribe(sig, beam_size=5, language=LANG, word_timestamps=True, condition_on_previous_text=False, **kw)[0])
             hw = [(w.word, w.probability) for s in segs for w in (s.words or []) if w.start <= end]
             after = ' '.join(w.word.strip() for s in segs for w in (s.words or []) if w.start > end)
             hw = merge_money(hw)
@@ -408,7 +416,9 @@ def score(task):
     import librosa, torch
     from faster_whisper import WhisperModel
     torch.set_num_threads(os.cpu_count() or 4)
-    mos = torch.hub.load('tarepan/SpeechMOS:v1.2.0', 'utmos22_strong', trust_repo=True).eval()
+    # skip_validation: torch.hub's fork check calls api.github.com unauthenticated, and a shared runner IP can be over its
+    # 60 requests an hour (run 41277922408 failed with 403 "rate limit exceeded"); the zipball download doesn't need it
+    mos = torch.hub.load('tarepan/SpeechMOS:v1.2.0', 'utmos22_strong', trust_repo=True, skip_validation=True).eval()
     asr = WhisperModel('small.en' if LANG == 'en' else 'small', device='cpu', compute_type='int8')
     asr2, ph = whisper2(), Phones.load()
     root = LAB / task

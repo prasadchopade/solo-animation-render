@@ -32,6 +32,10 @@ on:
         type: choice
         options: [final, draft]
         default: final
+      crf:
+        description: x264 quality of a final (16 = the master; 18 keeps a grainy, sparkling film under ~100 MB)
+        default: "16"
+        required: false
       blur:
         description: Adaptive motion blur (off by default; on costs ~40 % more render time)
         type: boolean
@@ -167,7 +171,7 @@ jobs:
       - name: Render frames ${{ matrix.shard.a }}s → ${{ matrix.shard.b }}s
         run: |
           cd "reels/$REEL"
-          node ../../scripts/render.mjs --range "${{ matrix.shard.a }},${{ matrix.shard.b }}" --workers 2 ${{ inputs.mode == 'draft' && '--draft' || '' }} --blur ${{ inputs.blur && '1' || '0' }}
+          node ../../scripts/render.mjs --range "${{ matrix.shard.a }},${{ matrix.shard.b }}" --workers 2 ${{ inputs.mode == 'draft' && '--draft' || format('--crf {0}', inputs.crf) }} --blur ${{ inputs.blur && '1' || '0' }}
           mkdir -p "$GITHUB_WORKSPACE/parts" && mv renders/clip_*.mp4 "$GITHUB_WORKSPACE/parts/part_$(printf %03d ${{ matrix.shard.k }}).mp4"
       - uses: actions/upload-artifact@v4
         with:
