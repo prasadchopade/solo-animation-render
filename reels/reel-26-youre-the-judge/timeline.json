@@ -1,7 +1,7 @@
 {
   "note": "Single source of truth for picture + sound, in BEATS (120 bpm: beat = 0.5 s). film.js reads marks via film/data.js; sync.mjs turns sfx into cues.json; score.py reads marks for the music; vo.json places the narration. Every reel ends with the Root Cause end card: 'end' → 'done' = 3.0 s (6 beats), engine/endcard.",
   "title": "You're the Judge",
-  "duration": 59.25,
+  "duration": 59.5,
   "fps": 30,
   "bpm": 120,
   "formats": [
@@ -24,8 +24,8 @@
   },
   "marks": {
     "hook": 0,
-    "end": 112.5,
-    "done": 118.5
+    "end": 113.0,
+    "done": 119.0
   },
   "sfx": [
     {
@@ -85,216 +85,223 @@
       "type": "idle",
       "gain": 0.22,
       "what": "back in the court, below 250 Hz",
-      "len": 16.18,
+      "len": 16.48,
       "pitch": 0.8
     },
     {
-      "at": 25.104,
+      "at": 25.704,
       "type": "tick",
       "gain": 0.2,
       "what": "1 IN 10,000 lands (above 4.5 kHz)",
       "pitch": 1.3
     },
     {
-      "at": 39.546,
+      "at": 40.146,
       "type": "tick",
       "gain": 0.22,
       "what": "GUILTY / NOT GUILTY land (above 4.5 kHz)",
       "pitch": 1.3
     },
     {
-      "at": 52.5,
+      "at": 53.1,
       "type": "tick",
       "gain": 0.2,
       "what": "the clock (above 4.5 kHz)",
       "pitch": 1.6
     },
     {
-      "at": 51.5,
+      "at": 52.1,
       "type": "tick",
       "gain": 0.2,
       "what": "the clock (above 4.5 kHz)",
       "pitch": 1.6
     },
     {
-      "at": 50.5,
+      "at": 51.1,
       "type": "tick",
       "gain": 0.2,
       "what": "the clock (above 4.5 kHz)",
       "pitch": 1.6
     },
     {
-      "at": 49.5,
+      "at": 50.1,
       "type": "tick",
       "gain": 0.2,
       "what": "the clock (above 4.5 kHz)",
       "pitch": 1.6
     },
     {
-      "at": 48.5,
+      "at": 49.1,
       "type": "tick",
       "gain": 0.12,
       "what": "the clock (above 4.5 kHz)",
       "pitch": 1.6
     },
     {
-      "at": 47.5,
+      "at": 48.1,
       "type": "tick",
       "gain": 0.12,
       "what": "the clock (above 4.5 kHz)",
       "pitch": 1.6
     },
     {
-      "at": 46.5,
+      "at": 47.1,
       "type": "tick",
       "gain": 0.12,
       "what": "the clock (above 4.5 kHz)",
       "pitch": 1.6
     },
     {
-      "at": 45.5,
+      "at": 46.1,
       "type": "tick",
       "gain": 0.12,
       "what": "the clock (above 4.5 kHz)",
       "pitch": 1.6
     },
     {
-      "at": 44.5,
+      "at": 45.1,
       "type": "tick",
       "gain": 0.12,
       "what": "the clock (above 4.5 kHz)",
       "pitch": 1.6
     },
     {
-      "at": 43.5,
+      "at": 44.1,
       "type": "tick",
       "gain": 0.12,
       "what": "the clock (above 4.5 kHz)",
       "pitch": 1.6
     },
     {
-      "at": 46.87,
+      "at": 47.47,
       "type": "tick",
       "gain": 0.2,
       "what": "1 IN 10,000 lands (above 4.5 kHz)",
       "pitch": 1.3
     },
     {
-      "at": 52.54,
+      "at": 53.14,
       "type": "buzzer",
       "gain": 0.42,
       "what": "time (in the silence the score leaves); both choices fade",
       "len": 0.36
     },
     {
-      "at": 59.99,
+      "at": 60.59,
       "type": "tick",
       "gain": 0.16,
       "what": "20,000,000 lands (above 4.5 kHz)",
       "pitch": 1.2
     },
     {
-      "at": 63.236,
+      "at": 63.836,
       "type": "tick",
       "gain": 0.16,
       "what": "÷ 10,000 lands (above 4.5 kHz)",
       "pitch": 1.4
     },
     {
-      "at": 66.734,
+      "at": 67.334,
       "type": "boom",
       "gain": 0.42,
-      "what": "the city, just before \"two thousand\" (low; little in the voice band)",
+      "what": "the lineup, just before \"two thousand\" (low; little in the voice band)",
       "pitch": 0.7
     },
     {
-      "at": 66.534,
+      "at": 67.134,
       "type": "shimmer",
       "gain": 0.22,
-      "what": "two thousand lights coming on (5-9 kHz)",
+      "what": "two thousand faces, the camera pulling back (5-9 kHz)",
       "len": 1.4
     },
     {
-      "at": 78.27,
+      "at": 78.87,
       "type": "tick",
       "gain": 0.18,
       "what": "WHICH ONE? (above 4.5 kHz)",
       "pitch": 1.2
     },
     {
-      "at": 80.36,
+      "at": 80.96,
       "type": "shutter",
       "gain": 0.3,
-      "what": "the card (in the gap)"
+      "what": "back to the prosecutor (in the gap)"
     },
     {
-      "at": 89.21,
+      "at": 81.93,
+      "type": "stamp",
+      "gain": 0.4,
+      "what": "PROSECUTOR'S FALLACY (under 'prosecutor's': low-mid, short)",
+      "pitch": 0.95
+    },
+    {
+      "at": 89.81,
       "type": "whoosh",
       "gain": 0.35,
-      "what": "the dive into the city (mostly air)",
+      "what": "the dive into the lineup (mostly air)",
       "pitch": 0.8
     },
     {
-      "at": 90.97,
+      "at": 91.57,
       "type": "boom",
       "gain": 0.36,
       "what": "his face (low)",
       "pitch": 0.62
     },
     {
-      "at": 94.1,
+      "at": 94.7,
       "type": "shutter",
       "gain": 0.22,
       "what": "film 1's panel lands"
     },
     {
-      "at": 94.3,
+      "at": 94.9,
       "type": "shutter",
       "gain": 0.22,
       "what": "film 2's panel lands"
     },
     {
-      "at": 94.5,
+      "at": 95.1,
       "type": "shutter",
       "gain": 0.22,
       "what": "film 3's panel lands"
     },
     {
-      "at": 94.7,
+      "at": 95.3,
       "type": "shutter",
       "gain": 0.22,
       "what": "film 4's panel lands"
     },
     {
-      "at": 95.616,
+      "at": 96.216,
       "type": "stamp",
       "gain": 0.5,
       "what": "SAME THIEF",
       "pitch": 0.9
     },
     {
-      "at": 95.656,
+      "at": 96.256,
       "type": "boom",
       "gain": 0.4,
       "what": "SAME THIEF, below 250 Hz",
       "pitch": 0.6
     },
     {
-      "at": 102.09,
+      "at": 102.69,
       "type": "tick",
       "gain": 0.2,
       "what": "I'M GOOD AT MATHS (above 4.5 kHz)",
       "pitch": 1.2
     },
     {
-      "at": 107.69,
+      "at": 108.29,
       "type": "clink",
       "gain": 0.72,
       "what": "the spoon: the first sound of the reel, so it starts again (in the gap)",
       "pitch": 1.0
     },
     {
-      "at": 107.91,
+      "at": 108.51,
       "type": "idle",
       "gain": 0.22,
       "what": "the empty court, below 250 Hz",
