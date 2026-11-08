@@ -235,11 +235,13 @@
   },
   {
    "id": "m01h",
-   "text": "मैं ठीक हूँ, बेटा।"
+   "text": "Main theek hoon, beta.",
+   "text_kokoro": "मैं ठीक हूँ, बेटा।"
   },
   {
    "id": "m02h",
-   "text": "तू खा ले।"
+   "text": "Tu kha le.",
+   "text_kokoro": "तू खा ले।"
   }
  ]
 }
