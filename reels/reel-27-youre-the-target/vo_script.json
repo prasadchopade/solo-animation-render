@@ -4,86 +4,11 @@
  "speed": 1.0,
  "ref_text": "The night was cold and very quiet. Most of the street was asleep, and the lamps hummed over the empty road. Somewhere far away, a train rolled past, and then the silence came back.",
  "cast_lines": [
-  "o01",
-  "o02",
-  "o03",
-  "o05",
-  "o06",
-  "o08",
-  "o09",
-  "o10",
-  "m01",
-  "m02",
-  "m01h",
-  "m02h"
+  "m01x",
+  "m01y",
+  "m02y"
  ],
  "cast": [
-  {
-   "id": "s-onyx",
-   "engine": "kokoro",
-   "voice": "am_onyx",
-   "speed": 1.0
-  },
-  {
-   "id": "s-michael",
-   "engine": "kokoro",
-   "voice": "am_michael",
-   "speed": 1.0
-  },
-  {
-   "id": "s-daniel",
-   "engine": "kokoro",
-   "voice": "bm_daniel",
-   "speed": 1.0
-  },
-  {
-   "id": "s-lewis",
-   "engine": "kokoro",
-   "voice": "bm_lewis",
-   "speed": 1.0
-  },
-  {
-   "id": "s-omega",
-   "engine": "kokoro",
-   "voice": "hm_omega",
-   "speed": 1.0
-  },
-  {
-   "id": "f-emma",
-   "engine": "kokoro",
-   "voice": "bf_emma",
-   "speed": 1.0
-  },
-  {
-   "id": "f-alice",
-   "engine": "kokoro",
-   "voice": "bf_alice",
-   "speed": 1.0
-  },
-  {
-   "id": "f-isabella",
-   "engine": "kokoro",
-   "voice": "bf_isabella",
-   "speed": 1.0
-  },
-  {
-   "id": "f-lily",
-   "engine": "kokoro",
-   "voice": "bf_lily",
-   "speed": 1.0
-  },
-  {
-   "id": "f-nicole",
-   "engine": "kokoro",
-   "voice": "af_nicole",
-   "speed": 1.0
-  },
-  {
-   "id": "f-sarah",
-   "engine": "kokoro",
-   "voice": "af_sarah",
-   "speed": 1.0
-  },
   {
    "id": "f-alpha",
    "engine": "kokoro",
@@ -107,127 +32,19 @@
  ],
  "lines": [
   {
-   "id": "o01",
-   "text": "You are under digital arrest."
-  },
-  {
-   "id": "o02",
-   "text": "Do not hang up."
-  },
-  {
-   "id": "n01",
-   "text": "Would you fall for this?"
-  },
-  {
-   "id": "n02",
-   "text": "Then find the three mistakes on this call."
-  },
-  {
-   "id": "o03",
-   "text": "Again. A parcel in your name."
-  },
-  {
-   "id": "o05",
-   "text": "Your pension account is frozen."
-  },
-  {
-   "id": "o06",
-   "text": "Declare your gold, madam."
-  },
-  {
-   "id": "o08",
-   "text": "Tell anyone, and they are arrested too."
-  },
-  {
-   "id": "o09",
-   "text": "That is my team."
-  },
-  {
-   "id": "n03",
-   "text": "You just looked at your door, didn't you?"
-  },
-  {
-   "id": "n04",
-   "text": "Even though his badge can't spell police."
-  },
-  {
-   "id": "n05",
-   "text": "And even if it could, there's no such thing as a digital arrest."
-  },
-  {
-   "id": "n06",
-   "text": "You only know that because somebody told you."
-  },
-  {
-   "id": "n07",
-   "text": "Nobody told her."
-  },
-  {
-   "id": "n08",
-   "text": "This was never your call."
-  },
-  {
-   "id": "n09",
-   "text": "While you hunted for mistakes, she took off her bangles."
-  },
-  {
-   "id": "n10",
-   "text": "She corrected spelling for thirty years, but she wasn't looking for his mistakes."
-  },
-  {
-   "id": "n11",
-   "text": "She was trying to prove she hadn't made one."
-  },
-  {
-   "id": "n12",
-   "text": "That was never his team."
-  },
-  {
-   "id": "n13",
-   "text": "It was you."
-  },
-  {
-   "id": "o10",
-   "text": "Madam."
-  },
-  {
-   "id": "m01",
+   "id": "m01x",
    "text": "I'm fine, beta.",
-   "text_kokoro": "I'm fine, [beta](/bˈAtɑː/)."
+   "text_kokoro": "I'm fine, बेटा."
   },
   {
-   "id": "m02",
-   "text": "You eat."
+   "id": "m01y",
+   "text": "I am fine, beta.",
+   "text_kokoro": "आई एम फाइन, बेटा।"
   },
   {
-   "id": "n14",
-   "text": "So you did."
-  },
-  {
-   "id": "n16",
-   "text": "You'd never fall for this."
-  },
-  {
-   "id": "n17",
-   "text": "You would just believe her."
-  },
-  {
-   "id": "n18",
-   "text": "Have you told your mother?"
-  },
-  {
-   "id": "n19",
-   "text": "Would she tell you?"
-  },
-  {
-   "id": "m01h",
-   "text": "Main theek hoon, beta.",
-   "text_kokoro": "मैं ठीक हूँ, बेटा।"
-  },
-  {
-   "id": "m02h",
-   "text": "Tu kha le.",
-   "text_kokoro": "तू खा ले।"
+   "id": "m02y",
+   "text": "You eat.",
+   "text_kokoro": "यू ईट।"
   }
  ]
 }
