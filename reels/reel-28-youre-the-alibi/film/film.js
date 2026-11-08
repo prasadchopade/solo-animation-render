@@ -194,14 +194,14 @@
       o02: at('o02'), drink: wi('o02', 12), o02e: en('o02'), o03: at('o03'), o03e: en('o03'), o04: at('o04'), o04e: en('o04'),
       n04: at('n04'), n04e: en('n04'), n05: at('n05'), made: wi('n05', 3), n06: at('n06'), n06e: en('n06'), n07: at('n07'), n07e: en('n07'),
       o05: at('o05'), goW: wi('o05', 3), o05e: en('o05'), n08: at('n08'), now: wi('n08', 7), wrote: wi('n08', 13), n08e: en('n08'), n09: at('n09'), needed: wi('n09', 6), n09e: en('n09'),
-      f02: at('f02'), f02e: en('f02'), n10: at('n10'), una: wi('n10', 6), n10e: en('n10'), n11: at('n11'), whereT: wi('n11', 6), n11e: en('n11'), n12: at('n12'), end: tb('end'),
+      f02: at('f02'), f02e: en('f02'), n10: at('n10'), una: wi('n10', 5), n10e: en('n10'), n11: at('n11'), whereT: wi('n11', 6), n11e: en('n11'), n12: at('n12'), end: tb('end'),
     };
     T.q0 = T.where - 0.05;                                 // the first buttons land
     T.q0e = T.has - 0.1;                                   // ... and fade as the print goes away
     T.ring = T.n03e + 0.12;                                // the desk phone, in the gap
     T.q1 = T.drink - 0.1; T.q1e = T.o03 - 0.1;              // what did you drink
     T.q2 = T.o03 + 0.25; T.q2e = T.o04 - 0.1;              // what did you pay
-    T.q3 = T.n04e - 0.45; T.q3e = T.n05 - 0.04;            // what did he drink
+    T.q3 = wi('n04', 2) - 0.05; T.q3e = T.n05 - 0.04;            // what did he drink
     return T;
   }
 
@@ -701,7 +701,6 @@
     g.save(); g.translate(x, y); g.scale(s, s);
     g.fillStyle = '#35456a'; R(g, -300, 1100, 600, 1400, 80); g.fill();
     torso(g);
-    g.fillStyle = '#e88a2a'; for (const k of [-1, 1]) { R(g, k * 520 - 90, 480, 180, 900, 90); g.fill(); }
     head(g, FR, { op: o.op ?? 0, close: Math.max(o.close ?? 0, blinkAt(t, 3.6, 1.7)), look: o.look ?? [0, 0], frown: o.frown ?? 0, smile: o.smile ?? 0, worry: o.worry ?? 12 });
     g.restore();
   }
@@ -741,11 +740,12 @@
     g.save(); g.translate(513, 700); g.scale(0.75, 0.75); g.translate(-513, -850);
     cellBack(g); bars(g, 1);
     g.restore();
-    walker(g, t, lerp(1.62, 2.3, past), lerp(513, 1500, past), 850, { op: talkP(t, 'f02') * 1.05, smile: 0.4, look: [0, 2] });
+    walker(g, t, lerp(1.62, 2.3, past), lerp(585, 1500, past), 850, { op: talkP(t, 'f02') * 1.05, smile: 0.4, look: [0, 2] });
     if (past < 0.6) {
       const y = lerp(1960, 1440, u) + past * 520;
-      g.save(); g.translate(lerp(330, 250, u), y); g.rotate(-0.12); g.scale(1.25, 1.25);
-      R(g, -96, -520, 192, 300, 60); g.fillStyle = lg(g, -88, 0, 88, 0, [0, '#f59a3a'], [1, '#d96d14']); g.fill();
+      const hx = lerp(240, 165, u);
+      g.lineCap = 'round'; g.strokeStyle = '#ee9030'; g.lineWidth = 236; g.beginPath(); g.moveTo(hx - 28, y - 280); g.lineTo(-170, y - 330); g.stroke();
+      g.save(); g.translate(hx, y); g.rotate(-0.1); g.scale(1.25, 1.25);
       R(g, -100, -250, 200, 50, 12); g.fillStyle = '#c95f10'; g.fill();
       R(g, -66, -210, 132, 190, 44); g.fillStyle = '#c58f6a'; g.fill();
       ell(g, 0, -20, 112, 118); g.fillStyle = lg(g, 0, -130, 0, 90, [0, '#e0ae88'], [1, '#c48c66']); g.fill();
