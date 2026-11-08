@@ -1,5 +1,5 @@
 {
- "note": "Reel 27: You're the Target. Episode 5 of 'You're the test subject'. The narrator is the series voice (af_heart). The officer (o01-o10) and the mother (m01, m02) are cast and placed from the cast reads (Kokoro is deterministic, so a cast read is take t1). Script 3, after two reviews (story; facts and care). m01h and m02h are the mother's line in Hindi, only for an A/B the user may ask for. Facts and wording: docs/research.md. Read audio/vo_lab/takes/phonemes.md after every run.",
+ "note": "Reel 27: You're the Target. Episode 5 of 'You're the test subject'. The narrator is the series voice (af_heart). The officer (o01-o10) and the mother (m01, m02) are cast and placed from the cast reads (Kokoro is deterministic, so a cast read is take t1). Script 4, after three reviews (two story, one facts and care). m01h and m02h are the mother's line in Hindi (text = romanised for the scorer, text_kokoro = Devanagari), only for an A/B the user may ask for. Facts and wording: docs/research.md. Read audio/vo_lab/takes/phonemes.md after every run.",
  "voice": "af_heart",
  "speed": 1.0,
  "ref_text": "The night was cold and very quiet. Most of the street was asleep, and the lamps hummed over the empty road. Somewhere far away, a train rolled past, and then the silence came back.",
@@ -126,7 +126,7 @@
   },
   {
    "id": "o03",
-   "text": "A parcel in your name."
+   "text": "Again. A parcel in your name."
   },
   {
    "id": "o04",
@@ -138,7 +138,7 @@
   },
   {
    "id": "o06",
-   "text": "Photograph your gold."
+   "text": "Declare your gold."
   },
   {
    "id": "o07",
@@ -146,7 +146,7 @@
   },
   {
    "id": "o08",
-   "text": "Tell no one."
+   "text": "Tell anyone, and they are arrested too."
   },
   {
    "id": "o09",
@@ -182,7 +182,7 @@
   },
   {
    "id": "n10",
-   "text": "She corrected exam papers for thirty years, and she never saw that badge, because she wasn't looking for his mistakes."
+   "text": "She corrected spelling for thirty years, but she wasn't looking for his mistakes."
   },
   {
    "id": "n11",
@@ -190,7 +190,7 @@
   },
   {
    "id": "n12",
-   "text": "That was never his team, and that was never his cooker."
+   "text": "That was never his team."
   },
   {
    "id": "n13",
@@ -198,7 +198,7 @@
   },
   {
    "id": "o10",
-   "text": "Tell them nothing, or they are arrested too."
+   "text": "Madam."
   },
   {
    "id": "m01",
@@ -214,12 +214,8 @@
    "text": "So you did."
   },
   {
-   "id": "n15",
-   "text": "That's three."
-  },
-  {
    "id": "n16",
-   "text": "You think you'd never fall for this."
+   "text": "You'd never fall for this."
   },
   {
    "id": "n17",

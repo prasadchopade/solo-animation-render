@@ -264,9 +264,9 @@
       o03: at('o03'), o04: at('o04'), o04e: en('o04'), o05: at('o05'), frozen: wi('o05', 4), o05e: en('o05'), o06: at('o06'), o06e: en('o06'), o07: at('o07'), o08: at('o08'), o08e: en('o08'), o09: at('o09'), o09e: en('o09'),
       n01: at('n01'), n01e: en('n01'), n02: at('n02'), three: wi('n02', 3), n02e: en('n02'),
       n03: at('n03'), n03e: en('n03'), n04: at('n04'), spell: wi('n04', 5), n04e: en('n04'), n05: at('n05'), noSuch: wi('n05', 7), n05e: en('n05'), n06: at('n06'), n06e: en('n06'),
-      n07: at('n07'), n07e: en('n07'), n08: at('n08'), n08e: en('n08'), n09: at('n09'), n09e: en('n09'), n10: at('n10'), n10b: wi('n10', 8), n10e: en('n10'), n11: at('n11'), n11e: en('n11'),
+      n07: at('n07'), n07e: en('n07'), n08: at('n08'), n08e: en('n08'), n09: at('n09'), n09e: en('n09'), n10: at('n10'), n10b: wi('n10', 6), n10e: en('n10'), n11: at('n11'), n11e: en('n11'),
       n12: at('n12'), n12e: en('n12'), n13: at('n13'), n13e: en('n13'), o10: at('o10'), o10e: en('o10'), m01: at('m01'), m01e: en('m01'), m02: at('m02'), m02e: en('m02'),
-      n14: at('n14'), n14e: en('n14'), n15: at('n15'), n15e: en('n15'), n16: at('n16'), n16e: en('n16'), n17: at('n17'), n17e: en('n17'), n18: at('n18'), n18e: en('n18'), n19: at('n19'), n19e: en('n19'), end: tb('end'),
+      n14: at('n14'), n14e: en('n14'), n16: at('n16'), n16e: en('n16'), n17: at('n17'), n17e: en('n17'), n18: at('n18'), n18e: en('n18'), n19: at('n19'), n19e: en('n19'), end: tb('end'),
     };
     // the same formulas are in cues.py and score.py
     T.pollEnd = T.n01e + 1.15;
@@ -278,7 +278,7 @@
     T.whistle2 = T.knock2 + 1.05;
     T.leave = T.m02e + 0.25;
     T.bang0 = T.o06e + 0.05; T.bangD = 0.8; T.bangE = T.bang0 + 4 * T.bangD;
-    T.R0 = T.n09 - 0.1; T.R1 = T.R0 + 0.7; T.R2 = T.R1 + 2.7;
+    T.R0 = T.n09 - 0.72; T.R1 = T.R0 + 0.7; T.R2 = T.R1 + 2.7;
     return T;
   }
   function talkP(t, pid) {                         // a mouth for one phrase only
@@ -453,11 +453,13 @@
     g.fillStyle = lg(g, 0, 1230, 0, 1920, [0, '#b8895a'], [1, '#8d6039']); g.fillRect(0, 1236, W, 700);
     g.fillStyle = 'rgba(255,240,210,0.35)'; g.fillRect(0, 1236, W, 6);
   }
-  function thali(g, x, y) {                        // a steel plate of food, another plate over it: left at the door, not touched
+  function thali(g, x, y, sc = 1) {                 // a steel plate of food, another plate over it: left at the door, not touched
+    g.save(); g.translate(x, y); g.scale(sc, sc); g.translate(-x, -y);
     ell(g, x + 4, y + 26, 128, 32); g.fillStyle = 'rgba(60,40,20,0.3)'; g.fill();
     ell(g, x, y + 8, 124, 36); g.fillStyle = lg(g, x - 120, y, x + 120, y + 20, [0, '#e9ecef'], [0.5, '#b7bcc2'], [1, '#dfe3e6']); g.fill();
     ell(g, x, y - 14, 112, 34); g.fillStyle = lg(g, x - 110, y - 30, x + 110, y, [0, '#f4f6f7'], [0.45, '#c2c7cc'], [1, '#e7ebed']); g.fill();
     ell(g, x, y - 18, 72, 18); g.strokeStyle = 'rgba(120,125,130,0.55)'; g.lineWidth = 3; g.stroke();
+    g.restore();
   }
   // the bangles, one by one, worked over the knuckle. s: the story's clock (it runs backwards for one line)
   function armsAndBangles(g, s, TT, fileK) {
@@ -512,9 +514,9 @@
     momBody(g);
     // ---- where she looks
     const down = win(s, TT.bang0 - 0.1, TT.bangE + 0.3, 0.2);
-    const k1 = win(t, TT.knock - 0.01, TT.knock + 1.9, 0.12), glance = win(t, TT.whistle + 0.1, TT.whistle + 0.75, 0.1) * 0.7, k2 = win(t, TT.knock2 - 0.01, TT.leave + 1.6, 0.16);
+    const k1 = win(t, TT.knock - 0.01, TT.knock + 1.9, 0.12), glance = win(t, TT.whistle + 0.1, TT.whistle + 0.75, 0.1) * 0.7, k2 = win(t, TT.knock2 - 0.01, TT.n14e + 0.9, 0.2);
     const turn = Math.max(k1, glance, k2);
-    const nod = t > TT.n17 - 0.05 && t < TT.n17e + 1.4 ? Math.max(0, Math.sin((t - TT.n17 + 0.05) * 5.2)) * 12 * (1 - clamp((t - TT.n17e - 0.6) / 0.8)) : 0;
+    const nod = t > TT.n14e + 1.15 && t < TT.n14e + 2.3 ? Math.max(0, Math.sin((t - TT.n14e - 1.15) * 5.6)) * 15 : 0;
     const hold = win(t, TT.n11 - 0.25, TT.knock2 - 0.05, 0.25);
     const mop = Math.max(talkP(t, 'm01'), talkP(t, 'm02')) * 0.82;
     const smiling = win(t, TT.m01 - 0.3, TT.leave + 0.5, 0.3) * (1 - ease((t - TT.leave - 0.5) / 0.9));
@@ -527,7 +529,7 @@
     momFront(g, MOM, { tired: o.tired || 0 });
     g.restore();
     table(g);
-    thali(g, 150, 1296);
+    thali(g, 132, 1336, 0.82); thali(g, 140, 1292, 0.82); thali(g, 126, 1250, 0.82);
     g.save(); g.translate(884, 1294); g.rotate(-0.07); g.fillStyle = '#3a6fa8'; R(g, -80, -56, 160, 112, 8); g.fill(); txt(g, 'PASSBOOK', 0, 10, 30, '#f3efe2', { align: 'center' }); g.restore();
     armsAndBangles(g, s, TT, hold);
     if (hold > 0.003) fileHeld(g, hold);
@@ -555,9 +557,12 @@
   function timerClock(t, TT) { let c = storyT(t, TT); if (t >= TT.R2 && t < TT.R2 + 0.35) c = lerp(TT.bangE + 0.15, t, (t - TT.R2) / 0.35); return BASE + Math.floor(c + 0.0001); }
   function timerText(c) { return `${pad2(c / 3600)}:${pad2((c % 3600) / 60)}:${pad2(c % 60)}`; }
   function callBar(g, t, TT) {
+    const z = 1 + 0.34 * win(t, TT.n08 + 0.05, TT.R0 - 0.08, 0.22);
+    g.save(); g.translate(76, 315); g.scale(z, z); g.translate(-76, -315);
     R(g, 76, 286, 244, 58, 29); g.fillStyle = 'rgba(16,18,22,0.72)'; g.fill();
     ell(g, 106, 315, 10, 10); g.fillStyle = '#ff5a48'; g.fill();
     txt(g, timerText(timerClock(t, TT)), 126, 331, 42, '#fff', { kind: 'mono' });
+    g.restore();
     for (const [x, kind] of [[258, 'mic'], [768, 'cam']]) {
       ell(g, x, 1446, 54, 54); g.fillStyle = 'rgba(16,18,22,0.62)'; g.fill();
       g.strokeStyle = '#fff'; g.lineWidth = 7; g.lineCap = 'round'; g.lineJoin = 'round';
@@ -589,11 +594,10 @@
       [TT.n10b - 0.15, 0.5, { s: 1.1, cx: MX + 90, cy: 860 }],
       [TT.n11 - 0.2, 0.5, { s: 1.18, cx: MX + 30, cy: 900 }],
       [TT.knock2 - 0.1, 0.42, VIEW_FULL],
-      [TT.n13 - 0.15, 0.5, { s: 2.2, cx: 880, cy: 1010 }],
-      [TT.o10 - 0.15, 0.45, { s: 1.08, cx: MX + 90, cy: 880 }],
-      [TT.m01 - 0.45, 0.5, { s: 1.4, cx: MX + 34, cy: 760 }],
+      [TT.n12 - 0.15, 0.5, { s: 2.2, cx: 880, cy: 1010 }],
+      [TT.m01 - 0.16, 0.36, { s: 1.4, cx: MX + 34, cy: 760 }],
       [TT.leave - 0.05, 0.75, { s: 1.95, cx: 880, cy: 1030 }],
-      [TT.n16 - 0.3, 0.8, { s: 1.16, cx: MX + 30, cy: 780 }],
+      [TT.n14e + 0.95, 0.6, { s: 1.16, cx: MX + 30, cy: 780 }],
       [TT.n17e + 0.1, 1.2, VIEW_FULL],
     ]);
   }
@@ -630,7 +634,7 @@
     const a = clamp((t - t0) * 7) * (1 - clamp((t - off) / 0.5));
     g.save(); g.globalAlpha *= a;
     R(g, 76, 352, 196, 58, 29); g.fillStyle = 'rgba(16,18,22,0.72)'; g.fill();
-    [TT.spell + 0.05, TT.noSuch + 0.02, TT.n15 - 0.02].forEach((tk, i) => {
+    [TT.spell + 0.05, TT.noSuch + 0.02, TT.n14e + 0.72].forEach((tk, i) => {
       const x = 112 + i * 62, y = 381, d = t - tk, q = d > 0 ? clamp(hit(t, tk, 'heavy')) : 0;
       ell(g, x, y, 20, 20); g.fillStyle = d > 0 ? '#fffdf4' : 'rgba(255,255,255,0.12)'; g.fill(); g.strokeStyle = '#fffdf4'; g.lineWidth = 4; g.stroke();
       if (d > 0) { g.save(); g.translate(x, y); g.scale(lerp(0.3, 1, q), lerp(0.3, 1, q)); g.strokeStyle = RED; g.lineWidth = 7; g.lineCap = 'round'; g.lineJoin = 'round'; g.beginPath(); g.moveTo(-11, 1); g.lineTo(-3, 10); g.lineTo(12, -9); g.stroke(); g.restore(); }
@@ -659,7 +663,7 @@
     // 26 hours
     if (t >= TT.n08 + 0.1 && t < TT.R0 + 0.1) {
       const a = clamp((t - TT.n08 - 0.1) * 6) * (1 - clamp((t - TT.R0 + 0.15) / 0.25));
-      g.save(); g.globalAlpha *= a; ringAt(g, 198, 315, 142, 44, ease((t - TT.n08 - 0.1) / 0.4), YEL, 8); txt(g, '26 HOURS', 356, 338, 88, YEL, { stroke: INK, sw: 0.14 }); g.restore();
+      g.save(); g.globalAlpha *= a; txt(g, '26 HOURS', 430, 342, 96, YEL, { stroke: INK, sw: 0.14 }); g.restore();
     }
     // the rewind
     if (t >= TT.R0 && t < TT.R1) { g.save(); g.fillStyle = '#fff'; for (const dx of [0, 34]) { g.beginPath(); g.moveTo(344 + dx, 315); g.lineTo(374 + dx, 293); g.lineTo(374 + dx, 337); g.closePath(); g.fill(); } g.restore(); }
@@ -667,12 +671,12 @@
     if (t >= TT.n16 + 0.3 && t < TT.n17e + 0.25) pollButtons(g, t, TT.n16 + 0.3, 0, ease((t - TT.n17) / 0.3));
     // the way out, held to the end
     if (t >= TT.n17e + 0.35) {
-      const a = clamp((t - TT.n17e - 0.35) * 5);
+      const a = clamp((t - TT.n17e - 0.35) * 5), a2 = clamp((t - TT.n18e - 0.05) * 5);
       g.save(); g.globalAlpha *= a;
       R(g, 66, 1022, 894, 318, 20); g.fillStyle = 'rgba(18,16,14,0.88)'; g.fill();
       txt(g, 'NO OFFICER ARRESTS YOU ON A VIDEO CALL', CX, 1102, 70, CREAM, { align: 'center', fit: 840 });
       txt(g, 'OR ASKS FOR MONEY.', CX, 1178, 70, CREAM, { align: 'center', fit: 840 });
-      txt(g, 'HANG UP. TELL SOMEONE. DIAL 1930.', CX, 1288, 84, YEL, { align: 'center', fit: 846 });
+      txt(g, 'HANG UP. TELL SOMEONE. DIAL 1930.', CX, 1288, 84, YEL, { align: 'center', fit: 846, a: a2 });
       g.restore();
       txt(g, "YOU'RE THE TEST SUBJECT", CX, 996, 46, CREAM, { align: 'center', fit: 800, stroke: INK, sw: 0.2, a });
     }
@@ -680,7 +684,7 @@
 
   function frame(g, t) {
     const TT = times(), u = ease((t - TT.swap) / 0.5), s = storyT(t, TT);
-    const inkP = ease((t - TT.n14e - 0.1) / 0.5);
+    const inkP = ease((t - TT.n14e - 0.16) / 0.55);
     const redInk = t >= TT.n10b - 0.05 ? ease((t - TT.n10b + 0.05) / 0.45) : 0;
     const drain = ease((t - TT.n17e) / 1.1);
     g.save();
@@ -690,7 +694,7 @@
     const hV = mixV(VIEW_HER_PIP, herCam(t, TT), u);
     const pop = clamp((t - TT.swap - 0.4) / 0.2), popQ = clamp(hit(t, TT.swap + 0.42, 'heavy'));
     if (u < 0.999) placeWindow(g, FULL, officeCam(t, TT), (c) => office(c, t, { redInk }));
-    placeWindow(g, hR, hV, (c) => room(c, t, s, { tired: u, ink: t >= TT.n14e ? inkP : 0, inkA: 1 - clamp((t - TT.n16 + 0.45) / 0.3) }), u < 0.5 ? 5 : 0);
+    placeWindow(g, hR, hV, (c) => room(c, t, s, { tired: u, ink: t >= TT.n14e ? inkP : 0, inkA: 1 - clamp((t - TT.n14e - 0.9) / 0.3) }), u < 0.5 ? 5 : 0);
     if (u < 0.98) { g.save(); g.globalAlpha *= (1 - u) * 0.16; g.fillStyle = '#16202e'; g.beginPath(); g.roundRect(hR.x, hR.y, hR.w, hR.h, hR.r); g.fill(); g.restore(); }
     if (pop > 0) { const sc = lerp(0.55, 1, popQ), cxp = PIP.x + PIP.w / 2, cyp = PIP.y + PIP.h / 2, oR = { x: cxp - PIP.w * sc / 2, y: cyp - PIP.h * sc / 2, w: PIP.w * sc, h: PIP.h * sc, r: PIP.r }; g.save(); g.globalAlpha *= pop; placeWindow(g, oR, { s: him.s * sc, cx: him.cx, cy: him.cy }, (c) => office(c, t, { redInk }), 5); g.restore(); }
     callBar(g, t, TT);
