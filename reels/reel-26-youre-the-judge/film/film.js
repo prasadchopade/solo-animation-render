@@ -594,31 +594,17 @@
   function sitter(g, L, x, y, s, top, t, o = {}) {
     seated(g, L, x, y, s, { kind: 'shirt', pocket: false, body: top, look: o.look || [0, 1], close: o.close ?? 0, smile: o.smile ?? 0, frown: o.frown ?? 0, t });
   }
-  // the thief's hand: a white plaster across the back of it (drawn flat, the sleeve to the left; chinHand stands it up under his chin)
-  function thiefHand(g, x, y, s) {
-    g.save(); g.translate(x, y); g.scale(s, s);
-    g.fillStyle = lg(g, 0, -60, 0, 60, [0, '#c6dcef'], [1, '#9fc0dc']); R(g, -140, -46, 120, 96, 40); g.fill();      // his sleeve
-    g.fillStyle = TWO.skin; ell(g, 0, 0, 80, 48, -0.08); g.fill();
-    g.strokeStyle = TWO.skinD; g.lineWidth = 7; g.lineCap = 'round'; for (let i = 0; i < 4; i++) { g.beginPath(); g.moveTo(52, -30 + i * 20); g.quadraticCurveTo(94, -26 + i * 20, 92, -6 + i * 20); g.stroke(); }
-    g.save(); g.rotate(-0.32); g.fillStyle = '#f7f3ea'; R(g, -50, -18, 100, 36, 10); g.fill(); g.strokeStyle = 'rgba(0,0,0,0.18)'; g.lineWidth = 3; g.stroke();
-    g.fillStyle = 'rgba(200,60,60,0.35)'; R(g, -14, -10, 28, 20, 5); g.fill(); g.restore();
-    g.restore();
-  }
   // the gallery: who sits where. FRONT row (big), BACK row (small).
   // The thief is in the back row, far left, right behind the prosecutor, in the maroon cap he wore in reel 20: far from the man on trial,
-  // and nothing like him at a glance. The only cap in the room; the mole; his fist under his chin with the plaster across it.
+  // and nothing like him at a glance. The only cap in the room, and the mole. (No plaster: the user's call, cut 5.)
   const THIEF = { x: 146, y: 884, s: 0.28 };      // x 146: just outside the close-ups on the man on trial (they show x 204 and up)
-  const TWO_G = { ...TWO, style: 'cap', moleR: 18 };    // his face is small back there: a bigger mole, so it can be found
+  const TWO_G = { ...TWO, style: 'cap', moleR: 22 };    // his face is small back there: a bigger mole (4 px on a phone), so it can be found
   // the front row's right-hand seat, where he used to sit: an older woman in glasses, so nobody there looks like him or the man on trial
   const G_AMMA = { skin: '#c08a62', skinD: '#97643f', skinH: '#deb08a', hair: '#cfc9c0', style: 'det', must: null, stub: 0, brow: 9, browTilt: 2, jaw: 0.95, ew: 44, eh: 24, lip: '#9a3a3e', specs: true, bindi: true, ear: true, lidW: 8 };
-  function chinHand(g, x, y, s) {                  // his fist under his chin, the back of it to you
-    g.save(); g.translate(x, y); g.rotate(-Math.PI / 2 + 0.5); thiefHand(g, 0, 0, s); g.restore();     // tilted: the elbow out to your left, the knuckles under his jaw
-  }
   function gallery(g, t, o = {}) {
     if (o.empty) return;
     const bl = (p, off) => blinkAt(t, p, off);
     sitter(g, TWO_G, THIEF.x, THIEF.y, THIEF.s, null, t, { close: bl(4.6, 3.1), look: [10, 2], smile: 0.55 });
-    chinHand(g, THIEF.x - 22, THIEF.y + 84, 0.36);
     sitter(g, G_YOUNG, 372, 968, 0.24, '#5b8fd1', t, { close: bl(3.7, 0.4), look: [4, 2] });
     sitter(g, G_OLD, 704, 962, 0.24, '#f1efe8', t, { close: bl(4.3, 2.0), look: [-4, 2], frown: 0.3 });
     sitter(g, G_OLD, 948, 968, 0.24, '#3e9a6e', t, { close: bl(3.1, 1.2), look: [-6, 2] });
@@ -871,7 +857,7 @@
   function times() {
     if (T) return T;
     T = {
-      titleOut: en('n01'), n02: at('n02'), crore: wi('n02', 4), stall: wi('n02', 7), n03: at('n03'), cut: wi('n03', 4), matchW: wi('n03', 12), matches: wi('n03', 15), n03e: en('n03'),
+      titleOut: en('n01'), stake: at(stakeId()), stakeW: wi(stakeId(), 99), stakeE: en(stakeId()), n02: at('n02'), crore: wi('n02', 4), stall: wi('n02', 7), n03: at('n03'), cut: wi('n03', 4), matchW: wi('n03', 12), matches: wi('n03', 15), n03e: en('n03'),
       p01: at('p01'), tenK: wi('p01', 6), p01e: en('p01'), p02: at('p02'), elseW: wi('p02', 7), p02e: en('p02'),
       n04: at('n04'), guilty: wi('n04', 6), n04e: en('n04'), d01: at('d01'), d01e: en('d01'), n05: at('n05'), heM: wi('n05', 4), n05e: en('n05'),
       n06: at('n06'), put: wi('n06', 4), n07: at('n07'), tenK2: wi('n07', 5), n08: at('n08'), twoK: wi('n08', 1),
@@ -933,10 +919,17 @@
     g.restore();
   }
 
-  // ------------------------------------------------------------------ 1 · frame 0, and the city in the window behind him
+  // ------------------------------------------------------------------ 1 · frame 0; the stakes, in on his face; then out to the city in the window behind him
+  // the line after "You're the judge.": n01j "You decide if he goes to jail." or n01f "You decide this man's fate." (place_vo.py places one)
+  function stakeId() { return words('n01j').length ? 'n01j' : 'n01f'; }
   function shotOpen(g, t) {
-    const TT = times(), k = sstep(TT.n02 - 0.1, TT.n02 + 1.4, t);
-    court(g, t, { ...camOn(530, 960, 1.05, k) });
+    const TT = times();
+    const kin = sstep(TT.stake - 0.1, TT.stakeE + 0.05, t), kout = sstep(TT.n02 - 0.1, TT.n02 + 1.3, t);
+    const mix = (A, B, k) => ({ z: lerp(A.z, B.z, k), cx: lerp(A.cx, B.cx, k), cy: lerp(A.cy, B.cy, k), px: 513, py: 960 });
+    const WIDE = camOn(513, 960, 1.0, 1), CLOSE = camOn(513, 940, 1.75, 1), CITY = camOn(530, 960, 1.05, 1);
+    const cam = t < TT.n02 - 0.1 ? mix(WIDE, CLOSE, kin) : mix(CLOSE, CITY, kout);
+    const fear = sstep(TT.stakeW - 0.12, TT.stakeW + 0.3, t) * (1 - kout);      // on "jail" his brows go up and the sweat comes
+    court(g, t, { ...cam, dWorry: lerp(-4, -13, fear), dSweat: lerp(0.6, 1, fear), dLook: [0, lerp(2, 1, fear)], dFrown: lerp(0.5, 0.8, fear) });
     const out = sstep(TT.titleOut - 0.05, TT.titleOut + 0.15, t);
     if (out < 1) {
       g.save(); g.globalAlpha = 1 - out;
@@ -1097,18 +1090,7 @@
     } else txt(g, '?', x + w / 2, y + h * 0.66, 220, '#b9a27a', { align: 'center' });
     g.restore();
   }
-  // his hand, the back of it to you, at his chest: the plaster across it
-  function plasterHand(g, x, y, s) {
-    g.save(); g.translate(x, y); g.scale(s, s);
-    g.fillStyle = lg(g, -60, 120, 60, 260, [0, '#b4cfe6'], [1, '#94b6d3']); R(g, -62, 60, 124, 260, 52); g.fill();
-    g.fillStyle = TWO.skin; ell(g, 0, 0, 78, 92); g.fill();
-    for (let i = 0; i < 4; i++) { R(g, -66 + i * 34, -150, 30, 110, 15); g.fill(); }
-    g.strokeStyle = TWO.skinD; g.lineWidth = 4; for (let i = 0; i < 4; i++) { g.beginPath(); g.moveTo(-51 + i * 34, -120); g.lineTo(-51 + i * 34, -100); g.stroke(); }
-    g.save(); g.rotate(-0.4); g.fillStyle = '#f7f3ea'; R(g, -64, -24, 128, 48, 12); g.fill(); g.strokeStyle = 'rgba(0,0,0,0.2)'; g.lineWidth = 3; g.stroke();
-    g.fillStyle = 'rgba(200,60,60,0.4)'; R(g, -18, -12, 36, 24, 6); g.fill(); g.restore();
-    g.restore();
-  }
-  const PORT = { x: 513, y: 940, s: 1.1 }, PH = [700, 1300, 0.9];
+  const PORT = { x: 513, y: 940, s: 1.1 };
   function shotThief(g, t) {
     const TT = times();
     const zin = sstep(TT.n11 - 0.1, TT.met + 0.1, t), port = sstep(TT.met - 0.1, TT.met + 0.2, t);
@@ -1122,7 +1104,6 @@
       g.fillStyle = '#1a1c22'; g.fillRect(0, 0, W, H);
       g.fillStyle = rg(g, 513, 980, 40, 700, [0, 'rgba(255,70,50,0.28)'], [1, 'rgba(255,70,50,0)']); g.fillRect(0, 0, W, H);
       seated(g, { ...TWO, style: 'cap' }, PORT.x, PORT.y, PORT.s, { kind: 'shirt', pocket: false, look: [0, 1], smile: 0.5, close: blinkAt(t, 3.3, 0.4), t });
-      plasterHand(g, PH[0], PH[1], PH[2]);
       g.restore();
     }
     if (t >= TT.n12 - 0.06) {
@@ -1140,12 +1121,11 @@
       }
     }
     if (t >= TT.same - 0.06) {
-      // the mole you know, and the plaster you can check: the evidence, not the face
+      // the mole you know from every film
       const k = pop(t, TT.same - 0.06);
       g.strokeStyle = RED; g.lineWidth = 10;
       ell(g, PORT.x + 84 * PORT.s, PORT.y + 62 * PORT.s, 40 * lerp(1.8, 1, k), 40 * lerp(1.8, 1, k)); g.stroke();
-      ell(g, PH[0], PH[1] - 6, 96 * lerp(1.6, 1, k), 66 * lerp(1.6, 1, k), -0.4); g.stroke();
-      stamp(g, 'SAME THIEF', 380, 1410, t, TT.same - 0.04, RED, 112, -0.08, 'rgba(255,255,255,0.95)');
+      stamp(g, 'SAME THIEF', 513, 1410, t, TT.same - 0.04, RED, 112, -0.08, 'rgba(255,255,255,0.95)');
     }
     if (t >= TT.free - 0.06) title(g, 'STILL FREE.', 1530, 104, YEL, t, TT.free - 0.06);
     return flashAt(t, TT.met - 0.2) * 0.3 + flashAt(t, TT.n12 - 0.06) * 0.2;
