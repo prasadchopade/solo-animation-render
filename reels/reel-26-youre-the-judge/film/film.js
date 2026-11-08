@@ -250,7 +250,8 @@
 
   // ------------------------------------------------------------------ the street: the stall, a dusk, drawn once (reels 20 and 23)
   let ST = null;
-  function makeStreet() {
+  function makeStreet() { ST = { bg: buildStreet(true), night: buildStreet(false) }; }   // the night copy has no sign: cut by the frame's edge, "CHAI 10/-" read "AI 10/-"
+  function buildStreet(sign) {
     const bg = offscreen(W, H); const g = bg.getContext('2d');
     g.fillStyle = lg(g, 0, 0, 0, 980, [0, '#ee8f58'], [0.5, '#f7c384'], [1, '#fde4bb']); g.fillRect(0, 0, W, H);
     const r = mulberry32(44), cols = ['#3fa7a0', '#d96f6a', '#e8b84a', '#7c86c6', '#c9845a', '#58a56a'];
@@ -288,7 +289,7 @@
     g.fillStyle = lg(g, 0, 1000, 0, 1240, [0, '#a56b39'], [1, '#6e431f']); g.fillRect(0, 1010, 450, 230);
     g.fillStyle = 'rgba(0,0,0,0.25)'; for (let i = 0; i < 6; i++) g.fillRect(0, 1050 + i * 34, 450, 3);
     R(g, 34, 1080, 216, 92, 6); g.fillStyle = '#23302a'; g.fill(); g.strokeStyle = '#8a6a3f'; g.lineWidth = 6; g.stroke();
-    txt(g, 'CHAI 10/-', 142, 1146, 62, '#f4efe0', { align: 'center' });
+    if (sign) txt(g, 'CHAI 10/-', 142, 1146, 62, '#f4efe0', { align: 'center' });
     g.fillStyle = '#c99a5e'; g.fillRect(0, 996, 462, 22);
     for (const [jx, c] of [[34, '#d9a35a'], [104, '#c9743a']]) { g.fillStyle = 'rgba(235,240,245,0.5)'; R(g, jx, 906, 58, 92, 8); g.fill(); g.fillStyle = c; R(g, jx + 5, 932, 48, 62, 6); g.fill(); g.fillStyle = '#d33'; R(g, jx + 3, 898, 52, 14, 4); g.fill(); }
     g.fillStyle = '#8f949b'; R(g, 300, 900, 96, 92, 18); g.fill(); g.fillStyle = 'rgba(255,255,255,0.3)'; R(g, 312, 912, 14, 62, 7); g.fill(); g.strokeStyle = '#6a6e74'; g.lineWidth = 9; g.beginPath(); g.arc(396, 932, 26, -1.2, 1.2); g.stroke();
@@ -298,7 +299,7 @@
     for (let i = 0; i < 10; i++) { const u = i / 9, bx = lerp(8, 470, u), by = 716 + 44 * Math.sin(u * Math.PI) - 8 * u + 8; g.fillStyle = rg(g, bx, by + 6, 2, 46, [0, 'rgba(255,214,130,0.75)'], [1, 'rgba(255,214,130,0)']); g.fillRect(bx - 46, by - 40, 92, 92); g.fillStyle = '#fff2c4'; ell(g, bx, by + 6, 8, 10); g.fill(); }
     g.fillStyle = rg(g, 220, 960, 40, 620, [0, 'rgba(255,190,110,0.2)'], [1, 'rgba(255,190,110,0)']); g.fillRect(0, 300, 900, 1300);
     g.fillStyle = rg(g, 540, 900, 620, 1240, [0, 'rgba(30,14,8,0)'], [1, 'rgba(30,14,8,0.34)']); g.fillRect(0, 0, W, H);
-    ST = { bg };
+    return bg;
   }
   function glass(g, x, y, s, rot, a = 1) {
     g.save(); g.translate(x, y); g.rotate(rot); g.scale(s, s); g.globalAlpha *= a;
@@ -604,7 +605,7 @@
   function gallery(g, t, o = {}) {
     if (o.empty) return;
     const bl = (p, off) => blinkAt(t, p, off);
-    sitter(g, TWO_G, THIEF.x, THIEF.y, THIEF.s, null, t, { close: bl(4.6, 3.1), look: [10, 2], smile: 0.55 });
+    sitter(g, TWO_G, THIEF.x, THIEF.y, THIEF.s, null, t, { close: bl(4.6, 1.0), look: [10, 2], smile: 0.55 });
     sitter(g, G_YOUNG, 372, 968, 0.24, '#5b8fd1', t, { close: bl(3.7, 0.4), look: [4, 2] });
     sitter(g, G_OLD, 704, 962, 0.24, '#f1efe8', t, { close: bl(4.3, 2.0), look: [-4, 2], frown: 0.3 });
     sitter(g, G_OLD, 948, 968, 0.24, '#3e9a6e', t, { close: bl(3.1, 1.2), look: [-6, 2] });
@@ -686,7 +687,7 @@
     if (!o.emptyDock && !o.soloPros) accused(g, DX + Math.sin(t * 19) * 1.0, DY + 2 * Math.sin(t * 1.6), DS, t, { look: o.dLook || [0, 2], close: o.dClose ?? blinkAt(t, 2.4, 0.9), op: o.dOp ?? 0, frown: o.dFrown ?? 0.5, worry: o.dWorry ?? -4, sweat: o.dSweat ?? 0.6, t });
     if (!o.soloPros) dock(g, t, { empty: o.emptyDock, tremble: 1 });
     const [qx, qy, qs] = o.prosAt || [PRX, PRY, PRS];
-    if (!o.noPros) advocate(g, qx, qy, qs, t, { look: o.pLook || [14, 2], close: blinkAt(t, 3.6, 2.2), op: o.pOp ?? 0, smile: o.pSmile ?? 0.35, point: o.point ?? 0, t });
+    if (!o.noPros) advocate(g, qx, qy, qs, t, { look: o.pLook || [14, 2], close: blinkAt(t, 3.6, 2.9), op: o.pOp ?? 0, smile: o.pSmile ?? 0.35, point: o.point ?? 0, t });
     desk(g, t, { up: o.up ?? 0 });
     g.restore();
   }
@@ -740,7 +741,7 @@
   const NEWV = { skin: '#c99a76', skinD: '#9e6f4f', skinH: '#e2b896', hair: '#9a948c', style: 'det', must: null, stub: 0, brow: 9, browTilt: -12, jaw: 0.95, ew: 46, eh: 28, lip: '#9a3a3e', bindi: true, ear: true, lidW: 8 };
   function nightStreet(g, t) {
     if (!ST) makeStreet();
-    g.drawImage(ST.bg, 0, 0);
+    g.drawImage(ST.night, 0, 0);
     g.save(); g.globalCompositeOperation = 'multiply'; g.fillStyle = '#3a4a86'; g.fillRect(0, 0, W, H); g.restore();
     g.save(); g.globalCompositeOperation = 'lighter';
     for (let i = 0; i < 10; i++) { const u = i / 9, bx = lerp(8, 470, u), by = 716 + 44 * Math.sin(u * Math.PI) - 8 * u + 14; g.fillStyle = rg(g, bx, by, 2, 70, [0, 'rgba(255,200,120,0.5)'], [1, 'rgba(255,200,120,0)']); g.fillRect(bx - 70, by - 70, 140, 140); }
@@ -1125,9 +1126,11 @@
       const k = pop(t, TT.same - 0.06);
       g.strokeStyle = RED; g.lineWidth = 10;
       ell(g, PORT.x + 84 * PORT.s, PORT.y + 62 * PORT.s, 40 * lerp(1.8, 1, k), 40 * lerp(1.8, 1, k)); g.stroke();
-      stamp(g, 'SAME THIEF', 513, 1410, t, TT.same - 0.04, RED, 112, -0.08, 'rgba(255,255,255,0.95)');
+      g.lineWidth = 5;
+      for (let i = 0; i < 3; i++) { ell(g, 100 + i * 210 + 98 + 84 * 0.42, 300 + 122 + 62 * 0.42, 17 * lerp(1.8, 1, k), 17 * lerp(1.8, 1, k)); g.stroke(); }     // each panel's mole (faceTile: the head at the tile's centre, scale 0.42)
+      stamp(g, 'SAME THIEF', 513, 1352, t, TT.same - 0.04, RED, 112, -0.08, 'rgba(255,255,255,0.95)');
     }
-    if (t >= TT.free - 0.06) title(g, 'STILL FREE.', 1530, 104, YEL, t, TT.free - 0.06);
+    if (t >= TT.free - 0.06) title(g, 'STILL FREE.', 1488, 104, YEL, t, TT.free - 0.06);
     return flashAt(t, TT.met - 0.2) * 0.3 + flashAt(t, TT.n12 - 0.06) * 0.2;
   }
   // ------------------------------------------------------------------ 10 · the dare: the friend who's good at maths
