@@ -1,33 +1,12 @@
 {
- "note": "Reel 28: You're the Alibi. Episode 6 of 'You're the test subject'. The narrator is the series voice (af_heart), talking to you, the alibi. The friend (f..) and the officer (o..) are cast in the voice lab and placed from the cast reads. Script 3, after two passes by a fresh reviewer: the viewer answers the officer's easy questions from what the friend whispered, then guesses the one nobody rehearsed. The film never says what you pressed; the officer reads what HE told them. Facts and wording: docs/research.md. Read audio/vo_lab/takes/phonemes.md after every run.",
+ "note": "Reel 28: You're the Alibi. Episode 6 of 'You're the test subject'. The narrator is the series voice (af_heart), talking to you, the alibi. The friend (f..) and the officer (o..) are cast in the voice lab and placed from the cast reads. Script 3, after two passes by a fresh reviewer: the viewer answers the officer's easy questions from what the friend whispered, then guesses the one nobody rehearsed. The film never says what you pressed; the officer reads what HE told them. Cast (9 Nov): the friend is am_michael (his whisper, f01, at speed 0.96: 1.0 creaked 7.3 %, 0.96 did not), the officer am_onyx. The other voices auditioned creaked on most lines. Facts and wording: docs/research.md. Read audio/vo_lab/takes/phonemes.md after every run.",
  "voice": "af_heart",
  "speed": 1.0,
  "ref_text": "The night was cold and very quiet. Most of the street was asleep, and the lamps hummed over the empty road. Somewhere far away, a train rolled past, and then the silence came back.",
  "cast_lines": [
-  "f01",
-  "f01b",
-  "f01c",
   "o02"
  ],
  "cast": [
-  {
-   "id": "s-michael",
-   "engine": "kokoro",
-   "voice": "am_michael",
-   "speed": 1.0
-  },
-  {
-   "id": "s-michael96",
-   "engine": "kokoro",
-   "voice": "am_michael",
-   "speed": 0.96
-  },
-  {
-   "id": "s-michael104",
-   "engine": "kokoro",
-   "voice": "am_michael",
-   "speed": 1.04
-  },
   {
    "id": "s-onyx",
    "engine": "kokoro",
@@ -78,8 +57,8 @@
   },
   {
    "id": "o02",
-   "text": "He says a chai stall. The chaiwala remembers nothing. So what did you drink?",
-   "text_kokoro": "He says a chai stall. The [chaiwala](/ʧˈaɪwˌɑːlɑː/) remembers nothing. So what did you drink?"
+   "text": "The chaiwala remembers nothing. So what did you drink?",
+   "text_kokoro": "The [chaiwala](/ʧˈaɪwˌɑːlɑː/) remembers nothing. So what did you drink?"
   },
   {
    "id": "o03",
@@ -124,7 +103,7 @@
   },
   {
    "id": "n10",
-   "text": "Lie researchers call that last question unanticipated: the one nobody rehearsed."
+   "text": "Lie researchers call that an unanticipated question."
   },
   {
    "id": "n11",

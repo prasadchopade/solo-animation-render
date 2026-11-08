@@ -543,12 +543,12 @@
     const z = 1 + 0.03 * sstep(0, TT.n02e, t), bang = t >= TT.f00 ? Math.exp(-(t - TT.f00) * 7) : 0;
     const [sx, sy] = shakeAt(t, [TT.f00], 12);
     g.save(); g.translate(sx, sy);
-    lockup(g, t, { z, cy: 900, py: 900, op: talkP(t, 'f00') * 1.5, tears: 1, wet: 1, dy: -bang * 10 });
+    lockup(g, t, { z, cy: 900, py: 900, op: Math.max(talkP(t, 'f00') * 1.5, t < TT.f00 ? 0.05 : 0), tears: 1, wet: 1, dy: -bang * 10, frown: 0.9 });
     g.restore();
     const out = sstep(TT.n01e - 0.08, TT.n01e + 0.12, t);
     if (out < 1) titleLines(g, t, 1 - out);
     if (t >= TT.f00 - 0.02) { const qu = 1 - sstep(TT.n02 - 0.05, TT.n02 + 0.1, t); g.save(); g.globalAlpha *= qu; title(g, 'TELL THEM I WAS WITH YOU!', 400, 100, YEL, t, TT.f00); g.restore(); }
-    if (t >= TT.n02) title(g, 'LOCKED UP FOR ROBBERY', 400, 104, CREAM, t, TT.n02 + 0.25, { fit: 860 });
+    if (t >= TT.n02) { title(g, 'LOCKED UP FOR ROBBING', 356, 88, CREAM, t, TT.n02 + 0.25, { fit: 860 }); title(g, 'A WATCH SHOP', 490, 132, YEL, t, TT.n02 + 0.4); }
     return 0;
   }
   function askLabel(g, t, t0) {
@@ -669,7 +669,8 @@
     const hot = sstep(TT.n06, TT.n06 + 0.25, t);
     stool(g, 670, 1040, 1.25, hot);
     title(g, 'HE NEVER SAID', 400, 150, RED, t, TT.n05, { stroke: '#fff', sw: 0.12 });
-    if (t >= TT.made) title(g, 'YOU MADE THAT UP', 1466, 92, INK, t, TT.made, { stroke: '#fff', sw: 0.12 });
+    if (t >= TT.made && t < wi('n06', 7) - 0.05) title(g, 'YOU MADE THAT UP', 1466, 92, INK, t, TT.made, { stroke: '#fff', sw: 0.12 });
+    if (t >= wi('n06', 7)) title(g, "HE WASN'T WITH YOU", 1466, 112, RED, t, wi('n06', 7), { stroke: '#fff', sw: 0.12 });
     return 0;
   }
   function shotHere(g, t) {                      // the photo sharpens, for you alone
