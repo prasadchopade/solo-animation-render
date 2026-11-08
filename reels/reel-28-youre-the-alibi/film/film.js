@@ -645,7 +645,8 @@
   }
   function shotQuiz(g, t) {                      // the officer's two easy questions
     const TT = times();
-    officer(g, t, { z: 1.0, cy: 800, py: 800, op: talkP(t, 'o02') + talkP(t, 'o03') });
+    const lean = t < TT.o03 - 0.1 ? lerp(1, 1.06, sstep(TT.o02, TT.q1e, t)) : lerp(1.03, 1.1, sstep(TT.o03, TT.q2e, t));
+    officer(g, t, { z: lean, cy: 800, py: 800, op: talkP(t, 'o02') + talkP(t, 'o03') });
     if (t < TT.o03 - 0.1) title(g, 'WHAT DID YOU DRINK?', 400, 110, YEL, t, TT.q1 - 0.02);
     else title(g, 'HOW MUCH DID YOU PAY?', 400, 110, YEL, t, TT.o03 - 0.02);
     buttons(g, t, TT.q1, TT.q1e, DRINK, DRINKW);
@@ -689,6 +690,8 @@
   function shotNever(g, t) {                     // he never said: the stall, your glass, the stool with nobody on it
     const TT = times();
     g.fillStyle = lg(g, 0, 0, 0, H, [0, '#a6dfe6'], [1, '#6cc0ca']); g.fillRect(0, 0, W, H);
+    const zoom = lerp(1, 1.2, sstep(TT.n05 + 0.3, TT.n07, t));
+    g.save(); g.translate(670, 860); g.scale(zoom, zoom); g.translate(-670, -860);
     cloud(g, 513, 930, 1000, 1040, pop(t, TT.n05 - 0.04));
     g.save(); g.beginPath(); g.ellipse(513, 930, 480, 450, 0, 0, TAU); g.clip();
     rain(g, 40, 480, 1000, 1380, t, 26);
@@ -699,6 +702,7 @@
     stool(g, 670, 1040, 1.25, 0);
     const dot = pop(t, TT.n05 + 0.15);
     g.save(); g.translate(670, 806); g.scale(0.92 * dot, 0.92 * dot); g.strokeStyle = RED; g.lineWidth = 7; g.setLineDash([16, 13]); g.beginPath(); g.moveTo(-60, -80); g.lineTo(60, -80); g.lineTo(46, 80); g.lineTo(-46, 80); g.closePath(); g.stroke(); g.setLineDash([]); txt(g, '?', 0, 34, 104, RED, { align: 'center' }); g.restore();
+    g.restore();
     title(g, 'HE NEVER SAID', 400, 150, RED, t, TT.n05, { stroke: '#fff', sw: 0.12 });
     if (t >= wi('n05b', 5) && t < wi('n06', 7) - 0.05) title(g, 'YOU MADE THAT UP', 1466, 92, INK, t, wi('n05b', 5), { stroke: '#fff', sw: 0.12 });
     if (t >= wi('n06', 7)) title(g, "HE WASN'T WITH YOU", 1466, 112, RED, t, wi('n06', 7), { stroke: '#fff', sw: 0.12 });
