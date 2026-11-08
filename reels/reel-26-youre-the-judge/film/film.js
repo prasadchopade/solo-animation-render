@@ -594,7 +594,7 @@
   function sitter(g, L, x, y, s, top, t, o = {}) {
     seated(g, L, x, y, s, { kind: 'shirt', pocket: false, body: top, look: o.look || [0, 1], close: o.close ?? 0, smile: o.smile ?? 0, frown: o.frown ?? 0, t });
   }
-  // the thief's hand on the rail in front of him: a white plaster across the back of it
+  // the thief's hand: a white plaster across the back of it (drawn flat, the sleeve to the left; chinHand stands it up under his chin)
   function thiefHand(g, x, y, s) {
     g.save(); g.translate(x, y); g.scale(s, s);
     g.fillStyle = lg(g, 0, -60, 0, 60, [0, '#c6dcef'], [1, '#9fc0dc']); R(g, -140, -46, 120, 96, 40); g.fill();      // his sleeve
@@ -604,19 +604,28 @@
     g.fillStyle = 'rgba(200,60,60,0.35)'; R(g, -14, -10, 28, 20, 5); g.fill(); g.restore();
     g.restore();
   }
-  // the gallery: who sits where. FRONT row (big), BACK row (small). The thief is on the right, front row.
-  const THIEF = { x: 850, y: 1004, s: 0.44 };      // the largest face in the gallery: on a phone his mole and plaster can be found
-  const TWO_G = { ...TWO, moleR: 16 };            // his face is small in the gallery: a bigger mole, so it reads on a phone
+  // the gallery: who sits where. FRONT row (big), BACK row (small).
+  // The thief is in the back row, far left, right behind the prosecutor, in the maroon cap he wore in reel 20: far from the man on trial,
+  // and nothing like him at a glance. The only cap in the room; the mole; his fist under his chin with the plaster across it.
+  const THIEF = { x: 146, y: 884, s: 0.28 };      // x 146: just outside the close-ups on the man on trial (they show x 204 and up)
+  const TWO_G = { ...TWO, style: 'cap', moleR: 18 };    // his face is small back there: a bigger mole, so it can be found
+  // the front row's right-hand seat, where he used to sit: an older woman in glasses, so nobody there looks like him or the man on trial
+  const G_AMMA = { skin: '#c08a62', skinD: '#97643f', skinH: '#deb08a', hair: '#cfc9c0', style: 'det', must: null, stub: 0, brow: 9, browTilt: 2, jaw: 0.95, ew: 44, eh: 24, lip: '#9a3a3e', specs: true, bindi: true, ear: true, lidW: 8 };
+  function chinHand(g, x, y, s) {                  // his fist under his chin, the back of it to you
+    g.save(); g.translate(x, y); g.rotate(-Math.PI / 2 + 0.5); thiefHand(g, 0, 0, s); g.restore();     // tilted: the elbow out to your left, the knuckles under his jaw
+  }
   function gallery(g, t, o = {}) {
     if (o.empty) return;
     const bl = (p, off) => blinkAt(t, p, off);
+    sitter(g, TWO_G, THIEF.x, THIEF.y, THIEF.s, null, t, { close: bl(4.6, 3.1), look: [10, 2], smile: 0.55 });
+    chinHand(g, THIEF.x - 22, THIEF.y + 84, 0.36);
     sitter(g, G_YOUNG, 372, 968, 0.24, '#5b8fd1', t, { close: bl(3.7, 0.4), look: [4, 2] });
     sitter(g, G_OLD, 704, 962, 0.24, '#f1efe8', t, { close: bl(4.3, 2.0), look: [-4, 2], frown: 0.3 });
     sitter(g, G_OLD, 948, 968, 0.24, '#3e9a6e', t, { close: bl(3.1, 1.2), look: [-6, 2] });
     // the bar between the public and the court, behind the front row's knees
     sitter(g, G_BUN, 292, 1034, 0.31, '#7c5bb0', t, { close: bl(3.3, 2.4), look: [8, 2], frown: 0.2 });
     sitter(g, PLAIN, 716, 1036, 0.31, '#d96f6a', t, { close: bl(2.9, 0.7), look: [-10, 3] });
-    sitter(g, TWO_G, THIEF.x, THIEF.y, THIEF.s, null, t, { close: bl(4.6, 3.1), look: [0, 1], smile: 0.55 });
+    sitter(g, G_AMMA, 862, 1036, 0.31, '#e0457b', t, { close: bl(4.1, 1.6), look: [-8, 3], frown: 0.2 });
   }
   function bar(g, t, o = {}) {                     // the rail in front of the gallery, and the solid wood under it
     g.fillStyle = lg(g, 0, 1104, 0, 1700, [0, '#9a6a3e'], [0.35, '#7a4c28'], [1, '#5b3519']); g.fillRect(0, 1118, W, 600);
@@ -624,7 +633,6 @@
     g.fillStyle = 'rgba(0,0,0,0.18)'; g.fillRect(0, 1124, W, 10);
     g.fillStyle = lg(g, 0, 1100, 0, 1124, [0, '#c08c58'], [1, '#875a33']); R(g, -10, 1100, W + 20, 24, 10); g.fill();
     g.fillStyle = 'rgba(255,230,190,0.35)'; g.fillRect(0, 1102, W, 4);
-    if (!o.empty) thiefHand(g, THIEF.x - 52, 1104, 0.5);
   }
   // the dock: rails and posts; his hands on the top rail (no plaster on either)
   function dock(g, t, o = {}) {
@@ -807,6 +815,7 @@
     if (f.bindi) { ell(g, hx, hy - 3.6 * s, 0.75 * s, 0.75 * s); g.fillStyle = '#b3141c'; g.fill(); }
     if (f.specs) { g.strokeStyle = '#2a2320'; g.lineWidth = 0.6 * s; for (const k of [-1, 1]) { ell(g, hx + k * 3.3 * s, hy + 0.2 * s, 2.4 * s, 2 * s); g.stroke(); } }
     if (f.mole) { ell(g, hx + 4.6 * s, hy + 3.3 * s, 1.1 * s, 1.05 * s); g.fillStyle = '#2a1710'; g.fill(); }
+    if (f.cap) { g.fillStyle = '#7a1c2a'; g.beginPath(); g.ellipse(hx, hy - 3.8 * s, 8.9 * s, 7.8 * s, 0, Math.PI, TAU); g.fill(); g.fillStyle = '#4a111b'; R(g, hx - 9.6 * s, hy - 4.6 * s, 19.2 * s, 2.6 * s, 1.3 * s); g.fill(); }
   }
   function makeCrowd() {
     const c = offscreen(W * GS, H * GS), g = c.getContext('2d'); g.scale(GS, GS);
@@ -830,7 +839,7 @@
         must: who === 'man' && r() < 0.5 ? (r() < 0.5 ? 'thick' : 'thin') : null, bindi: who === 'woman' && r() < 0.55, specs: who !== 'child' && r() < (old ? 0.4 : 0.1), kid: who === 'child' };
       if (f.must && old) f.mustC = grey;
       if (col === DEF_CELL[0] && row === DEF_CELL[1]) f = { skin: AUTO.skin, hc: AUTO.hair, hair: 'side', shirt: '#c9ab66', collar: '#b89a58', must: 'thick', temples: true, worry: true };
-      if (col === THIEF_CELL[0] && row === THIEF_CELL[1]) f = { skin: TWO.skin, hc: TWO.hair, hair: 'side', shirt: '#b8d3ea', collar: '#e7f1fa', must: 'thin', mole: true };
+      if (col === THIEF_CELL[0] && row === THIEF_CELL[1]) f = { skin: TWO.skin, hc: TWO.hair, hair: 'short', shirt: '#b8d3ea', collar: '#e7f1fa', must: 'thin', mole: true, cap: true };
       if (f.kid) miniPerson(g, cx, cy + 7, 0.76, f); else miniPerson(g, cx, cy + 1.5, 1.0, f);     // a child: smaller, lower in the frame
       g.restore();
     }
@@ -1112,7 +1121,7 @@
       g.save(); g.globalAlpha = port;
       g.fillStyle = '#1a1c22'; g.fillRect(0, 0, W, H);
       g.fillStyle = rg(g, 513, 980, 40, 700, [0, 'rgba(255,70,50,0.28)'], [1, 'rgba(255,70,50,0)']); g.fillRect(0, 0, W, H);
-      seated(g, TWO, PORT.x, PORT.y, PORT.s, { kind: 'shirt', pocket: false, look: [0, 1], smile: 0.5, close: blinkAt(t, 3.3, 0.4), t });
+      seated(g, { ...TWO, style: 'cap' }, PORT.x, PORT.y, PORT.s, { kind: 'shirt', pocket: false, look: [0, 1], smile: 0.5, close: blinkAt(t, 3.3, 0.4), t });
       plasterHand(g, PH[0], PH[1], PH[2]);
       g.restore();
     }
