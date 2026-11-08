@@ -1,0 +1,117 @@
+{
+ "note": "Reel 28: You're the Alibi. Episode 6 of 'You're the test subject'. The narrator is the series voice (af_heart), talking to you, the alibi. The friend (f..) and the officer (o..) are cast in the voice lab and placed from the cast reads. Script 3, after two passes by a fresh reviewer: the viewer answers the officer's easy questions from what the friend whispered, then guesses the one nobody rehearsed. The film never says what you pressed; the officer reads what HE told them. Cast (9 Nov): the friend is am_michael (his whisper, f01, at speed 0.96: 1.0 creaked 7.3 %, 0.96 did not), the officer am_onyx. The other voices auditioned creaked on most lines. Facts and wording: docs/research.md. Read audio/vo_lab/takes/phonemes.md after every run.",
+ "voice": "af_heart",
+ "speed": 1.0,
+ "ref_text": "The night was cold and very quiet. Most of the street was asleep, and the lamps hummed over the empty road. Somewhere far away, a train rolled past, and then the silence came back.",
+ "cast_lines": [
+  "o02"
+ ],
+ "cast": [
+  {
+   "id": "s-onyx",
+   "engine": "kokoro",
+   "voice": "am_onyx",
+   "speed": 1.0
+  }
+ ],
+ "take": [
+  {
+   "id": "k-heart",
+   "engine": "kokoro",
+   "voice": "af_heart",
+   "speed": 1.0
+  }
+ ],
+ "lines": [
+  {
+   "id": "n01",
+   "text": "You're his only alibi."
+  },
+  {
+   "id": "f00",
+   "text": "Tell them I was with you!"
+  },
+  {
+   "id": "n02",
+   "text": "Your best friend's locked up for robbing a watch shop."
+  },
+  {
+   "id": "o01",
+   "text": "Last Tuesday, seven forty. Where were you?"
+  },
+  {
+   "id": "n03",
+   "text": "The police have one blurry photo. He has you. What did you eat? Check your photos. Nobody photographs a Tuesday."
+  },
+  {
+   "id": "f01",
+   "text": "The stall. It was raining, you had ginger chai, you paid cash, twenty rupees. Remember?"
+  },
+  {
+   "id": "f01b",
+   "text": "The stall. It was raining. You had ginger chai. You paid cash, twenty rupees. Remember?"
+  },
+  {
+   "id": "f01c",
+   "text": "At the stall. It was raining, you had ginger chai, and you paid cash, twenty rupees. Remember?"
+  },
+  {
+   "id": "o02",
+   "text": "The chaiwala remembers nothing. So what did you drink?",
+   "text_kokoro": "The [chaiwala](/ʧˈaɪwˌɑːlɑː/) remembers nothing. So what did you drink?"
+  },
+  {
+   "id": "o03",
+   "text": "How much did you pay?"
+  },
+  {
+   "id": "o04",
+   "text": "That's what he told us."
+  },
+  {
+   "id": "n04",
+   "text": "One more. What did he drink?"
+  },
+  {
+   "id": "n05",
+   "text": "He never said. You made that up."
+  },
+  {
+   "id": "n06",
+   "text": "Not one word about his evening, because he wasn't with you."
+  },
+  {
+   "id": "n07",
+   "text": "He was here."
+  },
+  {
+   "id": "o05",
+   "text": "The alibi holds. He can go."
+  },
+  {
+   "id": "n08",
+   "text": "Nothing happened, so you had no Tuesday. Now you've got the one he wrote."
+  },
+  {
+   "id": "n09",
+   "text": "He didn't need you to remember. He needed you not to."
+  },
+  {
+   "id": "f02",
+   "text": "Thanks, yaar. Next time, I'll pay.",
+   "text_kokoro": "Thanks, [yaar](/jˈɑːɹ/). Next time, I'll pay."
+  },
+  {
+   "id": "n10",
+   "text": "Lie researchers call that an unanticipated question."
+  },
+  {
+   "id": "n11",
+   "text": "So ask your best friend one. Where were they last Tuesday at seven forty?"
+  },
+  {
+   "id": "n12",
+   "text": "But first: what's on his wrist?"
+  }
+ ]
+}
