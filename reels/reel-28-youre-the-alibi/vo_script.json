@@ -4,14 +4,10 @@
  "speed": 1.0,
  "ref_text": "The night was cold and very quiet. Most of the street was asleep, and the lamps hummed over the empty road. Somewhere far away, a train rolled past, and then the silence came back.",
  "cast_lines": [
-  "f00",
   "f01",
-  "f02",
-  "o01",
-  "o02",
-  "o03",
-  "o04",
-  "o05"
+  "f01b",
+  "f01c",
+  "o02"
  ],
  "cast": [
   {
@@ -21,33 +17,21 @@
    "speed": 1.0
   },
   {
+   "id": "s-michael96",
+   "engine": "kokoro",
+   "voice": "am_michael",
+   "speed": 0.96
+  },
+  {
+   "id": "s-michael104",
+   "engine": "kokoro",
+   "voice": "am_michael",
+   "speed": 1.04
+  },
+  {
    "id": "s-onyx",
    "engine": "kokoro",
    "voice": "am_onyx",
-   "speed": 1.0
-  },
-  {
-   "id": "s-adam",
-   "engine": "kokoro",
-   "voice": "am_adam",
-   "speed": 1.0
-  },
-  {
-   "id": "s-fable",
-   "engine": "kokoro",
-   "voice": "bm_fable",
-   "speed": 1.0
-  },
-  {
-   "id": "s-daniel",
-   "engine": "kokoro",
-   "voice": "bm_daniel",
-   "speed": 1.0
-  },
-  {
-   "id": "s-lewis",
-   "engine": "kokoro",
-   "voice": "bm_lewis",
    "speed": 1.0
   }
  ],
@@ -85,9 +69,17 @@
    "text": "The stall. It was raining, you had ginger chai, you paid cash, twenty rupees. Remember?"
   },
   {
+   "id": "f01b",
+   "text": "The stall. It was raining. You had ginger chai. You paid cash, twenty rupees. Remember?"
+  },
+  {
+   "id": "f01c",
+   "text": "At the stall. It was raining, you had ginger chai, and you paid cash, twenty rupees. Remember?"
+  },
+  {
    "id": "o02",
    "text": "He says a chai stall. The chaiwala remembers nothing. So what did you drink?",
-   "text_kokoro": "He says a chai stall. The [chaiwala](/ʧˈaɪwˌɑːlə/) remembers nothing. So what did you drink?"
+   "text_kokoro": "He says a chai stall. The [chaiwala](/ʧˈaɪwˌɑːlɑː/) remembers nothing. So what did you drink?"
   },
   {
    "id": "o03",
