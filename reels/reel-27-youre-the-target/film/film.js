@@ -266,8 +266,8 @@
       o03: at('o03'), o04: wi('o03', 4), o04e: en('o03'), o05: at('o05'), frozen: wi('o05', 4), o05e: en('o05'), o06: at('o06'), o06e: en('o06'), o08: at('o08'), o08e: en('o08'), o09: at('o09'), o09e: en('o09'),
       n01: at('n01'), n01e: en('n01'), n02: at('n02'), three: wi('n02', 3), n02e: en('n02'),
       n03: at('n03'), n03e: en('n03'), n04: at('n04'), spell: wi('n04', 5), n04e: en('n04'), n05: at('n05'), noSuch: wi('n05', 7), n05e: en('n05'), n06: at('n06'), n06e: en('n06'),
-      n07: at('n07'), n07e: en('n07'), n08: at('n08'), n08e: en('n08'), n09: at('n09'), n09e: en('n09'), n10: at('n10'), n10b: wi('n10', 6), n10e: en('n10'), n11: at('n11'), n11e: en('n11'),
-      n12: at('n12'), n12e: en('n12'), n13: at('n13'), n13e: en('n13'), o11: at('o11'), o11e: en('o11'), m01: at('m01'), m01e: en('m01'), m02: at('m02'), m02e: en('m02'),
+      n07: at('n07'), n07e: en('n07'), n08: at('n08'), n08e: en('n08'), n09: at('n09'), n09e: en('n09'), x01: at('x01'), x01e: en('x01'),
+      n12: at('n12'), n12e: en('n12'), o11: at('o11'), o11e: en('o11'), m01: at('m01'), m01e: en('m01'), m02: at('m02'), m02e: en('m02'),
       n14: at('n14'), n14e: en('n14'), n15: at('n15'), n15e: en('n15'), n16: at('n16'), n16e: en('n16'), n17: at('n17'), n17e: en('n17'), n18: at('n18'), n18e: en('n18'), n19: at('n19'), n19e: en('n19'), end: tb('end'),
     };
     // the same formulas are in cues.py and score.py
@@ -276,13 +276,12 @@
     T.whistle = T.o04e + 0.18;
     T.knock = T.o08e + 0.72;
     T.swap = T.n07 - 0.18;
-    T.whistle2 = T.n11e + 0.35;                   // the cooker first, as in the first half; then you come to her door
+    T.whistle2 = T.n09e + 0.35;                   // the cooker first, as in the first half; then you come to her door
     T.knock2 = T.whistle2 + 1.25;
     T.leave = T.m02e + 0.7;
     T.bang0 = T.o06e + 0.05; T.bangDs = [1.15, 1.1, 0.5, 0.45]; T.bangE = T.bang0 + T.bangDs.reduce((a, b) => a + b, 0); T.bangR = T.bangE + 0.7;
-    T.hisW = wi('n10', 11); T.inkOn = wi('n10', 1);
     T.R0 = T.n09 - 0.72; T.R1 = T.R0 + 0.7; T.R2 = T.R1 + 2.7;
-    T.yourM = wf('n09', 'your'); T.you = wf('n13', 'you'); T.hours = wf('n14', 'twenty'); T.went = wf('n14', 'you');
+    T.yourM = wf('n07', 'your'); T.proof = wf('n09', 'trying'); T.you = wf('n12', 'you'); T.hours = wf('n14', 'twenty'); T.went = wf('n14', 'you');
     T.im = wf('n17', "i'm"); T.fine = wf('n17', 'fine'); T.tick3 = T.n17e + 0.25; T.nod = T.n14e + 0.62;
     return T;
   }
@@ -355,7 +354,6 @@
     officerCap(g, OFF);
     g.restore();
     heldProps(g, t, TT);
-    if (o.redInk > 0) ringAt(g, PX, PY, 208, 106, o.redInk, RED, 15);
   }
 
   // ------------------------------------------------------------------ her room: a tube light, a shut door, thirty years of certificates
@@ -502,7 +500,7 @@
     return { n, m };
   }
   function fileHeld(g, k, t, TT) {                 // everything in order: thirty years of keeping records
-    if (t < TT.n11 - 0.25) return;
+    if (t < TT.proof - 0.25) return;
     const e = ease(k), d = ease((t - TT.knock2 + 0.05) / 0.4);
     const y = lerp(1092 - (1 - e) * 46, 1218, d), sy = lerp(1, 0.22, d), x = lerp(MX, MX - 8, d);
     g.save(); g.globalAlpha *= d > 0 ? 1 : clamp(e * 2.2); g.translate(x, y); g.rotate(lerp(-0.03, 0, d)); g.scale(1, sy);
@@ -550,18 +548,18 @@
     const turn = Math.max(k1, glance, k2, win(t, TT.whistle2 + 0.1, TT.knock2 - 0.05, 0.1) * 0.7);
     const nod = t > TT.nod && t < TT.nod + 0.55 ? Math.max(0, Math.sin((t - TT.nod) * 11)) * 24 : 0;
     const warned = win(t, TT.o11 + 0.2, TT.o11e - 0.12, 0.14);        // he says it again; she shuts her eyes
-    const hold = win(t, TT.n11 - 0.25, TT.knock2 - 0.05, 0.28);
-    const lookFile = win(t, TT.n11 + 0.1, TT.n11e - 0.28, 0.14), trem = win(t, TT.n11 + 0.6, TT.whistle2 + 0.4, 0.2) * Math.sin(t * 38) * 1.4;
-    const wet = ease((t - TT.n11 - 0.5) / 0.9), tear = ease((t - TT.n11e - 0.4) / 1.3);
+    const hold = win(t, TT.proof - 0.25, TT.knock2 - 0.05, 0.28);
+    const lookFile = win(t, TT.proof + 0.1, TT.n09e - 0.28, 0.14), trem = win(t, TT.proof + 0.6, TT.whistle2 + 0.4, 0.2) * Math.sin(t * 38) * 1.4;
+    const wet = ease((t - TT.proof - 0.5) / 0.9), tear = ease((t - TT.n09e - 0.4) / 1.3);
     const mop = Math.max(talkP(t, 'm01'), talkP(t, 'm02')) * 0.82;
     const smiling = win(t, TT.m01 - 0.3, TT.leave + 0.5, 0.3) * (1 - ease((t - TT.leave - 0.5) / 0.9));
     const brave = win(t, TT.m01 - 0.3, TT.leave + 1.0, 0.3);
     g.save();
-    const ex = o.exag || 1, flickM = win(t, TT.hisW - 0.05, TT.hisW + 0.55, 0.08);
+    const ex = o.exag || 1;
     g.translate(MX + turn * 26 * ex, MY + down * 8 + nod + Math.sin(t * 1.3) * 2.5 + trem);
     g.rotate(turn * 0.05 * ex + down * 0.012); g.scale(MS * (1 - turn * 0.035), MS);
     momHairBack(g, MOM);
-    head(g, MOM, { op: mop, close: Math.max(blinkAt(t, 4.3, 0.7), smiling * 0.22, down * 0.25, warned * 0.95), look: [lerp(0, 17, turn) + flickM * 12, lerp(lerp(5, 13, Math.max(down, lookFile)), -2, turn) - flickM * 8], worry: lerp(o.tired ? 8 : 3, 0, brave), smile: smiling * 0.85, frown: lerp(0.3, 0, smiling) });
+    head(g, MOM, { op: mop, close: Math.max(blinkAt(t, 4.3, 0.7), smiling * 0.22, down * 0.25, warned * 0.95), look: [lerp(0, 17, turn), lerp(lerp(5, 13, Math.max(down, lookFile)), -2, turn)], worry: lerp(o.tired ? 8 : 3, 0, brave), smile: smiling * 0.85, frown: lerp(0.3, 0, smiling) });
     momFront(g, MOM, { tired: o.tired || 0, wet: u0(o) * wet, tear: u0(o) * tear });
     g.restore();
     table(g);
@@ -630,10 +628,7 @@
     return track(t, [
       [TT.n08 - 0.3, 1.6, { s: 1.14, cx: MX + 20, cy: 770 }],
       [TT.R0 + 0.05, 0.6, { s: 2.2, cx: 742, cy: 1330 }],
-      [TT.R2 + 0.05, 0.5, { s: 1.75, cx: 232, cy: 640 }],
-      [TT.n10b - 0.15, 0.5, { s: 1.12, cx: MX + 90, cy: 860 }],
-      [TT.n10b + 0.4, 3.0, { s: 1.3, cx: MX + 70, cy: 800 }],
-      [TT.n11 - 0.2, 0.5, { s: 1.18, cx: MX + 30, cy: 900 }],
+      [TT.proof - 0.2, 0.5, { s: 1.18, cx: MX + 30, cy: 900 }],
       [TT.whistle2 - 0.05, 0.42, VIEW_FULL],
       [TT.n12 - 0.15, 0.5, { s: 2.4, cx: 845, cy: 1060 }],
       [TT.o11 - 0.16, 0.36, { s: 1.22, cx: 580, cy: 780 }],
@@ -714,7 +709,7 @@
     // the buttons come back; both die
     if (t >= TT.n16 + 0.3 && t < TT.n17 + 0.34) pollButtons(g, t, TT.n16 + 0.3, 0, ease((t - TT.n17 + 0.02) / 0.3));
     // who she is
-    if (t >= TT.yourM - 0.05 && t < TT.n09e + 0.3) title(g, 'YOUR MOTHER', 1290, 176, YEL, t, TT.yourM - 0.05, { a: 1 - clamp((t - TT.n09e - 0.08) / 0.2), fit: 840 });
+    if (t >= TT.yourM - 0.05 && t < TT.n08 + 0.35) title(g, 'YOUR MOTHER', 1290, 176, YEL, t, TT.yourM - 0.05, { a: 1 - clamp((t - TT.n08 - 0.1) / 0.2), fit: 840 });
     // who is at the door
     if (t >= TT.you - 0.06 && t < TT.o11 + 0.05) {
       const q = clamp(hit(t, TT.you - 0.06, 'heavy')), a = clamp((t - TT.you + 0.06) * 9) * (1 - clamp((t - TT.o11 + 0.2) / 0.22));
@@ -755,7 +750,6 @@
 
   function frame(g, t) {
     const TT = times(), u = ease((t - TT.swap) / 0.5), s = storyT(t, TT);
-    const redInk = t >= TT.inkOn - 0.05 ? ease((t - TT.inkOn + 0.05) / 0.5) : 0;
     const drain = ease((t - TT.n17e - 0.15) / 1.1);
     g.save();
     if (drain > 0.002) g.filter = `grayscale(${drain.toFixed(3)}) brightness(${(1 - 0.1 * drain).toFixed(3)})`;
@@ -766,11 +760,11 @@
     const kn1 = [TT.knock, TT.knock + 0.235, TT.knock + 0.47], kn2 = [TT.knock2, TT.knock2 + 0.25, TT.knock2 + 0.505];
     const env = (L) => { let a = 0; for (const t0 of L) if (t >= t0) a = Math.max(a, Math.exp(-(t - t0) * 4)); return a; };
     const s1 = shakeAt(t, kn1, 15), s2 = shakeAt(t, kn2, 12), oz = 1 + 0.05 * env(kn1), hz = 1 + 0.045 * env(kn2);
-    const oc = officeCam(t, TT); if (u < 0.999) placeWindow(g, FULL, { s: oc.s * oz, cx: oc.cx - s1[0] / oc.s, cy: oc.cy - s1[1] / oc.s }, (c) => office(c, t, { redInk }));
+    const oc = officeCam(t, TT); if (u < 0.999) placeWindow(g, FULL, { s: oc.s * oz, cx: oc.cx - s1[0] / oc.s, cy: oc.cy - s1[1] / oc.s }, (c) => office(c, t));
     placeWindow(g, hR, { s: hV.s * hz, cx: hV.cx - s2[0] / hV.s, cy: hV.cy - s2[1] / hV.s }, (c) => room(c, t, s, { tired: u, exag: lerp(3.2, 1, u) }), u < 0.5 ? 5 : 0);
     if (u < 0.98) { g.save(); g.globalAlpha *= (1 - u) * 0.16; g.fillStyle = '#16202e'; g.beginPath(); g.roundRect(hR.x, hR.y, hR.w, hR.h, hR.r); g.fill(); g.restore(); }
-    if (pop > 0) { const popB = win(t, TT.inkOn - 0.05, TT.inkOn + 1.1, 0.22), threat = win(t, TT.o11 - 0.22, TT.o11e + 0.1, 0.2), sc = lerp(0.55, 1, popQ) * (1 + 0.42 * popB + 0.5 * threat), cxp = PIP.x + PIP.w / 2 - 42 * popB - 50 * threat, cyp = PIP.y + PIP.h / 2 + 40 * popB + 60 * threat, oR = { x: cxp - PIP.w * sc / 2, y: cyp - PIP.h * sc / 2, w: PIP.w * sc, h: PIP.h * sc, r: PIP.r }; g.save(); g.globalAlpha *= pop; const hv = mixV(him, { s: 0.6, cx: PX + 10, cy: PY + 8 }, popB);
-      placeWindow(g, oR, { s: hv.s * sc, cx: hv.cx, cy: hv.cy }, (c) => office(c, t >= TT.R0 && t < TT.R2 ? s : t, { redInk }), 5); g.restore(); }
+    if (pop > 0) { const threat = win(t, TT.o11 - 0.22, TT.o11e + 0.1, 0.2), sc = lerp(0.55, 1, popQ) * (1 + 0.5 * threat), cxp = PIP.x + PIP.w / 2 - 50 * threat, cyp = PIP.y + PIP.h / 2 + 60 * threat, oR = { x: cxp - PIP.w * sc / 2, y: cyp - PIP.h * sc / 2, w: PIP.w * sc, h: PIP.h * sc, r: PIP.r }; g.save(); g.globalAlpha *= pop; const hv = him;
+      placeWindow(g, oR, { s: hv.s * sc, cx: hv.cx, cy: hv.cy }, (c) => office(c, t >= TT.R0 && t < TT.R2 ? s : t), 5); g.restore(); }
     callBar(g, t, TT);
     g.restore();
     const pulse = t > TT.n17e ? 0.55 + 0.45 * Math.sin((t - TT.n17e) * 4.4) : 0;

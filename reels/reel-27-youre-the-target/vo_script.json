@@ -1,20 +1,11 @@
 {
- "note": "Reel 27: You're the Target. Episode 5 of 'You're the test subject'. The narrator is the series voice (af_heart). The officer (o01-o09, o11) and the mother (m01, m02) are cast and placed from the cast reads (Kokoro is deterministic, so a cast read is take t1). Script 6, the back half rewritten after the user's note on cut 4. o11 is o08 again, placed from the same read. m01h and m02h are the mother's line in Hindi (text = romanised for the scorer, text_kokoro = Devanagari), only for an A/B the user may ask for. Facts and wording: docs/research.md. Read audio/vo_lab/takes/phonemes.md after every run.",
+ "note": "Reel 27: You're the Target. Episode 5 of 'You're the test subject'. The narrator is the series voice (af_heart). The officer (o01-o09, o11) and the mother (m01, m02) are placed from the cast reads (Kokoro is deterministic, so a cast read is take t1); o11 is o08 again, from the same read. Script 6: the back half rewritten after the user's note on cut 4, then a fresh read. x01 is the one word through the door. cast_lines_earlier: what the earlier cast runs read. m01h and m02h are the mother's line in Hindi, only for an A/B the user may ask for. Facts and wording: docs/research.md. Read audio/vo_lab/takes/phonemes.md after every run.",
  "voice": "af_heart",
  "speed": 1.0,
  "ref_text": "The night was cold and very quiet. Most of the street was asleep, and the lamps hummed over the empty road. Somewhere far away, a train rolled past, and then the silence came back.",
  "cast_lines": [
-  "o01",
-  "o02",
-  "o03",
-  "o05",
-  "o06",
-  "o08",
-  "o09",
-  "m01",
-  "m02",
-  "m01h",
-  "m02h"
+  "x01",
+  "x02"
  ],
  "cast": [
   {
@@ -94,6 +85,36 @@
    "engine": "kokoro",
    "voice": "hf_beta",
    "speed": 1.0
+  },
+  {
+   "id": "x-river",
+   "engine": "kokoro",
+   "voice": "af_river",
+   "speed": 1.0
+  },
+  {
+   "id": "x-alloy",
+   "engine": "kokoro",
+   "voice": "af_alloy",
+   "speed": 1.0
+  },
+  {
+   "id": "x-puck",
+   "engine": "kokoro",
+   "voice": "am_puck",
+   "speed": 1.0
+  },
+  {
+   "id": "x-echo",
+   "engine": "kokoro",
+   "voice": "am_echo",
+   "speed": 1.0
+  },
+  {
+   "id": "x-psi",
+   "engine": "kokoro",
+   "voice": "hm_psi",
+   "speed": 1.0
   }
  ],
  "take": [
@@ -159,7 +180,7 @@
   },
   {
    "id": "n07",
-   "text": "Nobody told her."
+   "text": "Nobody told your mother."
   },
   {
    "id": "n08",
@@ -167,23 +188,15 @@
   },
   {
    "id": "n09",
-   "text": "While you hunted for mistakes, your mother took off her bangles."
+   "text": "While you hunted for mistakes, she took off her gold bangles, trying to prove she'd done nothing wrong."
   },
   {
-   "id": "n10",
-   "text": "She corrected spelling for thirty years, and she never looked at his badge."
-  },
-  {
-   "id": "n11",
-   "text": "She was too busy proving she'd done nothing wrong."
+   "id": "x01",
+   "text": "Ma?"
   },
   {
    "id": "n12",
-   "text": "That's not his team."
-  },
-  {
-   "id": "n13",
-   "text": "That's you, asking if she's okay."
+   "text": "That's not his team, that's you, asking if she's okay."
   },
   {
    "id": "o11",
@@ -204,7 +217,7 @@
   },
   {
    "id": "n15",
-   "text": "The third mistake on this call was yours."
+   "text": "The third mistake is yours."
   },
   {
    "id": "n16",
@@ -212,7 +225,7 @@
   },
   {
    "id": "n17",
-   "text": "But you fell for \"I'm fine.\""
+   "text": "But you'd fall for \"I'm fine.\""
   },
   {
    "id": "n18",
@@ -223,6 +236,14 @@
    "text": "Has anybody told her?"
   },
   {
+   "id": "n17b",
+   "text": "But you'd fall for, I'm fine."
+  },
+  {
+   "id": "x02",
+   "text": "Mummy?"
+  },
+  {
    "id": "m01h",
    "text": "Main theek hoon, beta.",
    "text_kokoro": "मैं ठीक हूँ, बेटा।"
@@ -231,10 +252,19 @@
    "id": "m02h",
    "text": "Tu kha le.",
    "text_kokoro": "तू खा ले।"
-  },
-  {
-   "id": "n17b",
-   "text": "But you fell for, I'm fine."
   }
+ ],
+ "cast_lines_earlier": [
+  "o01",
+  "o02",
+  "o03",
+  "o05",
+  "o06",
+  "o08",
+  "o09",
+  "m01",
+  "m02",
+  "m01h",
+  "m02h"
  ]
 }
