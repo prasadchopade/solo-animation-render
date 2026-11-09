@@ -10,7 +10,7 @@
   },
   {
    "id": "n02",
-   "text": "Flats are being robbed on this street, so ask this delivery man his name."
+   "text": "Flats on this street are being robbed, so ask this delivery man his name."
   },
   {
    "id": "a01",
@@ -33,16 +33,13 @@
    "text": "Here it is, sir."
   },
   {
-   "id": "c01b",
-   "text": "See, sir."
-  },
-  {
    "id": "n05",
    "text": "Does the label match your register?"
   },
   {
    "id": "n06",
-   "text": "It doesn't. Good catch."
+   "text": "It doesn't. Good catch.",
+   "text_kokoro": "It doesn't. Good [catch](/kˈæʧ/)."
   },
   {
    "id": "d01",
@@ -58,7 +55,7 @@
   },
   {
    "id": "n09",
-   "text": "Police have four men in that jacket, but your register says one came, so point at him."
+   "text": "Police have four men in that jacket, but your register says one came, so point him out."
   },
   {
    "id": "n10",
@@ -103,32 +100,13 @@
   "a01",
   "b01",
   "c01",
-  "c01b",
   "d01"
  ],
  "cast": [
   {
-   "id": "s-omega",
-   "engine": "kokoro",
-   "voice": "hm_omega",
-   "speed": 1.0
-  },
-  {
-   "id": "s-psi",
-   "engine": "kokoro",
-   "voice": "hm_psi",
-   "speed": 1.0
-  },
-  {
    "id": "s-michael",
    "engine": "kokoro",
    "voice": "am_michael",
-   "speed": 1.0
-  },
-  {
-   "id": "s-adam",
-   "engine": "kokoro",
-   "voice": "am_adam",
    "speed": 1.0
   }
  ],
