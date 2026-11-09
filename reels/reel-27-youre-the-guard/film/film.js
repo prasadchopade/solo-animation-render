@@ -69,13 +69,13 @@
     }
     const w = lerp(36, 92, sstep(0, 0.35, op)) - 13 * sstep(0.6, 1, op), top = 3 + 70 * Math.pow(op, 1.1), bot = 3 + 128 * Math.pow(op, 1.15);
     const shape = () => { g.beginPath(); g.moveTo(-w, cy); g.bezierCurveTo(-w * 0.74, cy - top * 1.33, w * 0.74, cy - top * 1.33, w, cy); g.bezierCurveTo(w * 0.88, cy + bot * 1.3, -w * 0.88, cy + bot * 1.3, -w, cy); g.closePath(); };
-    g.save(); shape(); g.fillStyle = lg(g, 0, cy - top, 0, cy + bot, [0, '#7c1d27'], [0.45, '#4a0d16'], [1, '#2a060c']); g.fill(); shape(); g.clip();
+    g.save(); shape(); g.fillStyle = lg(g, 0, cy - top, 0, cy + bot, [0, '#4a1f1a'], [0.45, '#2c0f0d'], [1, '#180706']); g.fill(); shape(); g.clip();
     const tongueY = cy + bot * 0.82, trx = w * 0.72, try_ = bot * 0.38;
-    ell(g, 0, tongueY, trx, try_); g.fillStyle = lg(g, 0, tongueY - try_, 0, tongueY + try_, [0, '#ea7b82'], [1, '#b13b4a']); g.fill();
+    ell(g, 0, tongueY, trx, try_); g.fillStyle = lg(g, 0, tongueY - try_, 0, tongueY + try_, [0, '#a65a52'], [1, '#7d3b35']); g.fill();
     const tb1 = Math.min(1, op * 2.6), hT = 26 * tb1, cyT = cy - top;
     g.fillStyle = '#f7f2e4'; ell(g, 0, cyT, w * 0.8, hT); g.fill();
     g.restore();
-    shape(); g.strokeStyle = lip; g.lineWidth = lerp(4.5, 11, sstep(0, 0.7, op)); g.lineJoin = 'round'; g.stroke();
+    shape(); g.strokeStyle = lip; g.lineWidth = lerp(4, 7.5, sstep(0, 0.7, op)); g.lineJoin = 'round'; g.stroke();
   }
   function eye(g, side, cx, cy, close, o = {}) {
     const w = o.ew ?? 45, h = o.eh ?? 25, look = o.look || [0, 0], lid = o.lidC || '#231510';
@@ -105,7 +105,7 @@
   const TEALCAP = { capC: ['#22b5ad', '#0f7f79', '#0b625e'] };
   const MEN = [
     { ...TEALCAP, skin: '#c58c65', skinD: '#9b6545', skinH: '#deb089', hair: '#17110d', style: 'cap', must: 'thin', mt: 9, mw: 42, stub: 0, brow: 9, browTilt: 0, jaw: 0.9, ew: 48, eh: 27, nose: 0.88, dy: -6 },
-    { ...TEALCAP, skin: '#c18861', skinD: '#976142', skinH: '#daac85', hair: '#17110d', style: 'cap', must: 'thin', mt: 14, mw: 52, stub: 0.15, brow: 13, browTilt: 2, jaw: 0.97, ew: 45, eh: 24, nose: 1.02, dy: -2 },
+    { ...TEALCAP, skin: '#c18861', skinD: '#976142', skinH: '#daac85', hair: '#17110d', style: 'cap', must: 'thin', mt: 16, mw: 54, stub: 0.2, brow: 14.5, browTilt: 2, jaw: 0.98, ew: 45, eh: 24, nose: 1.05, dy: -2 },
     { ...TEALCAP, skin: '#bd845e', skinD: '#935f3f', skinH: '#d6a681', hair: '#15100c', style: 'cap', must: 'thin', mt: 19, mw: 58, stub: 0.35, brow: 16, browTilt: 3, jaw: 1.03, ew: 43, eh: 22, nose: 1.16, dy: 3 },
     { ...TEALCAP, skin: '#b98060', skinD: '#8f5c3e', skinH: '#d2a27e', hair: '#120d0a', style: 'cap', must: 'thick', mt: 26, mw: 66, stub: 0.55, brow: 18, browTilt: 4, jaw: 1.1, ew: 40, eh: 20, nose: 1.28, age: 1, dy: 8 },
   ];
@@ -134,7 +134,7 @@
     if (L.bindi && !o.blank) { ell(g, 0, -92, 10, 10); g.fillStyle = '#9a1f2c'; g.fill(); }
     if (!o.blank) {
       const my = 118 + drop * 0.2;
-      mouth(g, my, op, { lip: L.lip || '#83503f', w0: o.w0 ?? 44, frown: o.frown ?? 0, smile: o.smile ?? 0 });
+      mouth(g, my, op, { lip: L.lip || '#6a4030', w0: o.w0 ?? 44, frown: o.frown ?? 0, smile: o.smile ?? 0 });
       if (L.must) {
         const big = L.must === 'thick', th = L.mt ?? (big ? 24 : 13), w = L.mw ?? (big ? 62 : 52);
         g.fillStyle = L.hair; g.beginPath(); g.moveTo(0, 74); g.bezierCurveTo(-18, 66, -w * 0.72, 70, -w, my - 10 + (big ? 4 : 0)); g.bezierCurveTo(-w * 0.7, 74 + th, -24, 76 + th, 0, 84 + th * 0.3); g.bezierCurveTo(24, 76 + th, w * 0.7, 74 + th, w, my - 10 + (big ? 4 : 0)); g.bezierCurveTo(w * 0.72, 70, 18, 66, 0, 74); g.closePath(); g.fill();
@@ -179,7 +179,7 @@
     g.strokeStyle = 'rgba(0,0,0,0.22)'; g.lineWidth = 6; g.beginPath(); g.moveTo(-60, by + 150); g.lineTo(-40, by + 1200); g.moveTo(60, by + 150); g.lineTo(40, by + 1200); g.stroke();
     g.fillStyle = '#d7dde3'; for (const k of [-1, 1]) { g.save(); g.translate(k * 208, by + 340); g.rotate(k * 0.06); R(g, -80, -15, 160, 30, 6); g.fill(); g.restore(); }
     g.fillStyle = jc[1]; for (const k of [-1, 1]) { g.beginPath(); g.moveTo(k * 96, by + 92); g.lineTo(k * 176, by + 70); g.lineTo(k * 150, by + 160); g.closePath(); g.fill(); }
-    if (o.patch !== false) { g.save(); g.translate(168, by + 178); g.rotate(0.05); R(g, -66, -30, 132, 60, 7); g.fillStyle = '#f6f4ec'; g.fill(); txt(g, 'DELIVERY', 0, 12, 30, '#0b625e', { align: 'center', fit: 116 }); g.restore(); }
+    if (o.patch !== false) { g.save(); g.translate(196, by + 176); g.rotate(0.05); R(g, -112, -48, 224, 96, 10); g.fillStyle = '#f6f4ec'; g.fill(); txt(g, 'DELIVERY', 0, 19, 54, '#0b625e', { align: 'center', fit: 204 }); g.restore(); }
     const nw = 70;
     g.fillStyle = lg(g, -80, 0, 80, 0, [0, L.skinD], [0.55, L.skin], [1, L.skinD]);
     g.beginPath(); g.moveTo(-nw, 120); g.lineTo(-nw - 8, by + 110); g.quadraticCurveTo(0, by + 200, nw + 8, by + 110); g.lineTo(nw, 120); g.closePath(); g.fill();
@@ -238,6 +238,12 @@
     for (let i = 0; i < 4; i++) { g.fillStyle = '#2d8559'; g.fillRect(44 + i * 32, 300, 12, 1100); }
     g.fillStyle = '#efe7d4'; R(g, 12, 520, 158, 96, 6); g.fill(); g.strokeStyle = 'rgba(0,0,0,0.3)'; g.lineWidth = 3; g.stroke();
     txt(g, 'SHANTI', 91, 566, 42, '#2f4f3a', { align: 'center', fit: 138 }); txt(g, 'SOCIETY', 91, 604, 36, '#2f4f3a', { align: 'center', fit: 138 });
+    // the society's CCTV camera: dead, its wire hanging, a card on it
+    g.fillStyle = '#3a3d44'; R(g, 40, 444, 96, 50, 8); g.fill();
+    g.fillStyle = '#22242a'; ell(g, 138, 468, 24, 22); g.fill();
+    g.strokeStyle = '#d8dde3'; g.lineWidth = 3; g.beginPath(); g.moveTo(128, 456); g.lineTo(146, 470); g.lineTo(134, 486); g.stroke();
+    g.strokeStyle = '#15161a'; g.lineWidth = 4; g.beginPath(); g.moveTo(58, 494); g.quadraticCurveTo(44, 512, 56, 518); g.stroke();
+    g.fillStyle = '#fff3cf'; R(g, 16, 404, 150, 34, 4); g.fill(); txt(g, 'OUT OF ORDER', 91, 430, 27, '#a11a1a', { align: 'center', fit: 138 });
     ST = { bg };
   }
   function glass(g, x, y, s, rot, a = 1) {
@@ -255,7 +261,7 @@
     g.save(); g.translate(x, y); g.rotate(rot); g.scale(s, s);
     g.fillStyle = lg(g, 110, 110, 520, 720, [0, '#cf9670'], [1, '#9a6444']);
     g.beginPath(); g.moveTo(92, 110); g.bezierCurveTo(100, 66, 190, 40, 226, 84); g.lineTo(660, 680); g.lineTo(340, 860); g.closePath(); g.fill();
-    g.fillStyle = lg(g, 300, 400, 660, 860, [0, '#34466e'], [1, '#1f2c4a']); g.beginPath(); g.moveTo(300, 420); g.lineTo(470, 300); g.lineTo(760, 720); g.lineTo(500, 940); g.closePath(); g.fill();
+    g.fillStyle = lg(g, 300, 400, 660, 860, [0, '#34466e'], [1, '#1f2c4a']); g.beginPath(); g.moveTo(300, 420); g.lineTo(470, 300); g.lineTo(1400, 1620); g.lineTo(1120, 1800); g.closePath(); g.fill();
     g.fillStyle = lg(g, -130, -40, 110, 110, [0, '#c98e68'], [1, '#a9744f']);
     for (let i = 0; i < 4; i++) { R(g, -122 + i * 4, -48 + i * 42, 240, 38, 19); g.fill(); }
     ell(g, 128, 34, 84, 104); g.fillStyle = lg(g, 60, -60, 200, 130, [0, '#dba67f'], [1, '#b47c58']); g.fill();
@@ -274,7 +280,8 @@
   // your right hand and the pen: (x, y) is the nib
   function penHand(g, x, y, s = 1, rot = 0) {
     g.save(); g.translate(x, y); g.rotate(rot); g.scale(s, s);
-    g.fillStyle = lg(g, 300, 330, 700, 900, [0, '#34466e'], [1, '#1f2c4a']); g.beginPath(); g.moveTo(230, 300); g.lineTo(410, 180); g.lineTo(820, 840); g.lineTo(560, 1010); g.closePath(); g.fill();
+    g.fillStyle = lg(g, 300, 330, 700, 900, [0, '#34466e'], [1, '#1f2c4a']); g.beginPath(); g.moveTo(230, 300); g.lineTo(410, 180); g.lineTo(1300, 1620); g.lineTo(1040, 1790); g.closePath(); g.fill();
+    g.save(); g.translate(372, 362); g.rotate(1.075); txt(g, 'SECURITY', 0, 0, 56, '#e7e3d6', { align: 'center' }); g.restore();
     g.fillStyle = lg(g, 100, 90, 420, 380, [0, '#d7a27c'], [1, '#a9744f']); g.beginPath(); g.moveTo(70, 118); g.bezierCurveTo(120, 40, 280, 40, 350, 120); g.lineTo(430, 250); g.lineTo(250, 340); g.bezierCurveTo(150, 290, 80, 200, 70, 118); g.closePath(); g.fill();
     g.strokeStyle = lg(g, 0, 0, 190, -190, [0, '#20262f'], [0.12, '#2e3f8c'], [1, '#27357a']); g.lineWidth = 22; g.lineCap = 'round'; g.beginPath(); g.moveTo(10, -10); g.lineTo(232, -214); g.stroke();
     g.strokeStyle = '#8f949b'; g.lineWidth = 9; g.beginPath(); g.moveTo(2, -2); g.lineTo(26, -24); g.stroke();
@@ -452,6 +459,15 @@
     return go >= 1 ? [] : [{ i: 3, x: lerp(MX, 1640, go), go }];
   }
 
+  function hand(g, x, y, L) {
+    ell(g, x, y, 42, 36); g.fillStyle = L.skin; g.fill();
+    g.strokeStyle = 'rgba(70,35,20,0.42)'; g.lineWidth = 4; g.lineCap = 'round';
+    for (let i = -1; i <= 1; i++) { g.beginPath(); g.moveTo(x - 30, y + i * 15); g.lineTo(x + 30, y + i * 15); g.stroke(); }
+  }
+  function heldBox(g, x, y, L) {
+    box(g, x, y, 0.9, { label: true, rot: 0.02 });
+    for (const k of [-1, 1]) hand(g, x + k * 138, y + 14, L);
+  }
   // an autorickshaw going by behind him, in the first seconds, so the street's alive
   function auto(g, t) {
     const u = (t - 1.1) / 2.5; if (u < 0 || u > 1) return;
@@ -480,12 +496,13 @@
       const idleX = 5 * Math.sin(t * 1.3 + m.i), idleY = 3 * Math.sin(t * 1.9 + m.i * 2);
       const look = m.i === 2 && t > TT.c01 - 0.1 && t < TT.c01e + 0.2 ? [0, 9] : m.i === 0 && t > 1.35 && t < 2.35 ? [-15, 1] : [0, 2];
       seated(g, L, m.x + idleX, MY + idleY, MS, { op: talking, look, close: blinkAt(t, 2.7 + m.i * 0.35, 0.7 + m.i * 0.9), smile: 0.32, roll: 0.012 * Math.sin(t * 1.1 + m.i) });
+      if (m.i <= 2 && t < TT.c01e - 0.05) heldBox(g, m.x + idleX - 60, MY + idleY + 342, L);
     }
     const pcl = parcelState(t);
     if (pcl.onChest > 0) {
-      const px = lerp(MX + 10 + (pcl.track ?? 0) * 1170, pcl.x, pcl.down), py = lerp(MY + 340, pcl.y, pcl.down);
-      if (pcl.hands) { for (const k of [-1, 1]) { ell(g, px + k * 150, py + 10, 44, 34); g.fillStyle = MEN[pcl.who].skin; g.fill(); } }
-      box(g, px, py, 0.9, { label: pcl.down > 0.5, hi: pcl.hi, circle: pcl.circle });
+      const px = lerp(MX - 60 + (pcl.track ?? 0) * 1170, pcl.x, pcl.down), py = lerp(MY + 342, pcl.y, pcl.down);
+      box(g, px, py, 0.9, { label: true, rot: 0.02, hi: pcl.hi, circle: pcl.circle });
+      if (pcl.hands) { for (const k of [-1, 1]) hand(g, px + k * 138, py + 14, MEN[pcl.who]); }
     }
     desk(g);
     notice(g, 800, 1456);
@@ -498,9 +515,9 @@
     const lift = sstep(TT.n07 - 0.05, TT.n07 + 0.5, t);
     if (lift <= 0) { glass(g, 974, 1432, 0.6, 0); steam(g, 974, 1370, t, 0.55); }
     if (!o.noHand) {
-      const [nx, ny] = w.cur === 'flat' ? nib.b : w.cur === 'name' ? nib.a : pcl.onDesk ? [790, 2360] : [740, 1790];
+      const [nx, ny] = w.cur === 'flat' ? nib.b : w.cur === 'name' ? nib.a : pcl.onDesk ? [790, 2360] : [610, 1530];
       const off = lerp(0, 1100, sstep(TT.n06e + 0.1, TT.n07, t));
-      penHand(g, nx, ny + off, 0.86, 0);
+      penHand(g, nx, ny + off, 0.86, w.cur ? 0 : 0.35);
       if (lift > 0) { const k = sstep(0, 1, lift); chaiHand(g, 880, lerp(1740, 1505, k), 0.92, -0.04); steam(g, 874, lerp(1610, 1375, k), t, 0.6); }
     }
     g.restore();
@@ -515,9 +532,7 @@
     const TT = times(), t0 = TT.c01e - 0.05, t1 = TT.c01e + 0.42, back = TT.d01e - 0.3;
     const hi = sstep(TT.n05 - 0.05, TT.n05 + 0.25, t) * (1 - sstep(TT.n06e + 0.1, TT.n06e + 0.4, t));
     const circle = sstep(TT.n05e + 0.55, TT.n05e + 0.95, t);
-    const showFrom = TT.downs[1][1] - 0.5;
-    if (t < showFrom) return { onChest: 0, onDesk: false, hi, circle };
-    if (t < t0) return { onChest: 1, down: 0, who: 2, hands: true, x: PARCEL_DESK[0], y: PARCEL_DESK[1], hi, circle };
+    if (t < t0) return { onChest: 0, onDesk: false, hi, circle };
     if (t < t1) return { onChest: 1, down: sstep(t0, t1, t), who: 2, hands: true, x: PARCEL_DESK[0], y: PARCEL_DESK[1], hi, circle };
     if (t < back) return { onChest: 0, onDesk: true, hi, circle };
     const go = sstep(TT.d01e + 0.08, TT.d01e + 0.9, t), u = 1 - sstep(back, back + 0.4, t);
@@ -649,7 +664,7 @@
     g.beginPath(); g.moveTo(-360, 900); g.lineTo(-340, 330); g.bezierCurveTo(-320, 190, -190, 150, -90, 130); g.lineTo(90, 130); g.bezierCurveTo(190, 150, 320, 190, 340, 330); g.lineTo(360, 900); g.closePath(); g.fill();
     g.strokeStyle = 'rgba(0,0,0,0.2)'; g.lineWidth = 6; g.beginPath(); g.moveTo(0, 170); g.lineTo(0, 900); g.stroke();
     for (const k of [-1, 1]) { R(g, k * 240 - 70, 196, 140, 34, 5); g.fillStyle = '#1a2542'; g.fill(); }
-    txt(g, 'SECURITY', 0, 470, 118, '#e7e3d6', { align: 'center' });
+    txt(g, 'SECURITY', 0, 300, 118, '#e7e3d6', { align: 'center' });
     const hy = -40 + 118 * down;
     g.fillStyle = '#a06f4a'; R(g, -60, 40 + 60 * down, 120, 130 - 60 * down, 30); g.fill();
     ell(g, 0, hy, 150, 180 - 40 * down); g.fillStyle = '#17110d'; g.fill();
@@ -660,7 +675,7 @@
   function shotReplay(g, t) {
     const TT = times();
     if (!ST) makeStreet();
-    g.drawImage(ST.bg, 0, 0); seller(g, t);
+    g.drawImage(ST.bg, 0, 0);
     // the wicket in the gate stands open
     g.fillStyle = lg(g, 0, 520, 0, 1250, [0, '#f6eacf'], [1, '#d9c7a0']); g.fillRect(14, 500, 152, 760);
     g.fillStyle = '#2a7c52'; g.beginPath(); g.moveTo(166, 500); g.lineTo(214, 454); g.lineTo(214, 1300); g.lineTo(166, 1260); g.closePath(); g.fill();
@@ -680,6 +695,7 @@
     for (const i of [3, 2, 1, 0]) { const [x, y, s] = pos[i]; if (x < -220 || x > 1420) continue; man(i, x, y, s, Math.sin(t * 14 + i) * 3); }
     g.fillStyle = lg(g, 0, 1240, 0, 1920, [0, '#9c6c3d'], [1, '#5a3a1f']); g.beginPath(); g.moveTo(-20, 1282); g.lineTo(1100, 1262); g.lineTo(1100, 1960); g.lineTo(-20, 1960); g.closePath(); g.fill();
     g.fillStyle = 'rgba(255,240,210,0.3)'; g.fillRect(0, 1262, W, 8);
+    bookPage(g, 130, 1296, 250, 110, false);
     guardBack(g, 513, 1500, 0.92, down);
     g.fillStyle = 'rgba(14,14,16,0.78)'; R(g, 92, 286, 500, 70, 12); g.fill();
     g.fillStyle = '#ff3a26'; for (const k of [0, 1]) { g.beginPath(); g.moveTo(140 + k * 34, 300); g.lineTo(140 + k * 34, 342); g.lineTo(110 + k * 34, 321); g.closePath(); g.fill(); }
@@ -692,6 +708,8 @@
     g.save(); g.translate(x, y + Math.sin(t * 9 + ph) * 6 * s); g.scale(s, s);
     g.fillStyle = 'rgba(0,0,0,0.2)'; ell(g, 0, 556, 130, 18); g.fill();
     R(g, -74, 300, 62, 250, 26); g.fillStyle = '#34495e'; g.fill(); R(g, 12, 300, 62, 250, 26); g.fill();
+    g.fillStyle = '#128b83'; R(g, -222, -16, 64, 320, 30); g.fill(); R(g, 158, -16, 64, 320, 30); g.fill();
+    g.fillStyle = '#a06f4a'; ell(g, -190, 306, 28, 34); g.fill(); ell(g, 190, 306, 28, 34); g.fill();
     g.fillStyle = lg(g, -180, 0, 180, 340, [0, '#21b3ab'], [1, '#0e8079']); R(g, -176, -40, 352, 372, 72); g.fill();
     g.fillStyle = '#d7dde3'; R(g, -122, 130, 244, 34, 6); g.fill();
     g.fillStyle = '#a06f4a'; R(g, -48, -116, 96, 90, 26); g.fill();
@@ -702,7 +720,7 @@
   function shotHome(g, t) {
     const TT = times();
     if (!ST) makeStreet();
-    g.drawImage(ST.bg, 0, 0); seller(g, t);
+    g.drawImage(ST.bg, 0, 0);
     const u = sstep(TT.n14 - 0.08, TT.n14e + 0.4, t);
     const s0 = lerp(1.05, 0.62, u), yy = lerp(1120, 1010, u);
     const f4 = sstep(TT.none - 0.1, TT.none + 0.45, t);
@@ -715,6 +733,18 @@
   }
 
   // ------------------------------------------------------------------ 6 · the real thing: a door, and a man in a hard hat. Then a jacket.
+  function womanBack(g, x, y, s) {                 // a woman seen from behind (reel 25's), the one the man is talking to
+    g.save(); g.translate(x, y); g.scale(s, s);
+    g.fillStyle = 'rgba(30,20,12,0.26)'; ell(g, 0, 756, 150, 22); g.fill();
+    const arm = (k, a) => { g.save(); g.translate(k * 108, 96); g.rotate(a); g.fillStyle = lg(g, -26, 0, 26, 180, [0, '#f4c430'], [1, '#d99a1a']); R(g, -27, -6, 54, 186, 26); g.fill(); g.fillStyle = '#c98e68'; R(g, -21, 170, 42, 120, 20); g.fill(); ell(g, 0, 296, 24, 30); g.fill(); g.restore(); };
+    arm(-1, 0.42); arm(1, -0.1);
+    g.fillStyle = lg(g, -130, 40, 130, 520, [0, '#f4c430'], [1, '#d99a1a']); g.beginPath(); g.moveTo(-108, 70); g.bezierCurveTo(-130, 200, -118, 380, -128, 520); g.lineTo(128, 520); g.bezierCurveTo(118, 380, 130, 200, 108, 70); g.quadraticCurveTo(0, 40, -108, 70); g.closePath(); g.fill();
+    g.fillStyle = lg(g, -130, 40, 40, 400, [0, '#e0457b'], [1, '#b12a5e']); g.beginPath(); g.moveTo(-108, 66); g.quadraticCurveTo(-30, 50, 40, 70); g.lineTo(-60, 380); g.lineTo(-136, 340); g.closePath(); g.fill();
+    ell(g, 0, 8, 62, 74); g.fillStyle = '#17100c'; g.fill();
+    g.fillStyle = '#c98e68'; R(g, -26, 56, 52, 30, 10); g.fill();
+    g.fillStyle = '#17100c'; for (let i = 0; i < 7; i++) { ell(g, Math.sin(i * 0.9) * 5, 70 + i * 40, 20 - i * 1.2, 22); g.fill(); }
+    g.restore();
+  }
   function shotStudy(g, t) {
     const TT = times();
     if (!ST) makeStreet();
@@ -743,8 +773,9 @@
       g.fillStyle = lg(g, x, 0, x + 720, 0, [0, '#8f6236'], [1, '#6e4726']); g.fillRect(x, 300, 720, 1700);
       g.strokeStyle = 'rgba(0,0,0,0.28)'; g.lineWidth = 10; R(g, x + 90, 420, 540, 500, 12); g.stroke(); R(g, x + 90, 1000, 540, 700, 12); g.stroke();
       ell(g, x + 660, 1020, 26, 26); g.fillStyle = '#d8c078'; g.fill();
-      for (const hy of [1040, 1290]) { ell(g, x + 8, hy, 44, 36); g.fillStyle = '#b98460'; g.fill(); ell(g, x + 712, hy, 44, 36); g.fill(); }
+      for (const hy of [1040, 1290]) { hand(g, x + 8, hy, { skin: '#b98460' }); hand(g, x + 712, hy, { skin: '#b98460' }); }
     }
+    if (t < TT.n16 + 0.1) { g.save(); g.globalAlpha = 1 - jack; womanBack(g, 196, 1270, 0.84); g.restore(); }
     if (t >= TT.n15 - 0.05 && t < TT.n16 - 0.08) txt(g, 'SIMONS & LEVIN, 1998', 513, 400, 58, '#3b382f', { kind: 'semi', align: 'center', a: clamp((t - TT.n15) * 4), stroke: 'rgba(255,250,240,0.8)', sw: 0.1 });
     if (t >= TT.aren - 0.05 && t < TT.you - 0.05) { title(g, 'NOT DELIVERY MEN', 400, 124, YEL, t, TT.aren - 0.05); }
     if (t >= TT.you - 0.05) { title(g, 'YOU JUST', 360, 120, CREAM, t, TT.you - 0.05); title(g, 'SAW A JACKET.', 510, 160, YEL, t, TT.jack - 0.05); }
@@ -759,7 +790,7 @@
     g.save(); g.translate(500, 800); g.scale(z, z); g.translate(-500, -800);
     bookPage(g, 80, 340, 880, 1100);
     txt(g, 'NAME', 150, 560, 60, '#6d6452', { kind: 'semi' });
-    g.fillStyle = `rgba(255,218,60,${0.7 * sstep(TT.ravi - 0.1, TT.ravi + 0.15, t)})`; R(g, 300, 590, 560, 230, 20); g.fill();
+    g.fillStyle = `rgba(255,218,60,${0.7 * sstep(TT.ravi - 0.1, TT.ravi + 0.15, t)})`; R(g, 300, 590, 640, 230, 20); g.fill();
     writeOn(g, 'RAVI', 340, 790, 190, 1, BLUEINK, 18);
     txt(g, 'FLAT', 150, 960, 60, '#6d6452', { kind: 'semi' });
     writeOn(g, '302', 340, 1180, 170, 1, BLUEINK, 16);
