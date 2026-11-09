@@ -519,9 +519,20 @@
       g.restore();
     });
   }
+  // the tilt is the only fast move in the film: while your head moves, the frame is the average of a few moments inside it (it would strobe otherwise)
+  let SCR = null;
   function shotGate(g, t) {
     const TT = times();
-    gateSet(g, t);
+    if (Math.abs(tilt(t + 1 / 30) - tilt(t)) > 0.012) {
+      if (!SCR) SCR = offscreen(W, H);
+      const q = SCR.getContext('2d'), n = 6;
+      for (let i = 0; i < n; i++) {
+        q.setTransform(1, 0, 0, 1, 0, 0); q.globalAlpha = 1; q.clearRect(0, 0, W, H);
+        gateSet(q, t + (i / n) * (0.6 / 30));
+        g.globalAlpha = 1 / (i + 1); g.drawImage(SCR, 0, 0);
+      }
+      g.globalAlpha = 1;
+    } else gateSet(g, t);
     const out = sstep(TT.n01e - 0.05, TT.n01e + 0.15, t);
     if (out < 1) {
       g.save(); g.globalAlpha = 1 - out;
