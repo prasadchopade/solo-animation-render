@@ -515,9 +515,9 @@
     const lift = sstep(TT.n07 - 0.05, TT.n07 + 0.5, t);
     if (lift <= 0) { glass(g, 974, 1432, 0.6, 0); steam(g, 974, 1370, t, 0.55); }
     if (!o.noHand) {
-      const [nx, ny] = w.cur === 'flat' ? nib.b : w.cur === 'name' ? nib.a : pcl.onDesk ? [790, 2360] : [610, 1530];
+      const [nx, ny] = w.cur === 'flat' ? nib.b : w.cur === 'name' ? nib.a : pcl.onDesk ? [790, 2360] : [560, 1590];
       const off = lerp(0, 1100, sstep(TT.n06e + 0.1, TT.n07, t));
-      penHand(g, nx, ny + off, 0.86, w.cur ? 0 : 0.35);
+      penHand(g, nx, ny + off, 0.86, w.cur || pcl.onDesk ? 0 : 0.55);
       if (lift > 0) { const k = sstep(0, 1, lift); chaiHand(g, 880, lerp(1740, 1505, k), 0.92, -0.04); steam(g, 874, lerp(1610, 1375, k), t, 0.6); }
     }
     g.restore();

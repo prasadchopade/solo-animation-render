@@ -1,7 +1,7 @@
 {
   "note": "Single source of truth for picture + sound, in BEATS (120 bpm: beat = 0.5 s). film.js reads marks via film/data.js; sync.mjs turns sfx into cues.json; score.py reads marks for the music; vo.json places the narration. Every reel ends with the Root Cause end card: 'end' → 'done' = 3.0 s (6 beats), engine/endcard.",
   "title": "You're the Guard",
-  "duration": 66.5,
+  "duration": 66.75,
   "fps": 30,
   "bpm": 120,
   "formats": [
@@ -24,8 +24,8 @@
   },
   "marks": {
     "hook": 0,
-    "end": 127.0,
-    "done": 133.0
+    "end": 127.5,
+    "done": 133.5
   },
   "sfx": [
     {
@@ -187,69 +187,69 @@
       "pitch": 0.62
     },
     {
-      "at": 81.84,
+      "at": 81.89,
       "type": "rewind",
       "gain": 0.3,
       "what": "the tape back to the gate (in the gap)",
       "len": 0.3
     },
     {
-      "at": 83.505,
+      "at": 83.5683,
       "type": "tick",
       "gain": 0.22,
       "what": "INSIDE: 1 (above 4.5 kHz)",
       "pitch": 1.25
     },
     {
-      "at": 85.795,
+      "at": 85.885,
       "type": "tick",
       "gain": 0.22,
       "what": "INSIDE: 2 (above 4.5 kHz)",
       "pitch": 1.25
     },
     {
-      "at": 88.085,
+      "at": 88.2017,
       "type": "tick",
       "gain": 0.22,
       "what": "INSIDE: 3 (above 4.5 kHz)",
       "pitch": 1.25
     },
     {
-      "at": 94.65,
+      "at": 94.78,
       "type": "wav",
       "file": "audio/fx/lowthump.wav",
       "gain": 0.35,
       "what": "\"Four\", below 250 Hz"
     },
     {
-      "at": 102.874,
+      "at": 103.004,
       "type": "whoosh",
       "gain": 0.1,
       "what": "the door carried between you",
       "pitch": 0.8
     },
     {
-      "at": 106.65,
+      "at": 106.78,
       "type": "shimmer",
       "gain": 0.14,
       "what": "his face goes (5-9 kHz)",
       "len": 0.6
     },
     {
-      "at": 115.01,
+      "at": 115.14,
       "type": "wav",
       "file": "audio/fx/lowthump.wav",
       "gain": 0.55,
       "what": "jacket, below 250 Hz"
     },
     {
-      "at": 117.08,
+      "at": 117.21,
       "type": "page",
       "gain": 0.3,
       "what": "the register, in the gap"
     },
     {
-      "at": 120.48,
+      "at": 120.61,
       "type": "clink",
       "gain": 0.7,
       "what": "the spoon: the first sound of the reel, so it starts again (in the gap)",
