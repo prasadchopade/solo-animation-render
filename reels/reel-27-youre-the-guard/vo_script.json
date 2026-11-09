@@ -10,7 +10,7 @@
   },
   {
    "id": "n02",
-   "text": "Flats on this street are being robbed, so ask this delivery man his name."
+   "text": "Flats on this street are being robbed, so ask this man his name."
   },
   {
    "id": "a01",
@@ -93,8 +93,8 @@
   },
   {
    "id": "n18",
-   "text": "So which one was Ravi?",
-   "text_kokoro": "So which one was [Ravi](/ɹˈʌvi/)?"
+   "text": "So which one said Ravi?",
+   "text_kokoro": "So which one said [Ravi](/ɹˈʌvi/)?"
   }
  ],
  "cast_lines": [
