@@ -733,7 +733,7 @@
     if (jack > 0) {
       g.save(); g.globalAlpha = jack; seated(g, MEN[1], 513, 900, 1.3, { blank: true });
       const sw = 0.06 * Math.sin(t * 3.1);
-      g.translate(668, 1262); g.rotate(sw); g.strokeStyle = '#e8e2d2'; g.lineWidth = 5; g.beginPath(); g.moveTo(0, 0); g.lineTo(0, 88); g.stroke();
+      g.translate(352, 1262); g.rotate(sw); g.strokeStyle = '#e8e2d2'; g.lineWidth = 5; g.beginPath(); g.moveTo(0, 0); g.lineTo(0, 88); g.stroke();
       R(g, -72, 88, 144, 96, 10); g.fillStyle = '#fffdf3'; g.fill(); g.strokeStyle = 'rgba(0,0,0,0.3)'; g.lineWidth = 3; g.stroke();
       txt(g, 'Rs 200', 0, 154, 58, RED, { align: 'center', fit: 124 });
       g.restore();
