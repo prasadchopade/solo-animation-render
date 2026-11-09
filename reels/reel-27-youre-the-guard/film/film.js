@@ -281,7 +281,7 @@
   function penHand(g, x, y, s = 1, rot = 0) {
     g.save(); g.translate(x, y); g.rotate(rot); g.scale(s, s);
     g.fillStyle = lg(g, 300, 330, 700, 900, [0, '#34466e'], [1, '#1f2c4a']); g.beginPath(); g.moveTo(230, 300); g.lineTo(410, 180); g.lineTo(1300, 1620); g.lineTo(1040, 1790); g.closePath(); g.fill();
-    g.save(); g.translate(372, 362); g.rotate(1.075); txt(g, 'SECURITY', 0, 0, 56, '#e7e3d6', { align: 'center' }); g.restore();
+    g.save(); g.translate(404, 416); g.rotate(1.075); txt(g, 'SECURITY', 0, 0, 56, '#e7e3d6', { align: 'center' }); g.restore();
     g.fillStyle = lg(g, 100, 90, 420, 380, [0, '#d7a27c'], [1, '#a9744f']); g.beginPath(); g.moveTo(70, 118); g.bezierCurveTo(120, 40, 280, 40, 350, 120); g.lineTo(430, 250); g.lineTo(250, 340); g.bezierCurveTo(150, 290, 80, 200, 70, 118); g.closePath(); g.fill();
     g.strokeStyle = lg(g, 0, 0, 190, -190, [0, '#20262f'], [0.12, '#2e3f8c'], [1, '#27357a']); g.lineWidth = 22; g.lineCap = 'round'; g.beginPath(); g.moveTo(10, -10); g.lineTo(232, -214); g.stroke();
     g.strokeStyle = '#8f949b'; g.lineWidth = 9; g.beginPath(); g.moveTo(2, -2); g.lineTo(26, -24); g.stroke();
