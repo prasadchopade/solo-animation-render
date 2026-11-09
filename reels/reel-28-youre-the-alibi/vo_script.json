@@ -127,20 +127,15 @@
   },
   {
    "id": "n12",
-   "text": "You just pictured him."
+   "text": "You never saw him."
   },
   {
    "id": "n13",
-   "text": "He gave you the stall."
-  },
-  {
-   "id": "n13b",
-   "text": "You added the chaiwala.",
-   "text_kokoro": "You added the [chaiwala](/ʧˈaɪwˌɑːlɑː/)."
+   "text": "One question put him there."
   },
   {
    "id": "n14",
-   "text": "Now try it on a friend."
+   "text": "Now do this to a friend."
   }
  ]
 }

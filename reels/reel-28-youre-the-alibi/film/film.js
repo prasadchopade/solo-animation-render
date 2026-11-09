@@ -2,7 +2,7 @@
 // Your best friend is locked up for robbing a watch shop, and you're his only alibi. Where were you last Tuesday at 7:40? You don't really remember:
 // for you it was just another Tuesday. While the officer takes a call, he reminds you: the stall, the rain, your ginger chai, what you paid. The officer
 // asks, you know the answers, and they're the same as his statement. But everything you know about that night, he told you. YOUR MEMORY becomes HIS STORY.
-// So where was he? The photo sharpens: he was here. You just set a robber free. Then the last test: the chaiwala, old or young? Nobody ever mentioned him. He gave you the stall; you added the chaiwala. Facts: docs/research.md. Our own drawings, nobody real. 30 fps, no blur.
+// So where was he? The photo sharpens: he was here. You just set a robber free. Then the last test: the chaiwala, old or young? You never saw him: one question put him there. Facts: docs/research.md. Our own drawings, nobody real. 30 fps, no blur.
 // The film never says what you pressed: timers end, the buttons fade together, nothing is highlighted.
 // The plant: a steel watch with its shop tag still on, on his left wrist, showing while he grips the bars (frame 0). Nothing else on either wrist.
 // The face rig (mouth, eye, head) is from reels 19, 20 and 25; the characters are new.
@@ -194,7 +194,7 @@
       o02: at('o02'), drink: wi('o02', 9), o02e: en('o02'), o03: at('o03'), o03e: en('o03'), o04: at('o04'), o04e: en('o04'),
       n06: at('n06'), told: wi('n06', 6), n06e: en('n06'), n06b: at('n06b'), n06be: en('n06b'), n07: at('n07'), n07e: en('n07'),
       o05: at('o05'), goW: wi('o05', 2), o05e: en('o05'), n08: at('n08'), robber: wi('n08', 3), n08e: en('n08'),
-      f02: at('f02'), f02e: en('f02'), o06: at('o06'), chaiW: wi('o06', 3), oldW: wi('o06', 5), o06e: en('o06'), n12: at('n12'), n12e: en('n12'), n13: at('n13'), n13e: en('n13'), n13b: at('n13b'), n13be: en('n13b'), n14: at('n14'), n14e: en('n14'), end: tb('end'),
+      f02: at('f02'), f02e: en('f02'), o06: at('o06'), chaiW: wi('o06', 3), oldW: wi('o06', 5), o06e: en('o06'), n12: at('n12'), n12e: en('n12'), n13: at('n13'), n13e: en('n13'), n14: at('n14'), n14e: en('n14'), end: tb('end'),
     };
     T.q0 = T.where - 0.05;                                 // the first buttons land
     T.q0e = T.n03b - 0.1;                                  // ... and go as your memory comes up, empty
@@ -565,7 +565,7 @@
   const WHERE = ['AT HOME', 'OUT', "CAN'T REMEMBER"], WHEREW = [224, 140, 440];
   const DRINK = ['COFFEE', 'GINGER CHAI', "CAN'T REMEMBER"], DRINKW = [180, 290, 340];
   const PAID = ['₹10', '₹20', '₹50'], PAIDW = [260, 260, 260];
-  const AGE = ['OLD', 'YOUNG'], AGEW = [300, 340];
+  const AGE = ['OLD', 'YOUNG', "CAN'T REMEMBER"], AGEW = [170, 230, 400];
   function printPhoto(g, x, y, w, h, t, rot = 0) {     // the police's picture: grey, a mosaic, the stamp the only sharp thing on it
     g.save(); g.translate(x, y); g.rotate(rot);
     R(g, -w / 2 - 16, -h / 2 - 16, w + 32, h + 32, 6); g.fillStyle = '#fbf8ee'; g.fill(); g.strokeStyle = 'rgba(0,0,0,0.25)'; g.lineWidth = 3; g.stroke();
@@ -785,15 +785,14 @@
     g.beginPath(); g.moveTo(376, -44); g.lineTo(438, -84); g.lineTo(446, -68); g.lineTo(374, -8); g.closePath(); g.fill();
     g.restore();
   }
-  function shotAgain(g, t) {                     // "One more thing. The chaiwala. Old or young?" Your empty memory; then the man you just pictured; the stall he gave you; the man you added.
-    const TT = times(), z = lerp(1, 1.05, sstep(TT.o06, TT.n13be + 0.4, t));
-    const man = sstep(TT.n12, TT.n12 + 0.55, t), st = t >= TT.n13 ? clamp(hit(t, TT.n13, 'heavy')) : 0;
+  function shotAgain(g, t) {                     // "One more thing. The chaiwala. Old or young?" Your empty memory, then the man you just pictured. "You never saw him. One question put him there."
+    const TT = times(), z = lerp(1, 1.05, sstep(TT.o06, TT.n13e + 0.4, t));
+    const man = sstep(TT.n12, TT.n12 + 0.5, t);
     bigMemory(g, t, { k: pop(t, TT.o06 - 0.05), z, noQ: man > 0.02 });
     g.save(); g.translate(513, 900); g.scale(z, z); g.translate(-513, -900);
     if (man > 0) imagined(g, 470, 960, 0.95, man);
-    if (st > 0) { g.save(); g.translate(513, 1000); g.scale(st, st); g.translate(-513, -1000); stall(g, 513, 1000, 1.9, t); g.restore(); }
-    if (t >= TT.n13b) {
-      const k = clamp((t - TT.n13b) / 0.3);
+    if (t >= TT.n13) {
+      const k = clamp((t - TT.n13) / 0.3);
       g.save(); g.strokeStyle = RED; g.lineWidth = 11; g.setLineDash([24, 18]); g.lineDashOffset = -t * 30; g.globalAlpha *= k; ell(g, 470, 880, 250, 320); g.stroke(); g.setLineDash([]); g.restore();
     }
     g.restore();
@@ -803,9 +802,8 @@
       buttons(g, t, TT.q4, TT.q4e, AGE, AGEW);
       timerBar(g, t, TT.q4 + 0.2, TT.q4e);
     }
-    else if (t < TT.n13 - 0.05) title(g, 'YOU JUST PICTURED HIM', 1470, 104, INK, t, TT.n12, { stroke: '#fff', sw: 0.12 });
-    else if (t < TT.n13b - 0.05) title(g, 'HE GAVE YOU THE STALL', 1470, 104, INK, t, TT.n13, { stroke: '#fff', sw: 0.12 });
-    else { title(g, 'YOU ADDED', 1336, 112, INK, t, TT.n13b, { stroke: '#fff', sw: 0.12 }); title(g, 'THE CHAIWALA', 1478, 136, RED, t, wi('n13b', 2), { stroke: '#fff', sw: 0.12 }); }
+    else if (t < TT.n13 - 0.05) title(g, 'YOU NEVER SAW HIM', 1470, 112, INK, t, TT.n12, { stroke: '#fff', sw: 0.12 });
+    else { title(g, 'ONE QUESTION', 1336, 112, INK, t, TT.n13, { stroke: '#fff', sw: 0.12 }); title(g, 'PUT HIM THERE', 1478, 136, RED, t, wi('n13', 2), { stroke: '#fff', sw: 0.12 }); }
     return 0;
   }
   function shotText(g, t) {                      // your phone: you try it on a friend; they add the chaiwala too
