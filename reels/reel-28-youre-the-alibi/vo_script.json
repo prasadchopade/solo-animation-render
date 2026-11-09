@@ -4,9 +4,6 @@
  "speed": 1.0,
  "ref_text": "The night was cold and very quiet. Most of the street was asleep, and the lamps hummed over the empty road. Somewhere far away, a train rolled past, and then the silence came back.",
  "cast_lines": [
-  "f01",
-  "f01r",
-  "f02",
   "o06"
  ],
  "cast": [
@@ -54,7 +51,7 @@
   },
   {
    "id": "n02",
-   "text": "Your best friend's locked up for robbing a watch shop."
+   "text": "Your friend's locked up for robbing a watch shop."
   },
   {
    "id": "n03",
@@ -123,20 +120,20 @@
   },
   {
    "id": "o06",
-   "text": "One more thing. The chaiwala. Old or young?",
-   "text_kokoro": "One more thing. The [chaiwala](/ʧˈaɪwˌɑːlɑː/). Old or young?"
+   "text": "Oh, one more thing. That chaiwala at the stall, was he young or old?",
+   "text_kokoro": "Oh, one more thing. That [chaiwala](/ʧˈaɪwˌɑːlɑː/) at the stall, was he young or old?"
   },
   {
    "id": "n12",
-   "text": "You never saw him."
+   "text": "You can see him, can't you?"
   },
   {
    "id": "n13",
-   "text": "One question put him there."
+   "text": "But nobody had even mentioned him until that question, and your brain still gave him a face."
   },
   {
    "id": "n14",
-   "text": "Now do this to a friend."
+   "text": "So go do this to a friend."
   }
  ]
 }
