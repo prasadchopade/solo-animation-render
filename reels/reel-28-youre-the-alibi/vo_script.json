@@ -1,14 +1,13 @@
 {
- "note": "Reel 28: You're the Alibi. Episode 6 of 'You're the test subject'. The narrator is the series voice (af_heart), talking to you, the alibi. The friend (f..) and the officer (o..) are cast in the voice lab and placed from the cast reads. Script 5 (the ending and the friend's lines changed after the user's notes on cut 4: no \"yaar\", no question about the watch; the last test asks about a chaiwala nobody ever mentioned, so what you picture is really yours). Script 4, after the user's note on cut 3 (the point couldn't be read in one glance, confusing at 15 s and 37 s) and two cold reads of the rewrite: you can't remember that night, so he tells you what happened, you repeat it to the police, and he was the robber. Cast (9 Nov): the friend is am_michael, the officer am_onyx. On am_michael the last word of a long sentence sinks into creak (6 %): the exclamation marks in f01 cure it (0.0 %, speed 1.0), and \"Don't you remember?\" is its own line, at speed 0.96. Facts and wording: docs/research.md. Read audio/vo_lab/takes/phonemes.md after every run.",
+ "note": "Reel 28: You're the Alibi. Episode 6 of 'You're the test subject'. The narrator is the series voice (af_heart), talking to you, the alibi. The friend (f..) and the officer (o..) are cast in the voice lab and placed from the cast reads. Script 5 (the ending and the friend's lines changed after the user's notes on cut 4: no \"yaar\", no question about the watch; the last test asks about a chaiwala nobody ever mentioned, so what you picture is really yours). Script 4, after the user's note on cut 3 (the point couldn't be read in one glance, confusing at 15 s and 37 s) and two cold reads of the rewrite: you can't remember that night, so he tells you what happened, you repeat it to the police, and he was the robber. Cast (9 Nov): the friend is am_michael, the officer am_onyx. On am_michael the last word of a long sentence sinks into creak (6 %): the exclamation marks and the short sentences in f01 cure it (0.0 %, speed 1.0), and \"Don't you remember?\" is its own line, at speed 0.96. Facts and wording: docs/research.md. Read audio/vo_lab/takes/phonemes.md after every run.",
  "voice": "af_heart",
  "speed": 1.0,
  "ref_text": "The night was cold and very quiet. Most of the street was asleep, and the lamps hummed over the empty road. Somewhere far away, a train rolled past, and then the silence came back.",
  "cast_lines": [
   "f01",
-  "f01b",
-  "f01c",
-  "f01e",
-  "f01g"
+  "f01r",
+  "f02",
+  "o06"
  ],
  "cast": [
   {
@@ -28,6 +27,12 @@
    "engine": "kokoro",
    "voice": "am_michael",
    "speed": 1.04
+  },
+  {
+   "id": "s-onyx",
+   "engine": "kokoro",
+   "voice": "am_onyx",
+   "speed": 1.0
   }
  ],
  "take": [
@@ -70,22 +75,6 @@
   },
   {
    "id": "f01",
-   "text": "Please, think! We were at the chai stall, in the rain! You had ginger chai, you paid twenty rupees!"
-  },
-  {
-   "id": "f01b",
-   "text": "Come on, think! We were at the chai stall, in the rain! You had ginger chai, you paid twenty rupees!"
-  },
-  {
-   "id": "f01c",
-   "text": "Think! We were at the chai stall, in the rain! You had ginger chai! You paid twenty rupees!"
-  },
-  {
-   "id": "f01e",
-   "text": "Think, think! We were at the chai stall, in the rain! You had ginger chai, you paid twenty rupees!"
-  },
-  {
-   "id": "f01g",
    "text": "Please, think! We were at the chai stall, in the rain! You had ginger chai! You paid twenty rupees!"
   },
   {

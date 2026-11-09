@@ -189,7 +189,7 @@
     T = {
       n01e: en('n01'), f00: at('f00'), f00e: en('f00'), n02: at('n02'), n02e: en('n02'), o01: at('o01'), where: wi('o01', 4), o01e: en('o01'),
       n03: at('n03'), blurry: wi('n03', 6), ofR: wi('n03', 8), n03e: en('n03'), has: at('n03a'), n03ae: en('n03a'), n03b: at('n03b'), just: wi('n03b', 10), n03be: en('n03b'),
-      f01: at('f01'), stallW: wi('f01', 5), rain: wi('f01', 9), chai: wi('f01', 12), paid: wi('f01', 15), twenty: wi('f01', 16), rem: at('f01r'), f01e: en('f01r'),
+      f01: at('f01'), stallW: wi('f01', 6), rain: wi('f01', 10), chai: wi('f01', 13), paid: wi('f01', 16), twenty: wi('f01', 17), rem: at('f01r'), f01e: en('f01r'),
       n04: at('n04'), n04e: en('n04'),
       o02: at('o02'), drink: wi('o02', 9), o02e: en('o02'), o03: at('o03'), o03e: en('o03'), o04: at('o04'), o04e: en('o04'),
       n06: at('n06'), told: wi('n06', 6), n06e: en('n06'), n06b: at('n06b'), n06be: en('n06b'), n07: at('n07'), n07e: en('n07'),
@@ -779,8 +779,8 @@
     g.save(); g.translate(x, y); g.scale(s, s); g.globalAlpha *= a;
     g.fillStyle = '#9fb3ba';
     ell(g, 0, -150, 70, 86); g.fill();
-    g.beginPath(); g.moveTo(-40, -70); g.bezierCurveTo(-130, -60, -170, -20, -180, 60); g.lineTo(-190, 320); g.lineTo(190, 320); g.lineTo(180, 60); g.bezierCurveTo(170, -20, 130, -60, 40, -70); g.closePath(); g.fill();
-    g.strokeStyle = '#9fb3ba'; g.lineCap = 'round'; g.lineJoin = 'round'; g.lineWidth = 56; g.beginPath(); g.moveTo(150, 10); g.lineTo(250, 84); g.lineTo(300, 14); g.stroke();
+    g.beginPath(); g.moveTo(-40, -70); g.bezierCurveTo(-130, -60, -170, -20, -180, 60); g.lineTo(-190, 320); g.lineTo(190, 320); g.lineTo(180, 60); g.bezierCurveTo(170, -20, 130, -60, 40, -70); g.closePath(); g.fillStyle = lg(g, 0, 120, 0, 320, [0, '#9fb3ba'], [1, 'rgba(159,179,186,0)']); g.fill();
+    g.fillStyle = '#9fb3ba'; g.strokeStyle = '#9fb3ba'; g.lineCap = 'round'; g.lineJoin = 'round'; g.lineWidth = 56; g.beginPath(); g.moveTo(150, 10); g.lineTo(250, 84); g.lineTo(300, 14); g.stroke();
     ell(g, 322, -30, 62, 52); g.fill();
     g.beginPath(); g.moveTo(376, -44); g.lineTo(438, -84); g.lineTo(446, -68); g.lineTo(374, -8); g.closePath(); g.fill();
     g.restore();
@@ -823,7 +823,7 @@
       const q = pop(t, TT.n14 + 0.3);
       g.save(); g.translate(280, -270); g.scale(q, q);
       R(g, -520, -160, 520, 330, 34); g.fillStyle = '#c8f2d4'; g.fill();
-      txt(g, 'You had ginger chai', -490, -62, 68, INK, { kind: 'semi' }); txt(g, 'last Tuesday,', -490, 36, 68, INK, { kind: 'semi' }); txt(g, 'remember?', -490, 134, 68, INK, { kind: 'semi' });
+      txt(g, 'You had ginger chai', -490, -62, 62, INK, { kind: 'semi' }); txt(g, 'last Tuesday,', -490, 36, 62, INK, { kind: 'semi' }); txt(g, 'remember?', -490, 134, 62, INK, { kind: 'semi' });
       g.restore();
     }
     const r = TT.n14e + 0.15;
@@ -831,7 +831,7 @@
       const q = pop(t, r);
       g.save(); g.translate(-280, 170); g.scale(q, q);
       R(g, 0, -116, 500, 262, 34); g.fillStyle = '#fff'; g.fill(); g.strokeStyle = '#c9cfc8'; g.lineWidth = 3; g.stroke();
-      txt(g, 'Yes! That old', 34, -14, 88, INK, { kind: 'semi', fit: 440 }); txt(g, 'chaiwala, right?', 34, 92, 88, INK, { kind: 'semi', fit: 440 });
+      txt(g, 'Yes! That old', 34, -14, 76, INK, { kind: 'semi' }); txt(g, 'chaiwala, right?', 34, 92, 76, INK, { kind: 'semi' });
       g.restore();
     }
     g.restore();
