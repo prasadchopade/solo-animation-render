@@ -1,7 +1,7 @@
 {
   "note": "Single source of truth for picture + sound, in BEATS (120 bpm: beat = 0.5 s). film.js reads marks via film/data.js; sync.mjs turns sfx into cues.json; score.py reads marks for the music; vo.json places the narration. Every reel ends with the Root Cause end card: 'end' → 'done' = 3.0 s (6 beats), engine/endcard.",
   "title": "You're the Guard",
-  "duration": 71.5,
+  "duration": 67.0,
   "fps": 30,
   "bpm": 120,
   "formats": [
@@ -24,10 +24,237 @@
   },
   "marks": {
     "hook": 0,
-    "end": 137.0,
-    "done": 143.0
+    "end": 128.0,
+    "done": 134.0
   },
   "sfx": [
+    {
+      "at": 0.0,
+      "type": "clink",
+      "gain": 0.75,
+      "what": "a spoon in your glass: the first sound of every film in the series",
+      "pitch": 1.0
+    },
+    {
+      "at": 0.0,
+      "type": "idle",
+      "gain": 0.34,
+      "what": "the street: engines, all below 250 Hz",
+      "len": 24.36
+    },
+    {
+      "at": 7.99,
+      "type": "autohorn",
+      "gain": 0.14,
+      "what": "a far horn, in the gap before the first question",
+      "pitch": 1.0
+    },
+    {
+      "at": 16.76,
+      "type": "bicyclebell",
+      "gain": 0.12,
+      "what": "a bicycle going by, in the gap"
+    },
+    {
+      "at": 19.45,
+      "type": "wav",
+      "file": "audio/fx/pen.wav",
+      "gain": 0.5,
+      "what": "your pen writing RAVI (above the voice band)"
+    },
+    {
+      "at": 26.49,
+      "type": "wav",
+      "file": "audio/fx/pen2.wav",
+      "gain": 0.5,
+      "what": "your pen writing 302 (above the voice band)"
+    },
+    {
+      "at": 33.63,
+      "type": "thunk",
+      "gain": 0.32,
+      "what": "the parcel on your desk (low knock)",
+      "pitch": 0.72
+    },
+    {
+      "at": 33.61,
+      "type": "tick",
+      "gain": 0.2,
+      "what": "the buttons land (above 4.5 kHz)",
+      "pitch": 1.3
+    },
+    {
+      "at": 37.17,
+      "type": "wav",
+      "file": "audio/fx/pen3.wav",
+      "gain": 0.55,
+      "what": "the red circle round 203, in the gap"
+    },
+    {
+      "at": 44.86,
+      "type": "steps",
+      "gain": 0.14,
+      "what": "him walking off",
+      "len": 0.5
+    },
+    {
+      "at": 46.2,
+      "type": "clink",
+      "gain": 0.3,
+      "what": "your glass coming up",
+      "pitch": 1.2
+    },
+    {
+      "at": 48.45,
+      "type": "creak",
+      "gain": 0.16,
+      "what": "her door, in the gap before the flat"
+    },
+    {
+      "at": 48.77,
+      "type": "wav",
+      "file": "audio/fx/lowthump.wav",
+      "gain": 0.65,
+      "what": "under \"Then who robbed\", below 250 Hz"
+    },
+    {
+      "at": 52.76,
+      "type": "shutter",
+      "gain": 0.34,
+      "what": "the police camera, in the gap"
+    },
+    {
+      "at": 59.16,
+      "type": "wav",
+      "file": "audio/fx/lowthump.wav",
+      "gain": 0.45,
+      "what": "ONE MAN, below 250 Hz"
+    },
+    {
+      "at": 64.524,
+      "type": "wav",
+      "file": "audio/fx/lowthump.wav",
+      "gain": 0.55,
+      "what": "jail, below 250 Hz"
+    },
+    {
+      "at": 74.86,
+      "type": "tick",
+      "gain": 0.2,
+      "what": "the clock (above 4.5 kHz)",
+      "pitch": 1.6
+    },
+    {
+      "at": 73.86,
+      "type": "tick",
+      "gain": 0.2,
+      "what": "the clock (above 4.5 kHz)",
+      "pitch": 1.6
+    },
+    {
+      "at": 72.86,
+      "type": "tick",
+      "gain": 0.2,
+      "what": "the clock (above 4.5 kHz)",
+      "pitch": 1.6
+    },
+    {
+      "at": 76.04,
+      "type": "wav",
+      "file": "audio/fx/lowthump.wav",
+      "gain": 0.5,
+      "what": "\"You're right\", below 250 Hz: the only thing in the silence"
+    },
+    {
+      "at": 79.684,
+      "type": "shimmer",
+      "gain": 0.2,
+      "what": "the four pictures turn to your gate (5-9 kHz)",
+      "len": 0.7
+    },
+    {
+      "at": 82.27,
+      "type": "stamp",
+      "gain": 0.6,
+      "what": "ALL FOUR",
+      "pitch": 0.92
+    },
+    {
+      "at": 82.31,
+      "type": "boom",
+      "gain": 0.42,
+      "what": "under it",
+      "pitch": 0.62
+    },
+    {
+      "at": 82.99,
+      "type": "rewind",
+      "gain": 0.3,
+      "what": "the tape back to the gate (in the gap)",
+      "len": 0.3
+    },
+    {
+      "at": 84.655,
+      "type": "tick",
+      "gain": 0.22,
+      "what": "INSIDE: 1 (above 4.5 kHz)",
+      "pitch": 1.25
+    },
+    {
+      "at": 86.945,
+      "type": "tick",
+      "gain": 0.22,
+      "what": "INSIDE: 2 (above 4.5 kHz)",
+      "pitch": 1.25
+    },
+    {
+      "at": 89.235,
+      "type": "tick",
+      "gain": 0.22,
+      "what": "INSIDE: 3 (above 4.5 kHz)",
+      "pitch": 1.25
+    },
+    {
+      "at": 95.8,
+      "type": "wav",
+      "file": "audio/fx/lowthump.wav",
+      "gain": 0.35,
+      "what": "\"Four\", below 250 Hz"
+    },
+    {
+      "at": 104.024,
+      "type": "whoosh",
+      "gain": 0.1,
+      "what": "the door carried between you",
+      "pitch": 0.8
+    },
+    {
+      "at": 107.8,
+      "type": "shimmer",
+      "gain": 0.14,
+      "what": "his face goes (5-9 kHz)",
+      "len": 0.6
+    },
+    {
+      "at": 116.16,
+      "type": "wav",
+      "file": "audio/fx/lowthump.wav",
+      "gain": 0.55,
+      "what": "jacket, below 250 Hz"
+    },
+    {
+      "at": 118.23,
+      "type": "page",
+      "gain": 0.3,
+      "what": "the register, in the gap"
+    },
+    {
+      "at": 121.63,
+      "type": "clink",
+      "gain": 0.7,
+      "what": "the spoon: the first sound of the reel, so it starts again (in the gap)",
+      "pitch": 1.0
+    },
     {
       "at": "end",
       "type": "wav",
