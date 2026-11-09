@@ -649,7 +649,8 @@
     cloudLabel(g, 513, 1186, t, 1e9, 68);
     cloudThings(g, t, TT, 513, 1346);
     insetOfficer(g, t, 820, 402, 122);
-    title(g, 'ON THE PHONE', 572, 50, CREAM, t, -1, { x: 820, fit: 250, sw: 0.16 });
+    R(g, 690, 514, 260, 62, 16); g.fillStyle = INK; g.fill();
+    txt(g, 'ON THE PHONE', 820, 561, 46, CREAM, { align: 'center', fit: 236 });
     return 0;
   }
   function shotNow(g, t) {                       // "And now you do."
@@ -727,7 +728,7 @@
     g.save(); g.translate(HEADX, HEADY + 10); g.scale(HEADS, HEADS); torso(g); head(g, FR, { look: [-16, 4], close: blinkAt(t, 2.8, 0.9), frown: 0, smile: 0.1, op: 0 }); g.restore();
     bars(g, open);
     g.restore();
-    g.save(); g.translate(250, 1090); g.scale(0.62, 0.62); officerBody(g); head(g, OF, { op: talkP(t, 'o05'), close: blinkAt(t, 4, 3), look: [14, 2], frown: 0.1 }); g.restore();
+    g.save(); g.translate(262, 1030); g.scale(0.8, 0.8); officerBody(g); head(g, OF, { op: talkP(t, 'o05'), close: blinkAt(t, 4, 3), look: [14, 2], frown: 0.1 }); g.restore();
     desk(g, 1330);
     printPhoto(g, 640, 1400, 320, 224, t, 0.04);
     g.restore();
@@ -740,7 +741,7 @@
     torso(g);
     g.lineCap = 'round'; g.strokeStyle = '#d9442f'; g.lineWidth = 132; for (const k of [-1, 1]) { g.beginPath(); g.moveTo(k * 436, 470); g.lineTo(k * 530, 860); g.stroke(); g.beginPath(); g.moveTo(k * 530, 860); g.lineTo(k * 310, 1130); g.stroke(); }
     g.strokeStyle = 'rgba(0,0,0,0.16)'; g.lineWidth = 8; for (const k of [-1, 1]) { g.beginPath(); g.moveTo(k * 372, 560); g.lineTo(k * 440, 860); g.stroke(); }
-    g.fillStyle = '#35456a'; R(g, -530, 1096, 1060, 1500, 30); g.fill();
+    g.fillStyle = '#35456a'; R(g, -498, 1096, 996, 1500, 30); g.fill();
     head(g, FR, { op: o.op ?? 0, close: Math.max(o.close ?? 0, blinkAt(t, 3.6, 1.7)), look: o.look ?? [0, 0], frown: o.frown ?? 0, smile: o.smile ?? 0, worry: o.worry ?? 12 });
     g.restore();
   }
@@ -800,7 +801,7 @@
       R(g, -520, -160, 520, 330, 34); g.fillStyle = '#c8f2d4'; g.fill();
       [[10, 11, 12], [13, 14, 15, 16], [17, 18]].forEach((idx, row) => {
         const line = idx.filter((i) => t >= W3[i].t0 - 0.03).map((i) => (i === 10 ? 'If' : W3[i].w)).join(' ');
-        if (line) txt(g, line, -490, [-62, 36, 134][row], 82, INK, { kind: 'semi' });
+        if (line) txt(g, line, -490, [-62, 36, 134][row], 74, INK, { kind: 'semi' });
       });
       g.restore();
     }
@@ -828,14 +829,14 @@
     R(g, 290, 800, 450, 1200, [28, 28, 0, 0]); g.fillStyle = lg(g, 0, 800, 0, 1700, [0, '#fff6cf'], [1, '#ffd97e']); g.fill(); g.strokeStyle = '#7a4c2a'; g.lineWidth = 20; g.stroke();
     const s = lerp(0.56, 0.42, u), y = lerp(1190, 1100, u), bob = Math.sin(t * 6.5) * 6;
     g.save(); g.translate(513, y + bob); g.scale(s, s);
-    g.fillStyle = '#35456a'; R(g, -230, 900, 460, 2600, 60); g.fill();
+    g.fillStyle = '#35456a'; R(g, -320, 900, 640, 2600, 60); g.fill();
     g.fillStyle = 'rgba(0,0,0,0.3)'; g.fillRect(-8, 1120, 16, 2400);
     g.fillStyle = FR.skinD; R(g, -80, 150, 160, 170, 40); g.fill();
     g.beginPath(); g.moveTo(-96, 262); g.bezierCurveTo(-240, 288, -420, 310, -470, 520); g.lineTo(-500, 1000); g.lineTo(500, 1000); g.lineTo(470, 520); g.bezierCurveTo(420, 310, 240, 288, 96, 262); g.closePath();
     g.fillStyle = lg(g, -420, 300, 420, 1100, [0, '#f0614f'], [1, '#c4311f']); g.fill();
     g.lineCap = 'round'; g.strokeStyle = '#d9442f'; g.lineWidth = 150; for (const k of [-1, 1]) { g.beginPath(); g.moveTo(k * 456, 500); g.lineTo(k * 540, 830); g.stroke(); g.beginPath(); g.moveTo(k * 540, 830); g.lineTo(k * 300, 1040); g.stroke(); }
     g.strokeStyle = 'rgba(0,0,0,0.2)'; g.lineWidth = 8; for (const k of [-1, 1]) { g.beginPath(); g.moveTo(k * 380, 620); g.lineTo(k * 440, 860); g.stroke(); }
-    g.fillStyle = '#35456a'; R(g, -360, 1000, 720, 120, 30); g.fill();
+    g.fillStyle = '#35456a'; R(g, -340, 1000, 680, 120, 30); g.fill();
     g.fillStyle = FR.hair; curls(g, 178, FR.hair, 21, false); ell(g, 0, -40, 200, 262); g.fill();
     g.restore();
     title(g, "WHAT'S HANGING", 410, 124, CREAM, t, TT.n12 - 0.1);
