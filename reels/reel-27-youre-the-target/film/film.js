@@ -352,7 +352,7 @@
     const par = k(TT.o03 - 0.08, TT.o05 - 0.08), bk = k(TT.o05 - 0.05, TT.o06 - 0.08), war = k(TT.o06 - 0.06, TT.knock - 0.15);
     if (par > 0.003) { const y = Y0 + (1 - par) * 760; parcel(g, X, y); fist(g, X, y + 96); }
     if (bk > 0.003) { const y = Y0 - 12 + (1 - bk) * 760; frozenBook(g, X, y, t, TT.frozen); fist(g, X, y + 108); }
-    if (war > 0.003) { const y = 868 + (1 - war) * 820; warrant(g, 208, y); fist(g, 208, y + 232); }
+    if (war > 0.003) { const y = 868 + (1 - war) * 820; warrant(g, 166, y); fist(g, 166, y + 232); }
   }
   // his office is a print on a sheet of paper, taped up. It has never once kept still
   function sheetA(t, TT) {
@@ -364,7 +364,7 @@
   function officeWall(g, t, TT, o = {}) {
     if (!OFFICE) OFFICE = makeOffice();
     const A = o.A ?? sheetA(t, TT), down = o.fall && t >= TT.rip, sw = down ? 4 : 10;
-    if (!down) g.drawImage(OFFICE, 0, 0, W, TOP, 0, 0, W, TOP);
+    if (!down) { g.drawImage(OFFICE, 0, 0, W, TOP, 0, 0, W, TOP); g.fillStyle = '#93d3bf'; g.fillRect(0, H - 90, W, 90); }
     for (let x = 0; x < W; x += sw) {
       const ph = x * 0.0095 - t * 2.1, d = A * (Math.sin(ph) + 0.35 * Math.sin(x * 0.021 + t * 1.3));
       let y0 = TOP;
@@ -388,7 +388,7 @@
     officerBody(g, OX, ONY, OS);
     const grin = Math.max(win(t, TT.o09 - 0.05, TT.n03e + 0.3, 0.3), win(t, TT.o12 - 0.05, TT.end + 2, 0.3));
     g.save(); g.translate(OX + (o.lean || 0) * 8, OY + bob); g.rotate(grin * 0.06); g.scale(OS, OS);
-    head(g, OFF, { op, close: blinkAt(t, 3.7, 1.3), look, frown: lerp(0.8, 0, grin), smile: grin * 0.9, browY: knockK * -9 + grin * 6 });
+    head(g, OFF, { op, close: blinkAt(t, 3.7, 1.3), look, frown: lerp(0.8, 0, grin), smile: grin * 0.9, worry: -9 * grin, browY: knockK * -9 + grin * 2 });
     officerCap(g, OFF);
     g.restore();
     heldProps(g, t, TT);
@@ -441,9 +441,15 @@
       g.save(); g.strokeStyle = `rgba(170,60,50,${0.34 + 0.4 * (o.tired || 0)})`; g.lineWidth = 5; g.beginPath(); g.moveTo(k * (ex - 40), ey + 29); g.quadraticCurveTo(k * ex, ey + 44, k * (ex + 42), ey + 27); g.stroke(); g.restore();
     }
     if (wet > 0) { g.save(); g.globalAlpha *= wet * 0.9; for (const k of [-1, 1]) { ell(g, k * ex + k * 4, ey + 15, 24, 5); g.fillStyle = 'rgba(214,236,250,0.9)'; g.fill(); ell(g, k * ex - 6, ey + 13, 4, 2); g.fillStyle = '#fff'; g.fill(); } if ((o.tear || 0) > 0) { const u = o.tear; g.save(); g.globalAlpha *= 1 - sstep(0.7, 1, u); ell(g, -ex - 18, ey + 40 + u * 120, 5 + u, 7 + u); g.fillStyle = 'rgba(206,232,248,0.85)'; g.fill(); g.restore(); } g.restore(); }
-    ell(g, 0, -100, 8.5, 8.5); g.fillStyle = '#9a1f2c'; g.fill();
+    ell(g, 0, -100, L.bindiR || 8.5, L.bindiR || 8.5); g.fillStyle = '#9a1f2c'; g.fill();
     for (const k of [-1, 1]) { ell(g, k * (186 * L.jaw + 2), 28, 10, 10); g.fillStyle = '#e4bd55'; g.fill(); }
     // round glasses on a chain: a teacher's
+    if (L.rectSpecs) {                             // someone else's glasses: dark, square
+      g.strokeStyle = '#26211d'; g.lineWidth = 9;
+      for (const k of [-1, 1]) { R(g, k * ex - 70, ey - 48, 140, 92, 22); g.fillStyle = 'rgba(255,255,255,0.08)'; g.fill(); g.stroke(); }
+      g.beginPath(); g.moveTo(-ex + 70, ey - 10); g.lineTo(ex - 70, ey - 10); g.moveTo(-ex - 70, ey - 14); g.lineTo(-186 * L.jaw, ey - 18); g.moveTo(ex + 70, ey - 14); g.lineTo(186 * L.jaw, ey - 18); g.stroke();
+      return;
+    }
     g.strokeStyle = '#a5823f'; g.lineWidth = 7;
     for (const k of [-1, 1]) { ell(g, k * ex, ey, 67, 64); g.fillStyle = 'rgba(255,255,255,0.09)'; g.fill(); g.stroke(); g.save(); g.strokeStyle = 'rgba(255,255,255,0.5)'; g.lineWidth = 7; g.beginPath(); g.arc(k * ex - 8, ey - 8, 46, -2.5, -1.75); g.stroke(); g.restore(); }
     g.beginPath(); g.moveTo(-ex + 66, ey - 8); g.quadraticCurveTo(0, ey - 26, ex - 66, ey - 8); g.moveTo(-ex - 66, ey - 12); g.lineTo(-186 * L.jaw, ey - 18); g.moveTo(ex + 66, ey - 12); g.lineTo(186 * L.jaw, ey - 18); g.stroke();
@@ -618,7 +624,7 @@
   function callBar(g, t, TT, label) {
     const z = 1 + 0.34 * win(t, TT.n08 - 0.1, TT.n08e + 0.05, 0.22);
     g.save(); g.translate(76, 315); g.scale(z, z); g.translate(-76, -315);
-    R(g, 76, 286, 244, 58, 29); g.fillStyle = 'rgba(16,18,22,0.72)'; g.fill();
+    R(g, 76, 286, 244, 58, 29); g.fillStyle = 'rgba(16,18,22,0.92)'; g.fill();
     ell(g, 106, 315, 10, 10); g.fillStyle = '#ff5a48'; g.fill();
     txt(g, label ?? timerText(timerClock(t, TT)), 126, 331, 42, '#fff', { kind: 'mono' });
     g.restore();
@@ -689,7 +695,7 @@
     const ticks = [TT.spell + 0.05, TT.noSuch + 0.02, TT.tick3], grow = win(t, TT.n20 + 1.3, TT.tick3 + 0.3, 0.2) * 0.42;
     let bump = 0; for (const tk of ticks) if (t >= tk) bump = Math.max(bump, Math.exp(-(t - tk) * 7));
     g.save(); g.globalAlpha *= a; g.translate(76, 350); g.scale(1 + bump * 0.22 + grow, 1 + bump * 0.22 + grow); g.translate(-76, -350);
-    R(g, 76, 350, 232, 66, 33); g.fillStyle = 'rgba(16,18,22,0.76)'; g.fill();
+    R(g, 76, 350, 232, 66, 33); g.fillStyle = 'rgba(16,18,22,0.92)'; g.fill();
     ticks.forEach((tk, i) => {
       const x = 118 + i * 74, y = 383, d = t - tk, q = d > 0 ? clamp(hit(t, tk, 'heavy')) : 0;
       ell(g, x, y, 24, 24); g.fillStyle = d > 0 ? '#fffdf4' : 'rgba(255,255,255,0.12)'; g.fill(); g.strokeStyle = i === 2 && d <= 0 && grow > 0 ? YEL : '#fffdf4'; g.lineWidth = 5; g.stroke();
@@ -819,11 +825,13 @@
         if (onScreen > 44) { const k = Q.w / W, px = x + PIP.x * k, py = Q.y + PIP.y * k, pw = PIP.w * k, ph = PIP.h * k; g.drawImage(PEOPLE[(h >>> 3) % PEOPLE.length], px, py, pw, ph); g.strokeStyle = 'rgba(255,255,255,0.9)'; g.lineWidth = 12 * k; g.strokeRect(px, py, pw, ph); }
       }
       if (r > 8) { g.fillStyle = `rgba(16,15,12,${Math.min(0.92, (r - 8) / 15)})`; g.fillRect(x0 - 20, Q.y - Q.gap - 1, x1 - x0 + 40, Q.h + Q.gap + 2); }
+      const off = 1 - clamp((t - TT.craneS - r * 0.06) / 0.09);       // the tube lights come on, a row at a time, going up
+      if (off > 0.002) { g.fillStyle = `rgba(8,8,7,${0.95 * off})`; g.fillRect(x0 - 20, Q.y - Q.gap - 1, x1 - x0 + 40, Q.h + Q.gap + 2); }
     }
     placeWindow(g, { ...TB }, { s: TB.w / W, cx: W / 2, cy: H / 2 }, (c) => nextStage(c, t, TT));
     if (t > TT.n25 + 0.9) { const p = 0.55 + 0.45 * Math.sin((t - TT.n25) * 8); g.strokeStyle = YEL; g.lineWidth = lerp(3, 14, p) / v.s; g.strokeRect(TB.x, TB.y, TB.w, TB.h); }
     g.restore();
-    const dim = lerp(0.42, 0, ease((t - TT.craneS) / 1.4));
+    const dim = lerp(0.2, 0, ease((t - TT.craneS - 0.4) / 1.2));
     if (dim > 0.002) { g.fillStyle = `rgba(10,10,8,${dim})`; g.fillRect(0, 0, W, H); }
   }
   function doorProp(g, t, TT) {                    // a wooden door on a stand. It doesn't open onto anything
@@ -839,14 +847,15 @@
   }
   function knocker(g, t, TT) {                     // caught with his fist up
     const X = 735, Y = 862, S0 = 0.6;
-    const low = ease((t - TT.n23 - 0.1) / 1.1), k3 = TT.knock3, reach = (t >= k3 - 0.16 && t < k3 ? -26 * ease((t - k3 + 0.16) / 0.1) + 26 * ease((t - k3 + 0.05) / 0.05) : 0) + (t >= k3 ? -8 * ease((t - k3) / 0.2) : 0);
-    g.fillStyle = '#b39663'; g.fillRect(X - 340, Y + 640, 680, 900);
-    officerBody(g, X, Y, S0, KNOCKER);
+    g.save(); g.beginPath(); g.rect(-3000, -3000, 3950, 9000); g.clip(); officerBody(g, X, Y, S0, KNOCKER); g.restore();
     const seen = win(t, TT.fall + 0.35, TT.n24 + 0.2, 0.15);
     g.save(); g.translate(X, Y - 266.7 * S0); g.scale(S0, S0);
     head(g, KNOCKER, { op: 0.04 * seen, close: blinkAt(t, 3.1, 0.2), look: [lerp(13, 0, seen), 0], browY: -16 * seen, frown: 0.5 });
     officerCap(g, KNOCKER);
     g.restore();
+  }
+  function knockerFist(g, t, TT) {
+    const low = ease((t - TT.n23 - 0.1) / 1.1), k3 = TT.knock3, reach = (t >= k3 - 0.16 && t < k3 ? -26 * ease((t - k3 + 0.16) / 0.1) + 26 * ease((t - k3 + 0.05) / 0.05) : 0) + (t >= k3 ? -8 * ease((t - k3) / 0.2) : 0);
     g.save(); g.translate(858 + reach - low * 40, 742 + low * 300); g.scale(0.62, 0.62); fist(g, 0, 0); g.restore();
   }
   function wallAndHall(g, t, TT) {
@@ -854,7 +863,7 @@
     if (fallen) drawBooths(g, t, TT, b);
     if (t < TT.n25 + 1.2) {
       g.save(); g.translate(W / 2, H / 2); g.scale(f.s, f.s); g.translate(-f.cx, -f.cy);
-      if (fallen) { g.fillStyle = '#26241f'; g.fillRect(-3000, 1262, 7000, 1500); doorProp(g, t, TT); knocker(g, t, TT); }
+      if (fallen) { g.fillStyle = '#26241f'; g.fillRect(-3000, 1262, 7000, 1500); knocker(g, t, TT); doorProp(g, t, TT); knockerFist(g, t, TT); }
       if (t < TT.fall + 0.95) officeWall(g, t, TT, { fall: true });
       officerMan(g, t, TT);
       g.restore();
@@ -880,7 +889,7 @@
     ell(g, 0, 0, 40, 40); g.fillStyle = '#8f8570'; g.fill();
     g.restore();
   }
-  const YOURS = { ...MOM, skin: '#a97750', skinD: '#80522f', skinH: '#c89a73', hair: '#4a433b', hairB: '#3b352e' };
+  const YOURS = { ...MOM, skin: '#a97750', skinD: '#80522f', skinH: '#c89a73', hair: '#2b2622', hairB: '#211d1a', rectSpecs: true, bindiR: 13 };
   function ceiling(g, t, TT) {                     // a mother, answering a video call: first the ceiling, then the forehead
     const u = t - TT.pick;
     g.save();
@@ -892,7 +901,7 @@
     fan(g, 560, 470, t);
     const up = ease((u - 0.55) / 0.5), near = ease((t - TT.can + 0.2) / 0.6), mop = Math.max(talkP(t, 'm03'), talkP(t, 'm04'));
     if (up > 0.002) {
-      g.save(); g.translate(540 + 22 * Math.sin(u * 1.7), lerp(H + 1000, lerp(1590, 1545, near), up) + mop * 8); g.rotate(0.03 * Math.sin(u * 1.3)); g.scale(lerp(2.9, 3.05, near), lerp(2.9, 3.05, near));
+      g.save(); g.translate(540 + 22 * Math.sin(u * 1.7), lerp(H + 1000, lerp(1730, 1590, near), up) + mop * 8); g.rotate(0.03 * Math.sin(u * 1.3)); g.scale(lerp(2.9, 3.05, near), lerp(2.9, 3.05, near));
       momHairBack(g, YOURS);
       head(g, YOURS, { op: mop * 0.7, close: blinkAt(t, 2.9, 0.9), look: [0, -12], worry: -4, smile: 0.6, browY: -8 });
       momFront(g, YOURS, { tired: 0 });
@@ -929,15 +938,15 @@
     if (d >= 0 && d < 0.25) { const u = d / 0.25; g.save(); g.strokeStyle = `rgba(255,255,255,${1 - u})`; g.lineWidth = 8; ell(g, CX, BY, 76 + u * 150, 76 + u * 150); g.stroke(); g.restore(); }
   }
   function coda(g, t, TT) {                        // somebody told her
-    const s = lerp(TT.bangE, TT.bangE - TT.bangDs[3], ease((t - TT.coda - 0.18) / 1.25));
-    placeWindow(g, FULL, { s: 2.0, cx: 650, cy: 1130 }, (c) => room(c, t, s, { tired: 1, exag: 1, back: ease((t - TT.coda - 1.5) / 0.6) }));
-    const top = lg(g, 0, 660, 0, 780, [0, 'rgba(14,12,10,0.94)'], [1, 'rgba(14,12,10,0)']);
-    g.fillStyle = 'rgba(14,12,10,0.94)'; g.fillRect(0, 0, W, 660); g.fillStyle = top; g.fillRect(0, 660, W, 120);
+    const s = lerp(TT.bangE, TT.bangE - TT.bangDs[3] * 0.77, ease((t - TT.coda - 0.15) / 1.0));
+    placeWindow(g, FULL, { s: 2.0, cx: 650, cy: 1130 }, (c) => room(c, t, s, { tired: 1, exag: 1, back: ease((t - TT.coda - 1.3) / 0.6) }));
+    const top = lg(g, 0, 660, 0, 780, [0, 'rgba(14,12,10,1)'], [1, 'rgba(14,12,10,0)']);
+    g.fillStyle = 'rgb(14,12,10)'; g.fillRect(0, 0, W, 660); g.fillStyle = top; g.fillRect(0, 660, W, 120);
     txt(g, "YOU'RE THE TEST SUBJECT", CX, 356, 44, CREAM, { align: 'center', fit: 820 });
     txt(g, 'NO OFFICER ARRESTS YOU', CX, 456, 86, CREAM, { align: 'center', fit: 840 });
     txt(g, 'ON A VIDEO CALL OR ASKS FOR MONEY.', CX, 534, 62, CREAM, { align: 'center', fit: 840 });
     txt(g, 'HANG UP. TELL SOMEONE. DIAL 1930.', CX, 650, 84, YEL, { align: 'center', fit: 846 });
-    const gd = t - TT.coda - 1.0;                  // it catches the light as it settles
+    const gd = t - TT.coda - 1.95;                 // it catches the light, once the hand has gone
     if (gd > 0 && gd < 0.5) { const q = Math.sin((Math.PI * gd) / 0.5), x = 412, y = 1218; g.save(); g.globalAlpha *= q; g.fillStyle = '#fff6cf'; g.beginPath(); for (let i = 0; i < 8; i++) { const an = (i * Math.PI) / 4, r = i % 2 ? 7 : 42 * q; g[i ? 'lineTo' : 'moveTo'](x + Math.cos(an) * r, y + Math.sin(an) * r); } g.closePath(); g.fill(); g.restore(); }
     const a = 1 - clamp((t - TT.coda) / 0.35);
     if (a > 0) { g.fillStyle = `rgba(0,0,0,${a})`; g.fillRect(0, 0, W, H); }
@@ -970,8 +979,8 @@
     }
     // the third mistake
     if (t >= TT.paper && t < TT.fall + 0.1) { g.save(); g.globalAlpha *= 1 - clamp((t - TT.fall) / 0.1); stamp(g, 'PAPER', 700, 1040, t, TT.paper, INK, 150, -0.08, YEL); g.restore(); }
-    if (t >= TT.n22 - 0.05 && t < TT.n22e + 0.45) title(g, 'WRONG DOOR', 1290, 170, YEL, t, TT.n22 - 0.05, { a: 1 - clamp((t - TT.n22e - 0.25) / 0.2), fit: 840 });
-    if (t >= TT.n24 - 0.05 && t < TT.c01) title(g, 'HIS TEAM', 1290, 200, YEL, t, TT.n24 - 0.05, { a: 1 - clamp((t - TT.c01 + 0.14) / 0.14), fit: 840 });
+    if (t >= TT.n22 - 0.05 && t < TT.n22e + 0.45) title(g, 'WRONG DOOR', 1215, 150, YEL, t, TT.n22 - 0.05, { a: 1 - clamp((t - TT.n22e - 0.25) / 0.2), fit: 840 });
+    if (t >= TT.n24 - 0.05 && t < TT.c01) title(g, 'HIS TEAM', 640, 200, YEL, t, TT.n24 - 0.05, { a: 1 - clamp((t - TT.c01 + 0.14) / 0.14), fit: 840 });
     if (t >= TT.c01 - 0.06 && t < TT.c01e + 0.32) bigTitle(g, clamp((t - TT.c01 + 0.06) * 9) * (1 - clamp((t - TT.c01e - 0.1) / 0.2)));
     if (t >= TT.n25 + 0.05 && t < TT.n25e + 0.5) { const q = clamp(hit(t, TT.n25 + 0.05, 'heavy')), a = clamp((t - TT.n25 - 0.05) * 8) * (1 - clamp((t - TT.n25e - 0.28) / 0.2)); g.save(); g.globalAlpha *= a; g.translate(CX, 1252); g.scale(lerp(0.86, 1, q), lerp(0.86, 1, q)); g.fillStyle = INK; R(g, -437, -70, 874, 134, 14); g.fill(); txt(g, '1.2 LAKH COMPLAINTS IN 2024', 0, 32, 96, CREAM, { align: 'center', fit: 830 }); g.restore(); }
   }
