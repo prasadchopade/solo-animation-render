@@ -740,7 +740,7 @@
     torso(g);
     g.lineCap = 'round'; g.strokeStyle = '#d9442f'; g.lineWidth = 132; for (const k of [-1, 1]) { g.beginPath(); g.moveTo(k * 436, 470); g.lineTo(k * 530, 860); g.stroke(); g.beginPath(); g.moveTo(k * 530, 860); g.lineTo(k * 310, 1130); g.stroke(); }
     g.strokeStyle = 'rgba(0,0,0,0.16)'; g.lineWidth = 8; for (const k of [-1, 1]) { g.beginPath(); g.moveTo(k * 372, 560); g.lineTo(k * 440, 860); g.stroke(); }
-    g.fillStyle = '#35456a'; R(g, -340, 1096, 680, 1500, 30); g.fill();
+    g.fillStyle = '#35456a'; R(g, -530, 1096, 1060, 1500, 30); g.fill();
     head(g, FR, { op: o.op ?? 0, close: Math.max(o.close ?? 0, blinkAt(t, 3.6, 1.7)), look: o.look ?? [0, 0], frown: o.frown ?? 0, smile: o.smile ?? 0, worry: o.worry ?? 12 });
     g.restore();
   }
