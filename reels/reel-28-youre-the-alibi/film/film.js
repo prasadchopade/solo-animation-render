@@ -382,20 +382,20 @@
   }
   function receiver(g, a) {                     // the handset at his ear, his hand round it, the sleeve coming up from the desk
     g.save(); g.globalAlpha *= a; g.translate(214, -6); g.rotate(0.1);
-    R(g, 22, 120, 170, 900, 70); g.fillStyle = '#b39d68'; g.fill();
+    g.strokeStyle = '#b39d68'; g.lineCap = 'round'; g.lineJoin = 'round'; g.lineWidth = 138; g.beginPath(); g.moveTo(236, 400); g.lineTo(290, 640); g.lineTo(58, 118); g.stroke();
     g.strokeStyle = '#d8362a'; g.lineCap = 'round'; g.lineWidth = 56; g.beginPath(); g.moveTo(-12, -104); g.quadraticCurveTo(58, 0, -12, 112); g.stroke();
     for (const y of [-112, 120]) { ell(g, -24, y, 52, 46, 0.2); g.fillStyle = '#d8362a'; g.fill(); }
     for (let i = 0; i < 4; i++) { R(g, -38, -46 + i * 34, 124, 32, 16); g.fillStyle = lg(g, 0, -46 + i * 34, 0, -14 + i * 34, [0, '#c6906a'], [1, '#a06b48']); g.fill(); }
     ell(g, 86, 34, 66, 92); g.fillStyle = '#a8704c'; g.fill();
     g.restore();
   }
-  function insetOfficer(g, t, x, y, r) {        // while he whispers: the officer, on the phone, not listening
+  function insetOfficer(g, t, x, y, r, o = {}) {        // while he whispers: the officer, on the phone, not listening
     g.save(); ell(g, x, y, r + 7, r + 7); g.fillStyle = INK; g.fill(); ell(g, x, y, r, r); g.clip();
     g.fillStyle = lg(g, 0, y - r, 0, y + r, [0, WALL], [1, WALL2]); g.fillRect(x - r, y - r, 2 * r, 2 * r);
-    g.translate(x - 8, y - 2); g.scale(0.36, 0.36); g.rotate(0.06);
+    g.translate(x - 8, y - 2); g.scale(0.36, 0.36); g.rotate(o.phone === false ? 0 : 0.06);
     officerBody(g);
-    head(g, OF, { op: 0.08 + 0.08 * Math.abs(Math.sin(t * 7)), look: [-16, -6], close: blinkAt(t, 3.1, 0.4), frown: 0.2 });
-    receiver(g, 1);
+    head(g, OF, { op: o.op ?? (0.08 + 0.08 * Math.abs(Math.sin(t * 7))), look: o.phone === false ? [0, 3] : [-16, -6], close: blinkAt(t, 3.1, 0.4), frown: 0.2 });
+    if (o.phone !== false) receiver(g, 1);
     g.restore();
   }
   function register(g, x, y, t, s = 1) {
@@ -510,6 +510,7 @@
     g.lineCap = 'round';
     g.strokeStyle = '#d9442f'; g.lineWidth = 78; g.beginPath(); g.moveTo(232, 1096); g.lineTo(150, 1170); g.stroke();
     g.strokeStyle = '#c58f6a'; g.lineWidth = 60; g.beginPath(); g.moveTo(150, 1170); g.lineTo(124, 1236); g.stroke(); g.fillStyle = '#d9a780'; ell(g, 120, 1256, 44, 48); g.fill();
+    g.strokeStyle = '#d9a780'; g.lineCap = 'round'; g.lineWidth = 17; for (let i = 0; i < 4; i++) { g.beginPath(); g.moveTo(92 + i * 19, 1280); g.lineTo(88 + i * 20, 1322); g.stroke(); }
     g.strokeStyle = '#d9442f'; g.lineWidth = 78; g.beginPath(); g.moveTo(628, 1096); g.lineTo(700, 1170); g.stroke();
     g.strokeStyle = '#c58f6a'; g.lineWidth = 60; g.beginPath(); g.moveTo(700, 1170); g.lineTo(762, 1222); g.stroke();
     g.fillStyle = '#d9c28e'; g.beginPath(); g.moveTo(748, 1236); g.bezierCurveTo(650, 1282, 650, 1392, 766, 1396); g.bezierCurveTo(892, 1396, 900, 1282, 804, 1236); g.closePath(); g.fill(); g.strokeStyle = '#a58a55'; g.lineWidth = 5; g.stroke();
@@ -518,6 +519,7 @@
     g.strokeStyle = '#f4efe2'; g.lineWidth = 3; g.beginPath(); g.moveTo(760, 1228); g.lineTo(742, 1268); g.stroke();
     R(g, 722, 1268, 40, 56, 5); g.fillStyle = '#e9e1cc'; g.fill(); g.strokeStyle = '#8f8670'; g.lineWidth = 2.5; g.stroke();
     g.fillStyle = '#d9a780'; ell(g, 782, 1236, 42, 36); g.fill();
+    g.strokeStyle = '#d9a780'; g.lineCap = 'round'; g.lineWidth = 15; for (let i = 0; i < 4; i++) { g.beginPath(); g.moveTo(806, 1214 + i * 15); g.lineTo(838, 1216 + i * 15); g.stroke(); }
     SHOP = c;
     return c;
   }
@@ -614,7 +616,7 @@
       txt(g, 'LAST TUESDAY 7:40 PM', 513, 542, 70, '#59656e', { align: 'center' });
       if (!o.noQ) txt(g, '?', 513, 1110, 560, '#dbe7ea', { align: 'center', a: 0.75 + 0.25 * Math.sin(t * 3.1) });
     }
-    cloudLabel(g, 513, 448, t, o.strike ?? 1e9, 132);
+    cloudLabel(g, 513, 458, t, o.strike ?? 1e9, 118);
     g.restore();
     g.restore();
   }
@@ -651,8 +653,8 @@
     cloudLabel(g, 513, 1186, t, 1e9, 68);
     cloudThings(g, t, TT, 513, 1346);
     insetOfficer(g, t, 820, 402, 122);
-    R(g, 690, 514, 260, 62, 16); g.fillStyle = INK; g.fill();
-    txt(g, 'ON THE PHONE', 820, 561, 46, CREAM, { align: 'center', fit: 236 });
+    R(g, 668, 514, 282, 62, 16); g.fillStyle = INK; g.fill();
+    txt(g, 'BUSY ON THE PHONE', 809, 561, 46, CREAM, { align: 'center', fit: 256 });
     return 0;
   }
   function shotNow(g, t) {                       // "And now you do."
@@ -799,6 +801,7 @@
     if (t < TT.n12 - 0.05) {
       if (t >= TT.chaiW && t < TT.q4) title(g, 'THE CHAIWALA', 1470, 124, INK, t, TT.chaiW, { stroke: '#fff', sw: 0.12 });
       if (t >= TT.q4) title(g, 'OLD OR YOUNG?', 1290, 120, RED, t, TT.q4, { stroke: '#fff', sw: 0.12 });
+      insetOfficer(g, t, 815, 730, 104, { phone: false, op: talkP(t, 'o06') * 1.05 });
       buttons(g, t, TT.q4, TT.q4e, AGE, AGEW);
       timerBar(g, t, TT.q4 + 0.2, TT.q4e);
     }
@@ -808,10 +811,10 @@
   }
   function shotText(g, t) {                      // your phone: you try it on a friend; they add the chaiwala too
     const TT = times();
-    emptyCell(g, t);
-    g.fillStyle = 'rgba(10,20,24,0.22)'; g.fillRect(0, 0, W, H);
-    const up = pop(t, TT.n14 - 0.05), y = lerp(H + 300, 880, up);
-    g.save(); g.translate(513, y);
+    g.fillStyle = lg(g, 0, 0, 0, H, [0, '#a6dfe6'], [1, '#6cc0ca']); g.fillRect(0, 0, W, H);
+    title(g, 'NOW DO THIS TO A FRIEND', 350, 84, INK, t, TT.n14 + 0.02, { stroke: '#fff', sw: 0.12 });
+    const up = pop(t, TT.n14 - 0.05), y = lerp(H + 300, 950, up);
+    g.save(); g.translate(513, y); g.scale(0.9, 0.9);
     R(g, -340, -600, 680, 1240, 60); g.fillStyle = '#181a1f'; g.fill();
     R(g, -312, -572, 624, 1184, 40); g.fillStyle = '#ecf1ea'; g.fill();
     R(g, -312, -572, 624, 134, [40, 40, 0, 0]); g.fillStyle = '#2aa08f'; g.fill();
@@ -822,16 +825,16 @@
     if (t >= TT.n14 + 0.3) {
       const q = pop(t, TT.n14 + 0.3);
       g.save(); g.translate(280, -270); g.scale(q, q);
-      R(g, -520, -160, 520, 330, 34); g.fillStyle = '#c8f2d4'; g.fill();
-      txt(g, 'You had ginger chai', -490, -62, 62, INK, { kind: 'semi' }); txt(g, 'last Tuesday,', -490, 36, 62, INK, { kind: 'semi' }); txt(g, 'remember?', -490, 134, 62, INK, { kind: 'semi' });
+      R(g, -550, -160, 550, 330, 34); g.fillStyle = '#c8f2d4'; g.fill();
+      txt(g, 'You had ginger chai', -520, -62, 62, INK, { kind: 'semi' }); txt(g, 'last Tuesday,', -520, 36, 62, INK, { kind: 'semi' }); txt(g, 'remember?', -520, 134, 62, INK, { kind: 'semi' });
       g.restore();
     }
     const r = TT.n14e + 0.15;
     if (t >= r) {
       const q = pop(t, r);
       g.save(); g.translate(-280, 170); g.scale(q, q);
-      R(g, 0, -116, 500, 262, 34); g.fillStyle = '#fff'; g.fill(); g.strokeStyle = '#c9cfc8'; g.lineWidth = 3; g.stroke();
-      txt(g, 'Yes! That old', 34, -14, 76, INK, { kind: 'semi' }); txt(g, 'chaiwala, right?', 34, 92, 76, INK, { kind: 'semi' });
+      R(g, 0, -116, 540, 262, 34); g.fillStyle = '#fff'; g.fill(); g.strokeStyle = '#c9cfc8'; g.lineWidth = 3; g.stroke();
+      txt(g, 'Yes! That old', 34, -14, 72, INK, { kind: 'semi' }); txt(g, 'chaiwala, right?', 34, 92, 72, INK, { kind: 'semi' });
       g.restore();
     }
     g.restore();
