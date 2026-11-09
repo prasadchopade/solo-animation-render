@@ -409,13 +409,13 @@
       b01: at('b01'), b01e: en('b01'), n04: at('n04'), n04e: en('n04'), c01: at('c01'), c01e: en('c01'), n05: at('n05'), n05e: en('n05'), n06: at('n06'), n06e: en('n06'), d01: at('d01'), d01e: en('d01'),
       n07: at('n07'), n07e: en('n07'), n08: at('n08'), n09: at('n09'), reg: wi('n09', 8), n10: at('n10'), jail: wi('n10', 3), n11: at('n11'), n11e: en('n11'),
       n12: at('n12'), gate: wi('n12', 2), others: wi('n12', 8), n12e: en('n12'), n13: at('n13'), n13e: en('n13'), carried: wi('n13', 13),
-      n14: at('n14'), three: wi('n14', 1), none: wi('n14', 6), n14e: en('n14'), n15: at('n15'), swapped: wi('n15', 2), missed: wi('n15', 15), cw: wi('n15', 22), n15e: en('n15'),
+      n14: at('n14'), three: wi('n14', 1), none: wi('n14', 6), n14e: en('n14'), n15: at('n15'), swapped: wi('n15', 9), missed: wi('n15', 7), cw: wi('n15', 17), n15e: en('n15'),
       n16: at('n16'), aren: wi('n16', 3), you: wi('n16', 7), jack: wi('n16', 11), n17: at('n17'), ravi: wi('n17', 3), n18: at('n18'), n18r: wi('n18', 4), end: tb('end'),
     };
     T.clockEnd = T.n12 - 0.12;
     T.downs = [
       [T.n03 - 0.1, wi('n03', 5) - 0.05],
-      [T.b01e + 0.02, wi('n04', 11) - 0.12],
+      [T.b01e + 0.02, wi('n04', 5) - 0.1],
       [T.c01e + 0.05, T.n06e - 0.05],
     ];
     return T;
@@ -464,7 +464,7 @@
     for (const m of (o.men || atDesk(t))) {
       const L = MEN[m.i], talking = talkP(t, opFor[m.i]);
       const idleX = 5 * Math.sin(t * 1.3 + m.i), idleY = 3 * Math.sin(t * 1.9 + m.i * 2);
-      const look = m.i === 2 && t > wi('n04', 12) ? [0, 14] : m.i === 0 && t < TT.n02 + 0.4 ? [8 * Math.sin(t * 0.7), 2] : [0, 2];
+      const look = m.i === 2 && t > wi('n04', 5) ? [0, 14] : m.i === 0 && t < TT.n02 + 0.4 ? [8 * Math.sin(t * 0.7), 2] : [0, 2];
       seated(g, L, m.x + idleX, MY + idleY, MS, { op: talking, look, close: blinkAt(t, 2.7 + m.i * 0.35, 0.7 + m.i * 0.9), smile: [0.45, 0.35, 0.5, 0.25][m.i], roll: 0.012 * Math.sin(t * 1.1 + m.i) });
     }
     const pcl = parcelState(t);
@@ -489,7 +489,7 @@
     g.restore();
   }
   function writing(t) {
-    const TT = times(), n3 = wi('n03', 4), n4 = wi('n04', 4);
+    const TT = times(), n3 = wi('n03', 4), n4 = wi('n04', 3);
     const name = sstep(TT.n03 + 0.04, n3 + 0.1, t), flat = sstep(TT.n04 + 0.04, n4 + 0.1, t);
     const cur = t > TT.n03 - 0.05 && t < n3 + 0.18 ? 'name' : t > TT.n04 - 0.05 && t < n4 + 0.18 ? 'flat' : null;
     return { name, flat, cur };
@@ -497,7 +497,7 @@
   function parcelState(t) {
     const TT = times(), t0 = TT.c01e - 0.05, t1 = TT.c01e + 0.42, back = TT.d01e - 0.3;
     const hi = sstep(TT.n05 - 0.05, TT.n05 + 0.25, t) * (1 - sstep(TT.n06e + 0.1, TT.n06e + 0.4, t));
-    const circle = sstep(TT.n05e + 0.75, TT.n05e + 1.15, t);
+    const circle = sstep(TT.n05e + 0.55, TT.n05e + 0.95, t);
     const showFrom = TT.downs[1][1] - 0.5;
     if (t < showFrom) return { onChest: 0, onDesk: false, hi, circle };
     if (t < t0) return { onChest: 1, down: 0, who: 2, hands: true, x: PARCEL_DESK[0], y: PARCEL_DESK[1], hi, circle };
@@ -530,7 +530,7 @@
       else { title(g, 'WHAT YOU WRITE', 362, 110, CREAM, t, flip); title(g, 'SENDS A MAN TO JAIL', 492, 116, '#ff5a3a', t, wi('n01', 10) - 0.05); }
       g.restore();
     }
-    if (t >= TT.n05 - 0.05 && t < TT.n06 + 0.1) choices(g, t, TT.n05 + 0.1, TT.n05e + 0.95);
+    if (t >= TT.n05 - 0.05 && t < TT.n06 + 0.1) choices(g, t, TT.n05 + 0.1, TT.n05e + 0.75);
     return 0;
   }
 

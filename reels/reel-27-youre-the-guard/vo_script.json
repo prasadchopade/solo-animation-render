@@ -26,7 +26,7 @@
   },
   {
    "id": "n04",
-   "text": "Write that too, but anyone can say a flat number, so check his parcel."
+   "text": "Write that too, and check his parcel."
   },
   {
    "id": "c01",
@@ -34,12 +34,12 @@
   },
   {
    "id": "n05",
-   "text": "Does the label match your register?"
+   "text": "Does it match your register?"
   },
   {
    "id": "n06",
-   "text": "It doesn't. Good catch.",
-   "text_kokoro": "It doesn't. Good [catch](/kˈæʧ/)."
+   "text": "Good catch.",
+   "text_kokoro": "Good [catch](/kˈæʧ/)."
   },
   {
    "id": "d01",
@@ -79,7 +79,7 @@
   },
   {
    "id": "n15",
-   "text": "Psychologists once swapped a man in a hard hat for another, and one woman who missed it said she'd just seen a construction worker."
+   "text": "In a real experiment, a woman who missed a swap like this said she'd just seen a construction worker."
   },
   {
    "id": "n16",
