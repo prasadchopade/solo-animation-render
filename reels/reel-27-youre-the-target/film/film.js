@@ -352,7 +352,7 @@
     const par = k(TT.o03 - 0.08, TT.o05 - 0.08), bk = k(TT.o05 - 0.05, TT.o06 - 0.08), war = k(TT.o06 - 0.06, TT.knock - 0.15);
     if (par > 0.003) { const y = Y0 + (1 - par) * 760; parcel(g, X, y); fist(g, X, y + 96); }
     if (bk > 0.003) { const y = Y0 - 12 + (1 - bk) * 760; frozenBook(g, X, y, t, TT.frozen); fist(g, X, y + 108); }
-    if (war > 0.003) { const y = 868 + (1 - war) * 820; warrant(g, 166, y); fist(g, 166, y + 232); }
+    if (war > 0.003) { const y = 868 + (1 - war) * 820; warrant(g, 188, y); fist(g, 188, y + 232); }
   }
   // his office is a print on a sheet of paper, taped up. It has never once kept still
   function sheetA(t, TT) {
@@ -361,23 +361,34 @@
     for (const k of TT.knocks) if (t >= k) a += 11 * Math.exp(-(t - k) * 5);
     return a + 7 * sstep(TT.n20 + 0.5, TT.n20 + 1.6, t);
   }
-  function officeWall(g, t, TT, o = {}) {
+  let SHEET = null, SHEET_KEY = '';
+  function sheetImage(t, TT, A, down) {            // strips on whole pixels, in their own canvas: no camera can open a seam between them
     if (!OFFICE) OFFICE = makeOffice();
-    const A = o.A ?? sheetA(t, TT), down = o.fall && t >= TT.rip, sw = down ? 4 : 10;
+    if (!SHEET) SHEET = offscreen(W, H);
+    const key = `${t.toFixed(3)}|${A.toFixed(3)}|${down ? 1 : 0}`;
+    if (key === SHEET_KEY) return SHEET;
+    SHEET_KEY = key;
+    const g = SHEET.getContext('2d'), sw = 3;
+    g.setTransform(1, 0, 0, 1, 0, 0); g.clearRect(0, 0, W, H);
     if (!down) { g.drawImage(OFFICE, 0, 0, W, TOP, 0, 0, W, TOP); g.fillStyle = '#93d3bf'; g.fillRect(0, H - 90, W, 90); }
     for (let x = 0; x < W; x += sw) {
       const ph = x * 0.0095 - t * 2.1, d = A * (Math.sin(ph) + 0.35 * Math.sin(x * 0.021 + t * 1.3));
       let y0 = TOP;
       if (down) {                                  // the tape lets go on the right, and the whole sheet comes after it
-        const u = x / W, tau = t - TT.fall - (1 - u) * 0.18;
-        y0 += ease((t - TT.rip) / 0.25) * 60 * u * u * u + (tau > 0 ? 5200 * tau * tau + 26 * Math.sin(x * 0.02 + tau * 16) * Math.min(1, tau * 4) : 0);
+        const u = x / W, tau = t - TT.fall - (1 - u) * 0.12;
+        y0 += ease((t - TT.rip) / 0.25) * 60 * u * u * u + (tau > 0 ? 3600 * tau * tau + 40 * Math.sin(x * 0.02 + tau * 14) * Math.min(1, tau * 4) : 0);
         if (y0 >= H + 40) continue;
       }
-      g.drawImage(OFFICE, x, TOP, sw, H - TOP, x, y0, sw + 0.7, H - TOP + d * 2.1);
+      g.drawImage(OFFICE, x, TOP, sw, H - TOP, x, y0, sw, H - TOP + d * 2.1);
       const sl = (Math.cos(ph) * A) / 16;
-      if (Math.abs(sl) > 0.01) { g.fillStyle = sl > 0 ? `rgba(16,58,48,${Math.min(0.28, sl * 0.2)})` : `rgba(255,255,255,${Math.min(0.3, -sl * 0.24)})`; g.fillRect(x, y0, sw + 0.7, H); }
-      if (down) { g.fillStyle = 'rgba(0,0,0,0.24)'; g.fillRect(x, y0 + 2, sw + 0.7, 26); g.fillStyle = 'rgba(255,255,255,0.92)'; g.fillRect(x, y0 - 14, sw + 0.7, 16); }    // the paper's back, curling over
+      if (Math.abs(sl) > 0.01) { g.fillStyle = sl > 0 ? `rgba(16,58,48,${Math.min(0.28, sl * 0.2)})` : `rgba(255,255,255,${Math.min(0.3, -sl * 0.24)})`; g.fillRect(x, y0, sw, H); }
+      if (down) { g.fillStyle = 'rgba(0,0,0,0.24)'; g.fillRect(x, y0 + 2, sw, 26); g.fillStyle = 'rgba(255,255,255,0.92)'; g.fillRect(x, y0 - 14, sw, 16); }    // the paper's back, curling over
     }
+    return SHEET;
+  }
+  function officeWall(g, t, TT, o = {}) {
+    const A = o.A ?? sheetA(t, TT), down = !!(o.fall && t >= TT.rip);
+    g.drawImage(sheetImage(t, TT, A, down), 0, 0);
   }
   function officerMan(g, t, TT, o = {}) {
     const knockK = win(t, TT.knock - 0.02, TT.o09 - 0.02, 0.05), flick = win(t, TT.whistle + 0.02, TT.whistle + 0.75, 0.07);
@@ -545,7 +556,7 @@
     g.fillStyle = 'rgba(70,45,25,0.16)'; if (fk < 0.5) { ell(g, RH2[0] + 8, RH2[1] + 34, 92, 18); g.fill(); ell(g, MX + 100, 1338, 110, 18); g.fill(); }
     upperArm(g, 1); upperArm(g, -1);
     forearm(g, MX + 258, 1232, LH2[0] + 20, LH2[1] - 6, 84); hand(g, LH2[0], LH2[1], 0.9, lerp(-0.15, 0.5, fk), true);
-    if (fk < 0.5) bangleSet(g, MX + 156, 1262, n, 0.38);
+    if (fk < 0.5) bangleSet(g, MX + 156, 1270, n, -0.35);
     const hoop = (a0, a1) => { if (!carried) return; g.save(); g.translate(carried.x, carried.y); g.rotate(carried.rot); g.beginPath(); g.ellipse(0, 0, 46, 28, 0, a0, a1); g.strokeStyle = '#f2cf62'; g.lineWidth = 9; g.lineCap = 'round'; g.stroke(); g.restore(); };
     hoop(Math.PI, TAU);                            // behind the fingers
     forearm(g, MX - 258, 1232, RH2[0] - 20, RH2[1] - 6, 84); hand(g, RH2[0], RH2[1], 0.9, lerp(0.15, -0.5, fk));
@@ -689,12 +700,12 @@
     if (half > 2) { R(g, CX - half, y + 5, half * 2, 20, 10); g.fillStyle = '#ffb347'; g.fill(); }
   }
   function ringsHUD(g, t, TT) {
-    const t0 = TT.three - 0.05, off = TT.craneS;
+    const t0 = TT.three - 0.05, off = TT.fall, mv = ease((t - TT.n20 - 0.55) / 0.5);
     if (t < t0 || t > off + 0.5) return;
-    const a = clamp((t - t0) * 7) * (1 - clamp((t - off) / 0.5));
-    const ticks = [TT.spell + 0.05, TT.noSuch + 0.02, TT.tick3], grow = win(t, TT.n20 + 1.3, TT.tick3 + 0.3, 0.2) * 0.42;
+    const a = clamp((t - t0) * 7) * (1 - clamp((t - off) / 0.25));
+    const ticks = [TT.spell + 0.05, TT.noSuch + 0.02, TT.tick3], grow = win(t, TT.n20 + 1.3, TT.tick3 + 0.3, 0.2) * 0.3;
     let bump = 0; for (const tk of ticks) if (t >= tk) bump = Math.max(bump, Math.exp(-(t - tk) * 7));
-    g.save(); g.globalAlpha *= a; g.translate(76, 350); g.scale(1 + bump * 0.22 + grow, 1 + bump * 0.22 + grow); g.translate(-76, -350);
+    g.save(); g.globalAlpha *= a; g.translate(mv * 564, mv * 272); g.translate(76, 350); g.scale(1 + bump * 0.22 + grow, 1 + bump * 0.22 + grow); g.translate(-76, -350);
     R(g, 76, 350, 232, 66, 33); g.fillStyle = 'rgba(16,18,22,0.92)'; g.fill();
     ticks.forEach((tk, i) => {
       const x = 118 + i * 74, y = 383, d = t - tk, q = d > 0 ? clamp(hit(t, tk, 'heavy')) : 0;
@@ -795,9 +806,8 @@
   function fgCam(t, TT) {
     return free(t, [
       [TT.n20 + 0.55, 1.15, { s: 1.3, cx: 665, cy: 840 }],
-      [TT.fall + 0.2, 0.5, { s: 1.12, cx: 640, cy: 800 }],
-      [TT.craneS, TT.craneE - TT.craneS, { s: 0.42, cx: 540, cy: -1400 }],
-      [TT.n25 - 0.1, 0.9, { s: 0.42, cx: 540, cy: -3400 }],
+      [TT.fall + 0.5, 0.55, { s: 1.12, cx: 640, cy: 800 }],
+      [TT.craneS, TT.craneE - TT.craneS, { s: 0.42, cx: 540, cy: -2400 }],
     ], VIEW_FULL);
   }
   function bgCam(t, TT) {
@@ -825,7 +835,7 @@
         if (onScreen > 44) { const k = Q.w / W, px = x + PIP.x * k, py = Q.y + PIP.y * k, pw = PIP.w * k, ph = PIP.h * k; g.drawImage(PEOPLE[(h >>> 3) % PEOPLE.length], px, py, pw, ph); g.strokeStyle = 'rgba(255,255,255,0.9)'; g.lineWidth = 12 * k; g.strokeRect(px, py, pw, ph); }
       }
       if (r > 8) { g.fillStyle = `rgba(16,15,12,${Math.min(0.92, (r - 8) / 15)})`; g.fillRect(x0 - 20, Q.y - Q.gap - 1, x1 - x0 + 40, Q.h + Q.gap + 2); }
-      const off = 1 - clamp((t - TT.craneS - r * 0.06) / 0.09);       // the tube lights come on, a row at a time, going up
+      const off = 1 - clamp((t - TT.craneS - r * 0.09) / 0.1);       // the tube lights come on, a row at a time, going up
       if (off > 0.002) { g.fillStyle = `rgba(8,8,7,${0.95 * off})`; g.fillRect(x0 - 20, Q.y - Q.gap - 1, x1 - x0 + 40, Q.h + Q.gap + 2); }
     }
     placeWindow(g, { ...TB }, { s: TB.w / W, cx: W / 2, cy: H / 2 }, (c) => nextStage(c, t, TT));
@@ -901,7 +911,7 @@
     fan(g, 560, 470, t);
     const up = ease((u - 0.55) / 0.5), near = ease((t - TT.can + 0.2) / 0.6), mop = Math.max(talkP(t, 'm03'), talkP(t, 'm04'));
     if (up > 0.002) {
-      g.save(); g.translate(540 + 22 * Math.sin(u * 1.7), lerp(H + 1000, lerp(1730, 1590, near), up) + mop * 8); g.rotate(0.03 * Math.sin(u * 1.3)); g.scale(lerp(2.9, 3.05, near), lerp(2.9, 3.05, near));
+      g.save(); g.translate(540 + 22 * Math.sin(u * 1.7), lerp(H + 1000, lerp(1830, 1590, near), up) + mop * 8); g.rotate(0.03 * Math.sin(u * 1.3)); g.scale(lerp(2.9, 3.05, near), lerp(2.9, 3.05, near));
       momHairBack(g, YOURS);
       head(g, YOURS, { op: mop * 0.7, close: blinkAt(t, 2.9, 0.9), look: [0, -12], worry: -4, smile: 0.6, browY: -8 });
       momFront(g, YOURS, { tired: 0 });
@@ -938,15 +948,15 @@
     if (d >= 0 && d < 0.25) { const u = d / 0.25; g.save(); g.strokeStyle = `rgba(255,255,255,${1 - u})`; g.lineWidth = 8; ell(g, CX, BY, 76 + u * 150, 76 + u * 150); g.stroke(); g.restore(); }
   }
   function coda(g, t, TT) {                        // somebody told her
-    const s = lerp(TT.bangE, TT.bangE - TT.bangDs[3] * 0.77, ease((t - TT.coda - 0.15) / 1.0));
-    placeWindow(g, FULL, { s: 2.0, cx: 650, cy: 1130 }, (c) => room(c, t, s, { tired: 1, exag: 1, back: ease((t - TT.coda - 1.3) / 0.6) }));
+    const s = lerp(TT.bangE, TT.bangE - TT.bangDs[3] * 0.77, ease((t - TT.coda - 0.25) / 1.0));
+    placeWindow(g, FULL, { s: 2.0, cx: 650, cy: 1130 }, (c) => room(c, t, s, { tired: 1, exag: 1, back: ease((t - TT.coda - 1.4) / 0.6) }));
     const top = lg(g, 0, 660, 0, 780, [0, 'rgba(14,12,10,1)'], [1, 'rgba(14,12,10,0)']);
     g.fillStyle = 'rgb(14,12,10)'; g.fillRect(0, 0, W, 660); g.fillStyle = top; g.fillRect(0, 660, W, 120);
     txt(g, "YOU'RE THE TEST SUBJECT", CX, 356, 44, CREAM, { align: 'center', fit: 820 });
     txt(g, 'NO OFFICER ARRESTS YOU', CX, 456, 86, CREAM, { align: 'center', fit: 840 });
     txt(g, 'ON A VIDEO CALL OR ASKS FOR MONEY.', CX, 534, 62, CREAM, { align: 'center', fit: 840 });
     txt(g, 'HANG UP. TELL SOMEONE. DIAL 1930.', CX, 650, 84, YEL, { align: 'center', fit: 846 });
-    const gd = t - TT.coda - 1.95;                 // it catches the light, once the hand has gone
+    const gd = t - TT.coda - 2.05;                 // it catches the light, once the hand has gone
     if (gd > 0 && gd < 0.5) { const q = Math.sin((Math.PI * gd) / 0.5), x = 412, y = 1218; g.save(); g.globalAlpha *= q; g.fillStyle = '#fff6cf'; g.beginPath(); for (let i = 0; i < 8; i++) { const an = (i * Math.PI) / 4, r = i % 2 ? 7 : 42 * q; g[i ? 'lineTo' : 'moveTo'](x + Math.cos(an) * r, y + Math.sin(an) * r); } g.closePath(); g.fill(); g.restore(); }
     const a = 1 - clamp((t - TT.coda) / 0.35);
     if (a > 0) { g.fillStyle = `rgba(0,0,0,${a})`; g.fillRect(0, 0, W, H); }
