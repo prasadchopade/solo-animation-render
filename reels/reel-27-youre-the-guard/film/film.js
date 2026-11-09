@@ -1,9 +1,10 @@
-// Reel 27 · You're the Guard. Episode 5 of "You're the test subject". You're the guard at a housing society's gate. A delivery man answers your
-// questions; every time you look down to write, he walks in through the gate and the next one steps up, in the same jacket and cap. You catch
-// a wrong label and send "him" away: nobody got past you. Then flat 302 is robbed. Four men in that jacket, and whoever you point at goes to
-// jail. You're right: he was at your gate. So were the other three. You checked his name, his flat, his parcel; you never checked his face.
-// (Simons & Levin 1998: docs/research.md.) Our own drawings; nobody real. The street, the rig and the POV are from reels 20 and 25 (tags
-// archive/reels-source-2026-11-04, source/reel-25-youre-the-detective). 30 fps, no motion blur.
+// Reel 27 · You're the Guard. Episode 5 of "You're the test subject". You're the guard at a housing society's gate, and what you write in your
+// register sends a man to jail. A delivery man answers your questions; every time you look down to write, he walks in through the gate and the
+// next one steps up, in the same jacket and cap. You catch a wrong label and send "him" away: nobody got past you. Then flat 302 is robbed. Four
+// men in that jacket; your register says one came; point at him. You're right: he was at your gate, and so were the other three. Three of them
+// go home. A last test: your register says Ravi. Which one was Ravi? (Frame 0.) (Simons & Levin 1998: docs/research.md.) Our own drawings;
+// nobody real. The third man is the season's thief, the mole and all, under the same teal cap. The street, the rig and the POV are from reels
+// 20 and 25 (tags archive/reels-source-2026-11-04, source/reel-25-youre-the-detective). 30 fps, no motion blur.
 (() => {
   const { W, H, scene, canvas, clamp, lerp, el, mulberry32 } = C;
   const K = window.KIT;
@@ -105,11 +106,11 @@
   const MEN = [
     { ...TEALCAP, skin: '#cc9470', skinD: '#a26c4a', skinH: '#e6b794', hair: '#17110d', style: 'cap', must: 'thin', mt: 10, mw: 46, stub: 0, brow: 10, browTilt: 0, jaw: 0.92, ew: 47, eh: 26, nose: 0.9, dy: -6 },
     { ...TEALCAP, skin: '#c58c65', skinD: '#9b6545', skinH: '#deb089', hair: '#17110d', style: 'cap', must: 'thin', mt: 13, mw: 50, stub: 0.12, brow: 12, browTilt: 2, jaw: 0.96, ew: 46, eh: 25, nose: 1.02, dy: -2 },
-    { ...TEALCAP, skin: '#b67c56', skinD: '#8d5a3b', skinH: '#d19d76', hair: '#15100c', style: 'cap', must: 'thin', mt: 18, mw: 56, stub: 0.32, brow: 15, browTilt: 3, jaw: 1.01, ew: 43, eh: 23, nose: 1.14, dy: 3 },
+    { ...TEALCAP, skin: '#b27a54', skinD: '#8a583a', skinH: '#cf9a72', hair: '#15100c', style: 'cap', must: 'thin', mt: 15, mw: 53, stub: 0.55, brow: 15, browTilt: 8, jaw: 0.98, ew: 43, eh: 22, nose: 1.1, mole: [84, 62], dy: 3 },   // the season's thief, the mole and all, under the same cap
     { ...TEALCAP, skin: '#a06b47', skinD: '#7a4e31', skinH: '#bb8660', hair: '#120d0a', style: 'cap', must: 'thick', mt: 25, mw: 64, stub: 0.55, brow: 17, browTilt: 6, jaw: 1.08, ew: 40, eh: 21, nose: 1.26, age: 1, dy: 8 },
   ];
   const LINE = [2, 0, 3, 1];                       // the lineup, by number: 1 is the third man, 2 the first, 3 the fourth, 4 the second
-  const THIEF = { skin: '#b27a54', skinD: '#8a583a', skinH: '#cf9a72', hair: '#15100c', style: 'cap', must: 'thin', mt: 13, mw: 52, stub: 0.55, brow: 15, browTilt: 8, jaw: 0.98, ew: 43, eh: 22, mole: [84, 62], nose: 1, capC: ['#8e2433', '#5c1520', '#4a111b'] };
+  const OLD = { skin: '#c99068', skinD: '#9d6747', skinH: '#e2b48d', hair: '#c9c4ba', style: 'bun', must: null, stub: 0, brow: 8, browTilt: -8, jaw: 0.92, ew: 44, eh: 23, nose: 1, lip: '#8d4a45', age: 1, bindi: true };
   const WORKERS = [
     { skin: '#c48a64', skinD: '#9a6444', skinH: '#ddae88', hair: '#17110d', style: 'hard', must: 'thin', mt: 14, mw: 52, stub: 0.2, brow: 13, browTilt: 2, jaw: 0.96, ew: 46, eh: 25, nose: 1 },
     { skin: '#ab7450', skinD: '#845335', skinH: '#c6936d', hair: '#120d0a', style: 'hard', must: 'thick', mt: 22, mw: 60, stub: 0.45, brow: 16, browTilt: 5, jaw: 1.05, ew: 42, eh: 22, nose: 1.2 },
@@ -130,6 +131,7 @@
     g.fillStyle = rg(g, 0, -40, 150, 330, [0, 'rgba(90,45,25,0)'], [1, 'rgba(90,45,25,0.3)']); g.fillRect(-300, -300, 600, 700);
     if (L.stub && !o.blank) { g.fillStyle = lg(g, 0, 56, 0, 190, [0, 'rgba(30,22,18,0)'], [1, `rgba(30,22,18,${0.34 * L.stub})`]); g.fillRect(-300, 56, 600, 320); const r = mulberry32(5); g.fillStyle = `rgba(20,14,10,${0.34 * L.stub})`; for (let i = 0; i < 70; i++) { ell(g, (r() - 0.5) * 2 * hw * 0.9, 120 + r() * 120, 1.7, 1.7); g.fill(); } }
     g.restore();
+    if (L.bindi && !o.blank) { ell(g, 0, -92, 10, 10); g.fillStyle = '#9a1f2c'; g.fill(); }
     if (!o.blank) {
       const my = 118 + drop * 0.2;
       mouth(g, my, op, { lip: L.lip || '#83503f', w0: o.w0 ?? 44, frown: o.frown ?? 0, smile: o.smile ?? 0 });
@@ -159,6 +161,8 @@
       g.beginPath(); g.moveTo(-hh - 2, -122); g.bezierCurveTo(-hh - 8, -280, -90, -318, 0, -318); g.bezierCurveTo(90, -318, hh + 8, -280, hh + 2, -122); g.quadraticCurveTo(0, -158, -hh - 2, -122); g.closePath(); g.fillStyle = lg(g, -hh, -318, hh, -120, [0, CC[0]], [1, CC[1]]); g.fill();
       g.strokeStyle = 'rgba(0,0,0,0.25)'; g.lineWidth = 4; g.beginPath(); g.moveTo(0, -318); g.quadraticCurveTo(-12, -220, 0, -150); g.stroke();
       g.beginPath(); g.moveTo(-hh + 6, -128); g.quadraticCurveTo(0, -170, hh - 6, -128); g.quadraticCurveTo(hh + 6, -108, hh - 40, -92); g.quadraticCurveTo(0, -116, -hh + 40, -92); g.quadraticCurveTo(-hh - 6, -108, -hh + 6, -128); g.closePath(); g.fillStyle = CC[2]; g.fill();
+    } else if (L.style === 'bun') {
+      g.beginPath(); g.moveTo(-hh, -30); g.bezierCurveTo(-hh - 8, -240, -100, -300, 0, -296); g.bezierCurveTo(100, -300, hh + 8, -240, hh, -30); g.bezierCurveTo(hh - 14, -120, 130, -190, 0, -206); g.bezierCurveTo(-130, -190, -hh + 14, -120, -hh, -30); g.closePath(); g.fill(); ell(g, 0, -330, 76, 58); g.fill();
     } else if (L.style === 'hard') {
       g.beginPath(); g.moveTo(-hh - 26, -120); g.bezierCurveTo(-hh - 16, -310, -90, -344, 0, -344); g.bezierCurveTo(90, -344, hh + 16, -310, hh + 26, -120); g.closePath(); g.fillStyle = lg(g, -hh, -344, hh, -120, [0, '#ffd23a'], [1, '#e7a910']); g.fill();
       R(g, -hh - 44, -132, 2 * hh + 88, 30, 14); g.fillStyle = '#d99a08'; g.fill();
@@ -301,30 +305,6 @@
     head(g, SELLER, { look: [14 * Math.sin(t * 0.8), 6], close: blinkAt(t, 3.1, 1.4) });
     g.restore();
   }
-  // the van across the road, from the front. Its driver's seat is on your left as you look at it, and the man in the maroon cap is in it.
-  function van(g, t, x = 700, y = 642, s = 1) {
-    g.save(); g.translate(x, y); g.scale(s, s);
-    g.fillStyle = 'rgba(0,0,0,0.25)'; ell(g, 210, 512, 240, 18); g.fill();
-    R(g, 0, 0, 430, 500, 46); g.fillStyle = lg(g, 0, 0, 430, 500, [0, '#f7f6f1'], [1, '#c9c9c2']); g.fill();
-    // the windscreen, the driver behind it
-    R(g, 26, 40, 378, 190, 22); g.fillStyle = lg(g, 0, 40, 0, 230, [0, '#a9c8d8'], [1, '#7da3b6']); g.fill();
-    g.save(); R(g, 26, 40, 378, 190, 22); g.clip();
-    g.save(); g.translate(112, 136 + 2 * Math.sin(t * 0.9)); g.scale(0.3, 0.3); g.fillStyle = lg(g, -240, 170, 240, 500, [0, '#2d7f77'], [1, '#205c56']);
-    g.beginPath(); g.moveTo(-250, 520); g.lineTo(-250, 300); g.bezierCurveTo(-230, 220, -150, 210, -90, 190); g.lineTo(90, 190); g.bezierCurveTo(150, 210, 230, 220, 250, 300); g.lineTo(250, 520); g.closePath(); g.fill();
-    head(g, THIEF, { look: [-4, 2], close: blinkAt(t, 3.7, 0.9), smile: 0.2 }); g.restore();
-    g.fillStyle = 'rgba(255,255,255,0.22)'; g.beginPath(); g.moveTo(40, 40); g.lineTo(150, 40); g.lineTo(70, 230); g.lineTo(0, 230); g.closePath(); g.fill(); g.beginPath(); g.moveTo(190, 40); g.lineTo(240, 40); g.lineTo(160, 230); g.lineTo(110, 230); g.closePath(); g.fill();
-    g.restore();
-    g.strokeStyle = 'rgba(50,50,50,0.5)'; g.lineWidth = 7; R(g, 26, 40, 378, 190, 22); g.stroke();
-    R(g, -28, 110, 38, 56, 10); g.fillStyle = '#26282d'; g.fill(); R(g, 420, 110, 38, 56, 10); g.fill();
-    R(g, 40, 300, 350, 76, 10); g.fillStyle = '#34373d'; g.fill();
-    g.strokeStyle = 'rgba(255,255,255,0.18)'; g.lineWidth = 4; for (let i = 0; i < 5; i++) { g.beginPath(); g.moveTo(50, 314 + i * 12); g.lineTo(380, 314 + i * 12); g.stroke(); }
-    for (const k of [0, 1]) { const hx = 66 + k * 298; ell(g, hx, 268, 36, 28); g.fillStyle = '#fff4c6'; g.fill(); g.strokeStyle = 'rgba(0,0,0,0.3)'; g.lineWidth = 4; g.stroke(); }
-    R(g, 150, 396, 130, 44, 4); g.fillStyle = '#f7e9a4'; g.fill(); g.strokeStyle = 'rgba(0,0,0,0.4)'; g.lineWidth = 3; g.stroke();
-    R(g, 8, 440, 414, 38, 12); g.fillStyle = '#3a3c40'; g.fill();
-    for (const hx of [52, 330]) { R(g, hx, 462, 80, 58, 14); g.fillStyle = '#1b1c1f'; g.fill(); }
-    g.restore();
-  }
-
   // ------------------------------------------------------------------ the desk and what's on it
   const MX = 470, MY = 880, MS = 1.12, TY = 1330, DOWN = 1160;
   const BOOK = { x: 110, y: 1420, w: 580, h: 1130 }, ROW = { name: 1700, flat: 1980, parcel: 2260 };
@@ -334,6 +314,17 @@
     g.fillStyle = lg(g, 0, TY - 24, 0, 2500, [0, '#8f6236'], [1, '#4a2e17']); g.beginPath(); g.moveTo(-40, TY + 12); g.lineTo(1120, TY - 12); g.lineTo(1120, 3300); g.lineTo(-40, 3300); g.closePath(); g.fill();
     g.fillStyle = 'rgba(255,240,210,0.3)'; g.beginPath(); g.moveTo(-40, TY + 12); g.lineTo(1120, TY - 12); g.lineTo(1120, TY - 4); g.lineTo(-40, TY + 20); g.closePath(); g.fill();
     g.fillStyle = 'rgba(0,0,0,0.13)'; for (let i = 1; i < 21; i++) { g.beginPath(); g.moveTo(-40, TY + 12 + i * 92); g.lineTo(1120, TY - 12 + i * 92); g.lineTo(1120, TY - 9 + i * 92); g.lineTo(-40, TY + 15 + i * 92); g.closePath(); g.fill(); }
+  }
+  // the police notice on your desk (the crime is on the desk from frame 0)
+  function notice(g, x, y, rot = -0.07) {
+    g.save(); g.translate(x, y); g.rotate(rot);
+    g.fillStyle = 'rgba(0,0,0,0.28)'; R(g, -122, -66, 256, 150, 6); g.fill();
+    g.fillStyle = '#fdf8ea'; R(g, -130, -76, 260, 152, 6); g.fill();
+    g.fillStyle = RED; R(g, -130, -76, 260, 50, 6); g.fill();
+    txt(g, 'POLICE ALERT', 0, -38, 37, '#fff', { align: 'center', fit: 236 });
+    txt(g, 'ROBBERIES ON', 0, 14, 37, INK, { align: 'center', fit: 236 });
+    txt(g, 'THIS STREET', 0, 56, 37, INK, { align: 'center', fit: 236 });
+    g.restore();
   }
   // handwriting: a few glyphs as strokes in a 0..1 box, written on by length
   const GLYPH = {
@@ -346,7 +337,7 @@
     '2': [[[0.04, 0.22], [0.36, -0.02], [0.74, 0.14], [0.64, 0.44], [0.02, 1], [0.86, 0.98]]],
   };
   const GLW = { R: 0.98, A: 1.02, V: 1.0, I: 0.42, '3': 0.96, '0': 0.98, '2': 0.98 };
-  function wordStrokes(s, x, y, h) {                 // → a list of strokes in canvas units; total length
+  function wordStrokes(s, x, y, h) {
     const list = []; let cx = x, L = 0;
     for (const c of s) {
       for (const st of GLYPH[c] || []) {
@@ -358,7 +349,6 @@
     }
     return { list, L };
   }
-  // draws what's written so far; returns the nib's position
   function writeOn(g, s, x, y, h, u, color = BLUEINK, lw = 12) {
     const { list, L } = wordStrokes(s, x, y, h); let left = clamp(u) * L, nib = [x, y];
     g.strokeStyle = color; g.lineWidth = lw; g.lineCap = 'round'; g.lineJoin = 'round';
@@ -380,10 +370,9 @@
     g.fillStyle = 'rgba(214,73,73,0.5)'; g.fillRect(x + 56, y, 4, h);
     g.fillStyle = 'rgba(70,110,170,0.28)'; for (let yy = y + 60; yy < y + h; yy += 56) g.fillRect(x, yy, w, 3);
     g.strokeStyle = 'rgba(0,0,0,0.12)'; g.lineWidth = 2; R(g, x, y, w, h, 10); g.stroke();
-    if (lab) { g.fillStyle = '#7b6d55'; R(g, x + 150, y + 10, w - 300, 44, 6); g.fill(); txt(g, 'VISITORS', x + w / 2, y + 44, 34, '#fff6e2', { align: 'center', ls: 3 }); }
+    if (lab) { g.fillStyle = '#7b6d55'; R(g, x + 130, y + 10, w - 260, 44, 6); g.fill(); txt(g, 'VISITORS REGISTER', x + w / 2, y + 44, 32, '#fff6e2', { align: 'center', ls: 2 }); }
   }
   function rowLabel(g, s, x, y) { txt(g, s, x, y, 42, '#6d6452', { kind: 'semi' }); }
-  // the book on your desk, with what's been written so far. st: { name, flat } 0..1 (how much), hi (highlight 302)
   function book(g, st) {
     const B = BOOK;
     bookPage(g, B.x, B.y, B.w, B.h);
@@ -416,19 +405,18 @@
   function times() {
     if (T) return T;
     T = {
-      n01: at('n01'), n01e: en('n01'), n02: at('n02'), a01: at('a01'), a01e: en('a01'), n03: at('n03'), n03e: en('n03'), n04: at('n04'), which: wi('n04', 2),
-      b01: at('b01'), b01e: en('b01'), n05: at('n05'), n05e: en('n05'), n06: at('n06'), n06e: en('n06'), c01: at('c01'), c01e: en('c01'),
-      n07: at('n07'), n07e: en('n07'), n08: at('n08'), n08e: en('n08'), d01: at('d01'), d01e: en('d01'),
-      n09: at('n09'), n09e: en('n09'), n10: at('n10'), n11: at('n11'), four: wi('n11', 2), n12: at('n12'), jail: wi('n12', 7), n13: at('n13'), n13e: en('n13'),
-      n14: at('n14'), n14b: wi('n14', 2), n15: at('n15'), n16: at('n16'), n17: at('n17'), n18: at('n18'), n18e: en('n18'),
-      n19: at('n19'), n19e: en('n19'), n20: at('n20'), one: wi('n20', 4), three: wi('n20', 8), n20e: en('n20'),
-      n21: at('n21'), nm: wi('n21', 3), fl: wi('n21', 5), pc: wi('n21', 7), fc: wi('n21', 13), n22: at('n22'), n23: at('n23'), cw: wi('n23', 10), n23e: en('n23'), n24: at('n24'), n25: at('n25'), n26: at('n26'), n27: at('n27'), end: tb('end'),
+      n01: at('n01'), n01e: en('n01'), n02: at('n02'), n02e: en('n02'), a01: at('a01'), a01e: en('a01'), n03: at('n03'), n03e: en('n03'),
+      b01: at('b01'), b01e: en('b01'), n04: at('n04'), n04e: en('n04'), c01: at('c01'), c01e: en('c01'), n05: at('n05'), n05e: en('n05'), n06: at('n06'), n06e: en('n06'), d01: at('d01'), d01e: en('d01'),
+      n07: at('n07'), n07e: en('n07'), n08: at('n08'), n09: at('n09'), reg: wi('n09', 8), n10: at('n10'), jail: wi('n10', 3), n11: at('n11'), n11e: en('n11'),
+      n12: at('n12'), gate: wi('n12', 2), others: wi('n12', 8), n12e: en('n12'), n13: at('n13'), n13e: en('n13'), carried: wi('n13', 13),
+      n14: at('n14'), three: wi('n14', 1), none: wi('n14', 6), n14e: en('n14'), n15: at('n15'), swapped: wi('n15', 2), missed: wi('n15', 15), cw: wi('n15', 22), n15e: en('n15'),
+      n16: at('n16'), aren: wi('n16', 3), you: wi('n16', 7), jack: wi('n16', 11), n17: at('n17'), ravi: wi('n17', 3), n18: at('n18'), n18r: wi('n18', 4), end: tb('end'),
     };
-    T.clockEnd = T.n14 - 0.15;
+    T.clockEnd = T.n12 - 0.12;
     T.downs = [
-      [T.n03 - 0.12, T.n04 + 0.16, 'name'],
-      [T.n05 - 0.12, T.n06 + 0.16, 'flat'],
-      [T.c01e + 0.05, T.n08e - 0.1, 'parcel'],
+      [T.n03 - 0.1, wi('n03', 5) - 0.05],
+      [T.b01e + 0.02, wi('n04', 11) - 0.12],
+      [T.c01e + 0.05, T.n06e - 0.05],
     ];
     return T;
   }
@@ -447,19 +435,22 @@
     let y = 0; for (const [a, b] of times().downs) y = Math.max(y, sstep(a, a + 0.38, t) * (1 - sstep(b, b + 0.38, t)));
     return y;
   }
-  // who's at the desk: a list of { i, x } to draw (two men while they change places, in the seconds you're looking down)
+  // who's at the desk: a list of { i, x } to draw. While you're looking down the man steps away left through the gate, the spot is empty for a
+  // moment, and the next steps in from your right, where he's been waiting out of sight.
   function atDesk(t) {
     const D = times().downs;
     for (let k = 0; k < D.length; k++) {
-      const a1 = D[k][0] + 0.42, b1 = D[k][1] - 0.02, mid = (a1 + b1) / 2;
+      const a1 = D[k][0] + 0.4, b1 = D[k][1] - 0.02, mid = (a1 + b1) / 2;
       if (t < a1) return [{ i: k, x: MX }];
       if (t < b1) {
-        const out = sstep(a1, mid + 0.1, t), inn = sstep(mid - 0.1, b1, t);
-        return [{ i: k, x: lerp(MX, -560, out) }, { i: k + 1, x: lerp(1620, MX, inn) }];
+        const out = sstep(a1, mid - 0.06, t), inn = sstep(mid + 0.06, b1, t), list = [];
+        if (out < 1) list.push({ i: k, x: lerp(MX, -620, out) });
+        if (inn > 0) list.push({ i: k + 1, x: lerp(1640, MX, inn) });
+        return list;
       }
     }
-    const TT = times(), go = sstep(TT.d01e + 0.05, TT.d01e + 0.95, t);
-    return go >= 1 ? [] : [{ i: 3, x: lerp(MX, 1620, go), go }];
+    const TT = times(), go = sstep(TT.d01e + 0.08, TT.d01e + 0.9, t);
+    return go >= 1 ? [] : [{ i: 3, x: lerp(MX, 1640, go), go }];
   }
 
   // ------------------------------------------------------------------ 1 · the gate, through your eyes
@@ -469,56 +460,52 @@
     g.save(); g.translate(513, 900); g.scale(zoom, zoom); g.translate(-513, -900); g.translate(0, -camY);
     g.drawImage(ST.bg, 0, 0);
     seller(g, t);
-    van(g, t);
-    // the men
     const opFor = { 0: 'a01', 1: 'b01', 2: 'c01', 3: 'd01' };
     for (const m of (o.men || atDesk(t))) {
       const L = MEN[m.i], talking = talkP(t, opFor[m.i]);
       const idleX = 5 * Math.sin(t * 1.3 + m.i), idleY = 3 * Math.sin(t * 1.9 + m.i * 2);
-      const look = m.i === 2 && t > TT.n06 ? [0, 14] : m.i === 0 && t < TT.n02 - 0.2 ? [8 * Math.sin(t * 0.7), 2] : [0, 2];
+      const look = m.i === 2 && t > wi('n04', 12) ? [0, 14] : m.i === 0 && t < TT.n02 + 0.4 ? [8 * Math.sin(t * 0.7), 2] : [0, 2];
       seated(g, L, m.x + idleX, MY + idleY, MS, { op: talking, look, close: blinkAt(t, 2.7 + m.i * 0.35, 0.7 + m.i * 0.9), smile: [0.45, 0.35, 0.5, 0.25][m.i], roll: 0.012 * Math.sin(t * 1.1 + m.i) });
     }
-    // the parcel in his hands, and on your desk
     const pcl = parcelState(t);
     if (pcl.onChest > 0) {
-      const px = lerp(MX + 10, pcl.x, pcl.down), py = lerp(MY + 340, pcl.y, pcl.down);
+      const px = lerp(MX + 10 + (pcl.track ?? 0) * 1170, pcl.x, pcl.down), py = lerp(MY + 340, pcl.y, pcl.down);
       if (pcl.hands) { for (const k of [-1, 1]) { ell(g, px + k * 150, py + 10, 44, 34); g.fillStyle = MEN[pcl.who].skin; g.fill(); } }
       box(g, px, py, lerp(0.9, 0.95, pcl.down), { label: pcl.down > 0.5, hi: pcl.hi, circle: pcl.circle });
     }
     desk(g);
-    // the book, the glass
+    notice(g, 822, 1456);
     const w = writing(t);
     if (pcl.onDesk) box(g, PARCEL_DESK[0], PARCEL_DESK[1], 0.95, { label: true, hi: pcl.hi, circle: pcl.circle });
     const nib = book(g, { name: w.name, flat: w.flat, hi: pcl.hi });
-    // the glass on your desk until you lift it
-    const lift = sstep(TT.n09 - 0.05, TT.n09 + 0.5, t);
-    if (lift <= 0) { glass(g, 900, 1432, 0.6, 0); steam(g, 900, 1370, t, 0.55); }
+    const lift = sstep(TT.n07 - 0.05, TT.n07 + 0.5, t);
+    if (lift <= 0) { glass(g, 984, 1432, 0.6, 0); steam(g, 984, 1370, t, 0.55); }
     if (!o.noHand) {
-      const [nx, ny] = w.cur === 'flat' ? nib.b : w.cur === 'name' ? nib.a : [760, 1640];
-      const off = lerp(0, 1100, sstep(TT.n08e, TT.n09, t));
+      const [nx, ny] = w.cur === 'flat' ? nib.b : w.cur === 'name' ? nib.a : pcl.onDesk ? [790, 2360] : [740, 1790];
+      const off = lerp(0, 1100, sstep(TT.n06e + 0.1, TT.n07, t));
       penHand(g, nx, ny + off, 0.86, 0);
       if (lift > 0) { const k = sstep(0, 1, lift); chaiHand(g, 880, lerp(1740, 1505, k), 0.92, -0.04); steam(g, 874, lerp(1610, 1375, k), t, 0.6); }
     }
     g.restore();
   }
   function writing(t) {
-    const TT = times();
-    const name = sstep(TT.n03 + 0.05, TT.n03e + 0.25, t), flat = sstep(TT.n05 + 0.05, TT.n05e + 0.25, t);
-    const cur = t < TT.n03e + 0.25 && t > TT.n03 - 0.05 ? 'name' : t < TT.n05e + 0.25 && t > TT.n05 - 0.05 ? 'flat' : null;
+    const TT = times(), n3 = wi('n03', 4), n4 = wi('n04', 4);
+    const name = sstep(TT.n03 + 0.04, n3 + 0.1, t), flat = sstep(TT.n04 + 0.04, n4 + 0.1, t);
+    const cur = t > TT.n03 - 0.05 && t < n3 + 0.18 ? 'name' : t > TT.n04 - 0.05 && t < n4 + 0.18 ? 'flat' : null;
     return { name, flat, cur };
   }
-  // the parcel's journey: the third man has it at his chest; on "Here, sir" it comes down to your desk; the fourth takes it away.
   function parcelState(t) {
-    const TT = times(), t0 = TT.c01e - 0.05, t1 = TT.c01e + 0.4;
-    const hi = sstep(TT.n07 - 0.05, TT.n07 + 0.25, t) * (1 - sstep(TT.n08e + 0.1, TT.n08e + 0.4, t));
-    const circle = sstep(TT.n07e + 0.85, TT.n07e + 1.25, t);
-    const back = TT.d01e - 0.25;
-    if (t < TT.downs[1][1] - 0.5) return { onChest: 0, onDesk: false, hi, circle };
+    const TT = times(), t0 = TT.c01e - 0.05, t1 = TT.c01e + 0.42, back = TT.d01e - 0.3;
+    const hi = sstep(TT.n05 - 0.05, TT.n05 + 0.25, t) * (1 - sstep(TT.n06e + 0.1, TT.n06e + 0.4, t));
+    const circle = sstep(TT.n05e + 0.75, TT.n05e + 1.15, t);
+    const showFrom = TT.downs[1][1] - 0.5;
+    if (t < showFrom) return { onChest: 0, onDesk: false, hi, circle };
     if (t < t0) return { onChest: 1, down: 0, who: 2, hands: true, x: PARCEL_DESK[0], y: PARCEL_DESK[1], hi, circle };
     if (t < t1) return { onChest: 1, down: sstep(t0, t1, t), who: 2, hands: true, x: PARCEL_DESK[0], y: PARCEL_DESK[1], hi, circle };
     if (t < back) return { onChest: 0, onDesk: true, hi, circle };
-    const go = sstep(TT.d01e + 0.05, TT.d01e + 0.95, t), u = 1 - sstep(back, back + 0.4, t);
-    return { onChest: go < 1 ? 1 : 0, down: u, who: 3, hands: true, x: lerp(PARCEL_DESK[0], 1620, go), y: PARCEL_DESK[1], hi: 0, circle: u > 0.5 ? circle : 0, track: go };
+    const go = sstep(TT.d01e + 0.08, TT.d01e + 0.9, t), u = 1 - sstep(back, back + 0.4, t);
+    if (go >= 1) return { onChest: 0, onDesk: false, hi: 0, circle: 0 };
+    return { onChest: 1, down: u, who: 3, hands: true, x: PARCEL_DESK[0], y: PARCEL_DESK[1], hi: 0, circle: u > 0.5 ? circle : 0, track: go };
   }
   function choices(g, t, t0, t1) {
     if (t < t0) return;
@@ -538,40 +525,47 @@
     const out = sstep(TT.n01e - 0.05, TT.n01e + 0.15, t);
     if (out < 1) {
       g.save(); g.globalAlpha = 1 - out;
-      const flip = wi('n01', 7) - 0.05;
+      const flip = wi('n01', 4) - 0.05;
       if (t < flip) { txt(g, "YOU'RE THE", 513, 362, 104, CREAM, { align: 'center', stroke: INK, sw: 0.14 }); txt(g, 'GUARD', 513, 520, 190, YEL, { align: 'center', fit: 860, stroke: INK, sw: 0.13 }); }
-      else { title(g, 'WHOEVER YOU POINT AT', 356, 96, CREAM, t, flip); title(g, 'GOES TO JAIL', 492, 136, '#ff5a3a', t, wi('n01', 10) - 0.05); }
+      else { title(g, 'WHAT YOU WRITE', 362, 110, CREAM, t, flip); title(g, 'SENDS A MAN TO JAIL', 492, 116, '#ff5a3a', t, wi('n01', 10) - 0.05); }
       g.restore();
     }
-    if (t >= TT.n07 - 0.05 && t < TT.n08 + 0.1) choices(g, t, TT.n07 + 0.1, TT.n07e + 1.05);
+    if (t >= TT.n05 - 0.05 && t < TT.n06 + 0.1) choices(g, t, TT.n05 + 0.1, TT.n05e + 0.95);
     return 0;
   }
 
-  // ------------------------------------------------------------------ 2 · flat 302
+  // ------------------------------------------------------------------ 2 · flat 302, and the woman who lives there
+  function oldWoman(g, x, y, s, t) {
+    g.save(); g.translate(x, y); g.scale(s, s);
+    g.fillStyle = lg(g, -280, 170, 280, 1000, [0, '#3f8f6a'], [1, '#266b4c']); g.beginPath(); g.moveTo(-300, 1200); g.lineTo(-290, 420); g.bezierCurveTo(-270, 280, -180, 220, -90, 196); g.lineTo(90, 196); g.bezierCurveTo(180, 220, 270, 280, 290, 420); g.lineTo(300, 1200); g.closePath(); g.fill();
+    g.fillStyle = lg(g, -280, 180, 140, 760, [0, '#e7b53a'], [1, '#c98f1c']); g.beginPath(); g.moveTo(-268, 280); g.quadraticCurveTo(-60, 190, 120, 244); g.lineTo(-40, 700); g.lineTo(-226, 620); g.closePath(); g.fill();
+    const nw = 56; g.fillStyle = OLD.skin; g.beginPath(); g.moveTo(-nw, 120); g.lineTo(-nw - 6, 230); g.quadraticCurveTo(0, 290, nw + 6, 230); g.lineTo(nw, 120); g.closePath(); g.fill();
+    head(g, OLD, { look: [0, 8], close: blinkAt(t, 1.9, 0.4), frown: 0.9, worry: -8 });
+    g.fillStyle = '#7a1730'; R(g, -130, 448, 260, 150, 10); g.fill(); g.fillStyle = '#541024'; R(g, -112, 466, 224, 114, 8); g.fill();
+    g.fillStyle = OLD.skin; ell(g, -146, 530, 44, 56); g.fill(); ell(g, 146, 530, 44, 56); g.fill();
+    g.restore();
+  }
   function shotFlat(g, t) {
     const TT = times();
     g.fillStyle = lg(g, 0, 0, 0, H, [0, '#ebe0c8'], [1, '#cfc2a4']); g.fillRect(0, 0, W, H);
     g.fillStyle = '#7f6448'; g.fillRect(0, 1360, W, 560);
     g.fillStyle = 'rgba(0,0,0,0.22)'; g.fillRect(0, 1360, W, 16);
-    const z = 1 + 0.04 * sstep(TT.n10, TT.n11, t);
+    const z = 1 + 0.05 * sstep(TT.n08, TT.n09, t);
     g.save(); g.translate(513, 900); g.scale(z, z); g.translate(-513, -900);
-    // the doorway, the dark room, the almirah standing open
-    R(g, 276, 380, 520, 980, 8); g.fillStyle = '#5a3a22'; g.fill();
-    g.fillStyle = lg(g, 300, 400, 300, 1360, [0, '#3b3a44'], [1, '#26252c']); g.fillRect(300, 404, 472, 956);
-    g.fillStyle = '#6e7687'; R(g, 372, 620, 340, 620, 6); g.fill();
-    g.fillStyle = '#2a2c34'; g.fillRect(392, 640, 300, 580);
-    g.fillStyle = '#7a8295'; g.beginPath(); g.moveTo(372, 620); g.lineTo(290, 660); g.lineTo(290, 1270); g.lineTo(372, 1240); g.closePath(); g.fill();
-    g.beginPath(); g.moveTo(712, 620); g.lineTo(790, 660); g.lineTo(790, 1270); g.lineTo(712, 1240); g.closePath(); g.fill();
-    g.fillStyle = '#46464e'; for (const yy of [760, 900, 1040]) g.fillRect(392, yy, 300, 10);
-    g.fillStyle = '#d33b5a'; g.beginPath(); g.moveTo(420, 1220); g.quadraticCurveTo(470, 1130, 560, 1210); g.lineTo(560, 1222); g.closePath(); g.fill();
-    // the door, pushed open, with its brass number
-    g.fillStyle = lg(g, 166, 390, 310, 1360, [0, '#a06d3e'], [1, '#7b4f2b']); g.beginPath(); g.moveTo(300, 404); g.lineTo(150, 340); g.lineTo(150, 1440); g.lineTo(300, 1360); g.closePath(); g.fill();
-    g.save(); g.transform(0.58, -0.16, 0, 1, 170, 0); R(g, 20, 560, 240, 120, 12); g.fillStyle = '#e7bf58'; g.fill(); g.strokeStyle = '#8f6a1e'; g.lineWidth = 6; g.stroke(); txt(g, '302', 140, 652, 108, '#3b2a0c', { align: 'center' }); g.restore();
-    policeTape(g, 210, 720, 860, 980); policeTape(g, 210, 1120, 860, 820);
+    R(g, 276, 480, 520, 880, 8); g.fillStyle = '#5a3a22'; g.fill();
+    g.fillStyle = lg(g, 300, 500, 300, 1360, [0, '#3b3a44'], [1, '#26252c']); g.fillRect(300, 504, 472, 856);
+    g.fillStyle = '#6e7687'; R(g, 480, 640, 260, 600, 6); g.fill();
+    g.fillStyle = '#2a2c34'; g.fillRect(498, 658, 224, 564);
+    g.fillStyle = '#7a8295'; g.beginPath(); g.moveTo(740, 640); g.lineTo(790, 680); g.lineTo(790, 1260); g.lineTo(740, 1240); g.closePath(); g.fill();
+    g.fillStyle = '#46464e'; for (const yy of [780, 920, 1060]) g.fillRect(498, yy, 224, 10);
+    g.fillStyle = lg(g, 166, 490, 310, 1360, [0, '#a06d3e'], [1, '#7b4f2b']); g.beginPath(); g.moveTo(300, 504); g.lineTo(150, 440); g.lineTo(150, 1440); g.lineTo(300, 1360); g.closePath(); g.fill();
+    g.save(); g.transform(0.58, -0.16, 0, 1, 170, 0); R(g, 20, 700, 240, 120, 12); g.fillStyle = '#e7bf58'; g.fill(); g.strokeStyle = '#8f6a1e'; g.lineWidth = 6; g.stroke(); txt(g, '302', 140, 792, 108, '#3b2a0c', { align: 'center' }); g.restore();
+    oldWoman(g, 470, 960, 0.78, t);
+    policeTape(g, 190, 1270, 880, 1200);
     g.restore();
-    title(g, 'FLAT 302', 386, 150, YEL, t, TT.n10 - 0.02);
-    title(g, 'ROBBED', 520, 120, '#ff5a3a', t, wi('n10', 2) - 0.02);
-    return flashAt(t, TT.n10 - 0.05) * 0.5;
+    title(g, 'FLAT 302', 386, 150, YEL, t, TT.n08 - 0.02);
+    title(g, 'ROBBED', 520, 110, '#ff5a3a', t, wi('n08', 2) - 0.02);
+    return flashAt(t, TT.n08 - 0.05) * 0.5;
   }
 
   // ------------------------------------------------------------------ 3 · the line of four, and the reversal
@@ -590,46 +584,34 @@
     seated(g, MEN[i], x + CW / 2, y + CH * 0.5, 0.78, { op: o.op ?? 0, look: o.look || [0, 2], close: o.close ?? 0, smile: 0.08 });
     g.restore();
     g.strokeStyle = o.lit ? YEL : INK; g.lineWidth = o.lit ? 11 : 6; R(g, x, y, CW, CH, 12); g.stroke();
-    // the number
     g.fillStyle = '#121212'; R(g, x + 16, y + CH - 86, 70, 70, 10); g.fill(); txt(g, String(n + 1), x + 51, y + CH - 28, 58, '#fff9ea', { kind: 'mono', align: 'center' });
     g.restore();
   }
-  // what each man did: the same order the film happened in
-  const DID = [{ n: 1, s: '"RAVI, SIR."', pid: 'n15' }, { n: 3, s: '"THREE ZERO TWO."', pid: 'n16' }, { n: 0, s: 'THE PARCEL', pid: 'n17' }, { n: 2, s: '"SORRY, SIR."', pid: 'n18' }];
   function shotLine(g, t) {
     const TT = times();
     g.fillStyle = '#d9d3c3'; g.fillRect(0, 0, W, H);
-    const [sx, sy] = shakeAt(t, [TT.n18e + 0.02], 22);
+    const [sx, sy] = shakeAt(t, [TT.n12e + 0.02], 22);
     g.save(); g.translate(sx, sy);
-    const z = 1 + 0.03 * sstep(TT.n11, TT.clockEnd, t);
+    const z = 1 + 0.03 * sstep(TT.n09, TT.clockEnd, t);
     g.save(); g.translate(513, 960); g.scale(z, z); g.translate(-513, -960);
-    for (let n = 0; n < 4; n++) {
-      const did = DID.find((d) => d.n === n), lit = did && t >= at(did.pid) - 0.06;
-      cell(g, n, t, { pop: clamp(hit(t, TT.n11 + 0.02 + n * 0.05, 'heavy')), lit, gate: lit ? clamp((t - at(did.pid) + 0.06) * 6) : 0, close: blinkAt(t, 2.1 + n * 0.3, 0.3 + n), look: [0, 2] });
-      if (lit) {
-        const x = CX[n % 2] + CW / 2, y = CY[n < 2 ? 0 : 1] + CH - 48, q = pop(t, at(did.pid) - 0.06);
-        g.save(); g.translate(x + 22, y); g.scale(lerp(0.7, 1, q), lerp(0.7, 1, q));
-        R(g, -148, -40, 296, 72, 12); g.fillStyle = '#121212'; g.fill(); txt(g, did.s, 0, 18, 46, YEL, { align: 'center', fit: 270 });
-        g.restore();
-      }
-    }
+    const lit = t >= TT.others - 0.06;
+    for (let n = 0; n < 4; n++) cell(g, n, t, { pop: clamp(hit(t, TT.n09 + 0.02 + n * 0.05, 'heavy')), lit, gate: lit ? clamp((t - TT.others + 0.06) * 7) : 0, close: blinkAt(t, 2.1 + n * 0.3, 0.3 + n), look: [0, 2] });
     g.restore();
-    // the head of the page
     const clock = Math.min(3, Math.max(0, Math.ceil(TT.clockEnd - t - 1e-3)));
-    if (t < TT.n13 - 0.05) {
-      title(g, 'WHICH ONE?', 410, 150, INK, t, TT.n12 - 0.05, { stroke: '#d9d3c3', sw: 0.02 });
-    } else if (t < TT.n14 - 0.05) {
+    if (t < TT.n10 - 0.05) {
+      if (t >= TT.reg - 0.05) { title(g, 'YOUR REGISTER SAYS', 372, 92, INK, t, TT.reg - 0.05, { stroke: '#d9d3c3', sw: 0.02 }); title(g, 'ONE MAN', 466, 122, RED, t, wi('n09', 11) - 0.05, { stroke: '#d9d3c3', sw: 0.02 }); }
+    } else if (t < TT.n11 - 0.05) {
+      if (t >= TT.jail - 0.05) { title(g, 'HE GOES TO JAIL.', 372, 118, RED, t, TT.jail - 0.05, { stroke: '#d9d3c3', sw: 0.02 }); }
+      if (t >= wi('n10', 5) - 0.05) title(g, 'THE OTHER THREE GO HOME.', 462, 76, INK, t, wi('n10', 5) - 0.05, { stroke: '#d9d3c3', sw: 0.02 });
+    } else if (t < TT.n12 - 0.05) {
       txt(g, 'WHICH ONE?', 66, 420, 132, INK);
       g.save(); g.translate(806, 386); R(g, -125, -50, 250, 96, 12); g.fillStyle = '#121212'; g.fill(); txt(g, '00:0' + clock, 0, 26, 72, clock <= 1 ? '#ff4a30' : '#ffb347', { kind: 'mono', align: 'center' }); g.restore();
-    } else if (t < TT.n18e) {
-      title(g, "YOU'RE RIGHT.", 420, 150, GREEN, t, TT.n14 - 0.05, { stroke: '#d9d3c3', sw: 0.02 });
     } else {
-      title(g, "YOU'RE RIGHT.", 420, 150, GREEN, t, -1, { stroke: '#d9d3c3', sw: 0.02 });
-      stamp(g, 'ALL FOUR', 513, 1010, t, TT.n18e + 0.02, RED, 210, -0.08, 'rgba(255,255,255,0.96)');
+      title(g, "YOU'RE RIGHT.", 420, 150, GREEN, t, TT.n12 - 0.05, { stroke: '#d9d3c3', sw: 0.02 });
+      stamp(g, 'ALL FOUR', 513, 1010, t, TT.n12e + 0.02, RED, 210, -0.08, 'rgba(255,255,255,0.96)');
     }
-    if (t >= TT.jail - 0.04 && t < TT.n14 - 0.05) txt(g, 'HE GOES TO JAIL. THE OTHER THREE GO HOME.', 513, 1540, 58, RED, { align: 'center', fit: 860, a: clamp((t - TT.jail + 0.04) * 8) });
     g.restore();
-    return flashAt(t, TT.n11 - 0.05) * 0.5;
+    return flashAt(t, TT.n09 - 0.05) * 0.5;
   }
 
   // ------------------------------------------------------------------ 4 · the replay: the camera behind you for the first time
@@ -642,86 +624,73 @@
     const hy = -40 + 44 * down;
     g.fillStyle = '#a06f4a'; R(g, -60, 40 + 40 * down, 120, 130 - 40 * down, 30); g.fill();
     ell(g, 0, hy, 150, 180 - 24 * down); g.fillStyle = '#17110d'; g.fill();
-    // the guard's beret
     g.fillStyle = lg(g, -170, hy - 180, 170, hy - 40, [0, '#2a3f79'], [1, '#1c2c58']); ell(g, 0, hy - 90 + 18 * down, 168, 98 - 18 * down); g.fill();
     for (const k of [-1, 1]) { ell(g, k * 152, hy + 20, 16, 34); g.fillStyle = '#a06f4a'; g.fill(); }
     g.restore();
   }
-  function walkBob(t, on) { return on * Math.sin(t * 15) * 10; }
   function shotReplay(g, t) {
     const TT = times();
     if (!ST) makeStreet();
-    g.drawImage(ST.bg, 0, 0); seller(g, t); van(g, t, 716, 642, 0.86);
-    const R0 = TT.n19 - 0.1, R1 = TT.n19e + 0.18, L = (R1 - R0) / 3;
-    // spots: 'desk' in front of you; 'q0', 'q1', 'q2' waiting by the van
-    const Q = [[702, 884, 0.5], [800, 868, 0.46], [886, 856, 0.42]], DK = [513, 884, 0.56];
-    const man = (i, x, y, s, b = 0, o = {}) => seated(g, MEN[i], x, y + b, s, { look: [i === 3 ? 0 : -6, 2], close: blinkAt(t, 2.4 + i * 0.3, 0.3 + i), smile: 0.3, patch: false, ...o });
-    // the moment each one goes
-    const cyc = (k) => { const a = R0 + k * L; return { go: sstep(a + 0.18 * L, a + 0.86 * L, t), next: sstep(a + 0.34 * L, a + 0.98 * L, t) }; };
+    g.drawImage(ST.bg, 0, 0); seller(g, t);
+    const R0 = TT.n13 - 0.1, R1 = TT.carried + 0.05, L = (R1 - R0) / 3;
+    const Q = [[706, 884, 0.5], [802, 868, 0.46], [890, 856, 0.42]], DK = [513, 884, 0.56];
+    const man = (i, x, y, s, b = 0) => seated(g, MEN[i], x, y + b, s, { look: [i === 3 ? 0 : -6, 2], close: blinkAt(t, 2.4 + i * 0.3, 0.3 + i), smile: 0.3, patch: false });
+    const cyc = (k) => { const a = R0 + k * L; return { go: sstep(a + 0.18 * L, a + 0.82 * L, t), next: sstep(a + 0.36 * L, a + 0.98 * L, t) }; };
     const pos = [[...DK], [...Q[0]], [...Q[1]], [...Q[2]]];
     let inside = 0, down = 0;
     for (let k = 0; k < 3; k++) {
-      const c = cyc(k); const u = t - (R0 + k * L);
-      if (c.go > 0.02) inside = Math.max(inside, c.go > 0.5 ? k + 1 : k);
-      down = Math.max(down, win(t, R0 + k * L + 0.08 * L, R0 + k * L + 0.76 * L, 0.1 * L));
-      // the k-th leaves left through the gate
-      pos[k] = [lerp(DK[0], -340, c.go), DK[1], lerp(DK[2], 0.72, c.go)];
-      // the rest move up one
-      for (let j = k + 1; j < 4; j++) { const from = j - k - 1 < 3 ? Q[j - k - 1] : Q[2], to = j - k - 2 < 0 ? DK : Q[j - k - 2]; if (c.next > 0 && t > R0 + k * L) { pos[j] = [lerp(from[0], to[0], c.next), lerp(from[1], to[1], c.next), lerp(from[2], to[2], c.next)]; } }
+      const c = cyc(k);
+      if (c.go > 0.5) inside = k + 1;
+      down = Math.max(down, win(t, R0 + k * L + 0.06 * L, R0 + k * L + 0.78 * L, 0.1 * L));
+      pos[k] = [lerp(DK[0], -360, c.go), DK[1], lerp(DK[2], 0.72, c.go)];
+      for (let j = k + 1; j < 4; j++) { const from = j - k - 1 < 3 ? Q[j - k - 1] : Q[2], to = j - k - 2 < 0 ? DK : Q[j - k - 2]; if (c.next > 0 && t > R0 + k * L) pos[j] = [lerp(from[0], to[0], c.next), lerp(from[1], to[1], c.next), lerp(from[2], to[2], c.next)]; }
     }
-    // the last man leaves up the street, with the parcel, the way he came
-    const out = sstep(TT.n20 - 0.2, TT.n20 + 0.9, t);
-    if (out > 0) { pos[3] = [lerp(DK[0], 1500, out), DK[1], lerp(DK[2], 0.34, out)]; }
-    // draw back to front, the queue first
-    for (const i of [3, 2, 1, 0]) { const [x, y, s] = pos[i]; if (x < -200 || x > 1420) continue; const moving = Math.abs(x - (i === 0 ? DK[0] : pos[i][0])) > 0; man(i, x, y, s, Math.sin(t * 14 + i) * 3); }
-    // the desk and you, from behind
+    for (const i of [3, 2, 1, 0]) { const [x, y, s] = pos[i]; if (x < -220 || x > 1420) continue; man(i, x, y, s, Math.sin(t * 14 + i) * 3); }
     g.fillStyle = lg(g, 0, 1240, 0, 1920, [0, '#9c6c3d'], [1, '#5a3a1f']); g.beginPath(); g.moveTo(-20, 1282); g.lineTo(1100, 1262); g.lineTo(1100, 1960); g.lineTo(-20, 1960); g.closePath(); g.fill();
     g.fillStyle = 'rgba(255,240,210,0.3)'; g.fillRect(0, 1262, W, 8);
     guardBack(g, 513, 1500, 0.92, down);
-    // REPLAY, and a count of who's got in
     g.fillStyle = 'rgba(14,14,16,0.75)'; R(g, 92, 286, 250, 70, 12); g.fill();
     g.fillStyle = '#ff3a26'; for (const k of [0, 1]) { g.beginPath(); g.moveTo(140 + k * 34, 300); g.lineTo(140 + k * 34, 342); g.lineTo(110 + k * 34, 321); g.closePath(); g.fill(); }
     txt(g, 'REPLAY', 196, 338, 44, CREAM, { kind: 'mono' });
-    if (t < TT.n20 - 0.08) title(g, 'INSIDE: ' + inside, 468, 132, YEL, t, R0);
-    if (t >= TT.one - 0.04) title(g, '1 TO JAIL', 380, 130, '#ff5a3a', t, TT.one - 0.04);
-    if (t >= TT.three - 0.04) title(g, '3 GO HOME', 520, 130, YEL, t, TT.three - 0.04);
-    return flashAt(t, TT.n19 - 0.14) * 0.4;
+    title(g, 'INSIDE: ' + inside, 468, 132, YEL, t, R0);
+    return flashAt(t, TT.n13 - 0.14) * 0.4;
   }
-
-  // ------------------------------------------------------------------ 5 · the checklist
-  function shotList(g, t) {
-    const TT = times();
-    g.fillStyle = '#6e4a28'; g.fillRect(0, 0, W, H);
-    const k = sstep(TT.fc - 0.3, TT.fc + 1.0, t), z = lerp(1, 1.09, k);
-    g.save(); g.translate(500, 1180); g.scale(z, z); g.translate(-500, -1180);
-    bookPage(g, 80, 300, 880, 1240);
-    const rows = [['NAME', 'RAVI', TT.nm], ['FLAT', '302', TT.fl], ['PARCEL', '203', TT.pc]];
-    rows.forEach(([lab, val, t0], i) => {
-      const y = 540 + i * 262;
-      txt(g, lab, 150, y - 120, 56, '#6d6452', { kind: 'semi' });
-      if (val === '203') { txt(g, '203', 330, y, 150, '#1c1a14', { align: 'left' }); } else { writeOn(g, val, 340, y, 130, 1); }
-      if (t >= t0 - 0.05) { const q = pop(t, t0 - 0.05); g.save(); g.translate(800, y - 62); g.scale(lerp(1.7, 1, q), lerp(1.7, 1, q)); g.strokeStyle = GREEN; g.lineWidth = 22; g.lineCap = 'round'; g.lineJoin = 'round'; g.beginPath(); g.moveTo(-48, 0); g.lineTo(-10, 42); g.lineTo(60, -54); g.stroke(); g.restore(); }
-    });
-    // FACE, in red, and nothing beside it
-    const y = 540 + 3 * 262;
-    if (t >= TT.fc - 0.05) {
-      const q = pop(t, TT.fc - 0.05);
-      g.save(); g.translate(150, y - 60); g.scale(lerp(1.5, 1, q), lerp(1.5, 1, q)); txt(g, 'FACE', 0, 40, 120, RED, {}); g.restore();
-      g.strokeStyle = RED; g.lineWidth = 12; R(g, 740, y - 130, 120, 120, 12); g.stroke();
-    }
+  // ------------------------------------------------------------------ 5 · three of them go home: their backs, so it's nobody you could have picked
+  function backMan(g, x, y, s, t, ph) {
+    g.save(); g.translate(x, y + Math.sin(t * 9 + ph) * 6 * s); g.scale(s, s);
+    g.fillStyle = 'rgba(0,0,0,0.2)'; ell(g, 0, 556, 130, 18); g.fill();
+    R(g, -74, 300, 62, 250, 26); g.fillStyle = '#34495e'; g.fill(); R(g, 12, 300, 62, 250, 26); g.fill();
+    g.fillStyle = lg(g, -180, 0, 180, 340, [0, '#21b3ab'], [1, '#0e8079']); R(g, -176, -40, 352, 372, 72); g.fill();
+    g.fillStyle = '#d7dde3'; R(g, -122, 130, 244, 34, 6); g.fill();
+    g.fillStyle = '#a06f4a'; R(g, -48, -116, 96, 90, 26); g.fill();
+    ell(g, 0, -150, 112, 112); g.fillStyle = '#17110d'; g.fill();
+    g.fillStyle = lg(g, -130, -290, 130, -140, [0, '#22b5ad'], [1, '#0f7f79']); g.beginPath(); g.moveTo(-124, -128); g.bezierCurveTo(-132, -292, -60, -302, 0, -302); g.bezierCurveTo(60, -302, 132, -292, 124, -128); g.quadraticCurveTo(0, -168, -124, -128); g.closePath(); g.fill();
     g.restore();
-    return flashAt(t, TT.n21 - 0.08) * 0.35;
+  }
+  function shotHome(g, t) {
+    const TT = times();
+    if (!ST) makeStreet();
+    g.drawImage(ST.bg, 0, 0); seller(g, t);
+    const u = sstep(TT.n14 - 0.08, TT.n14e + 0.4, t);
+    const s0 = lerp(1.05, 0.62, u), yy = lerp(1120, 1010, u);
+    const f4 = sstep(TT.none - 0.1, TT.none + 0.45, t);
+    const xs = f4 > 0 ? [lerp(240, 200, f4), lerp(500, 420, f4), lerp(770, 660, f4)] : [240, 500, 770];
+    for (let i = 0; i < 3; i++) backMan(g, xs[i], yy + i * 12, s0, t, i * 1.7);
+    if (f4 > 0) backMan(g, lerp(1360, 900, f4), yy + 34, s0, t, 5.1);
+    if (t >= TT.three - 0.05) title(g, '3 GO HOME', 406, 150, YEL, t, TT.three - 0.05);
+    if (t >= TT.none - 0.05) title(g, '4 IF YOU SAID NONE', 552, 92, CREAM, t, TT.none - 0.05);
+    return flashAt(t, TT.n14 - 0.08) * 0.35;
   }
 
-  // ------------------------------------------------------------------ 6 · the real thing: a door, and a construction worker. Then a jacket.
+  // ------------------------------------------------------------------ 6 · the real thing: a door, and a man in a hard hat. Then a jacket.
   function shotStudy(g, t) {
     const TT = times();
     if (!ST) makeStreet();
     g.drawImage(ST.bg, 0, 0);
     g.fillStyle = 'rgba(250,244,230,0.45)'; g.fillRect(0, 0, W, H);
     g.fillStyle = lg(g, 0, 1300, 0, 1920, [0, '#a59a86'], [1, '#7c735f']); g.fillRect(0, 1300, W, 620);
-    const d0 = TT.n22 + 0.7, d1 = d0 + 1.0, u = sstep(d0, d1, t), who = u < 0.5 ? 0 : 1;
-    const blank = sstep(TT.cw - 0.15, TT.cw + 0.45, t), jack = sstep(TT.n24 - 0.2, TT.n24 + 0.2, t);
+    const d0 = TT.swapped - 0.08, d1 = d0 + 0.95, u = sstep(d0, d1, t), who = u < 0.5 ? 0 : 1;
+    const blank = sstep(TT.cw - 0.15, TT.cw + 0.45, t), jack = sstep(TT.n16 - 0.1, TT.n16 + 0.25, t);
     const jc = ['#ef8e2c', '#c96a14'];
     if (jack < 1) {
       g.save(); g.globalAlpha = 1 - jack;
@@ -730,48 +699,42 @@
       g.restore();
     }
     if (jack > 0) { g.save(); g.globalAlpha = jack; seated(g, MEN[1], 513, 900, 1.3, { blank: true }); g.restore(); }
-    if (u > 0 && u < 1) {                            // the door, carried across between you
+    if (u > 0 && u < 1) {
       const x = lerp(-780, 1140, u);
       g.fillStyle = lg(g, x, 0, x + 720, 0, [0, '#8f6236'], [1, '#6e4726']); g.fillRect(x, 300, 720, 1700);
       g.strokeStyle = 'rgba(0,0,0,0.28)'; g.lineWidth = 10; R(g, x + 90, 420, 540, 500, 12); g.stroke(); R(g, x + 90, 1000, 540, 700, 12); g.stroke();
       ell(g, x + 660, 1020, 26, 26); g.fillStyle = '#d8c078'; g.fill();
       for (const hy of [1040, 1290]) { ell(g, x + 8, hy, 44, 36); g.fillStyle = '#b98460'; g.fill(); ell(g, x + 712, hy, 44, 36); g.fill(); }
     }
-    if (t >= TT.n22 - 0.05 && t < TT.n24 - 0.08) {
-      title(g, '1998', 412, 150, INK, t, TT.n22 - 0.05, { stroke: CREAM, sw: 0.1 });
-      txt(g, 'SIMONS & LEVIN', 513, 470, 50, '#3b382f', { kind: 'semi', align: 'center', a: clamp((t - TT.n22) * 4) });
-    }
-    if (t >= wi('n23', 3) - 0.05 && t < TT.n24 - 0.08) title(g, '2 IN 3 STUDENTS MISSED IT', 1490, 86, RED, t, wi('n23', 3) - 0.05, { stroke: CREAM, sw: 0.1 });
-    if (t >= TT.n24 - 0.08) { title(g, 'YOU JUST', 360, 120, CREAM, t, TT.n24 - 0.08); title(g, 'SAW A JACKET.', 510, 160, YEL, t, wi('n24', 2) - 0.05); }
-    return flashAt(t, TT.n22 - 0.08) * 0.35;
+    if (t >= TT.n15 - 0.05 && t < TT.n16 - 0.08) txt(g, 'SIMONS & LEVIN, 1998', 513, 400, 58, '#3b382f', { kind: 'semi', align: 'center', a: clamp((t - TT.n15) * 4), stroke: 'rgba(255,250,240,0.8)', sw: 0.1 });
+    if (t >= TT.missed - 0.05 && t < TT.n16 - 0.08) title(g, '8 OF 12 STUDENTS MISSED IT', 1500, 84, RED, t, TT.missed - 0.05, { stroke: CREAM, sw: 0.1 });
+    if (t >= TT.aren - 0.05 && t < TT.you - 0.05) { title(g, 'NOT DELIVERY MEN', 400, 124, YEL, t, TT.aren - 0.05); }
+    if (t >= TT.you - 0.05) { title(g, 'YOU JUST', 360, 120, CREAM, t, TT.you - 0.05); title(g, 'SAW A JACKET.', 510, 160, YEL, t, TT.jack - 0.05); }
+    return flashAt(t, TT.n15 - 0.08) * 0.35;
   }
 
-  // ------------------------------------------------------------------ 7 · your own front door, and the man who brought your last parcel
-  function shotDoor(g, t) {
+  // ------------------------------------------------------------------ 7 · your register, and one last question: the four of them, and the name on the page
+  function shotRegister(g, t) {
     const TT = times();
-    const open = sstep(TT.n25 + 0.05, TT.n25 + 0.75, t), z = lerp(1, 1.3, sstep(TT.n26, TT.end, t));
-    g.fillStyle = lg(g, 0, 0, 0, H, [0, '#efe3c9'], [1, '#d6c7a4']); g.fillRect(0, 0, W, H);
-    g.fillStyle = '#8a6a4a'; g.fillRect(0, 1500, W, 420);
-    g.save(); g.translate(513, 900); g.scale(z, z); g.translate(-513, -900);
-    R(g, 196, 296, 640, 1210, 6); g.fillStyle = '#6b4a2e'; g.fill();
-    g.fillStyle = lg(g, 216, 316, 216, 1500, [0, '#f7f0dc'], [1, '#e7dcc0']); g.fillRect(216, 316, 600, 1184);
-    // the corridor outside, him in it
-    g.save(); g.beginPath(); g.rect(216, 316, 600, 1184); g.clip();
-    g.fillStyle = lg(g, 0, 300, 0, 1500, [0, '#eadcc0'], [1, '#c3b190']); g.fillRect(216, 316, 600, 1184);
-    seated(g, { ...MEN[1], jaw: 0.98, capC: ['#70808f', '#4d5a66', '#3b4650'] }, 516, 860, 1.25, { blank: true, jc: ['#7d8c9b', '#556270'], patch: false });
-    box(g, 516, 1324, 1.05, { rot: 0.02 });
-    for (const k of [-1, 1]) { ell(g, 516 + k * 168, 1344, 50, 40); g.fillStyle = '#b98460'; g.fill(); }
+    g.fillStyle = '#6e4a28'; g.fillRect(0, 0, W, H);
+    const k = sstep(TT.n17, TT.n18, t), z = lerp(1, 1.06, k);
+    g.save(); g.translate(500, 800); g.scale(z, z); g.translate(-500, -800);
+    bookPage(g, 80, 340, 880, 1100);
+    txt(g, 'NAME', 150, 560, 60, '#6d6452', { kind: 'semi' });
+    g.fillStyle = `rgba(255,218,60,${0.7 * sstep(TT.ravi - 0.1, TT.ravi + 0.15, t)})`; R(g, 300, 590, 560, 230, 20); g.fill();
+    writeOn(g, 'RAVI', 340, 790, 190, 1, BLUEINK, 18);
+    txt(g, 'FLAT', 150, 960, 60, '#6d6452', { kind: 'semi' });
+    writeOn(g, '302', 340, 1180, 170, 1, BLUEINK, 16);
     g.restore();
-    // your door, swinging in
-    if (open < 1) {
-      const w = lerp(600, 40, open);
-      g.fillStyle = lg(g, 216, 316, 216 + w, 1500, [0, '#a06d3e'], [1, '#7b4f2b']); g.fillRect(216, 316, w, 1184);
-      g.strokeStyle = 'rgba(0,0,0,0.25)'; g.lineWidth = 8; R(g, 216 + w * 0.12, 400, w * 0.76, 460, 8); g.stroke(); R(g, 216 + w * 0.12, 940, w * 0.76, 480, 8); g.stroke();
-      ell(g, 216 + w * 0.93, 930, 20 * clamp(w / 300), 20); g.fillStyle = '#d8c078'; g.fill();
-    }
-    g.restore();
-    if (t >= wi('n27', 1) - 0.06) { title(g, 'WHAT DID HE', 372, 112, INK, t, wi('n27', 1) - 0.06, { stroke: CREAM, sw: 0.1 }); title(g, 'LOOK LIKE?', 500, 150, RED, t, wi('n27', 2) - 0.02, { stroke: CREAM, sw: 0.1 }); }
-    return flashAt(t, TT.n25 - 0.1) * 0.4;
+    return flashAt(t, TT.n17 - 0.06) * 0.35;
+  }
+  function shotLast(g, t) {
+    const TT = times();
+    g.fillStyle = '#d9d3c3'; g.fillRect(0, 0, W, H);
+    for (let n = 0; n < 4; n++) cell(g, n, t, { pop: clamp(hit(t, TT.n18 - 0.03 + n * 0.05, 'heavy')), close: blinkAt(t, 2.2 + n * 0.3, 0.3 + n), look: [0, 2] });
+    title(g, 'SO WHICH ONE', 366, 104, INK, t, TT.n18 - 0.03, { stroke: '#d9d3c3', sw: 0.02 });
+    title(g, 'WAS RAVI?', 470, 118, RED, t, TT.n18r - 0.05, { stroke: '#d9d3c3', sw: 0.02 });
+    return flashAt(t, TT.n18 - 0.06) * 0.35;
   }
 
   // ================================================================ the film
@@ -783,13 +746,14 @@
       g.setTransform(1, 0, 0, 1, 0, 0); g.globalAlpha = 1; g.setLineDash([]); g.filter = 'none'; g.clearRect(0, 0, W, H);
       g.save();
       let fl = 0;
-      if (t < TT.n10 - 0.05) fl = shotGate(g, t);
-      else if (t < TT.n11 - 0.05) fl = shotFlat(g, t);
-      else if (t < TT.n19 - 0.14) fl = shotLine(g, t);
-      else if (t < TT.n21 - 0.08) fl = shotReplay(g, t);
-      else if (t < TT.n22 - 0.08) fl = shotList(g, t);
-      else if (t < TT.n25 - 0.1) fl = shotStudy(g, t);
-      else fl = shotDoor(g, t);
+      if (t < TT.n08 - 0.05) fl = shotGate(g, t);
+      else if (t < TT.n09 - 0.05) fl = shotFlat(g, t);
+      else if (t < TT.n13 - 0.14) fl = shotLine(g, t);
+      else if (t < TT.n14 - 0.08) fl = shotReplay(g, t);
+      else if (t < TT.n15 - 0.08) fl = shotHome(g, t);
+      else if (t < TT.n17 - 0.06) fl = shotStudy(g, t);
+      else if (t < TT.n18 - 0.06) fl = shotRegister(g, t);
+      else fl = shotLast(g, t);
       if (fl > 0.002) { g.fillStyle = `rgba(255,253,244,${fl})`; g.fillRect(0, 0, W, H); }
       g.restore();
     },

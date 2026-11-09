@@ -1,178 +1,112 @@
 {
- "note": "Reel 27: You're the Guard. Episode 5 of 'You're the test subject'. The narrator is the series voice (af_heart), talking to you, the guard. The four men (a01, b01, c01, d01) are four different male voices, cast in the voice lab. Read audio/vo_lab/takes/phonemes.md after every run.",
+ "note": "Reel 27: You're the Guard. Episode 5 of 'You're the test subject'. The narrator is the series voice (af_heart), talking to you, the guard. The four men (a01, b01, c01, d01) are placed from the cast reads. Script 2, after a fresh cold review: the first line points at the register, not his face (a face test primes people to study him); the register is why three walk; 'You're right' whichever you picked; 'and you carried on' is true for those who noticed; the last question has one fair answer on frame 0. Read audio/vo_lab/takes/phonemes.md after every run.",
  "voice": "af_heart",
  "speed": 1.0,
  "ref_text": "The night was cold and very quiet. Most of the street was asleep, and the lamps hummed over the empty road. Somewhere far away, a train rolled past, and then the silence came back.",
  "lines": [
   {
    "id": "n01",
-   "text": "You're the guard at this gate, and whoever you point at tonight goes to jail."
+   "text": "You're the guard, and what you write in this register sends a man to jail."
   },
   {
    "id": "n02",
-   "text": "Ask this delivery man his name."
+   "text": "Flats are being robbed on this street, so ask this delivery man his name."
   },
   {
    "id": "a01",
-   "text": "Ravi, sir.",
-   "text_kokoro": "[Ravi](/ɹˈʌvi/), sir."
+   "text": "Ravi, sir."
   },
   {
    "id": "n03",
-   "text": "Write it down."
-  },
-  {
-   "id": "n04",
-   "text": "Now ask which flat."
+   "text": "Write it down, and ask which flat."
   },
   {
    "id": "b01",
    "text": "Three zero two."
   },
   {
-   "id": "n05",
-   "text": "Write that too."
-  },
-  {
-   "id": "n06",
-   "text": "Now check his parcel."
+   "id": "n04",
+   "text": "Write that too, but anyone can say a flat number, so check his parcel."
   },
   {
    "id": "c01",
-   "text": "Here, sir."
+   "text": "Here it is, sir."
   },
   {
-   "id": "n07",
-   "text": "Does the label match your book?"
+   "id": "c01b",
+   "text": "See, sir."
   },
   {
-   "id": "n08",
+   "id": "n05",
+   "text": "Does the label match your register?"
+  },
+  {
+   "id": "n06",
    "text": "It doesn't. Good catch."
   },
   {
    "id": "d01",
-   "text": "Sorry, sir. Wrong gate."
+   "text": "Sorry, sir. I'll call the customer."
   },
   {
-   "id": "n09",
+   "id": "n07",
    "text": "So nobody got past you."
   },
   {
-   "id": "n10",
+   "id": "n08",
    "text": "Then who robbed flat three zero two?"
   },
   {
+   "id": "n09",
+   "text": "Police have four men in that jacket, but your register says one came, so point at him."
+  },
+  {
+   "id": "n10",
+   "text": "He goes to jail, and the other three go home."
+  },
+  {
    "id": "n11",
-   "text": "Police have four men in that jacket."
-  },
-  {
-   "id": "n12",
-   "text": "Point at yours, and he goes to jail."
-  },
-  {
-   "id": "n13",
    "text": "Which one? You looked right at him."
   },
   {
+   "id": "n12",
+   "text": "You're right. He was at your gate, and so were the other three."
+  },
+  {
+   "id": "n13",
+   "text": "Every time you looked down, one walked in and the next stepped up, and you carried on."
+  },
+  {
    "id": "n14",
-   "text": "You're right. He was at your gate."
+   "text": "So three of them go home. Four, if you said none."
   },
   {
    "id": "n15",
-   "text": "He gave you the name."
+   "text": "Psychologists once swapped a man in a hard hat for another, and one woman who missed it said she'd just seen a construction worker."
   },
   {
    "id": "n16",
-   "text": "He gave you the flat."
+   "text": "And these four aren't even delivery men. You just saw a jacket."
   },
   {
    "id": "n17",
-   "text": "He put down the parcel."
+   "text": "Your register says Ravi.",
+   "text_kokoro": "Your register says [Ravi](/ɹˈʌvi/)."
   },
   {
    "id": "n18",
-   "text": "And he said sorry."
-  },
-  {
-   "id": "n19",
-   "text": "Every time you looked down, one walked in, and the next stepped up."
-  },
-  {
-   "id": "n20",
-   "text": "So you've just sent one to jail, and three of them home."
-  },
-  {
-   "id": "n21",
-   "text": "You checked his name, his flat, his parcel, but you never checked his face."
-  },
-  {
-   "id": "n22",
-   "text": "Psychologists did this to real people in 1998."
-  },
-  {
-   "id": "n23",
-   "text": "One woman who missed it said she'd just seen a construction worker."
-  },
-  {
-   "id": "n24",
-   "text": "You just saw a jacket."
-  },
-  {
-   "id": "n25",
-   "text": "So who brought your last parcel?"
-  },
-  {
-   "id": "n26",
-   "text": "You looked right at him."
-  },
-  {
-   "id": "n27",
-   "text": "What did he look like?"
+   "text": "So which one was Ravi?",
+   "text_kokoro": "So which one was [Ravi](/ɹˈʌvi/)?"
   }
  ],
  "cast_lines": [
   "a01",
   "b01",
   "c01",
+  "c01b",
   "d01"
  ],
  "cast": [
-  {
-   "id": "s-michael",
-   "engine": "kokoro",
-   "voice": "am_michael",
-   "speed": 1.0
-  },
-  {
-   "id": "s-adam",
-   "engine": "kokoro",
-   "voice": "am_adam",
-   "speed": 1.0
-  },
-  {
-   "id": "s-onyx",
-   "engine": "kokoro",
-   "voice": "am_onyx",
-   "speed": 1.0
-  },
-  {
-   "id": "s-lewis",
-   "engine": "kokoro",
-   "voice": "bm_lewis",
-   "speed": 1.0
-  },
-  {
-   "id": "s-daniel",
-   "engine": "kokoro",
-   "voice": "bm_daniel",
-   "speed": 1.0
-  },
-  {
-   "id": "s-fable",
-   "engine": "kokoro",
-   "voice": "bm_fable",
-   "speed": 1.0
-  },
   {
    "id": "s-omega",
    "engine": "kokoro",
@@ -183,6 +117,18 @@
    "id": "s-psi",
    "engine": "kokoro",
    "voice": "hm_psi",
+   "speed": 1.0
+  },
+  {
+   "id": "s-michael",
+   "engine": "kokoro",
+   "voice": "am_michael",
+   "speed": 1.0
+  },
+  {
+   "id": "s-adam",
+   "engine": "kokoro",
+   "voice": "am_adam",
    "speed": 1.0
   }
  ],
