@@ -5,8 +5,10 @@
  "ref_text": "The night was cold and very quiet. Most of the street was asleep, and the lamps hummed over the empty road. Somewhere far away, a train rolled past, and then the silence came back.",
  "cast_lines": [
   "f01",
-  "f02",
-  "o06"
+  "f01b",
+  "f01c",
+  "f01e",
+  "f01g"
  ],
  "cast": [
   {
@@ -26,12 +28,6 @@
    "engine": "kokoro",
    "voice": "am_michael",
    "speed": 1.04
-  },
-  {
-   "id": "s-onyx",
-   "engine": "kokoro",
-   "voice": "am_onyx",
-   "speed": 1.0
   }
  ],
  "take": [
@@ -74,7 +70,23 @@
   },
   {
    "id": "f01",
-   "text": "Think! We were at the chai stall, in the rain! You had ginger chai, you paid twenty rupees!"
+   "text": "Please, think! We were at the chai stall, in the rain! You had ginger chai, you paid twenty rupees!"
+  },
+  {
+   "id": "f01b",
+   "text": "Come on, think! We were at the chai stall, in the rain! You had ginger chai, you paid twenty rupees!"
+  },
+  {
+   "id": "f01c",
+   "text": "Think! We were at the chai stall, in the rain! You had ginger chai! You paid twenty rupees!"
+  },
+  {
+   "id": "f01e",
+   "text": "Think, think! We were at the chai stall, in the rain! You had ginger chai, you paid twenty rupees!"
+  },
+  {
+   "id": "f01g",
+   "text": "Please, think! We were at the chai stall, in the rain! You had ginger chai! You paid twenty rupees!"
   },
   {
    "id": "f01r",
