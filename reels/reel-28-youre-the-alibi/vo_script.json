@@ -1,0 +1,141 @@
+{
+ "note": "Reel 28: You're the Alibi. Episode 6 of 'You're the test subject'. The narrator is the series voice (af_heart), talking to you, the alibi. The friend (f..) and the officer (o..) are cast in the voice lab and placed from the cast reads. Script 4, after the user's note on cut 3 (the point couldn't be read in one glance, confusing at 15 s and 37 s) and two cold reads of the rewrite: you can't remember that night, so he tells you what happened, you repeat it to the police, and he was the robber. Cast (9 Nov): the friend is am_michael, the officer am_onyx. Facts and wording: docs/research.md. Read audio/vo_lab/takes/phonemes.md after every run.",
+ "voice": "af_heart",
+ "speed": 1.0,
+ "ref_text": "The night was cold and very quiet. Most of the street was asleep, and the lamps hummed over the empty road. Somewhere far away, a train rolled past, and then the silence came back.",
+ "cast_lines": [
+  "f01",
+  "f01r",
+  "f01s"
+ ],
+ "cast": [
+  {
+   "id": "s-michael",
+   "engine": "kokoro",
+   "voice": "am_michael",
+   "speed": 1.0
+  },
+  {
+   "id": "s-michael96",
+   "engine": "kokoro",
+   "voice": "am_michael",
+   "speed": 0.96
+  },
+  {
+   "id": "s-michael104",
+   "engine": "kokoro",
+   "voice": "am_michael",
+   "speed": 1.04
+  },
+  {
+   "id": "s-onyx",
+   "engine": "kokoro",
+   "voice": "am_onyx",
+   "speed": 1.0
+  }
+ ],
+ "take": [
+  {
+   "id": "k-heart",
+   "engine": "kokoro",
+   "voice": "af_heart",
+   "speed": 1.0
+  }
+ ],
+ "lines": [
+  {
+   "id": "n01",
+   "text": "You're his only alibi."
+  },
+  {
+   "id": "f00",
+   "text": "Tell them I was with you!"
+  },
+  {
+   "id": "n02",
+   "text": "Your best friend's locked up for robbing a watch shop."
+  },
+  {
+   "id": "n03",
+   "text": "All the police have is a blurry photo of the robber."
+  },
+  {
+   "id": "n03a",
+   "text": "All he has is you."
+  },
+  {
+   "id": "o01",
+   "text": "Last Tuesday, seven forty. Where were you?"
+  },
+  {
+   "id": "n03b",
+   "text": "But you don't really remember, because for you it was just another Tuesday."
+  },
+  {
+   "id": "f01",
+   "text": "Think, yaar! We were at the chai stall, in the rain. You had ginger chai, you paid twenty rupees.",
+   "text_kokoro": "Think, [yaar](/jˈɑːɹ/)! We were at the chai stall, in the rain. You had ginger chai, you paid twenty rupees."
+  },
+  {
+   "id": "f01r",
+   "text": "Remember?"
+  },
+  {
+   "id": "f01s",
+   "text": "Don't you remember?"
+  },
+  {
+   "id": "n04",
+   "text": "And now you do."
+  },
+  {
+   "id": "o02",
+   "text": "He says you two were at a chai stall. So what did you drink?"
+  },
+  {
+   "id": "o03",
+   "text": "How much did you pay?"
+  },
+  {
+   "id": "o04",
+   "text": "Same as his statement."
+  },
+  {
+   "id": "n06",
+   "text": "Everything you know about that night, he told you."
+  },
+  {
+   "id": "n06b",
+   "text": "So where was he, really?"
+  },
+  {
+   "id": "n07",
+   "text": "He was here."
+  },
+  {
+   "id": "o05",
+   "text": "Alibi confirmed. He can go."
+  },
+  {
+   "id": "n08",
+   "text": "You just set a robber free."
+  },
+  {
+   "id": "n09",
+   "text": "You were never at that stall. He needed you to forget."
+  },
+  {
+   "id": "f02",
+   "text": "Thanks, yaar. Next time, I'll pay.",
+   "text_kokoro": "Thanks, [yaar](/jˈɑːɹ/). Next time, I'll pay."
+  },
+  {
+   "id": "n11",
+   "text": "Would your best friend lie for you? Send them this: if anyone asks, I was with you last Tuesday."
+  },
+  {
+   "id": "n12",
+   "text": "But first: what's hanging from his wrist?"
+  }
+ ]
+}
