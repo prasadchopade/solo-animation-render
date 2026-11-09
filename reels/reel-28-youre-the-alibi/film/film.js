@@ -2,7 +2,7 @@
 // Your best friend is locked up for robbing a watch shop, and you're his only alibi. Where were you last Tuesday at 7:40? You don't really remember:
 // for you it was just another Tuesday. While the officer takes a call, he reminds you: the stall, the rain, your ginger chai, what you paid. The officer
 // asks, you know the answers, and they're the same as his statement. But everything you know about that night, he told you. YOUR MEMORY becomes HIS STORY.
-// So where was he? The photo sharpens: he was here. You just set a robber free, and you were never at that stall. Facts: docs/research.md. Our own drawings, nobody real. 30 fps, no blur.
+// So where was he? The photo sharpens: he was here. You just set a robber free. Then the last test: the chaiwala, old or young? Nobody ever mentioned him. He gave you the stall; you added the chaiwala. Facts: docs/research.md. Our own drawings, nobody real. 30 fps, no blur.
 // The film never says what you pressed: timers end, the buttons fade together, nothing is highlighted.
 // The plant: a steel watch with its shop tag still on, on his left wrist, showing while he grips the bars (frame 0). Nothing else on either wrist.
 // The face rig (mouth, eye, head) is from reels 19, 20 and 25; the characters are new.
@@ -189,15 +189,16 @@
     T = {
       n01e: en('n01'), f00: at('f00'), f00e: en('f00'), n02: at('n02'), n02e: en('n02'), o01: at('o01'), where: wi('o01', 4), o01e: en('o01'),
       n03: at('n03'), blurry: wi('n03', 6), ofR: wi('n03', 8), n03e: en('n03'), has: at('n03a'), n03ae: en('n03a'), n03b: at('n03b'), just: wi('n03b', 10), n03be: en('n03b'),
-      f01: at('f01'), stallW: wi('f01', 6), rain: wi('f01', 10), chai: wi('f01', 13), paid: wi('f01', 16), twenty: wi('f01', 17), rem: at('f01r'), f01e: en('f01r'),
+      f01: at('f01'), stallW: wi('f01', 5), rain: wi('f01', 9), chai: wi('f01', 12), paid: wi('f01', 15), twenty: wi('f01', 16), rem: at('f01r'), f01e: en('f01r'),
       n04: at('n04'), n04e: en('n04'),
       o02: at('o02'), drink: wi('o02', 9), o02e: en('o02'), o03: at('o03'), o03e: en('o03'), o04: at('o04'), o04e: en('o04'),
       n06: at('n06'), told: wi('n06', 6), n06e: en('n06'), n06b: at('n06b'), n06be: en('n06b'), n07: at('n07'), n07e: en('n07'),
-      o05: at('o05'), goW: wi('o05', 2), o05e: en('o05'), n08: at('n08'), robber: wi('n08', 3), n08e: en('n08'), n09: at('n09'), needed: wi('n09', 6), n09e: en('n09'),
-      f02: at('f02'), f02e: en('f02'), n11: at('n11'), typeT: wi('n11', 10), n11e: en('n11'), n12: at('n12'), end: tb('end'),
+      o05: at('o05'), goW: wi('o05', 2), o05e: en('o05'), n08: at('n08'), robber: wi('n08', 3), n08e: en('n08'),
+      f02: at('f02'), f02e: en('f02'), o06: at('o06'), chaiW: wi('o06', 3), oldW: wi('o06', 5), o06e: en('o06'), n12: at('n12'), n12e: en('n12'), n13: at('n13'), n13e: en('n13'), n13b: at('n13b'), n13be: en('n13b'), n14: at('n14'), n14e: en('n14'), end: tb('end'),
     };
     T.q0 = T.where - 0.05;                                 // the first buttons land
     T.q0e = T.n03b - 0.1;                                  // ... and go as your memory comes up, empty
+    T.q4 = T.oldW - 0.05; T.q4e = T.n12 - 0.1;             // old or young
     T.ring = T.n03be + 0.12;                               // the desk phone, in the gap
     T.q1 = T.drink - 0.1; T.q1e = T.o03 - 0.1;              // what did you drink
     T.q2 = T.o03 + 0.25; T.q2e = T.o04 - 0.1;              // what did you pay
@@ -564,6 +565,7 @@
   const WHERE = ['AT HOME', 'OUT', "CAN'T REMEMBER"], WHEREW = [224, 140, 440];
   const DRINK = ['COFFEE', 'GINGER CHAI', "CAN'T REMEMBER"], DRINKW = [180, 290, 340];
   const PAID = ['₹10', '₹20', '₹50'], PAIDW = [260, 260, 260];
+  const AGE = ['OLD', 'YOUNG'], AGEW = [300, 340];
   function printPhoto(g, x, y, w, h, t, rot = 0) {     // the police's picture: grey, a mosaic, the stamp the only sharp thing on it
     g.save(); g.translate(x, y); g.rotate(rot);
     R(g, -w / 2 - 16, -h / 2 - 16, w + 32, h + 32, 6); g.fillStyle = '#fbf8ee'; g.fill(); g.strokeStyle = 'rgba(0,0,0,0.25)'; g.lineWidth = 3; g.stroke();
@@ -610,7 +612,7 @@
       note(g, 513, 1200, 1.35, 0.06);
     } else {
       txt(g, 'LAST TUESDAY 7:40 PM', 513, 542, 70, '#59656e', { align: 'center' });
-      txt(g, '?', 513, 1110, 560, '#dbe7ea', { align: 'center', a: 0.75 + 0.25 * Math.sin(t * 3.1) });
+      if (!o.noQ) txt(g, '?', 513, 1110, 560, '#dbe7ea', { align: 'center', a: 0.75 + 0.25 * Math.sin(t * 3.1) });
     }
     cloudLabel(g, 513, 448, t, o.strike ?? 1e9, 132);
     g.restore();
@@ -745,20 +747,18 @@
     head(g, FR, { op: o.op ?? 0, close: Math.max(o.close ?? 0, blinkAt(t, 3.6, 1.7)), look: o.look ?? [0, 0], frown: o.frown ?? 0, smile: o.smile ?? 0, worry: o.worry ?? 12 });
     g.restore();
   }
-  function shotWalk(g, t) {                      // You just set a robber free. You were never at that stall. He knew you'd forget.
-    const TT = times(), u = sstep(TT.n08 - 0.2, TT.needed, t);
+  function shotWalk(g, t) {                      // You just set a robber free. He arrives, fills the frame, and the smile comes.
+    const TT = times(), u = sstep(TT.n08 - 0.2, TT.n08e + 0.45, t);
     const s = lerp(0.66, 1.62, u), bob = Math.sin(t * 7) * 10 * (1 - sstep(0.85, 1, u)), y = lerp(700, 850, u);
     g.save(); g.translate(513, 700); g.scale(0.75, 0.75); g.translate(-513, -850);
     cellBack(g); bars(g, 1);
     g.restore();
-    const smirk = sstep(TT.needed, TT.n09e, t);
+    const smirk = sstep(TT.n08e + 0.1, TT.f02 - 0.05, t);
     walker(g, t, s, 513, y + bob, { smile: lerp(0.08, 0.95, smirk), close: 0.22 * smirk, look: [0, -1], worry: lerp(12, 20, smirk) });
-    if (t < TT.n09 - 0.05) { title(g, 'YOU JUST SET', 356, 96, CREAM, t, TT.n08 + 0.02); title(g, 'A ROBBER FREE', 500, 146, YEL, t, TT.robber); }
-    else if (t < TT.needed - 0.05) { title(g, 'YOU WERE NEVER', 356, 96, CREAM, t, TT.n09 + 0.02); title(g, 'AT THAT STALL', 500, 146, YEL, t, wi('n09', 3)); }
-    else { title(g, 'HE KNEW', 356, 110, CREAM, t, TT.needed); title(g, "YOU'D FORGET", 500, 160, YEL, t, TT.needed + 0.14); }
+    title(g, 'YOU JUST SET', 356, 96, CREAM, t, TT.n08 + 0.02); title(g, 'A ROBBER FREE', 500, 146, YEL, t, TT.robber);
     return 0;
   }
-  function shotShoulder(g, t) {                  // Thanks, yaar. Next time, I'll pay.
+  function shotShoulder(g, t) {                  // Next time, I'll pay.
     const TT = times(), u = sstep(TT.f02, TT.f02 + 0.25, t), past = sstep(TT.f02e - 0.1, TT.f02e + 0.4, t);
     const [sx, sy] = shakeAt(t, [TT.f02 + 0.05], 16);
     g.save(); g.translate(sx, sy);
@@ -767,7 +767,7 @@
     g.restore();
     walker(g, t, lerp(1.62 + 0.3 * u, 2.4, past), lerp(513, 1500, past), 850 + 40 * u, { op: talkP(t, 'f02') * 1.05, smile: 0.5, look: [0, 2] });
     g.restore();
-    if (t >= TT.f02 + 0.5 && past < 0.3) title(g, "NEXT TIME, I'LL PAY", 400, 112, YEL, t, wi('f02', 2));
+    if (t >= TT.f02 + 0.05 && past < 0.3) title(g, "NEXT TIME, I'LL PAY", 400, 112, YEL, t, TT.f02 + 0.05);
     return 0;
   }
   function emptyCell(g, t) {
@@ -775,72 +775,68 @@
     cellBack(g); bars(g, 1);
     g.restore();
   }
-  function shotText(g, t) {                      // your phone: the message writes itself as it's said; the replies come at once
+  function imagined(g, x, y, s, a) {             // the man you added: no face, because he's whoever you pictured
+    g.save(); g.translate(x, y); g.scale(s, s); g.globalAlpha *= a;
+    g.fillStyle = '#9fb3ba';
+    ell(g, 0, -150, 70, 86); g.fill();
+    g.beginPath(); g.moveTo(-40, -70); g.bezierCurveTo(-130, -60, -170, -20, -180, 60); g.lineTo(-190, 320); g.lineTo(190, 320); g.lineTo(180, 60); g.bezierCurveTo(170, -20, 130, -60, 40, -70); g.closePath(); g.fill();
+    g.strokeStyle = '#9fb3ba'; g.lineCap = 'round'; g.lineJoin = 'round'; g.lineWidth = 56; g.beginPath(); g.moveTo(150, 10); g.lineTo(250, 84); g.lineTo(300, 14); g.stroke();
+    ell(g, 322, -30, 62, 52); g.fill();
+    g.beginPath(); g.moveTo(376, -44); g.lineTo(438, -84); g.lineTo(446, -68); g.lineTo(374, -8); g.closePath(); g.fill();
+    g.restore();
+  }
+  function shotAgain(g, t) {                     // "One more thing. The chaiwala. Old or young?" Your empty memory; then the man you just pictured; the stall he gave you; the man you added.
+    const TT = times(), z = lerp(1, 1.05, sstep(TT.o06, TT.n13be + 0.4, t));
+    const man = sstep(TT.n12, TT.n12 + 0.55, t), st = t >= TT.n13 ? clamp(hit(t, TT.n13, 'heavy')) : 0;
+    bigMemory(g, t, { k: pop(t, TT.o06 - 0.05), z, noQ: man > 0.02 });
+    g.save(); g.translate(513, 900); g.scale(z, z); g.translate(-513, -900);
+    if (man > 0) imagined(g, 470, 960, 0.95, man);
+    if (st > 0) { g.save(); g.translate(513, 1000); g.scale(st, st); g.translate(-513, -1000); stall(g, 513, 1000, 1.9, t); g.restore(); }
+    if (t >= TT.n13b) {
+      const k = clamp((t - TT.n13b) / 0.3);
+      g.save(); g.strokeStyle = RED; g.lineWidth = 11; g.setLineDash([24, 18]); g.lineDashOffset = -t * 30; g.globalAlpha *= k; ell(g, 470, 880, 250, 320); g.stroke(); g.setLineDash([]); g.restore();
+    }
+    g.restore();
+    if (t < TT.n12 - 0.05) {
+      if (t >= TT.chaiW && t < TT.q4) title(g, 'THE CHAIWALA', 1470, 124, INK, t, TT.chaiW, { stroke: '#fff', sw: 0.12 });
+      if (t >= TT.q4) title(g, 'OLD OR YOUNG?', 1290, 120, RED, t, TT.q4, { stroke: '#fff', sw: 0.12 });
+      buttons(g, t, TT.q4, TT.q4e, AGE, AGEW);
+      timerBar(g, t, TT.q4 + 0.2, TT.q4e);
+    }
+    else if (t < TT.n13 - 0.05) title(g, 'YOU JUST PICTURED HIM', 1470, 104, INK, t, TT.n12, { stroke: '#fff', sw: 0.12 });
+    else if (t < TT.n13b - 0.05) title(g, 'HE GAVE YOU THE STALL', 1470, 104, INK, t, TT.n13, { stroke: '#fff', sw: 0.12 });
+    else { title(g, 'YOU ADDED', 1336, 112, INK, t, TT.n13b, { stroke: '#fff', sw: 0.12 }); title(g, 'THE CHAIWALA', 1478, 136, RED, t, wi('n13b', 2), { stroke: '#fff', sw: 0.12 }); }
+    return 0;
+  }
+  function shotText(g, t) {                      // your phone: you try it on a friend; they add the chaiwala too
     const TT = times();
     emptyCell(g, t);
     g.fillStyle = 'rgba(10,20,24,0.22)'; g.fillRect(0, 0, W, H);
-    const up = pop(t, TT.n11 - 0.05), y = lerp(H + 300, 880, up);
+    const up = pop(t, TT.n14 - 0.05), y = lerp(H + 300, 880, up);
     g.save(); g.translate(513, y);
     R(g, -340, -600, 680, 1240, 60); g.fillStyle = '#181a1f'; g.fill();
     R(g, -312, -572, 624, 1184, 40); g.fillStyle = '#ecf1ea'; g.fill();
     R(g, -312, -572, 624, 134, [40, 40, 0, 0]); g.fillStyle = '#2aa08f'; g.fill();
-    ell(g, -240, -505, 44, 44); g.fillStyle = '#d7e6e0'; g.fill();                       // nobody in particular: your own best friend
+    ell(g, -240, -505, 44, 44); g.fillStyle = '#d7e6e0'; g.fill();                       // nobody in particular
     ell(g, -240, -519, 17, 17); g.fillStyle = '#6f8a83'; g.fill(); ell(g, -240, -483, 28, 18); g.fill();
-    txt(g, 'BEST FRIEND', -180, -484, 62, '#fff', { kind: 'semi', fit: 460 });
-    if (t < TT.typeT - 0.05 && t >= TT.n11 + 0.15) {
-      const q = pop(t, TT.n11 + 0.15);
-      g.save(); g.translate(0, -120); g.scale(lerp(0.8, 1, q), lerp(0.8, 1, q));
-      txt(g, 'WOULD THEY', 0, -110, 118, INK, { align: 'center', a: clamp((t - TT.n11 - 0.15) * 8) });
-      txt(g, 'LIE FOR YOU?', 0, 50, 142, RED, { align: 'center', fit: 560, a: clamp((t - TT.n11 - 0.15) * 8) });
-      g.restore();
-    }
+    txt(g, 'ROHAN', -180, -484, 62, '#fff', { kind: 'semi', fit: 460 });
     R(g, -286, 470, 572, 104, 46); g.fillStyle = '#fff'; g.fill(); g.strokeStyle = '#c9cfc8'; g.lineWidth = 3; g.stroke();
-    if (t >= TT.typeT - 0.05) {
-      const q = pop(t, TT.typeT - 0.05), W3 = words('n11');
+    if (t >= TT.n14 + 0.3) {
+      const q = pop(t, TT.n14 + 0.3);
       g.save(); g.translate(280, -270); g.scale(q, q);
       R(g, -520, -160, 520, 330, 34); g.fillStyle = '#c8f2d4'; g.fill();
-      [[10, 11, 12], [13, 14, 15, 16], [17, 18]].forEach((idx, row) => {
-        const line = idx.filter((i) => t >= W3[i].t0 - 0.03).map((i) => (i === 10 ? 'If' : W3[i].w)).join(' ');
-        if (line) txt(g, line, -490, [-62, 36, 134][row], 74, INK, { kind: 'semi' });
-      });
+      txt(g, 'You had ginger chai', -490, -62, 68, INK, { kind: 'semi' }); txt(g, 'last Tuesday,', -490, 36, 68, INK, { kind: 'semi' }); txt(g, 'remember?', -490, 134, 68, INK, { kind: 'semi' });
       g.restore();
     }
-    const r1 = TT.n11e + 0.3, r2 = TT.n11e + 0.85;
-    if (t >= r1) {
-      const q = pop(t, r1);
-      g.save(); g.translate(-280, 44); g.scale(q, q);
-      R(g, 0, -80, 280, 150, 34); g.fillStyle = '#fff'; g.fill(); g.strokeStyle = '#c9cfc8'; g.lineWidth = 3; g.stroke();
-      txt(g, 'Okay.', 34, 26, 92, INK, { kind: 'semi' });
-      g.restore();
-    }
-    if (t >= r2) {
-      const q = pop(t, r2);
-      g.save(); g.translate(-280, 292); g.scale(q, q);
-      R(g, 0, -116, 400, 262, 34); g.fillStyle = '#fff'; g.fill(); g.strokeStyle = '#c9cfc8'; g.lineWidth = 3; g.stroke();
-      txt(g, 'What did', 34, -14, 92, INK, { kind: 'semi' }); txt(g, 'we drink?', 34, 92, 92, INK, { kind: 'semi' });
+    const r = TT.n14e + 0.15;
+    if (t >= r) {
+      const q = pop(t, r);
+      g.save(); g.translate(-280, 170); g.scale(q, q);
+      R(g, 0, -116, 500, 262, 34); g.fillStyle = '#fff'; g.fill(); g.strokeStyle = '#c9cfc8'; g.lineWidth = 3; g.stroke();
+      txt(g, 'Yes! That old', 34, -14, 88, INK, { kind: 'semi', fit: 440 }); txt(g, 'chaiwala, right?', 34, 92, 88, INK, { kind: 'semi', fit: 440 });
       g.restore();
     }
     g.restore();
-    return 0;
-  }
-  function shotLast(g, t) {                      // he walks out into the street. The answer is on frame 0.
-    const TT = times(), u = clamp((t - (TT.n12 - 0.1)) / Math.max(0.5, TT.end - TT.n12 + 0.1));
-    wallBack(g);
-    R(g, 290, 800, 450, 1200, [28, 28, 0, 0]); g.fillStyle = lg(g, 0, 800, 0, 1700, [0, '#fff6cf'], [1, '#ffd97e']); g.fill(); g.strokeStyle = '#7a4c2a'; g.lineWidth = 20; g.stroke();
-    const s = lerp(0.56, 0.42, u), y = lerp(1190, 1100, u), bob = Math.sin(t * 6.5) * 6;
-    g.save(); g.translate(513, y + bob); g.scale(s, s);
-    g.fillStyle = '#35456a'; R(g, -320, 900, 640, 2600, 60); g.fill();
-    g.fillStyle = 'rgba(0,0,0,0.3)'; g.fillRect(-8, 1120, 16, 2400);
-    g.fillStyle = FR.skinD; R(g, -80, 150, 160, 170, 40); g.fill();
-    g.beginPath(); g.moveTo(-96, 262); g.bezierCurveTo(-240, 288, -420, 310, -470, 520); g.lineTo(-500, 1000); g.lineTo(500, 1000); g.lineTo(470, 520); g.bezierCurveTo(420, 310, 240, 288, 96, 262); g.closePath();
-    g.fillStyle = lg(g, -420, 300, 420, 1100, [0, '#f0614f'], [1, '#c4311f']); g.fill();
-    g.lineCap = 'round'; g.strokeStyle = '#d9442f'; g.lineWidth = 150; for (const k of [-1, 1]) { g.beginPath(); g.moveTo(k * 456, 500); g.lineTo(k * 540, 830); g.stroke(); g.beginPath(); g.moveTo(k * 540, 830); g.lineTo(k * 300, 1040); g.stroke(); }
-    g.strokeStyle = 'rgba(0,0,0,0.2)'; g.lineWidth = 8; for (const k of [-1, 1]) { g.beginPath(); g.moveTo(k * 380, 620); g.lineTo(k * 440, 860); g.stroke(); }
-    g.fillStyle = '#35456a'; R(g, -340, 1000, 680, 120, 30); g.fill();
-    g.fillStyle = FR.hair; curls(g, 178, FR.hair, 21, false); ell(g, 0, -40, 200, 262); g.fill();
-    g.restore();
-    title(g, "WHAT'S HANGING", 410, 124, CREAM, t, TT.n12 - 0.1);
-    title(g, 'FROM HIS WATCH?', 570, 140, YEL, t, TT.n12 + 0.02);
     return 0;
   }
 
@@ -868,9 +864,9 @@
       else if (t < TT.o05 - 0.1) fl = shotHere(g, t);
       else if (t < TT.n08 - 0.15) fl = shotGo(g, t);
       else if (t < TT.f02 - 0.05) fl = shotWalk(g, t);
-      else if (t < TT.n11 - 0.1) fl = shotShoulder(g, t);
-      else if (t < TT.n12 - 0.1) fl = shotText(g, t);
-      else fl = shotLast(g, t);
+      else if (t < TT.o06 - 0.1) fl = shotShoulder(g, t);
+      else if (t < TT.n14 - 0.1) fl = shotAgain(g, t);
+      else fl = shotText(g, t);
       if (fl > 0.002) { g.fillStyle = `rgba(255,253,244,${fl})`; g.fillRect(0, 0, W, H); }
       g.restore();
     },
