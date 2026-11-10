@@ -573,7 +573,7 @@
   }
 
   // ------------------------------------------------------------------ the lineup: six big faces
-  const CARD = { w: 284, h: 396, x0: 60, y0: 396, gx: 19, gy: 18 };
+  const CARD = { w: 284, h: 396, x0: 50, y0: 396, gx: 19, gy: 18 };
   const cardXY = (i) => [CARD.x0 + (i % 3) * (CARD.w + CARD.gx), CARD.y0 + Math.floor(i / 3) * (CARD.h + CARD.gy)];
   const FROWN = [0.1, 0.18, 0.22, 0.28, 0.22, 0.04], SMILE = [0.1, 0, 0, 0, 0, 0.18];
   function wallLines(g, x, y, w, h) {
@@ -601,7 +601,7 @@
   function card(g, i, t, o = {}) {
     const [x, y] = cardXY(i), L = MEN[i];
     g.save();
-    if (o.pop) { const cx = x + CARD.w / 2, cy = y + CARD.h / 2; g.translate(cx, cy); g.scale(o.pop, o.pop); g.translate(-cx, -cy); }
+    if (o.pop != null) { const cx = i % 3 === 2 ? x + CARD.w : x + CARD.w / 2, cy = y + CARD.h / 2; g.translate(cx, cy); g.scale(o.pop, o.pop); g.translate(-cx, -cy); }
     wallLines(g, x, y, CARD.w, CARD.h);
     g.save(); R(g, x, y, CARD.w, CARD.h, 8); g.clip();
     const r = mulberry32(i * 17 + 3), bl = t > 0.5 && ((t + r() * 7 + 1.1) % (3.4 + i * 0.5)) < 0.14 ? 1 : 0, glance = 5 * Math.sin(t * (0.6 + i * 0.13) + i) * (1 - (o.stare || 0));
@@ -640,7 +640,7 @@
     g.fillStyle = '#d9d3c3'; g.fillRect(0, 0, W, H);
     g.save(); g.translate(sx, sy);
     const stare = sstep(TT.clock1, TT.clock1 + 0.3, t), z = 1 + 0.04 * sstep(TT.cut1, TT.clock1, t);
-    g.save(); g.translate(505, 800); g.scale(z, z); g.translate(-505, -800);
+    g.save(); g.translate(940, 800); g.scale(z, z); g.translate(-940, -800);
     for (let i = 0; i < 6; i++) card(g, i, t, { pop: clamp(hit(t, TT.cut1 + 0.02 + i * 0.05, 'heavy')), stare });
     g.restore();
     if (t < TT.clock1 + 0.28) {
@@ -848,7 +848,7 @@
     g.fillStyle = '#0f1115'; g.fillRect(0, 0, W, H);
     const y = 1130;
     for (let i = 0; i < 7; i++) {
-      const x = 92 + i * 142, lit = i === 3 || i === 4;
+      const x = 92 + i * 132, lit = i === 3 || i === 4;
       g.fillStyle = lit ? 'rgba(255,196,110,0.3)' : 'rgba(240,226,190,0.13)'; R(g, x - 62, y - 190, 124, 440, 10); g.fill();
       g.fillStyle = lit ? '#59524a' : '#343843'; ell(g, x, y - 60, 42, 52); g.fill(); g.beginPath(); g.moveTo(x - 58, y + 250); g.bezierCurveTo(x - 58, y + 40, x - 28, y + 14, x, y + 12); g.bezierCurveTo(x + 28, y + 14, x + 58, y + 40, x + 58, y + 250); g.closePath(); g.fill();
       txt(g, String(i + 1), x, y + 214, 44, lit ? '#ffc46e' : '#7c808a', { kind: 'mono', align: 'center' });
@@ -857,7 +857,7 @@
     txt(g, 'A REAL CASE, IN AMERICA', 513, 330, 44, '#ffc46e', { kind: 'mono', align: 'center', a: clamp((t - TT.n19 + 0.1) * 6) });
     const a1 = clamp((t - TT.picked + 0.05) * 6);
     if (a1 > 0) {
-      txt(g, 'AT FIRST, SHE SAID:', 513, 414, 42, '#9aa0a8', { kind: 'mono', align: 'center', fit: 860, a: a1 });
+      txt(g, 'AT FIRST, THE VICTIM SAID:', 513, 414, 42, '#9aa0a8', { kind: 'mono', align: 'center', fit: 860, a: a1 });
       txt(g, '“IT IS BETWEEN NUMBER FOUR', 513, 494, 62, CREAM, { kind: 'mono', align: 'center', fit: 860, a: a1 });
       txt(g, 'AND NUMBER FIVE.”', 513, 574, 62, CREAM, { kind: 'mono', align: 'center', fit: 860, a: a1 });
     }
@@ -871,7 +871,7 @@
     const TT = times();
     if (!WALLC) makeCell();
     g.drawImage(WALLC, 0, 0);
-    const u = sstep(TT.n21 + 0.1, TT.n21e + 0.4, t), yr = Math.round(lerp(1984, 1995, u));
+    const u = sstep(TT.n21 + 0.1, wi('n21', 8), t), yr = Math.round(lerp(1984, 1995, u));
     const sw = ((u * 9) % 1), lx = lerp(-520, 1180, sw), la = 0.11 * Math.sin(sw * Math.PI) * (u < 1 ? 1 : 0);
     if (la > 0.002) { g.fillStyle = `rgba(245,230,190,${la})`; for (let i = 0; i < 4; i++) { const bx = lx + i * 110; g.beginPath(); g.moveTo(bx + 240, 480); g.lineTo(bx + 330, 480); g.lineTo(bx + 90, 1620); g.lineTo(bx, 1620); g.closePath(); g.fill(); } }
     const n = Math.round(u * TALLY.length);
@@ -886,7 +886,7 @@
       g.fillStyle = 'rgba(16,17,20,0.8)'; g.fillRect(0, 262, W, 410);
       txt(g, 'RONALD COTTON', 513, 376, 118, '#f7f1e2', { align: 'center', fit: 860 });
       txt(g, String(yr), 513, 548, 170, u >= 1 ? '#ffb347' : '#ece7d6', { align: 'center' });
-      txt(g, 'CLEARED BY DNA', 513, 636, 66, '#ffb347', { align: 'center', a: clamp((t - TT.n21) * 6) });
+      if (t >= wi('n21', 8) + 0.05) txt(g, 'CLEARED BY DNA', 513, 636, 66, '#ffb347', { align: 'center', a: clamp((t - wi('n21', 8) - 0.05) * 6) });
       g.restore();
     }
     return 0;
@@ -916,11 +916,11 @@
     return flashAt(t, TT.back0) * 0.3;
   }
   // only one of these six has that cut: six strips, eyes and eyebrows only, so the check takes a second at phone size
-  const STR = { x: 60, w: 890, h: 150, gap: 12, y0: 396, s: 1.5 };
+  const STR = { x: 60, w: 880, h: 150, gap: 12, y0: 396, s: 1.5 };
   function strip(g, i, t, o = {}) {
     const { x, w, h, gap, y0, s } = STR, y = y0 + i * (h + gap), cx = x + w / 2 + 40, cy = y + h / 2 + 50 * s;
     g.save();
-    if (o.pop) { g.translate(x + w / 2, y + h / 2); g.scale(o.pop, o.pop); g.translate(-x - w / 2, -y - h / 2); }
+    if (o.pop != null) { g.translate(x + w, y + h / 2); g.scale(o.pop, o.pop); g.translate(-x - w, -y - h / 2); }
     g.save(); R(g, x, y, w, h, 8); g.clip();
     g.fillStyle = WALL; g.fillRect(x, y, w, h);
     g.translate(cx, cy); g.scale(s, s);
@@ -947,7 +947,7 @@
       g.restore();
       if (t >= TT.innocent - 0.04) title(g, 'AN INNOCENT MAN GOES TO PRISON,', 1436, 92, INK, t, TT.innocent - 0.04, { stroke: '#d9d3c3', sw: 0.02, fit: 880 });
       if (t >= TT.walks - 0.04) title(g, 'AND HE WALKS.', 1526, 88, RED, t, TT.walks - 0.04, { stroke: '#d9d3c3', sw: 0.02 });
-    } else title(g, "IT'S NUMBER 3.", 366, 140, GREEN, t, TT.n16 - 0.04, { stroke: CREAM, sw: 0.1 });
+    } else title(g, "IT'S NUMBER 3.", 378, 140, GREEN, t, TT.n16 - 0.04, { stroke: CREAM, sw: 0.1 });
     return flashAt(t, TT.n14 - 0.1) * 0.3 + flashAt(t, TT.clock2) * 0.2;
   }
   // number 3, as big as in the first close-up
