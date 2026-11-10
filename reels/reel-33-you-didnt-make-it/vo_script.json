@@ -1,0 +1,117 @@
+{
+ "note": "Reel 33: You Didn't Make It (working title). One voice, af_heart, at 1.0. Draft 3: after two cold reads, a care read and a fact check. Facts: docs/research.md.",
+ "voice": "af_heart",
+ "speed": 1.0,
+ "ref_text": "The night was cold and very quiet. Most of the street was asleep, and the lamps hummed over the empty road. Somewhere far away, a train rolled past, and then the silence came back.",
+ "cast": [],
+ "take": [
+  {
+   "id": "k-heart",
+   "engine": "kokoro",
+   "voice": "af_heart",
+   "speed": 1.0
+  }
+ ],
+ "lines": [
+  {
+   "id": "n01",
+   "text": "Your brother is drowning, and he's looking straight at you."
+  },
+  {
+   "id": "n02",
+   "text": "He can't even shout."
+  },
+  {
+   "id": "n03",
+   "text": "You can swim, and he can't. Do you jump in, or call for help?"
+  },
+  {
+   "id": "n04",
+   "text": "If you called, help was minutes away, and he had about one."
+  },
+  {
+   "id": "n05",
+   "text": "You go home without him."
+  },
+  {
+   "id": "n06",
+   "text": "So you jump."
+  },
+  {
+   "id": "n07",
+   "text": "You've got him."
+  },
+  {
+   "id": "n08",
+   "text": "And then he climbs you."
+  },
+  {
+   "id": "n09",
+   "text": "He'd climb anything that floats, and right now, that's you."
+  },
+  {
+   "id": "n10",
+   "text": "He doesn't even know it's you."
+  },
+  {
+   "id": "n11",
+   "text": "You fight him all the way to the wall, and you push him up."
+  },
+  {
+   "id": "n12",
+   "text": "And there's nobody left to push you."
+  },
+  {
+   "id": "n13",
+   "text": "He turns round to look for you."
+  },
+  {
+   "id": "n14",
+   "text": "He made it."
+  },
+  {
+   "id": "n15",
+   "text": "You didn't."
+  },
+  {
+   "id": "n16",
+   "text": "There was a third button."
+  },
+  {
+   "id": "n17",
+   "text": "I just didn't put a number on it."
+  },
+  {
+   "id": "n18",
+   "text": "If you jumped, you dropped it. If you called, it was in your other hand."
+  },
+  {
+   "id": "n19",
+   "text": "It's an empty bottle, and nobody ever told you."
+  },
+  {
+   "id": "n20",
+   "text": "He'll climb anything that floats, so give him anything but you."
+  },
+  {
+   "id": "n21",
+   "text": "It might not be enough, but now he's got minutes, and you've got your phone."
+  },
+  {
+   "id": "n22",
+   "text": "And he's breathing, and now he knows it's you."
+  },
+  {
+   "id": "n23",
+   "text": "You know who'd jump in for you."
+  },
+  {
+   "id": "n24",
+   "text": "Nobody told them either."
+  },
+  {
+   "id": "n25",
+   "text": "So tell them."
+  }
+ ]
+}
