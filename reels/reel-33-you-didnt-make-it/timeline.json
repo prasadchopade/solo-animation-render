@@ -1,0 +1,284 @@
+{
+  "note": "Single source of truth for picture + sound, in BEATS (120 bpm: beat = 0.5 s). film.js reads marks via film/data.js; sync.mjs turns sfx into cues.json; score.py reads marks for the music; vo.json places the narration. Every reel ends with the Root Cause end card: 'end' → 'done' = 3.0 s (6 beats), engine/endcard.",
+  "title": "You Didn't Make It",
+  "duration": 74.5,
+  "fps": 30,
+  "bpm": 120,
+  "formats": [
+    "9x16"
+  ],
+  "music": {
+    "source": "synth (score.py → scripts/synth.py)"
+  },
+  "voiceover": {
+    "provider": "voice lab",
+    "voice": "k-heart",
+    "file": "vo.json"
+  },
+  "mix": {
+    "music": -7,
+    "sfx": -5,
+    "vo": 3.2,
+    "duck": true,
+    "spectral": true
+  },
+  "marks": {
+    "hook": 0,
+    "end": 143.0,
+    "done": 149.0
+  },
+  "sfx": [
+    {
+      "at": 0.0,
+      "type": "wav",
+      "gain": 0.42,
+      "what": "small waves on the wall: below 260 Hz and high drops, under every word",
+      "file": "audio/fx/lap_1.wav"
+    },
+    {
+      "at": 0.0,
+      "type": "birds",
+      "gain": 0.2,
+      "what": "a bright afternoon, high up",
+      "len": 9.43
+    },
+    {
+      "at": 5.61,
+      "type": "wav",
+      "gain": 0.34,
+      "what": "his arms slap the water (in the gap)",
+      "file": "audio/fx/stroke_0.wav"
+    },
+    {
+      "at": 8.44,
+      "type": "wav",
+      "gain": 0.34,
+      "what": "his arms slap the water (in the gap)",
+      "file": "audio/fx/stroke_1.wav"
+    },
+    {
+      "at": 16.01,
+      "type": "tick",
+      "gain": 0.16,
+      "what": "a clock nobody shows you (above 4.5 kHz)",
+      "pitch": 1.6
+    },
+    {
+      "at": 16.81,
+      "type": "tick",
+      "gain": 0.16,
+      "what": "a clock nobody shows you (above 4.5 kHz)",
+      "pitch": 1.6
+    },
+    {
+      "at": 17.61,
+      "type": "tick",
+      "gain": 0.16,
+      "what": "a clock nobody shows you (above 4.5 kHz)",
+      "pitch": 1.6
+    },
+    {
+      "at": 17.09,
+      "type": "wav",
+      "gain": 0.3,
+      "what": "his arm, once more (in the gap)",
+      "file": "audio/fx/stroke_2.wav"
+    },
+    {
+      "at": 19.464,
+      "type": "ticker",
+      "gain": 0.16,
+      "what": "the call timer running on (above 4.5 kHz)",
+      "len": 2.81
+    },
+    {
+      "at": 25.28,
+      "type": "birds",
+      "gain": 0.26,
+      "what": "the same birds, nothing else",
+      "len": 2.16
+    },
+    {
+      "at": 29.61,
+      "type": "rewind",
+      "gain": 0.46,
+      "what": "the film runs back (in the gap)",
+      "len": 0.44,
+      "pitch": 1.1
+    },
+    {
+      "at": 30.65,
+      "type": "wav",
+      "gain": 0.42,
+      "what": "the water again",
+      "file": "audio/fx/lap_2.wav"
+    },
+    {
+      "at": 32.91,
+      "type": "wav",
+      "gain": 0.62,
+      "what": "the bottle lands on the concrete and bounces (in the gap)",
+      "file": "audio/fx/bottle_drop.wav"
+    },
+    {
+      "at": 33.75,
+      "type": "wav",
+      "gain": 1.0,
+      "what": "you go in (in the gap)",
+      "file": "audio/fx/splash_in.wav"
+    },
+    {
+      "at": 34.71,
+      "type": "wav",
+      "gain": 0.5,
+      "what": "your arms, one stroke (in the gap)",
+      "file": "audio/fx/stroke_0.wav"
+    },
+    {
+      "at": 38.77,
+      "type": "wav",
+      "gain": 0.85,
+      "what": "the water closes over you: low, starting on the word",
+      "file": "audio/fx/under_1.wav"
+    },
+    {
+      "at": 38.87,
+      "type": "wav",
+      "gain": 0.36,
+      "what": "air going up (above the voice)",
+      "file": "audio/fx/bubbles_up.wav"
+    },
+    {
+      "at": 38.87,
+      "type": "thud",
+      "gain": 0.42,
+      "what": "pushed under: a low hit",
+      "pitch": 0.8
+    },
+    {
+      "at": 45.85,
+      "type": "wav",
+      "gain": 0.72,
+      "what": "you break the surface (in the gap)",
+      "file": "audio/fx/come_up.wav"
+    },
+    {
+      "at": 46.01,
+      "type": "wav",
+      "gain": 0.3,
+      "what": "the water at your face",
+      "file": "audio/fx/lap_3.wav"
+    },
+    {
+      "at": 50.33,
+      "type": "wav",
+      "gain": 0.8,
+      "what": "the fight to the wall",
+      "file": "audio/fx/thrash.wav"
+    },
+    {
+      "at": 61.81,
+      "type": "wav",
+      "gain": 0.26,
+      "what": "the water at the wall",
+      "file": "audio/fx/lap_4.wav"
+    },
+    {
+      "at": 65.65,
+      "type": "wav",
+      "gain": 0.42,
+      "what": "your fingers going down the wet wall (above the voice)",
+      "file": "audio/fx/slide.wav"
+    },
+    {
+      "at": 66.22,
+      "type": "wav",
+      "gain": 0.8,
+      "what": "you go under (in the gap)",
+      "file": "audio/fx/go_under.wav"
+    },
+    {
+      "at": 66.66,
+      "type": "wav",
+      "gain": 0.7,
+      "what": "inside the water, again",
+      "file": "audio/fx/under_2.wav"
+    },
+    {
+      "at": 66.94,
+      "type": "wav",
+      "gain": 0.3,
+      "what": "a little air, going up",
+      "file": "audio/fx/bubbles_few.wav"
+    },
+    {
+      "at": 81.03,
+      "type": "rewind",
+      "gain": 0.5,
+      "what": "the film runs back (in the gap)",
+      "len": 0.41,
+      "pitch": 1.0
+    },
+    {
+      "at": 84.61,
+      "type": "pop",
+      "gain": 0.42,
+      "what": "a third button, with no number (in the gap)"
+    },
+    {
+      "at": 88.83,
+      "type": "shutter",
+      "gain": 0.34,
+      "what": "the ring closes on it (in the gap)"
+    },
+    {
+      "at": 97.57,
+      "type": "wav",
+      "gain": 0.42,
+      "what": "a hollow knock: the bottle, back in colour (in the gap)",
+      "file": "audio/fx/bottle_drop.wav"
+    },
+    {
+      "at": 58.27,
+      "type": "thud",
+      "gain": 0.5,
+      "what": "his foot on you, the last time",
+      "pitch": 0.75
+    },
+    {
+      "at": 105.07,
+      "type": "wav",
+      "gain": 0.24,
+      "what": "the canal comes back",
+      "file": "audio/fx/lap_5.wav"
+    },
+    {
+      "at": 106.21,
+      "type": "wav",
+      "gain": 0.5,
+      "what": "the bottle goes",
+      "file": "audio/fx/throw.wav"
+    },
+    {
+      "at": 107.81,
+      "type": "wav",
+      "gain": 0.7,
+      "what": "it lands by his arm",
+      "file": "audio/fx/bottle_water.wav"
+    },
+    {
+      "at": 126.23,
+      "type": "crickets",
+      "gain": 0.18,
+      "what": "evening, the window open (near 5 kHz)",
+      "len": 8.08
+    },
+    {
+      "at": "end",
+      "type": "wav",
+      "file": "../../engine/endcard/endcard.wav",
+      "gain": 1.0,
+      "what": "end card sound"
+    }
+  ]
+}
