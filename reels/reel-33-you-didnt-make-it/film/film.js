@@ -116,19 +116,14 @@
     const by0 = o.browY || 0, tilt = L.browTilt - (o.worry || 0);       // worry raises the inner ends: pleading, not angry
     browLine(g, -1, ex, ey, tilt, by0); browLine(g, 1, ex, ey, tilt, by0);
     const hh = hw + 7;
-    if (o.dry) {                                            // dry: soft and full, a boy who's been home for hours
-      g.fillStyle = L.hair; g.beginPath(); g.moveTo(-hh, -44); g.bezierCurveTo(-hh - 26, -268, -112, -338, 14, -332); g.bezierCurveTo(152, -332, hh + 28, -252, hh, -44);
-      g.bezierCurveTo(hh - 20, -124, 150, -176, 102, -192); g.bezierCurveTo(36, -212, -30, -192, -94, -208); g.bezierCurveTo(-142, -176, -hh + 24, -124, -hh, -44); g.closePath(); g.fill();
-      g.strokeStyle = 'rgba(120,100,90,0.32)'; g.lineWidth = 5; g.lineCap = 'round'; for (const [a, b, c, d] of [[-110, -262, -40, -300], [-20, -292, 60, -290], [90, -262, 138, -214]]) { g.beginPath(); g.moveTo(a, b); g.quadraticCurveTo((a + c) / 2, Math.min(b, d) - 16, c, d); g.stroke(); }
-      return;
-    }
-    // wet hair: a cap, and clumps stuck down over the forehead
+    // the hair: a cap, and clumps over the forehead. The same cut wet or dry: at home he's the same boy, just dry
     g.fillStyle = L.hair; g.beginPath(); g.moveTo(-hh, -30);
     g.bezierCurveTo(-hh - 14, -250, -100, -312, 8, -304); g.bezierCurveTo(130, -304, hh + 16, -236, hh, -30);
     const front = [[hh - 12, -118], [hh - 40, -92], [hh - 62, -172], [98, -98], [66, -186], [34, -88], [-4, -190], [-40, -92], [-74, -182], [-112, -102], [-hh + 62, -170], [-hh + 34, -96], [-hh + 12, -120]];
     let px = hh, py = -30;
     for (const [x, y] of front) { g.quadraticCurveTo((px + x) / 2, (py + y) / 2 - 8, x, y); px = x; py = y; }
     g.quadraticCurveTo(-hh + 2, -80, -hh, -30); g.closePath(); g.fill(); g.strokeStyle = L.hair; g.lineWidth = 11; g.lineJoin = 'round'; g.stroke();
+    if (o.dry) { g.strokeStyle = 'rgba(120,100,90,0.3)'; g.lineWidth = 5; g.lineCap = 'round'; for (const [a, b, c, e] of [[-110, -262, -40, -290], [-20, -284, 60, -282], [90, -256, 138, -212]]) { g.beginPath(); g.moveTo(a, b); g.quadraticCurveTo((a + c) / 2, Math.min(b, e) - 14, c, e); g.stroke(); } return; }
     g.strokeStyle = 'rgba(190,220,235,0.34)'; g.lineWidth = 6; g.lineCap = 'round';
     for (const [x0, y0, x1, y1] of [[-120, -252, -60, -196], [-40, -282, -8, -212], [60, -280, 76, -216], [132, -232, 118, -176]]) { g.beginPath(); g.moveTo(x0, y0); g.quadraticCurveTo((x0 + x1) / 2 + 12, (y0 + y1) / 2 - 12, x1, y1); g.stroke(); }
     const t = o.t ?? 0;
@@ -148,7 +143,18 @@
     g.fillStyle = lg(g, -70, 0, 70, 0, [0, BRO.skinD], [0.55, BRO.skin], [1, BRO.skinD]);
     g.beginPath(); g.moveTo(-nw, 120); g.lineTo(-nw - 8, by + 96); g.quadraticCurveTo(0, by + 176, nw + 8, by + 96); g.lineTo(nw, 120); g.closePath(); g.fill();
     g.fillStyle = 'rgba(70,35,20,0.28)'; g.beginPath(); g.moveTo(-nw, 150); g.quadraticCurveTo(0, 235, nw, 150); g.lineTo(nw, 120); g.lineTo(-nw, 120); g.closePath(); g.fill();
-    if (o.towel) { g.fillStyle = lg(g, -200, by + 60, 200, by + 200, [0, '#fbfaf3'], [1, '#d9d5c6']); g.beginPath(); g.moveTo(-220, by + 180); g.bezierCurveTo(-170, by + 70, -74, by + 62, -60, by + 80); g.quadraticCurveTo(0, by + 150, 60, by + 80); g.bezierCurveTo(74, by + 62, 170, by + 70, 220, by + 180); g.quadraticCurveTo(150, by + 260, 92, by + 460); g.lineTo(30, by + 440); g.quadraticCurveTo(10, by + 250, 0, by + 196); g.quadraticCurveTo(-10, by + 250, -30, by + 440); g.lineTo(-92, by + 460); g.quadraticCurveTo(-150, by + 260, -220, by + 180); g.closePath(); g.fill(); g.strokeStyle = 'rgba(120,110,90,0.3)'; g.lineWidth = 4; g.stroke(); }
+    if (o.towel) {                                          // a gamcha round his neck: the checked cotton towel every house has
+      const strip = (k) => { g.beginPath(); g.moveTo(k * 50, by + 30); g.lineTo(k * 132, by + 70); g.lineTo(k * 168, by + 520); g.lineTo(k * 66, by + 540); g.lineTo(k * 40, by + 120); g.closePath(); };
+      for (const k of [-1, 1]) {
+        g.save(); strip(k); g.fillStyle = '#c8343c'; g.fill(); g.clip();
+        g.fillStyle = 'rgba(255,246,236,0.9)'; for (let i = -8; i < 22; i++) { g.fillRect(-400, by + i * 38, 800, 9); g.fillRect(i * 38 - 200, by - 120, 9, 900); }
+        g.fillStyle = 'rgba(120,20,30,0.35)'; for (let i = -8; i < 22; i++) { g.fillRect(-400, by + i * 38 + 20, 800, 3); g.fillRect(i * 38 - 180, by - 120, 3, 900); }
+        g.restore();
+        strip(k); g.strokeStyle = 'rgba(90,20,24,0.45)'; g.lineWidth = 4; g.stroke();
+        g.strokeStyle = 'rgba(255,246,236,0.9)'; g.lineWidth = 4; g.lineCap = 'round';
+        for (let i = 0; i <= 10; i++) { const x = lerp(k * 168, k * 66, i / 10), y = lerp(by + 520, by + 540, i / 10); g.beginPath(); g.moveTo(x, y); g.lineTo(x + k * 2, y + 18); g.stroke(); }
+      }
+    }
     head(g, o);
     g.restore();
   }
@@ -204,7 +210,7 @@
     g.strokeStyle = ME.colD; g.lineWidth = 42; g.beginPath(); g.moveTo(-64, 14); g.lineTo(18, -34); g.stroke(); g.strokeStyle = ME.col; g.lineWidth = 35; g.beginPath(); g.moveTo(-64, 14); g.lineTo(18, -34); g.stroke();
     g.restore();
   }
-  const FX0 = 128, FY0 = 1252, BS = 0.74;                   // where your fist is on the first frame; the bottle's scale
+  const FX0 = 128, FY0 = 1212, BS = 0.74;                   // where your fist is on the first frame; the bottle's scale
   function handAndBottle(g, t, o = {}) {
     const dx = o.dx || 0, dy = o.dy || 0, sw = Math.sin(t * 1.3) * 3, BX = FX0 + 95 + dx, BY = FY0 + 130 + dy + sw, rot = (o.rot ?? 0.04);
     myArm(g, FX0 - 210 + dx, FY0 + 900 + dy, FX0 - 28 + dx, FY0 + 70 + dy + sw, 104);
@@ -341,7 +347,7 @@
     txt(g, label, x + 126, y + h / 2 + 26, 76, INK, { fit: w - 150 });
     g.restore();
   }
-  const BTN = [[444, 1168, 498, 130], [444, 1322, 498, 130]], BTN3 = [444, 1014, 498, 130];
+  const BTN = [[444, 1208, 498, 130], [444, 1362, 498, 130]], BTN3 = [444, 1054, 498, 130];
   function frameZero(g, t, o = {}) {
     const TT = times();
     const dip = o.noDip ? 0 : 74 * Math.exp(-Math.pow((t - (TT.n02 + 0.45)) / 0.26, 2)) + 36 * Math.exp(-Math.pow((t - (TT.n03e + 0.55)) / 0.22, 2));
@@ -380,16 +386,19 @@
   }
 
   // ------------------------------------------------------------------ attempt two: you jump
-  function shotLeap(g, t) {
-    const TT = times(), u = sstep(TT.leap - 0.18, TT.splash, t), tip = sstep(TT.leap - 0.05, TT.splash, t);
-    frameZero(g, t, { noDip: true, cross: { zoom: 1 + 1.25 * tip * tip, oy: lerp(860, 1160, tip) } });
-    const open = sstep(TT.open, TT.open + 0.08, t), dt = t - TT.open, gr = 2900;
+  function dropAt(dt) {                                     // the bottle you let go of, dt seconds later: [x, y, turn]
     let bx = FX0 + 95, by = FY0 + 130, rot = 0.04;
     if (dt > 0) {
-      const fy = 1520 - by, t1 = Math.sqrt(2 * fy / gr);
+      const gr = 2900, fy = 1520 - by, t1 = Math.sqrt(2 * fy / gr);
       if (dt < t1) { by += 0.5 * gr * dt * dt; rot += dt * 2.2; bx -= dt * 40; }
       else { const d2 = dt - t1, v = 420, hop = Math.max(0, v * d2 - 0.5 * gr * d2 * d2); by = 1520 - hop; rot += t1 * 2.2 + d2 * 3.2; bx += d2 * 120 - t1 * 40; }
     }
+    return [bx, by, rot];
+  }
+  function shotLeap(g, t, o = {}) {                         // o.replay: the camera stays put, and no headline
+    const TT = times(), u = o.replay ? 0 : sstep(TT.leap - 0.18, TT.splash, t), tip = o.replay ? 0 : sstep(TT.leap - 0.05, TT.splash, t);
+    frameZero(g, t, { noDip: true, cross: { zoom: 1 + 1.25 * tip * tip, oy: lerp(860, 1160, tip) } });
+    const open = sstep(TT.open, TT.open + 0.08, t), dt = t - TT.open, [bx, by, rot] = dropAt(dt);
     if (u < 0.9) {
       const shift = 300 * tip, dy = 340 * tip;
       if (dt > 0) bottle(g, bx, by + shift, BS, rot);
@@ -397,11 +406,11 @@
       if (dt <= 0) bottle(g, bx, by, BS, rot);
       if (open < 0.5) fist(g, FX0, FY0 + 22 + dy, 0.82, -0.25); else palm(g, FX0 + 10, FY0 + 20 + dy, 0.72, Math.PI + 0.4, ME);
     }
-    words0(g, 1 - sstep(TT.open - 0.08, TT.open + 0.1, t));
+    if (!o.replay) words0(g, 1 - sstep(TT.open - 0.08, TT.open + 0.1, t));
     const ex = pop(t, TT.open - 0.05);
     button(g, '1', 'JUMP IN', ...BTN[0], { dx: 700 * ex, a: 1 - ex, fill: YEL });
     button(g, '2', 'CALL FOR HELP', ...BTN[1], { dx: 700 * ex, a: 1 - ex });
-    if (!NOFX && t > TT.splash - 0.02) { g.fillStyle = `rgba(255,255,255,${0.55 * sstep(TT.splash - 0.04, TT.splash, t)})`; g.fillRect(0, 0, W, H); }
+    if (!NOFX && !o.replay && t > TT.splash - 0.02) { g.fillStyle = `rgba(255,255,255,${0.55 * sstep(TT.splash - 0.04, TT.splash, t)})`; g.fillRect(0, 0, W, H); }
   }
   function surfaceFront(g, L, t) {                          // the water against your face
     const xs = []; for (let x = -40; x <= W + 40; x += 14) xs.push([x, L + wave(x * 0.6, t * 1.5, 2.1)]);
@@ -440,7 +449,10 @@
   function shotSwim(g, t) {
     const TT = times(), u = clamp((t - TT.splash) / (TT.reach - TT.splash)), s = lerp(0.82, 1.22, u), by = lerp(815, 830, u), L = 1140 + 26 * Math.sin(t * 6);
     level(g, t, { L, s, by, op: 0.34 + 0.15 * Math.sin(t * 5.2), top() { const ph = (t - TT.splash) * 1.9; if (u < 1) { strokeArm(g, -1, (ph % 1), L); strokeArm(g, 1, ((ph + 0.5) % 1), L); } } });
-    if (t > TT.reach - 0.05) { const q = pop(t, TT.reach); for (const k of [-1, 1]) { myArm(g, 540 + k * 620, 2040, 540 + k * lerp(420, 330, q), lerp(1500, 1190, q), 112); palm(g, 540 + k * lerp(400, 310, q), lerp(1420, 1120, q), 1.0, Math.PI + k * 0.1, ME); } }
+    if (t > TT.reach - 0.05) {                                // your hands get him: on his shoulders, at the water
+      const q = sstep(TT.reach - 0.05, TT.reach + 0.2, t);
+      for (const k of [-1, 1]) { const hx = 540 + k * lerp(420, 270, q), hy = lerp(1420, 1110, q), r = Math.PI - k * lerp(-0.1, 0.95, q); myArm(g, 540 + k * 620, 2040, hx + 92 * Math.sin(r), hy - 92 * Math.cos(r), 112); palm(g, hx, hy, 1.0, r, ME); }
+    }
     const fl = 0.55 * Math.exp(-Math.max(0, t - TT.splash) * 9); if (!NOFX && fl > 0.01) { g.fillStyle = `rgba(255,255,255,${fl})`; g.fillRect(0, 0, W, H); }
     droplets(g, t, TT.splash, 30);
   }
@@ -451,11 +463,11 @@
       top() {
         const q = sstep(TT.grab - 0.05, TT.under - 0.02, t);
         for (const k of [-1, 1]) {                       // your hands, still on him, pushed down and away
-          const yy = lerp(1120, 1700, q); myArm(g, 540 + k * 620, 2040 + 300 * q, 540 + k * lerp(330, 380, q), yy + 70, 112); palm(g, 540 + k * lerp(310, 360, q), yy, 1.0, Math.PI + k * 0.1, ME);
+          const yy = lerp(1110, 1700, q), xx = 540 + k * lerp(270, 360, q), r = Math.PI - k * lerp(0.95, -0.1, q); myArm(g, 540 + k * 620, 2040 + 300 * q, xx + 92 * Math.sin(r), yy - 92 * Math.cos(r), 112); palm(g, xx, yy, 1.0, r, ME);
         }
-        g.save(); g.beginPath(); g.rect(-300, -3000, W + 600, L + 3000); g.clip();   // as you go under, his arms are above the surface: out of sight
+        g.save(); g.beginPath(); g.rect(-300, -3000, W + 600, Math.min(L, by + 138 * s + 4) + 3000); g.clip();   // as you go under, his arms are above the surface: out of sight
         for (const k of [-1, 1]) {                       // his arms, from his shoulders, up over the water and round your head
-          const sx = 540 + k * 250 * s, sy = by + 300 * s, hx = 540 + k * lerp(430, 300, q), hy = lerp(by + 120, 150, q), ex = 540 + k * lerp(520, 470, q), ey = lerp(by + 320, by - 60, q);
+          const sx = 540 + k * 250 * s, sy = by + 300 * s, hx = 540 + k * lerp(430, 300, q), hy = lerp(by + 430, 150, q), ex = 540 + k * lerp(520, 470, q), ey = lerp(by + 440, by - 60, q);
           limb(g, sx, sy, ex, ey, hx, hy, 78); palm(g, hx, hy, 1.25, Math.PI + k * lerp(0.9, 0.35, q));
         }
         g.restore();
@@ -582,7 +594,7 @@
   function shotLook(g, t) {
     const TT = times(), u = clamp((t - TT.look) / (TT.n16be + 0.5 - TT.look));
     g.fillStyle = lg(g, 0, 0, 0, H, [0, '#39c4c2'], [0.5, '#149fa8'], [1, '#0a7f95']); g.fillRect(0, 0, W, H);
-    const shut = sstep(wi('n16b', 3) - 0.08, wi('n16b', 3) + 0.3, t), cy = lerp(640, 560, u), rx = lerp(480, 330, u), ry = rx * 1200 / 1080, sc = rx / 540;
+    const shut = 0, cy = lerp(640, 560, u), rx = lerp(480, 330, u), ry = rx * 1200 / 1080, sc = rx / 540;
     if (!WINC) WINC = offscreen(1080, 1200);
     const w = WINC.getContext('2d'); w.setTransform(1, 0, 0, 1, 0, 0); w.globalAlpha = 1; w.fillStyle = lg(w, 0, 0, 0, 900, [0, '#5fc0ef'], [1, '#bfe9f6']); w.fillRect(0, 0, 1080, 1200);
     w.fillStyle = '#e9dfc7'; w.beginPath(); w.moveTo(0, 900); w.quadraticCurveTo(540, 840, 1080, 900); w.lineTo(1080, 1200); w.lineTo(0, 1200); w.closePath(); w.fill();
@@ -611,49 +623,62 @@
     else if (t < TT.look) shotSlip(g, t);
     else shotLook(g, t);
   }
-  function shotRewindB(g, t) {
-    const TT = times(), u = clamp((t - TT.rw2) / (TT.rw3 - TT.rw2)), e = u * u * (3 - 2 * u);
-    NOFX = true; attemptTwo(g, lerp(TT.n16be, TT.open - 0.1, e)); NOFX = false; tape(g, t);
+  let RWC = null;
+  function shotRewindB(g, t) {                              // back to the start through four bright shots, crossfaded: no strobe
+    const TT = times(), u = clamp((t - TT.rw2) / (TT.rw3 - TT.rw2)), K = [TT.n16be, TT.slip0 + 0.9, TT.up - 0.3, TT.reach - 0.1, TT.open - 0.1];
+    const p = u * (K.length - 1), i = Math.min(K.length - 2, Math.floor(p)), f = p - i, x = sstep(0.4, 1, f);
+    NOFX = true;
+    attemptTwo(g, lerp(K[i], K[i] - 0.45, f));
+    if (x > 0) {
+      if (!RWC) RWC = offscreen(W, H);
+      const c = RWC.getContext('2d'); c.setTransform(1, 0, 0, 1, 0, 0); c.globalAlpha = 1; c.globalCompositeOperation = 'source-over'; c.clearRect(0, 0, W, H);
+      c.save(); attemptTwo(c, K[i + 1]); c.restore();
+      g.save(); g.globalAlpha = x; g.drawImage(RWC, 0, 0); g.restore();
+    }
+    NOFX = false; tape(g, t);
   }
 
   // ------------------------------------------------------------------ the third button
   function grey(g, a = 1) { g.save(); g.setTransform(1, 0, 0, 1, 0, 0); g.globalCompositeOperation = 'saturation'; g.fillStyle = `rgba(128,128,128,${a})`; g.fillRect(0, 0, W, H); g.restore(); }
   function ring(g, x, y, r, k, lw = 12) { if (k <= 0) return; g.strokeStyle = RED; g.lineWidth = lw; g.lineCap = 'round'; g.beginPath(); g.arc(x, y, r, -Math.PI / 2, -Math.PI / 2 + TAU * k); g.stroke(); }
   function shotFrozen(g, t) {
-    const TT = times(), f = 0.5, g0 = sstep(TT.rw3, TT.rw3 + 0.3, t), col = sstep(TT.n18e + 0.28, TT.n18e + 0.56, t), push = 1 + 0.03 * clamp((t - TT.rw3) / 4);
+    const TT = times(), f = 0.5, g0 = sstep(TT.rw3, TT.rw3 + 0.3, t), push = 1 + 0.03 * clamp((t - TT.rw3) / 4);
+    const t0 = TT.n18e + 0.1, fly = sstep(t0, t0 + 0.42, t), col = sstep(t0 + 0.3, t0 + 0.6, t), rk = sstep(t0 + 0.36, t0 + 0.72, t);
     g.save(); g.translate(540, 900); g.scale(push, push); g.translate(-540, -900);
     frameZero(g, f, { noDip: true }); handAndBottle(g, f); words0(g, 1 - sstep(TT.n17, TT.n17 + 0.2, t));
     grey(g, g0); g.fillStyle = `rgba(250,248,240,${0.26 * g0})`; g.fillRect(-100, -100, W + 200, H + 200);
     if (col > 0) { g.save(); g.globalAlpha = col; handAndBottle(g, f); g.restore(); }
-    const fall = sstep(TT.n18e + 0.2, TT.n18e + 0.55, t), dy = fall * fall * 900;
-    button(g, '1', 'JUMP IN', BTN[0][0], BTN[0][1] + dy * 1.12, BTN[0][2], BTN[0][3], { fill: g0 > 0.5 ? '#eeeae0' : CREAM });
-    button(g, '2', 'CALL FOR HELP', BTN[1][0], BTN[1][1] + dy * 1.25, BTN[1][2], BTN[1][3], { fill: g0 > 0.5 ? '#eeeae0' : CREAM });
-    if (t >= TT.n17e - 0.02) { const q = pop(t, TT.n17e - 0.02); button(g, '?', '', BTN3[0], BTN3[1] + dy, BTN3[2], BTN3[3], { s: q, a: clamp(q * 3), dash: true, fill: 'rgba(255,255,255,0.0)' }); }
-    ring(g, FX0 + 100, FY0 + 118, 262, sstep(TT.n18e + 0.25, TT.n18e + 0.62, t), 14);
+    const fall = sstep(t0, t0 + 0.4, t), dy = fall * fall * 900, fa = 1 - sstep(t0 + 0.1, t0 + 0.4, t);
+    button(g, '1', 'JUMP IN', BTN[0][0], BTN[0][1] + dy, BTN[0][2], BTN[0][3], { fill: g0 > 0.5 ? '#eeeae0' : CREAM, a: fa });
+    button(g, '2', 'CALL FOR HELP', BTN[1][0], BTN[1][1] + dy * 1.1, BTN[1][2], BTN[1][3], { fill: g0 > 0.5 ? '#eeeae0' : CREAM, a: fa });
+    if (t >= TT.n17e - 0.02 && fly < 1) {                   // the button with no number goes to the thing in your hand
+      const q = pop(t, TT.n17e - 0.02), cx = BTN3[0] + BTN3[2] / 2, cy = BTN3[1] + BTN3[3] / 2, x = lerp(cx, FX0 + 95, fly), y = lerp(cy, FY0 + 130, fly) - 140 * Math.sin(fly * Math.PI);
+      g.save(); g.translate(x - cx, y - cy); button(g, '?', '', ...BTN3, { s: q * lerp(1, 0.3, fly), a: clamp(q * 3) * (1 - sstep(0.7, 1, fly)), dash: true, fill: 'rgba(255,255,255,0)' }); g.restore();
+    }
+    ring(g, FX0 + 100, FY0 + 118, 240, rk, 14);
     g.restore();
   }
-  // full frame, one after the other, each with the ring on it
+  // the replays, one after the other, each with the ring on it
   function shotProof(g, t) {
     const TT = times();
-    if (t < TT.split) {
-      const u = clamp((t - TT.proof) / (TT.split - TT.proof));
-      shotLeap(g, lerp(TT.open - 0.12, TT.open + 0.52, u));
-      const dt = Math.max(0, lerp(TT.open - 0.12, TT.open + 0.52, u) - TT.open), fy = 1520 - (FY0 + 130), gr = 2900, t1 = Math.sqrt(2 * fy / gr);
-      const by = dt < t1 ? FY0 + 130 + 0.5 * gr * dt * dt : 1520 - Math.max(0, 420 * (dt - t1) - 0.5 * gr * (dt - t1) * (dt - t1));
-      ring(g, FX0 + 95 - dt * 20, by, 250, 1, 12);
+    if (t < TT.split) {                                     // if you jumped: the camera follows it down, so it lands well above the caption
+      const u = clamp((t - TT.proof) / (TT.split - TT.proof)), tt = lerp(TT.open - 0.12, TT.open + 0.52, u), [bx, by] = dropAt(tt - TT.open), tilt = -300 * sstep(TT.open - 0.02, TT.open + 0.32, tt);
+      g.fillStyle = '#4cb7f0'; g.fillRect(0, 0, W, H);
+      g.save(); g.translate(0, tilt); shotLeap(g, tt, { replay: true }); ring(g, bx + 5, by - 12, 236, 1, 12); g.restore();
     } else {
       shotPick(g, TT.call + 0.55 + (t - TT.split) * 0.2);
-      ring(g, FX0 + 100, FY0 + 118, 262, 1, 12);
+      ring(g, FX0 + 100, FY0 + 118, 240, 1, 12);
     }
   }
   // back in colour, moving, the ring still on it: where the first frame's words were, these
   function shotTold(g, t) {
-    const TT = times();
+    const TT = times(), sec = 70 * sstep(TT.call + 0.3, TT.flat, TT.call + 0.55 + (TT.told - TT.split) * 0.2), out = 1 - sstep(TT.back - 0.24, TT.back - 0.02, t);
     frameZero(g, t);
     handAndBottle(g, t);
-    const pd = sstep(TT.told, TT.told + 0.32, t); if (pd < 1) phoneHand(g, 560 + 300 * pd, lerp(960, 2300, pd), -0.02 + 0.2 * pd, lerp(1.9, 0.92, pd), 70);
-    ring(g, FX0 + 100, FY0 + 118, 262, 1, 12);
-    if (t >= wi('n20', 5) - 0.04) { title(g, 'NOBODY', 400, 150, INK, t, wi('n20', 5) - 0.04, { stroke: CREAM, sw: 0.07 }); title(g, 'TOLD YOU', 538, 150, RED, t, wi('n20', 7) - 0.04, { stroke: CREAM, sw: 0.09 }); }
+    const pd = sstep(TT.told, TT.told + 0.32, t);
+    if (pd < 1) { g.fillStyle = `rgba(16,32,42,${0.14 * (1 - pd)})`; g.fillRect(0, 0, W, H); phoneHand(g, 560 + 300 * pd, lerp(960, 2300, pd), -0.02 + 0.2 * pd, lerp(1.9, 0.92, pd), sec); }
+    g.save(); g.globalAlpha = out; ring(g, FX0 + 100, FY0 + 118, 240, 1, 12); g.restore();
+    if (t >= wi('n20', 5) - 0.04) { title(g, 'NOBODY', 400, 150, INK, t, wi('n20', 5) - 0.04, { stroke: CREAM, sw: 0.07, a: out }); title(g, 'TOLD YOU', 538, 150, RED, t, wi('n20', 7) - 0.04, { stroke: CREAM, sw: 0.09, a: out }); }
     if (t >= TT.n20e - 0.12) { const q = pop(t, TT.n20e - 0.12); button(g, '3', 'THROW IT', ...BTN3, { s: q, a: clamp(q * 2), fill: YEL, badge: CREAM }); }
   }
   function football(g, x, y, r) { ell(g, x, y, r, r); g.fillStyle = '#f7f5ee'; g.fill(); g.strokeStyle = INK; g.lineWidth = 5; g.stroke(); g.fillStyle = INK; const pent = (px, py, q, rot) => { g.beginPath(); for (let i = 0; i < 5; i++) { const a = rot + i * TAU / 5; const X = px + Math.cos(a) * q, Y = py + Math.sin(a) * q; i ? g.lineTo(X, Y) : g.moveTo(X, Y); } g.closePath(); g.fill(); }; pent(x, y, r * 0.3, -Math.PI / 2); g.save(); ell(g, x, y, r - 2, r - 2); g.clip(); for (let i = 0; i < 5; i++) { const a = -Math.PI / 2 + i * TAU / 5; pent(x + Math.cos(a) * r * 0.86, y + Math.sin(a) * r * 0.86, r * 0.28, a); } g.restore(); }
@@ -687,7 +712,7 @@
     if (dt >= 0 && dt < 0.8) for (let i = 0; i < 16; i++) { const a = -Math.PI * hash(i, 41), v = 280 + 360 * hash(i, 42), x = BX + Math.cos(a) * v * dt, y = HY + 100 + Math.sin(a) * v * dt + 900 * dt * dt, r = 6 + 10 * hash(i, 43); g.fillStyle = 'rgba(245,252,255,0.9)'; ell(g, x, y, r, r * 1.2); g.fill(); }
     if (t < land - 0.3) {
       const q = pop(t, TT.n20e - 0.12), fade = 1 - sstep(th0 + 0.15, th0 + 0.45, t);
-      button(g, '1', 'JUMP IN', ...BTN[0], { a: 0.5 * fade }); button(g, '2', 'CALL FOR HELP', ...BTN[1], { a: 0.5 * fade });
+      const fin = sstep(TT.back, TT.back + 0.22, t); button(g, '1', 'JUMP IN', ...BTN[0], { a: 0.5 * fade * fin }); button(g, '2', 'CALL FOR HELP', ...BTN[1], { a: 0.5 * fade * fin });
       button(g, '3', 'THROW IT', ...BTN3, { s: q, a: clamp(q * 2) * fade, fill: YEL, badge: CREAM });
     }
     const fout = 1 - sstep(TT.n22 + 0.1, TT.n22 + 0.35, t);
@@ -709,25 +734,30 @@
     g.fillStyle = '#c98f5c'; R(g, 24, 1018, 282, 18, 6); g.fill();
     bottle(g, 214, 948, 0.27, 0.02);                        // it came home too
     const br = 3 * Math.sin(t * 1.4);
-    bro(g, 540, HY + br, 1, { t, dry: true, towel: true, look: [0, 3], worry: 2, browY: -2, smile: 0.9, op: 0 });
-    // your phone comes up where the two buttons were on the first frame; the words people will send
-    const up = sstep(TT.n26 - 0.15, TT.n26 + 0.3, t), y0 = lerp(2100, 1120, up);
+    bro(g, 540, 860 + br, 1, { t, dry: true, towel: true, look: [0, 3], worry: 2, browY: -2, smile: 0.9, op: 0 });
+    // your phone comes up where the two buttons were on the first frame: a chat with your family, and the words people will send
+    const up = sstep(TT.n26 - 0.15, TT.n26 + 0.3, t), y0 = lerp(2100, 1104, up);
     if (up > 0) {
       myArm(g, 860, y0 + 1300, 780, y0 + 560, 118);
       R(g, 60, y0, 890, 1100, 54); g.fillStyle = '#12161b'; g.fill();
       R(g, 76, y0 + 16, 858, 1068, 42); g.fillStyle = '#0f1a1f'; g.fill();
-      if (t < TT.n27 - 0.04) { R(g, 106, y0 + 54, 800, 96, 30); g.fillStyle = '#1e2c33'; g.fill(); if (Math.floor(t * 2.4) % 2 === 0) { g.fillStyle = '#5ee0a8'; g.fillRect(140, y0 + 74, 8, 56); } }
+      g.save(); R(g, 76, y0 + 16, 858, 1068, 42); g.clip(); g.fillStyle = '#1b2a31'; g.fillRect(76, y0 + 16, 858, 74); g.restore();
+      ell(g, 138, y0 + 53, 25, 25); g.fillStyle = '#3f7f6c'; g.fill();
+      g.fillStyle = CREAM; for (const x of [129, 148]) { ell(g, x, y0 + 46, 7, 7); g.fill(); ell(g, x, y0 + 63, 11, 7); g.fill(); }
+      txt(g, 'Family', 180, y0 + 68, 44, CREAM, { kind: 'semi' });
+      if (t < TT.n27 - 0.04) { R(g, 106, y0 + 110, 800, 84, 30); g.fillStyle = '#1e2c33'; g.fill(); if (Math.floor(t * 2.4) % 2 === 0) { g.fillStyle = '#5ee0a8'; g.fillRect(140, y0 + 126, 8, 52); } }
       const m0 = TT.n27, wds = words('n27'), L1 = ["If I'm ever drowning,", "don't jump in.", 'Throw something', 'that floats.'], cut = [0, 4, 7, 9];
       const shown = (k) => (t >= (wds[cut[k]] ? wds[cut[k]].t0 : Infinity) - 0.04);
       if (t >= m0 - 0.04) {
-        const q = pop(t, m0 - 0.04), by = y0 + 42;
+        const q = pop(t, m0 - 0.04), by = y0 + 104;
         g.save(); g.translate(0, (1 - q) * 30); g.globalAlpha *= clamp(q * 3);
-        R(g, 100, by, 820, 362, 34); g.fillStyle = '#1d8a63'; g.fill();
-        L1.forEach((s0, k) => { if (shown(k)) txt(g, s0, 146, by + 84 + k * 80, 80, CREAM, { kind: 'semi', fit: 740 }); });
+        R(g, 100, by, 820, 326, 32); g.fillStyle = '#1d8a63'; g.fill();
+        L1.forEach((s0, k) => { if (shown(k)) txt(g, s0, 144, by + 74 + k * 68, 68, CREAM, { kind: 'semi', fit: 740 }); });
         g.restore();
       }
     }
-    if (t >= TT.n25 - 0.04 && t < TT.n26 - 0.1) { title(g, 'NOBODY TOLD THEM', 400, 128, INK, t, TT.n25 - 0.04, { stroke: CREAM, sw: 0.07 }); title(g, 'EITHER.', 530, 128, INK, t, wi('n25', 3) - 0.04, { stroke: CREAM, sw: 0.07 }); }
+    const nt = 1 - sstep(TT.n26 - 0.32, TT.n26 - 0.08, t);
+    if (t >= TT.n25 - 0.04 && nt > 0) { title(g, 'NOBODY TOLD THEM', 380, 128, INK, t, TT.n25 - 0.04, { stroke: CREAM, sw: 0.07, a: nt }); title(g, 'EITHER.', 505, 128, INK, t, wi('n25', 3) - 0.04, { stroke: CREAM, sw: 0.07, a: nt }); }
     if (t >= wi('n26', 1) - 0.04) title(g, 'TELL THEM.', 470, 190, RED, t, wi('n26', 1) - 0.04, { stroke: CREAM, sw: 0.09 });
     const out = sstep(TT.end - 0.3, TT.end, t);
     if (out > 0) { g.fillStyle = `rgba(7,9,12,${out})`; g.fillRect(0, 0, W, H); }

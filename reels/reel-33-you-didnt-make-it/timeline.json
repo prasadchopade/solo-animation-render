@@ -1,7 +1,7 @@
 {
   "note": "Single source of truth for picture + sound, in BEATS (120 bpm: beat = 0.5 s). film.js reads marks via film/data.js; sync.mjs turns sfx into cues.json; score.py reads marks for the music; vo.json places the narration. Every reel ends with the Root Cause end card: 'end' → 'done' = 3.0 s (6 beats), engine/endcard.",
   "title": "You Didn't Make It",
-  "duration": 76.0,
+  "duration": 76.5,
   "fps": 30,
   "bpm": 120,
   "formats": [
@@ -24,8 +24,8 @@
   },
   "marks": {
     "hook": 0,
-    "end": 146.0,
-    "done": 152.0
+    "end": 147.0,
+    "done": 153.0
   },
   "sfx": [
     {
@@ -226,13 +226,13 @@
       "what": "a third button, with no number (in the gap)"
     },
     {
-      "at": 88.83,
+      "at": 89.35,
       "type": "shutter",
       "gain": 0.34,
-      "what": "the ring closes on it (in the gap)"
+      "what": "the empty button lands on the bottle, the ring closes (in the gap)"
     },
     {
-      "at": 97.57,
+      "at": 98.97,
       "type": "wav",
       "gain": 0.42,
       "what": "a hollow knock: the bottle, back in colour (in the gap)",
@@ -246,32 +246,32 @@
       "pitch": 0.75
     },
     {
-      "at": 105.07,
+      "at": 106.47,
       "type": "wav",
       "gain": 0.24,
       "what": "the canal comes back",
       "file": "audio/fx/lap_5.wav"
     },
     {
-      "at": 106.91,
+      "at": 108.31,
       "type": "wav",
       "gain": 0.5,
       "what": "the bottle goes",
       "file": "audio/fx/throw.wav"
     },
     {
-      "at": 108.51,
+      "at": 109.91,
       "type": "wav",
       "gain": 0.7,
       "what": "it lands by his arm",
       "file": "audio/fx/bottle_water.wav"
     },
     {
-      "at": 126.23,
+      "at": 127.63,
       "type": "crickets",
       "gain": 0.18,
       "what": "evening, the window open (near 5 kHz)",
-      "len": 9.58
+      "len": 9.39
     },
     {
       "at": "end",
