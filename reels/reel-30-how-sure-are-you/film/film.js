@@ -102,22 +102,28 @@
   // Number 2 is the chai seller, again (reel 20's plant). The voice says "It isn't number three": that's the lie you find on the second viewing.
   const S0 = { skin: '#bd8a64', skinD: '#946243', skinH: '#d8a983' }, HR = '#15100c';
   const MEN = [
-    { ...S0, hair: HR, style: 'part', must: 'thin', stub: 0, brow: 12, browTilt: 0, jaw: 0.97, ew: 45, eh: 24 },
+    { ...S0, hair: HR, style: 'part', must: 'thin', stub: 0.35, brow: 14, browTilt: 4, jaw: 1.0, ew: 45, eh: 24 },
     { ...S0, hair: HR, style: 'buzz', must: 'thick', stub: 0, brow: 15, browTilt: 4, jaw: 1.05, ew: 42, eh: 22 },
     { ...S0, hair: HR, style: 'side', must: 'thin', stub: 0.4, brow: 15, browTilt: 5, jaw: 1.0, ew: 44, eh: 23, nick: true },
     { ...S0, hair: HR, style: 'wavy', must: null, stub: 0, brow: 14, browTilt: 3, jaw: 1.07, ew: 44, eh: 23 },
     { ...S0, hair: HR, style: 'side', must: 'thin', stub: 0.4, brow: 14, browTilt: 5, jaw: 1.03, ew: 46, eh: 24 },
-    { ...S0, hair: HR, style: 'recede', must: 'thin', stub: 0.1, brow: 11, browTilt: -2, jaw: 0.93, ew: 46, eh: 25 },
+    { ...S0, hair: HR, style: 'recede', must: 'thin', stub: 0.3, brow: 14, browTilt: 3, jaw: 0.97, ew: 45, eh: 24 },
   ];
   const THIEF = MEN[2], SELLER = MEN[1];
   const OFF = { ...S0, hair: '#1a130e', style: 'pcap', must: 'thick', stub: 0.08, brow: 15, browTilt: -3, jaw: 1.12, ew: 46, eh: 27 };
   const blinkAt = (t, p = 3.3, off = 1.1) => (((t + off) % p) < 0.11 ? 1 : 0);          // never on frame 0
 
-  function browLine(g, k, ex, ey, tilt, by0, nick) {
+  function browLine(g, k, ex, ey, tilt, by0, nick, L) {
     const P0 = [k * (ex - 48), ey - 40 + tilt + by0], P1 = [k * (ex + 6), ey - 60 + by0], P2 = [k * (ex + 54), ey - 40 - tilt * 0.3 + by0 * 0.4];
     const q = (u) => [(1 - u) * (1 - u) * P0[0] + 2 * u * (1 - u) * P1[0] + u * u * P2[0], (1 - u) * (1 - u) * P0[1] + 2 * u * (1 - u) * P1[1] + u * u * P2[1]];
     const seg = (a, b) => { g.beginPath(); for (let i = 0; i <= 14; i++) { const [x, y] = q(lerp(a, b, i / 14)); if (i === 0) g.moveTo(x, y); else g.lineTo(x, y); } g.stroke(); };
-    if (nick) { seg(0, 0.48); seg(0.78, 1); } else seg(0, 1);
+    seg(0, 1);
+    if (nick) {                                       // a thin slit through the brow: at lineup size you only find it by looking for it
+      const [x, y] = q(0.63), [x2, y2] = q(0.66), a = Math.atan2(y2 - y, x2 - x) + 1.25, dx = Math.cos(a), dy = Math.sin(a);
+      g.save(); g.lineCap = 'butt';
+      g.strokeStyle = L.skin; g.lineWidth = 6; g.beginPath(); g.moveTo(x - dx * 11, y - dy * 11); g.lineTo(x + dx * 11, y + dy * 11); g.stroke();
+      g.restore();
+    }
   }
   function head(g, L, o = {}) {
     const op = o.op ?? 0, close = o.close ?? 0, hw = 186 * L.jaw, drop = 104 * op, chin = 232 + drop, ey = -28, ex = 80;
@@ -153,7 +159,7 @@
     eye(g, -1, -ex, ey, close, eo); eye(g, 1, ex, ey, close, eo);
     g.strokeStyle = L.hair; g.lineCap = 'round'; g.lineWidth = L.brow;
     const by0 = o.browY || 0, tilt = L.browTilt + (o.worry || 0);
-    browLine(g, -1, ex, ey, tilt, by0, false); browLine(g, 1, ex, ey, tilt, by0 + (o.browR || 0), !!L.nick);
+    browLine(g, -1, ex, ey, tilt, by0, false); browLine(g, 1, ex, ey, tilt, by0 + (o.browR || 0), !!L.nick, L);
     g.fillStyle = L.hair;
     const hh = hw + 6;
     if (L.style === 'side') { g.beginPath(); g.moveTo(-hh, -38); g.bezierCurveTo(-hh - 10, -250, -80, -300, 16, -292); g.bezierCurveTo(140, -292, hh + 16, -220, hh, -38); g.bezierCurveTo(hh - 18, -112, 150, -158, 96, -176); g.bezierCurveTo(30, -196, -44, -176, -96, -192); g.bezierCurveTo(-140, -160, -hh + 22, -110, -hh, -38); g.fill(); }
@@ -575,7 +581,7 @@
   // ------------------------------------------------------------------ the lineup: six big faces
   const CARD = { w: 284, h: 396, x0: 50, y0: 396, gx: 19, gy: 18 };
   const cardXY = (i) => [CARD.x0 + (i % 3) * (CARD.w + CARD.gx), CARD.y0 + Math.floor(i / 3) * (CARD.h + CARD.gy)];
-  const FROWN = [0.1, 0.18, 0.22, 0.28, 0.22, 0.04], SMILE = [0.1, 0, 0, 0, 0, 0.18];
+  const FROWN = [0.2, 0.18, 0.22, 0.28, 0.22, 0.16], SMILE = [0, 0, 0, 0, 0, 0];
   function wallLines(g, x, y, w, h) {
     g.save(); R(g, x, y, w, h, 8); g.clip();
     g.fillStyle = WALL; g.fillRect(x, y, w, h);
@@ -916,9 +922,9 @@
     return flashAt(t, TT.back0) * 0.3;
   }
   // only one of these six has that cut: six strips, eyes and eyebrows only, so the check takes a second at phone size
-  const STR = { x: 60, w: 880, h: 150, gap: 12, y0: 396, s: 1.5 };
+  const STR = { x: 60, w: 880, h: 150, gap: 12, y0: 396, s: 1.85, c: 62 };
   function strip(g, i, t, o = {}) {
-    const { x, w, h, gap, y0, s } = STR, y = y0 + i * (h + gap), cx = x + w / 2 + 40, cy = y + h / 2 + 50 * s;
+    const { x, w, h, gap, y0, s, c } = STR, y = y0 + i * (h + gap), cx = x + w / 2 + 40, cy = y + h / 2 + c * s;
     g.save();
     if (o.pop != null) { g.translate(x + w, y + h / 2); g.scale(o.pop, o.pop); g.translate(-x - w, -y - h / 2); }
     g.save(); R(g, x, y, w, h, 8); g.clip();
@@ -929,7 +935,7 @@
     tileNo(g, x + 14, y + 30, i + 1, 90);
     R(g, x, y, w, h, 8); g.strokeStyle = '#121212'; g.lineWidth = 6; g.stroke();
     if (o.dim > 0) { R(g, x - 3, y - 3, w + 6, h + 6, 8); g.fillStyle = `rgba(217,211,195,${o.dim})`; g.fill(); }
-    if (o.lit > 0) { R(g, x - 4, y - 4, w + 8, h + 8, 10); g.strokeStyle = GREEN; g.lineWidth = 10; g.stroke(); ring(g, cx + 98 * s, y + h / 2 - 40, 52, o.lit, 9); }
+    if (o.lit > 0) { R(g, x - 4, y - 4, w + 8, h + 8, 10); g.strokeStyle = GREEN; g.lineWidth = 10; g.stroke(); ring(g, cx + 98 * s, y + h / 2 + (c - 77) * s, 52, o.lit, 9); }
     if (o.tick > 0) tick(g, x + w - 78, y + h / 2, 0.8, o.tick);
     g.restore();
   }
