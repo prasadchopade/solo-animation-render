@@ -1,5 +1,5 @@
 {
- "note": "Reel 29: Who Looks Guilty (working title). Tests desk. The narrator is the series voice (af_heart), talking to you. Script 5, after four cold reads and two fact checks. Four photos of one man: you name the killer, then choose who you trust with your keys. n18b/n18c: other plans for Aadhaar. Read audio/vo_lab/takes/phonemes.md after every run.",
+ "note": "Reel 29: Who Looks Guilty (working title). Tests desk. The narrator is the series voice (af_heart), talking to you. Script 5, after four cold reads and two fact checks. Six phoneme plans for Aadhaar were auditioned on n18 (runs 42778561277, 42780922445): /ɑːdhˈɑːɹ/ was best by ear (large-v3 heard Aadhaar, small.en Adhar, MOS 4.51) and is the take placed. Read audio/vo_lab/takes/phonemes.md after every run.",
  "voice": "af_heart",
  "speed": 1.0,
  "ref_text": "The night was cold and very quiet. Most of the street was asleep, and the lamps hummed over the empty road. Somewhere far away, a train rolled past, and then the silence came back.",
@@ -83,32 +83,7 @@
   {
    "id": "n18",
    "text": "Yours is on your Aadhaar.",
-   "text_kokoro": "Yours is on your [Aadhaar](/ˈɑːdɑːɹ/)."
-  },
-  {
-   "id": "n18b",
-   "text": "Yours is on your Aadhaar.",
-   "text_kokoro": "Yours is on your [Aadhaar](/ɑːdˈɑːɹ/)."
-  },
-  {
-   "id": "n18c",
-   "text": "Yours is on your Aadhaar.",
-   "text_kokoro": "Yours is on your [Aadhaar](/ˈɑːdhɑːɹ/)."
-  },
-  {
-   "id": "n18d",
-   "text": "Yours is on your Aadhaar.",
    "text_kokoro": "Yours is on your [Aadhaar](/ɑːdhˈɑːɹ/)."
-  },
-  {
-   "id": "n18e",
-   "text": "Yours is on your Aadhaar.",
-   "text_kokoro": "Yours is on your [Aadhaar](/ˈɑːdhˌɑːɹ/)."
-  },
-  {
-   "id": "n18f",
-   "text": "Yours is on your Aadhaar.",
-   "text_kokoro": "Yours is on your [Aadhaar](/ˈɑːdʰɑːɹ/)."
   },
   {
    "id": "n19",

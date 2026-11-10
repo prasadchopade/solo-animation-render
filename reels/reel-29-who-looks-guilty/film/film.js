@@ -214,10 +214,11 @@
   const camFor = (k) => { const [z, sx, sy] = SHOT[k], [cx, cy] = CC[k]; return { x: cx - (sx - 540) / z, y: cy - (sy - 960) / z, z }; };
   function camera(t) {
     const TT = times(), ids = ['n05', 'n06', 'n07', 'n08'];
-    const list = [[TT.n05 - 0.42, TT.n05 - 0.02, WIDE, camFor(0)]];
+    const list = [[TT.n05 - 0.42, TT.n05 - 0.02, { ...WIDE, z: 1 }, camFor(0)]];
     for (let k = 1; k < 4; k++) list.push([TT[ids[k]] - 0.38, TT[ids[k]] - 0.02, camFor(k - 1), camFor(k)]);
     list.push([TT.n08e + 0.06, TT.n08e + 0.44, camFor(3), WIDE]);
-    let c = WIDE;
+    const push = 1 + 0.028 * sstep(0, TT.buzz1, t) * (1 - sstep(TT.n05 - 0.5, TT.n05 - 0.42, t));
+    let c = { ...WIDE, z: push };
     for (const [a, b, A, B] of list) {
       if (t >= b) c = B;
       else if (t >= a) { const u = sstep(a, b, t); c = { x: lerp(A.x, B.x, u), y: lerp(A.y, B.y, u), z: lerp(A.z, B.z, u) }; }
@@ -269,8 +270,8 @@
     const fade = 1 - sstep(TT.n08e + 0.06, TT.n08e + 0.4, t);
     for (let n = 0; n < 4; n++) {
       q.save(); q.translate(CC[n][0], CC[n][1]); q.rotate(ROT[n]);
-      const r0 = TT[ids[n]] + 0.12, u = sstep(r0, r0 + 0.42, t);
-      photo(q, n, { ring: fade > 0.02 ? u : 0, noteA: sstep(r0 + 0.1, r0 + 0.3, t) * fade });
+      const r0 = TT[ids[n]] + 0.12, u = sstep(r0, r0 + 0.42, t), leave = n < 3 ? 1 - sstep(TT[ids[n + 1]] - 0.2, TT[ids[n + 1]] + 0.1, t) : fade;
+      photo(q, n, { ring: leave > 0.5 ? u : 0, noteA: sstep(r0 + 0.1, r0 + 0.3, t) * leave });
       q.restore();
     }
     { const a = 1 - sstep(1.03, 1.3, c.z); if (a > 0) { q.save(); q.globalAlpha *= a; centre(q, t); q.restore(); } }
@@ -295,12 +296,16 @@
       g.globalAlpha = 1;
     } else tableWorld(g, t, c);
     // the headline
-    if (t < TT.keys - 0.04) {
+    const qT = wi('n04', 4) - 0.04;                      // "which one do you trust"
+    if (t < TT.n04 - 0.04) {
       txt(g, 'ONE MAN HERE', 516, 372, 124, CREAM, { align: 'center', stroke: INK, sw: 0.14 });
       txt(g, 'KILLED SOMEONE', 516, 470, 124, YEL, { align: 'center', fit: 860, stroke: INK, sw: 0.14 });
+    } else if (t < qT) {
+      title(g, 'GOT A NUMBER?', 430, 150, YEL, t, TT.n04 - 0.04);
     } else if (t < TT.n10 - 0.04) {
       const small = sstep(TT.n05 - 0.42, TT.n05 - 0.02, t) * (1 - sstep(TT.n08e + 0.06, TT.n08e + 0.44, t));
-      title(g, 'WHO DO YOU TRUST', 372 - small * 42, lerp(112, 80, small), CREAM, t, TT.keys - 0.04);
+      if (small > 0) { g.fillStyle = `rgba(20,14,10,${0.76 * small})`; g.fillRect(0, 258, W, 186); }
+      title(g, 'WHO DO YOU TRUST', 372 - small * 42, lerp(112, 80, small), CREAM, t, qT);
       title(g, 'WITH YOUR KEYS?', 470 - small * 62, lerp(124, 92, small), YEL, t, TT.keys + 0.04);
     } else {
       title(g, 'ONE KILLER', 372, 124, ORANGE, t, TT.n10 - 0.04);
@@ -417,6 +422,10 @@
       const r0 = TT.reasons + n * 0.2, u = sstep(r0, r0 + 0.25, t);
       photo(g, n, { blank: !faces, ring: u, noteA: u });
     });
+    if (t < TT.reasons) {
+      const k = 1 - sstep(TT.reasons - 0.2, TT.reasons, t);
+      g.save(); g.translate(516, 994); g.scale(k, k); clockDisc(g, 0, 0, 100, 0.1, '.1', false); g.restore();
+    }
     if (t < TT.reasons - 0.05) {
       title(g, 'A TENTH OF', 372, 124, CREAM, t, TT.n15 - 0.02);
       title(g, 'A SECOND', 470, 124, YEL, t, TT.tenth - 0.04);
@@ -501,6 +510,7 @@
   // ------------------------------------------------------------------ 5 · and he's still got your keys
   function shotEnd(g, t) {
     const TT = times(), t0 = TT.n19;
+    if (t >= TT.n19e + 0.74) { g.fillStyle = '#07090c'; g.fillRect(0, 0, W, H); return 0; }   // the bolt goes over: black until the card
     g.fillStyle = lg(g, 0, 0, 0, H, [0, '#b77a40'], [1, '#5e3819']); g.fillRect(0, 0, W, H);
     const u = sstep(t0 + 0.2, TT.n19e - 0.1, t), z = lerp(1.18, 1.42, sstep(t0 - 0.2, TT.end, t));
     const P = F.mix(NEUT, { ...NEUT, grin: 1, smile: 0.7, lidLow: 0.95, open: 0.82, browY: 9, browIn: 3, lookY: 0, roll: 0.05, yaw: 0.14 }, u);
