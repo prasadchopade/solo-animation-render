@@ -859,7 +859,7 @@
       g.fillStyle = lit ? '#59524a' : '#343843'; ell(g, x, y - 60, 42, 52); g.fill(); g.beginPath(); g.moveTo(x - 58, y + 250); g.bezierCurveTo(x - 58, y + 40, x - 28, y + 14, x, y + 12); g.bezierCurveTo(x + 28, y + 14, x + 58, y + 40, x + 58, y + 250); g.closePath(); g.fill();
       txt(g, String(i + 1), x, y + 214, 44, lit ? '#ffc46e' : '#7c808a', { kind: 'mono', align: 'center' });
     }
-    g.fillStyle = '#05060a'; ell(g, 513, 1500, 108, 134); g.fill(); g.beginPath(); g.moveTo(240, 2100); g.bezierCurveTo(240, 1740, 400, 1670, 513, 1660); g.bezierCurveTo(626, 1670, 786, 1740, 786, 2100); g.closePath(); g.fill();
+    g.fillStyle = '#05060a'; ell(g, 513, 1500, 108, 134); g.fill(); g.beginPath(); g.moveTo(398, 1510); g.bezierCurveTo(392, 1370, 634, 1370, 628, 1510); g.bezierCurveTo(642, 1600, 672, 1690, 696, 1770); g.lineTo(330, 1770); g.bezierCurveTo(354, 1690, 384, 1600, 398, 1510); g.closePath(); g.fill(); g.beginPath(); g.moveTo(240, 2100); g.bezierCurveTo(240, 1740, 400, 1670, 513, 1660); g.bezierCurveTo(626, 1670, 786, 1740, 786, 2100); g.closePath(); g.fill();
     txt(g, 'A REAL CASE, IN AMERICA', 513, 330, 44, '#ffc46e', { kind: 'mono', align: 'center', a: clamp((t - TT.n19 + 0.1) * 6) });
     const a1 = clamp((t - TT.picked + 0.05) * 6);
     if (a1 > 0) {
@@ -947,10 +947,12 @@
     strip(g, 2, t, { pop: clamp(hit(t, TT.n14 - 0.08 + 0.1, 'heavy')) * (1 + 0.03 * q), lit, tick: sstep(TT.n16 + 0.02, TT.n16 + 0.3, t) });
     if (t < TT.n16 - 0.04) {
       txt(g, 'ONLY ONE HAS THAT CUT', 60, 356, 84, INK, { fit: 660 });
-      const left = Math.min(5, Math.max(0, Math.ceil(TT.clock2 - t - 1e-3)));
-      g.save(); g.translate(838, 324); R(g, -112, -44, 224, 88, 12); g.fillStyle = '#121212'; g.fill();
-      txt(g, '00:' + String(left).padStart(2, '0'), 0, 27, 68, left <= 2 ? '#ff4a30' : '#ffb347', { kind: 'mono', align: 'center' });
-      g.restore();
+      if (t >= TT.clock2 - 5.03) {
+        const left = Math.min(5, Math.max(0, Math.ceil(TT.clock2 - t - 1e-3)));
+        g.save(); g.translate(838, 324); R(g, -112, -44, 224, 88, 12); g.fillStyle = '#121212'; g.fill();
+        txt(g, '00:' + String(left).padStart(2, '0'), 0, 27, 68, left <= 2 ? '#ff4a30' : '#ffb347', { kind: 'mono', align: 'center' });
+        g.restore();
+      }
       if (t >= TT.innocent - 0.04) title(g, 'AN INNOCENT MAN GOES TO PRISON,', 1436, 92, INK, t, TT.innocent - 0.04, { stroke: '#d9d3c3', sw: 0.02, fit: 880 });
       if (t >= TT.walks - 0.04) title(g, 'AND HE WALKS.', 1526, 88, RED, t, TT.walks - 0.04, { stroke: '#d9d3c3', sw: 0.02 });
     } else title(g, "IT'S NUMBER 3.", 378, 140, GREEN, t, TT.n16 - 0.04, { stroke: CREAM, sw: 0.1 });
@@ -968,7 +970,7 @@
   }
   // I lied about lying: the cross flips over, in the place it landed, and I MADE THAT UP comes back where it was and gets struck out. He smirks only once she's finished, so the line stays hers.
   function shotLied(g, t) {
-    const TT = times(), smirk = sstep(TT.n17e - 0.02, TT.n17e + 0.42, t);
+    const TT = times(), smirk = sstep(TT.n17e - 0.02, TT.n17e + 0.24, t);
     closeUp(g, t, { z: 1 + 0.04 * sstep(TT.n17, TT.n18, t), frown: lerp(0.1, 0, smirk), smile: 0.46 * smirk, browR: -38 * smirk });
     const f = sstep(TT.lying - 0.02, TT.lying + 0.18, t), sx = Math.max(0.03, Math.abs(Math.cos(f * Math.PI)));
     g.save(); g.translate(860, 1250); g.scale(sx, 1); g.translate(-860, -1250);
@@ -977,7 +979,7 @@
     title(g, "IT'S NUMBER 3.", 400, 140, GREEN, t, TT.n16, { stroke: CREAM, sw: 0.1 });
     title(g, 'I MADE THAT UP.', 1452, 132, INK, t, TT.n17 - 0.04, { stroke: CREAM, sw: 0.14 });
     const k = sstep(TT.lied, TT.lying + 0.12, t);
-    if (k > 0) { g.save(); g.strokeStyle = RED; g.lineWidth = 16; g.lineCap = 'round'; g.beginPath(); g.moveTo(170, 1412); g.lineTo(lerp(170, 856, k), 1412 - 8 * k); g.stroke(); g.restore(); }
+    if (k > 0) { g.save(); g.strokeStyle = RED; g.lineWidth = 16; g.lineCap = 'round'; g.beginPath(); g.moveTo(132, 1416); g.lineTo(lerp(132, 892, k), 1416 - 10 * k); g.stroke(); g.restore(); }
     return flashAt(t, TT.n17 - 0.05) * 0.3;
   }
   // you got a rewind; a real witness doesn't: the two arrows from the robbery, on the dark, and they go out
@@ -996,7 +998,7 @@
   function shotAsk(g, t) {
     const TT = times(), k = sstep(TT.n22 - 0.42, TT.n22 - 0.06, t);
     shotCotton(g, t, 1 - k);
-    if (k > 0) { g.fillStyle = `rgba(10,11,15,${0.82 * k})`; g.fillRect(0, 0, W, H); }
+    if (k > 0) { g.fillStyle = `rgba(10,11,15,${0.82 * k})`; g.fillRect(0, 0, W, H); g.fillStyle = rg(g, 513, 800, 300, 640, [0, `rgba(10,11,15,${0.96 * k})`], [1, 'rgba(10,11,15,0)']); g.fillRect(0, 0, W, H); }
     if (t >= TT.n22 - 0.04) title(g, 'BEFORE I SAID ANYTHING,', 590, 86, CREAM, t, TT.n22 - 0.04, { stroke: '#0f1115', sw: 0.02, fit: 860 });
     if (t >= wi('n22', 4) - 0.04) title(g, 'HOW SURE WERE YOU?', 724, 122, YEL, t, wi('n22', 4) - 0.04, { stroke: '#0f1115', sw: 0.02, fit: 860 });
     sureBox(g, t, TT.n22 + 0.05, 950, CREAM, '#0f1115');
