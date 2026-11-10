@@ -1,0 +1,374 @@
+{
+  "note": "Single source of truth for picture + sound, in BEATS (120 bpm: beat = 0.5 s). film.js reads marks via film/data.js; sync.mjs turns sfx into cues.json; score.py reads marks for the music; vo.json places the narration. Every reel ends with the Root Cause end card: 'end' → 'done' = 3.0 s (6 beats), engine/endcard.",
+  "title": "The Last 1,000",
+  "duration": 62.0,
+  "fps": 30,
+  "bpm": 120,
+  "formats": [
+    "9x16"
+  ],
+  "music": {
+    "source": "synth (score.py → scripts/synth.py)"
+  },
+  "voiceover": {
+    "provider": "voice lab",
+    "voice": "k-heart",
+    "file": "vo.json"
+  },
+  "mix": {
+    "music": -7,
+    "sfx": -5,
+    "vo": 3.2,
+    "duck": true,
+    "spectral": true
+  },
+  "marks": {
+    "hook": 0,
+    "end": 118.0,
+    "done": 124.0
+  },
+  "sfx": [
+    {
+      "at": 0.0,
+      "type": "flood",
+      "gain": 0.34,
+      "what": "the water coming in: rumble and hiss only, so it can run under the words; stops dead on the freeze",
+      "len": 14.08
+    },
+    {
+      "at": 1.0,
+      "type": "beep",
+      "gain": 0.2,
+      "what": "the beeper, above the voice",
+      "len": 13.53
+    },
+    {
+      "at": 8.6,
+      "type": "cooker",
+      "gain": 0.6,
+      "what": "the cut to the dining table",
+      "len": 0.4
+    },
+    {
+      "at": 18.58,
+      "type": "thunk",
+      "gain": 0.34,
+      "what": "the count, 5, low",
+      "pitch": 0.7
+    },
+    {
+      "at": 18.58,
+      "type": "tick",
+      "gain": 0.16,
+      "what": "the count, 5, high",
+      "pitch": 1.7
+    },
+    {
+      "at": 20.975,
+      "type": "thunk",
+      "gain": 0.34,
+      "what": "the count, 4, low",
+      "pitch": 0.7
+    },
+    {
+      "at": 20.975,
+      "type": "tick",
+      "gain": 0.16,
+      "what": "the count, 4, high",
+      "pitch": 1.7
+    },
+    {
+      "at": 23.37,
+      "type": "thunk",
+      "gain": 0.34,
+      "what": "the count, 3, low",
+      "pitch": 0.7
+    },
+    {
+      "at": 23.37,
+      "type": "tick",
+      "gain": 0.16,
+      "what": "the count, 3, high",
+      "pitch": 1.7
+    },
+    {
+      "at": 25.765,
+      "type": "thunk",
+      "gain": 0.34,
+      "what": "the count, 2, low",
+      "pitch": 0.7
+    },
+    {
+      "at": 25.765,
+      "type": "tick",
+      "gain": 0.16,
+      "what": "the count, 2, high",
+      "pitch": 1.7
+    },
+    {
+      "at": 21.39,
+      "type": "doorbang",
+      "gain": 0.7,
+      "what": "a fist on a door, between the words",
+      "pitch": 0.95
+    },
+    {
+      "at": 24.6,
+      "type": "doorbang",
+      "gain": 0.7,
+      "what": "his fist on his door, between the shouts",
+      "pitch": 0.82
+    },
+    {
+      "at": 28.12,
+      "type": "glitch",
+      "gain": 0.34,
+      "what": "the ship stops the world, out of the voice's band",
+      "len": 0.22
+    },
+    {
+      "at": 37.99,
+      "type": "shiphorn",
+      "gain": 0.38,
+      "what": "your own horn, below 300 Hz",
+      "len": 3.4
+    },
+    {
+      "at": 38.884,
+      "type": "birds",
+      "gain": 0.1,
+      "what": "gulls, above the voice",
+      "len": 4.32
+    },
+    {
+      "at": 39.23,
+      "type": "flood",
+      "gain": 0.07,
+      "what": "the sea against you, below the voice",
+      "len": 4.25
+    },
+    {
+      "at": 55.73,
+      "type": "thud",
+      "gain": 0.3,
+      "what": "deck 1 goes dark, low",
+      "pitch": 1.0
+    },
+    {
+      "at": 55.73,
+      "type": "tick",
+      "gain": 0.12,
+      "what": "deck 1 goes dark, a relay",
+      "pitch": 1.5
+    },
+    {
+      "at": 56.53,
+      "type": "thud",
+      "gain": 0.285,
+      "what": "deck 2 goes dark, low",
+      "pitch": 1.0
+    },
+    {
+      "at": 56.53,
+      "type": "tick",
+      "gain": 0.12,
+      "what": "deck 2 goes dark, a relay",
+      "pitch": 1.5
+    },
+    {
+      "at": 57.33,
+      "type": "thud",
+      "gain": 0.27,
+      "what": "deck 3 goes dark, low",
+      "pitch": 1.0
+    },
+    {
+      "at": 57.33,
+      "type": "tick",
+      "gain": 0.12,
+      "what": "deck 3 goes dark, a relay",
+      "pitch": 1.5
+    },
+    {
+      "at": 58.13,
+      "type": "thud",
+      "gain": 0.255,
+      "what": "deck 4 goes dark, low",
+      "pitch": 1.0
+    },
+    {
+      "at": 58.13,
+      "type": "tick",
+      "gain": 0.12,
+      "what": "deck 4 goes dark, a relay",
+      "pitch": 1.5
+    },
+    {
+      "at": 58.93,
+      "type": "thud",
+      "gain": 0.24,
+      "what": "deck 5 goes dark, low",
+      "pitch": 1.0
+    },
+    {
+      "at": 58.93,
+      "type": "tick",
+      "gain": 0.12,
+      "what": "deck 5 goes dark, a relay",
+      "pitch": 1.5
+    },
+    {
+      "at": 59.73,
+      "type": "thud",
+      "gain": 0.22499999999999998,
+      "what": "deck 6 goes dark, low",
+      "pitch": 1.0
+    },
+    {
+      "at": 59.73,
+      "type": "tick",
+      "gain": 0.12,
+      "what": "deck 6 goes dark, a relay",
+      "pitch": 1.5
+    },
+    {
+      "at": 61.156,
+      "type": "tick",
+      "gain": 0.2,
+      "what": "the vote bars land, above the voice",
+      "pitch": 1.9
+    },
+    {
+      "at": 47.65,
+      "type": "thud",
+      "gain": 0.45,
+      "what": "back on the two of them"
+    },
+    {
+      "at": 54.67,
+      "type": "stamp",
+      "gain": 0.8,
+      "what": "the plates change, stamped, in the gap",
+      "pitch": 1.0
+    },
+    {
+      "at": 82.76,
+      "type": "tick",
+      "gain": 0.2,
+      "what": "the rings on the two photos: a lens finds focus, above the voice",
+      "pitch": 1.9
+    },
+    {
+      "at": 84.374,
+      "type": "whoosh",
+      "gain": 0.2,
+      "what": "the photos fly together",
+      "pitch": 1.1
+    },
+    {
+      "at": 85.474,
+      "type": "crackle",
+      "gain": 0.16,
+      "what": "rice, above the voice",
+      "len": 2.11
+    },
+    {
+      "at": 88.11,
+      "type": "pour",
+      "gain": 0.4,
+      "what": "the crowd at the wedding, in the gap",
+      "len": 0.55
+    },
+    {
+      "at": 90.01,
+      "type": "dopplerlow",
+      "gain": 0.75,
+      "what": "the heart, below the voice",
+      "len": 2.93
+    },
+    {
+      "at": 95.9,
+      "type": "doppler",
+      "gain": 0.85,
+      "what": "the heart alone, before the choice",
+      "len": 0.21
+    },
+    {
+      "at": 65.34,
+      "type": "idle",
+      "gain": 0.42,
+      "what": "the engine, below the voice",
+      "len": 6.18
+    },
+    {
+      "at": 65.94,
+      "type": "ticker",
+      "gain": 0.22,
+      "what": "the calendar running down, above the voice",
+      "len": 5.68
+    },
+    {
+      "at": 77.654,
+      "type": "creak",
+      "gain": 0.36,
+      "what": "your hull starts to go, out before the last word",
+      "len": 0.52,
+      "pitch": 0.8
+    },
+    {
+      "at": 80.12,
+      "type": "floodburst",
+      "gain": 0.6,
+      "what": "the sea coming in, in the gap",
+      "len": 0.18
+    },
+    {
+      "at": 96.56,
+      "type": "shiphorn",
+      "gain": 0.42,
+      "what": "your horn, you're fine",
+      "len": 2.0
+    },
+    {
+      "at": 97.06,
+      "type": "birds",
+      "gain": 0.1,
+      "what": "gulls, above the voice",
+      "len": 1.22
+    },
+    {
+      "at": 104.35,
+      "type": "clink",
+      "gain": 0.2,
+      "what": "his spanner, above the voice",
+      "pitch": 0.9
+    },
+    {
+      "at": 107.75,
+      "type": "clink",
+      "gain": 0.16,
+      "what": "his spanner again, alone",
+      "pitch": 0.82
+    },
+    {
+      "at": 109.02,
+      "type": "thud",
+      "gain": 0.45,
+      "what": "back on the two of them"
+    },
+    {
+      "at": 113.2,
+      "type": "stamp",
+      "gain": 0.7,
+      "what": "VOTE lands, in the gap",
+      "pitch": 0.92
+    },
+    {
+      "at": "end",
+      "type": "wav",
+      "file": "../../engine/endcard/endcard.wav",
+      "gain": 1.0,
+      "what": "end card sound"
+    }
+  ]
+}
