@@ -111,7 +111,7 @@
   },
   {
    "id": "n19",
-   "text": "It happened in America. Police told a real witness she'd picked the same man again."
+   "text": "It happened in America. A real witness picked a man twice, and police told her so."
   },
   {
    "id": "n20",
@@ -119,12 +119,12 @@
   },
   {
    "id": "n21",
-   "text": "Ronald Cotton lost more than ten years.",
-   "text_kokoro": "Ronald [Cotton](/kˈɑːtən/) lost more than ten years."
+   "text": "That man was Ronald Cotton. He lost more than ten years.",
+   "text_kokoro": "That man was Ronald [Cotton](/kˈɑːtən/). He lost more than ten years."
   },
   {
    "id": "n22",
-   "text": "Out of ten, how sure are you now?"
+   "text": "Before I said anything, out of ten, how sure were you?"
   }
  ]
 }
