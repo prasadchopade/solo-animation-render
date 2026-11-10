@@ -53,7 +53,7 @@
     F.LOOK({ yaw: -0.6, pitch: 0.08, roll: -0.05, open: 0.9, lookX: 27, lookY: 5, browY: -3, browIn: 3, press: 0.72, smile: -0.08, hv: 0.3, hp: -0.85, hs: 0, hf: 0.62, shirt: [206, 214, 232], shirtD: [160, 172, 198], collar: 1 }),
     F.LOOK({ yaw: 0.22, pitch: -0.06, roll: 0.085, open: 0.82, lidLow: 0.95, lookY: 0, browY: 9, browIn: 3, grin: 1, smile: 0.7, hv: 0.95, hm: 0.42, hp: 0.55, hf: 0.06, hs: 0.15, shirt: [196, 44, 60], shirtD: [146, 28, 44], collar: 1 }),
     F.LOOK({ yaw: 0, pitch: -0.6, roll: 0, open: 1.34, iris: 14.5, lookY: -4, browY: -19, browIn: -16, browOut: 5, press: 0.55, smile: -0.25, must: 1, stub: 0.15, hv: 0.05, hp: 0, hs: 1, hf: 0, shirt: [62, 66, 82], shirtD: [34, 36, 48], collar: 1 }),
-    F.LOOK({ yaw: 0.36, pitch: -0.34, roll: 0.06, open: 0.84, lookY: 4, wet: 1, bags: 1, browY: 5, browIn: 25, browOut: -9, press: 0.42, smile: -0.36, stub: 0.72, hv: 0.5, hm: 1, hp: 0.2, hf: 0.9, hs: 0, shirt: [58, 112, 176], shirtD: [36, 78, 130], collar: 1 }),
+    F.LOOK({ yaw: 0.36, pitch: -0.34, roll: 0.06, open: 0.84, lookY: 4, wet: 1, bags: 1, browY: 5, browIn: 25, browOut: -9, press: 0.42, smile: -0.36, stub: 0.42, hv: 0.5, hm: 1, hp: 0.2, hf: 0.9, hs: 0, shirt: [58, 112, 176], shirtD: [36, 78, 130], collar: 1 }),
   ];
   const NEUT = F.LOOK({ hv: 0.42, hp: -0.3, hs: 0.1, hf: 0.08, smile: 0.02, shirt: [132, 134, 140], shirtD: [98, 100, 108], collar: 1 });
   const BACK = ['#7fc8ee', '#ffd043', '#3dbfa9', '#ff9d8f'], NBACK = '#f0e2c6';
@@ -204,7 +204,7 @@
     T.brow = wi('n13', 3);
     T.browAll = wi('n13', 7) - 0.05;
     T.tenth = wi('n15', 4) - 0.02;
-    T.reasons = wi('n15', 11) - 0.05;
+    T.reasons = wi('n15', 15) - 0.05;
     T.you = T.n18 - 0.05;
     return T;
   }
@@ -445,10 +445,10 @@
     }
     if (t < TT.reasons - 0.05) {
       title(g, 'A TENTH OF A SECOND', 372, 112, YEL, t, TT.n15 - 0.02);
-      title(g, 'IS ALL IT TAKES', 470, 124, CREAM, t, wi('n15', 5) - 0.05);
+      title(g, 'TO JUDGE A FACE', 470, 124, CREAM, t, wi('n15', 9) - 0.05);
       txt(g, 'Willis & Todorov, 2006', 516, 1530, 34, 'rgba(46,30,12,0.92)', { kind: 'semi', align: 'center', a: clamp((t - TT.n15) * 4) });
     } else {
-      title(g, 'FOUR REASONS', 440, 150, YEL, t, wi('n15', 14) - 0.05);
+      title(g, 'FOUR REASONS', 440, 150, YEL, t, wi('n15', 18) - 0.05);
     }
     return 0;
   }
@@ -489,7 +489,7 @@
     pairCard(g, CARD.xl, NICE, '#ffd043', pop(t, t0), -0.018, 'DATING SITE', '#1d1530');
     if (t >= v) pairCard(g, CARD.xr, VILL, '#ff3b2a', pop(t, v), 0.018, 'MOVIE VILLAIN', RED);
     title(g, 'VILLAIN PHOTO', 440, 150, ORANGE, t, v);
-    studyNote(g, clamp((t - t0 - 0.1) * 5), CREAM, YEL, 'rgba(255,246,226,0.8)');
+    studyNote(g, clamp((t - v) * 5), CREAM, YEL, 'rgba(255,246,226,0.8)');
     return flashAt(t, t0 - 0.05, 0.3) + flashAt(t, v, 0.25);
   }
   function shotID(g, t) {
@@ -497,7 +497,7 @@
     g.fillStyle = lg(g, 0, 0, 0, H, [0, '#f4efe2'], [1, '#e2dac6']); g.fillRect(0, 0, W, H);
     g.strokeStyle = 'rgba(90,90,120,0.14)'; g.lineWidth = 2; for (let y = 40; y < H; y += 40) { g.beginPath(); g.moveTo(0, y); g.lineTo(W, y); g.stroke(); }
     pairCard(g, CARD.xl, NICE, '#ffd043', 1, -0.018, 'DATING SITE', '#1d1530');
-    pairCard(g, CARD.xr, IDFACE, '#cfe3f2', pop(t, TT.you), 0.018, 'YOUR AADHAAR', RED);
+    pairCard(g, CARD.xr, IDFACE, '#cfe3f2', pop(t, TT.you), 0.018, t >= wi('n18', 4) - 0.05 ? 'YOUR AADHAAR' : '', RED);
     title(g, 'AADHAAR', 440, 170, RED, t, wi('n18', 4) - 0.05, { stroke: '#f4efe2', sw: 0.02 });
     return flashAt(t, TT.you, 0.28);
   }

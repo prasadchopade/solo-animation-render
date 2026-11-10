@@ -195,8 +195,8 @@ window.FACE = (() => {
     g.save();
     if (P.long > 0.01) {                               // long hair falls behind the shoulders, rounded
       g.save(); g.translate(0, 190); g.rotate(P.roll); g.translate(0, -190);
-      g.fillStyle = hairC(P); g.beginPath(); g.moveTo(-220, -120);
-      g.bezierCurveTo(-262, 20, -262, 190, -214, 300); g.bezierCurveTo(-180, 372, 180, 372, 214, 300); g.bezierCurveTo(262, 190, 262, 20, 220, -120); g.closePath(); g.fill();
+      g.fillStyle = hairC(P); g.beginPath(); g.moveTo(-212, -120);
+      g.bezierCurveTo(-246, 10, -240, 150, -190, 262); g.bezierCurveTo(-150, 336, 150, 336, 190, 262); g.bezierCurveTo(240, 150, 246, 10, 212, -120); g.closePath(); g.fill();
       g.restore();
     }
     // the bust: it barely moves when the head does
