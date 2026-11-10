@@ -1,0 +1,103 @@
+{
+ "note": "Reel 29: Who Looks Guilty (working title). Tests desk. The narrator is the series voice (af_heart), talking to you. Script 5, after four cold reads and two fact checks. Four photos of one man: you name the killer, then choose who you trust with your keys. n18b/n18c: other plans for Aadhaar. Read audio/vo_lab/takes/phonemes.md after every run.",
+ "voice": "af_heart",
+ "speed": 1.0,
+ "ref_text": "The night was cold and very quiet. Most of the street was asleep, and the lamps hummed over the empty road. Somewhere far away, a train rolled past, and then the silence came back.",
+ "take": [
+  {
+   "id": "k-heart",
+   "engine": "kokoro",
+   "voice": "af_heart",
+   "speed": 1.0
+  }
+ ],
+ "lines": [
+  {
+   "id": "n01",
+   "text": "You've got one second."
+  },
+  {
+   "id": "n02",
+   "text": "One man here killed someone."
+  },
+  {
+   "id": "n03",
+   "text": "Pick him."
+  },
+  {
+   "id": "n04",
+   "text": "Got a number? Now, which one do you trust with your house keys?"
+  },
+  {
+   "id": "n05",
+   "text": "Number one? He won't even look at you."
+  },
+  {
+   "id": "n06",
+   "text": "Number two? He can't stop smiling."
+  },
+  {
+   "id": "n07",
+   "text": "Number three hasn't blinked."
+  },
+  {
+   "id": "n08",
+   "text": "And number four looks sorry. For what?"
+  },
+  {
+   "id": "n09",
+   "text": "You've got one second. Pick him."
+  },
+  {
+   "id": "n10",
+   "text": "That's one killer, and one man you trust with your house."
+  },
+  {
+   "id": "n11",
+   "text": "It's the same man."
+  },
+  {
+   "id": "n12",
+   "text": "I did say one man."
+  },
+  {
+   "id": "n13",
+   "text": "Look at the gap in his eyebrow. It's in all four photos."
+  },
+  {
+   "id": "n14",
+   "text": "You stared at it for twenty-four seconds."
+  },
+  {
+   "id": "n15",
+   "text": "Your brain decided in a tenth of a second, and then I handed you four reasons."
+  },
+  {
+   "id": "n16",
+   "text": "You never judged him. You judged a photo."
+  },
+  {
+   "id": "n17",
+   "text": "Everyone's got a villain photo."
+  },
+  {
+   "id": "n18",
+   "text": "Yours is on your Aadhaar.",
+   "text_kokoro": "Yours is on your [Aadhaar](/ˈɑːdɑːɹ/)."
+  },
+  {
+   "id": "n18b",
+   "text": "Yours is on your Aadhaar.",
+   "text_kokoro": "Yours is on your [Aadhaar](/ɑːdˈɑːɹ/)."
+  },
+  {
+   "id": "n18c",
+   "text": "Yours is on your Aadhaar.",
+   "text_kokoro": "Yours is on your [Aadhaar](/ˈɑːdhɑːɹ/)."
+  },
+  {
+   "id": "n19",
+   "text": "And he's still got your keys."
+  }
+ ]
+}
