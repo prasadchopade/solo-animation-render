@@ -433,7 +433,7 @@
   }
   // a tenth of a second, then the reasons
   function shotReasons(g, t) {
-    const TT = times(), f = Math.round(t * 30), f0 = Math.ceil(TT.tenth * 30), lit = f >= f0 && f < f0 + 3, faces = lit || t >= TT.reasons;
+    const TT = times(), f = Math.round(t * 30), f0 = Math.ceil(TT.tenth * 30), f1 = Math.ceil((wi('n15', 12) - 0.02) * 30), lit = (f >= f0 && f < f0 + 3) || (f >= f1 && f < f1 + 3), faces = lit || t >= TT.reasons;
     grid(g, t, (n) => {
       const r0 = TT.reasons + n * 0.2, u = sstep(r0, r0 + 0.25, t);
       photo(g, n, { blank: !faces, ring: u, noteA: u });
@@ -475,12 +475,12 @@
     g.fillStyle = 'rgba(0,0,0,0.32)'; R(g, -w / 2 + 8, -h / 2 + 12, w, h, 8); g.fill();
     g.fillStyle = PAPER; R(g, -w / 2, -h / 2, w, h, 8); g.fill();
     g.save(); g.beginPath(); g.rect(-w / 2 + 16, -h / 2 + 16, w - 32, h - 110); g.clip();
-    g.fillStyle = back; g.fillRect(-w / 2, -h / 2, w, h); g.translate(0, -24); g.scale(0.86, 0.86); F.draw(g, P); g.restore();
+    g.fillStyle = back; g.fillRect(-w / 2, -h / 2, w, h); g.translate(0, -24); g.scale(0.86, 0.86); if (P) F.draw(g, P); else txt(g, '?', 0, 120, 360, 'rgba(255,255,255,0.45)', { align: 'center' }); g.restore();
     txt(g, label, 0, h / 2 - 28, 56, labelC, { align: 'center', fit: w - 40 });
     g.restore();
   }
   function studyNote(g, a, c1, c2, c3) {
-    txt(g, 'IN ONE STUDY, ALL 20 PEOPLE HAD BOTH.', 513, 1362, 62, c2, { kind: 'semi', align: 'center', fit: 860, a });
+    txt(g, 'ONE STUDY: ALL 20 PEOPLE HAD BOTH.', 513, 1362, 62, c2, { kind: 'semi', align: 'center', fit: 860, a });
     txt(g, 'Todorov & Porter, 2014', 513, 1440, 34, c3, { kind: 'semi', align: 'center', a });
   }
   function shotVillain(g, t) {
@@ -488,6 +488,7 @@
     g.fillStyle = lg(g, 0, 0, 0, H, [0, '#3a2a55'], [1, '#1d1530']); g.fillRect(0, 0, W, H);
     pairCard(g, CARD.xl, NICE, '#ffd043', pop(t, t0), -0.018, 'DATING SITE', '#1d1530');
     if (t >= v) pairCard(g, CARD.xr, VILL, '#ff3b2a', pop(t, v), 0.018, 'MOVIE VILLAIN', RED);
+    else pairCard(g, CARD.xr, null, '#5a4a7a', pop(t, t0 + 0.06), 0.018, '', RED);
     title(g, 'VILLAIN PHOTO', 440, 150, ORANGE, t, v);
     studyNote(g, clamp((t - v) * 5), CREAM, YEL, 'rgba(255,246,226,0.8)');
     return flashAt(t, t0 - 0.05, 0.3) + flashAt(t, v, 0.25);
