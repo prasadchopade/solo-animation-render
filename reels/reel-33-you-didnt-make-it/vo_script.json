@@ -1,5 +1,5 @@
 {
- "note": "Reel 33: You Didn't Make It (working title). One voice, af_heart, at 1.0. Draft 4: after three cold reads, a care read, a fact check and HQ's notes. Facts: docs/research.md.",
+ "note": "Reel 33: You Didn't Make It (working title). One voice, af_heart, at 1.0. Draft 5: after three cold reads, two care reads, a fact check and HQ's notes. Facts: docs/research.md.",
  "voice": "af_heart",
  "speed": 1.0,
  "ref_text": "The night was cold and very quiet. Most of the street was asleep, and the lamps hummed over the empty road. Somewhere far away, a train rolled past, and then the silence came back.",
@@ -76,6 +76,10 @@
   {
    "id": "n16",
    "text": "You didn't."
+  },
+  {
+   "id": "n16b",
+   "text": "And some days, neither of you does."
   },
   {
    "id": "n17",

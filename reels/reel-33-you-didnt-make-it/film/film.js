@@ -323,7 +323,7 @@
     T.call = wi('n04', 2); T.flat = T.n04e + 0.06; T.rw0 = T.n05e + 0.6; T.rw1 = T.n06 - 0.02;
     T.open = T.n06e + 0.02; T.leap = T.open + 0.33; T.splash = T.open + 0.7; T.reach = T.n07 + 0.22;
     T.grab = T.n08 - 0.3; T.under = wi('n08', 3) + 0.02; T.surface = T.n10 - 0.2; T.fight = T.n11 - 0.12; T.up = T.n12 - 0.06; T.climb2 = wi('n12', 6) - 0.04; T.slip0 = T.n13 - 0.14; T.look = T.n14 - 0.26;
-    T.rw2 = T.n16e + 0.55; T.rw3 = T.n17 - 0.04; T.proof = T.n19 - 0.08; T.split = wi('n19', 6) - 0.08; T.told = T.n20 - 0.08; T.back = T.n21 - 0.14; T.th0 = wi('n21', 2); T.land = T.th0 + 0.8; T.home = T.n24 - 0.1;
+    T.n16b = at('n16b'); T.n16be = en('n16b'); T.rw2 = T.n16be + 0.55; T.rw3 = T.n17 - 0.04; T.proof = T.n19 - 0.08; T.split = wi('n19', 6) - 0.08; T.told = T.n20 - 0.08; T.back = T.n21 - 0.14; T.th0 = wi('n21', 2); T.land = T.th0 + 0.8; T.home = T.n24 - 0.1;
     return T;
   }
 
@@ -504,6 +504,7 @@
     const TT = times(), u = clamp((t - TT.surface) / (TT.fight - TT.surface));
     level(g, t, { L: 1540 + 30 * Math.sin(t * 5), s: lerp(2.0, 2.3, u), by: 800, op: 0.32 + 0.1 * Math.sin(t * 6.3), look: [-16, 4], dead: 1, worry: 2, close: 0.08 });
     const fl = Math.exp(-Math.max(0, t - TT.surface) * 12); if (fl > 0.01) { g.fillStyle = `rgba(255,255,255,${fl * 0.9})`; g.fillRect(0, 0, W, H); }
+    if (t >= wi('n10', 2) - 0.04) title(g, "HE DOESN'T KNOW IT'S YOU", 400, 112, CREAM, t, wi('n10', 2) - 0.04, { stroke: INK, sw: 0.12, fit: 900 });
   }
   // the wall: smooth concrete, wet at the bottom, one lip at the top
   let WALL = null;
@@ -556,21 +557,21 @@
     const TT = times(), a = sstep(TT.slip0, TT.slip0 + 0.2, t), sl = sstep(TT.n13 + 0.5, TT.n13e + 0.55, t), L = lerp(1500, 1120, sstep(TT.n13 + 0.5, TT.look, t)) + 24 * Math.sin(t * 4);
     wallView(g, t, { z: 1.7, ty: -640 });
     const y0 = 660, y1 = 1320, y = lerp(y0, y1, sl);
-    if (sl > 0) { g.strokeStyle = 'rgba(70,60,40,0.3)'; g.lineWidth = 20; g.lineCap = 'round'; for (const dx of [-74, -26, 22, 72]) { g.beginPath(); g.moveTo(540 + dx, y0 - 170); g.lineTo(540 + dx, y - 150); g.stroke(); } }
     const yy = lerp(1800, y, a); myArm(g, 620, 2200, 548, yy + 170, 118); palm(g, 540, yy, 1.25, Math.PI, ME);
     surfaceFront(g, L, t);
   }
   // looking up from under the water: a bright circle of sky, and him in it
   let WINC = null;
   function shotLook(g, t) {
-    const TT = times(), u = clamp((t - TT.look) / (TT.n16e + 0.5 - TT.look));
+    const TT = times(), u = clamp((t - TT.look) / (TT.n16be + 0.5 - TT.look));
     g.fillStyle = lg(g, 0, 0, 0, H, [0, '#39c4c2'], [0.5, '#149fa8'], [1, '#0a7f95']); g.fillRect(0, 0, W, H);
     const cy = lerp(600, 500, u), rx = lerp(520, 330, u), ry = rx * 0.9, sc = rx / 540;
     if (!WINC) WINC = offscreen(1080, 1200);
     const w = WINC.getContext('2d'); w.setTransform(1, 0, 0, 1, 0, 0); w.globalAlpha = 1; w.fillStyle = lg(w, 0, 0, 0, 900, [0, '#7fd1f6'], [1, '#e4f8fb']); w.fillRect(0, 0, 1080, 1200);
     w.fillStyle = '#e9dfc7'; w.beginPath(); w.moveTo(0, 900); w.quadraticCurveTo(540, 840, 1080, 900); w.lineTo(1080, 1200); w.lineTo(0, 1200); w.closePath(); w.fill();
     const lx = Math.sin(t * 1.5) * 34, enter = sstep(TT.look + 0.05, TT.look + 0.6, t);
-    bro(w, 540, lerp(1560, 600, enter), 1.3, { t, op: 0.16, look: [lx, 10], worry: 18, browY: -8, roll: Math.sin(t * 1.5) * 0.06 });
+    const away = sstep(wi('n16b', 3) - 0.1, TT.n16be + 0.2, t);
+    if (away < 1) bro(w, 540 + 900 * away * away, lerp(1560, 600, enter), 1.3, { t, op: 0.16, look: [lx, 10], worry: 18, browY: -8, roll: Math.sin(t * 1.5) * 0.06 });
     w.fillStyle = 'rgba(233,223,199,1)'; w.beginPath(); w.moveTo(0, 1010); w.quadraticCurveTo(540, 980, 1080, 1010); w.lineTo(1080, 1200); w.lineTo(0, 1200); w.closePath(); w.fill();
     g.save(); g.beginPath();
     for (let a = 0; a <= 1.001; a += 0.02) { const th = a * TAU, wob = 1 + 0.02 * Math.sin(th * 7 + t * 3), x = 540 + Math.cos(th) * rx * wob, y = cy + Math.sin(th) * ry * wob; a === 0 ? g.moveTo(x, y) : g.lineTo(x, y); } g.closePath(); g.clip();
@@ -596,7 +597,7 @@
   }
   function shotRewindB(g, t) {
     const TT = times(), u = clamp((t - TT.rw2) / (TT.rw3 - TT.rw2)), e = u * u * (3 - 2 * u);
-    attemptTwo(g, lerp(TT.n16e, TT.open - 0.1, e)); tape(g, t);
+    attemptTwo(g, lerp(TT.n16be, TT.open - 0.1, e)); tape(g, t);
   }
 
   // ------------------------------------------------------------------ the third button
@@ -624,11 +625,9 @@
       const dt = Math.max(0, lerp(TT.open - 0.12, TT.open + 0.52, u) - TT.open), fy = 1520 - (FY0 + 130), gr = 2900, t1 = Math.sqrt(2 * fy / gr);
       const by = dt < t1 ? FY0 + 130 + 0.5 * gr * dt * dt : 1520 - Math.max(0, 420 * (dt - t1) - 0.5 * gr * (dt - t1) * (dt - t1));
       ring(g, FX0 + 95 - dt * 20, by, 250, 1, 12);
-      title(g, 'DROPPED IT', 470, 150, CREAM, t, TT.proof + 0.25, { stroke: INK, sw: 0.12 });
     } else {
       shotPick(g, TT.call + 0.55 + (t - TT.split) * 0.2);
       ring(g, FX0 + 100, FY0 + 118, 262, 1, 12);
-      title(g, 'YOUR OTHER HAND', 470, 130, CREAM, t, TT.split + 0.02, { stroke: INK, sw: 0.12 });
     }
   }
   // back in colour, moving, the ring still on it: where the first frame's words were, these
@@ -709,6 +708,7 @@
         g.restore();
       }
     }
+    if (t >= TT.n25 - 0.04 && t < TT.n26 - 0.1) { title(g, 'NOBODY TOLD THEM', 400, 128, INK, t, TT.n25 - 0.04, { stroke: CREAM, sw: 0.07 }); title(g, 'EITHER.', 530, 128, INK, t, wi('n25', 3) - 0.04, { stroke: CREAM, sw: 0.07 }); }
     if (t >= wi('n26', 1) - 0.04) title(g, 'TELL THEM.', 470, 190, RED, t, wi('n26', 1) - 0.04, { stroke: CREAM, sw: 0.09 });
     const out = sstep(TT.end - 0.26, TT.end, t);
     if (out > 0) { g.fillStyle = `rgba(250,250,245,${out})`; g.fillRect(0, 0, W, H); }
