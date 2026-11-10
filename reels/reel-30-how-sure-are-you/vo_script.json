@@ -1,5 +1,5 @@
 {
- "note": "Reel 30: How Sure Are You? Script v3, after two reviews of v1 and the cold reader's note that the officer's 'Good' reads as an obvious trick. The narrator is the series voice (af_heart); the officer is am_michael (audition, 10 Nov: no creak on either line). Facts: docs/research.md.",
+ "note": "Reel 30: How Sure Are You? Script v5, after three fact-and-story reviews and two cold reads. The narrator is the series voice (af_heart). The officer is am_michael (audition, 10 Nov: no creak on either line); his last two lines are the same takes as his first two. Facts: docs/research.md.",
  "voice": "af_heart",
  "speed": 1.0,
  "ref_text": "The night was cold and very quiet. Most of the street was asleep, and the lamps hummed over the empty road. Somewhere far away, a train rolled past, and then the silence came back.",
@@ -54,7 +54,7 @@
   },
   {
    "id": "n06",
-   "text": "So here's the real answer."
+   "text": "So here's the answer."
   },
   {
    "id": "n07",
@@ -62,11 +62,7 @@
   },
   {
    "id": "n08",
-   "text": "Of course it is. Look at him."
-  },
-  {
-   "id": "n09",
-   "text": "Now how sure are you?"
+   "text": "Look at him, and now how sure are you it's him?"
   },
   {
    "id": "n10",
@@ -77,24 +73,24 @@
    "text": "I made that up."
   },
   {
+   "id": "n11b",
+   "text": "But he looked right, didn't he?"
+  },
+  {
    "id": "n12",
    "text": "And whoever you picked is still going to prison."
   },
   {
-   "id": "n13",
-   "text": "You still know how sure you were, because I asked."
-  },
-  {
    "id": "n14",
-   "text": "If nobody asks, one good and you'd swear you were sure from the start."
+   "text": "If I hadn't asked you first, one good, and you'd swear you were this sure from the start."
   },
   {
    "id": "n15",
-   "text": "In America, police told a real witness she'd picked the same man again, and she thought,"
+   "text": "In America, police told a real witness she'd picked the same man again."
   },
   {
    "id": "n15b",
-   "text": "Bingo. I did it right."
+   "text": "In her own words, Bingo. I did it right."
   },
   {
    "id": "n16",
@@ -102,12 +98,8 @@
    "text_kokoro": "It was the wrong man, and Ronald [Cotton](/kˈɑːtən/) lost more than ten years."
   },
   {
-   "id": "n17",
-   "text": "He really is one of these six."
-  },
-  {
    "id": "n18",
-   "text": "I could tell you which, but you'd believe me."
+   "text": "I could tell you which one, but you'd believe me."
   },
   {
    "id": "o03",

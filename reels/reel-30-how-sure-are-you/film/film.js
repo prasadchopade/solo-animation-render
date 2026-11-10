@@ -924,7 +924,7 @@
       txt(g, 'I DID IT RIGHT.”', 0, 138, 128, YEL, { align: 'center', fit: 860 });
       g.restore();
     }
-    txt(g, 'THE WITNESS, ON CBS 60 MINUTES, 2009', 513, 1524, 32, '#8a8f98', { kind: 'semi', align: 'center', a: clamp((t - TT.n15) * 3) });
+    txt(g, 'INNOCENCE PROJECT · CBS 60 MINUTES, 2009', 513, 1524, 32, '#8a8f98', { kind: 'semi', align: 'center', a: clamp((t - TT.n15) * 3) });
     return flashAt(t, TT.n15 - 0.05) * 0.2;
   }
   // Ronald Cotton: years on a wall. No likeness: a shape, its back to us, and tally marks (reel 20)
@@ -956,6 +956,7 @@
     txt(g, 'HE REALLY IS ONE OF THESE SIX', 513, 356, 84, INK, { align: 'center', fit: 860 });
     if (t >= TT.n17 + 0.5) title(g, 'ONLY ONE HAS A CUT', 1316, 104, RED, t, TT.n17 + 0.5, { stroke: '#d9d3c3', sw: 0.02 });
     if (t >= TT.n17 + 0.7) title(g, 'IN HIS EYEBROW.', 1430, 104, RED, t, TT.n17 + 0.7, { stroke: '#d9d3c3', sw: 0.02 });
+    txt(g, "YOU'RE THE TEST SUBJECT", 513, 1520, 40, '#5a544a', { kind: 'semi', align: 'center' });
     return flashAt(t, TT.n17 - 0.05) * 0.3;
   }
   // the last shot: he turns his clipboard round. All six, and the same two lines, the same takes.
