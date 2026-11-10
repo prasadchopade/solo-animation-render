@@ -1,9 +1,10 @@
 // Reel 30 · How Sure Are You? A direct sequel to The Only Witness (reel 20), Tests desk.
 // You're the only witness, again. Six faces, one of them did it; you pick; out of ten, how sure are you? Outside the magistrate's door an
-// officer says "Good. That's him." He's a drawing, so the voice gives you the real answer: number three. Of course it is. Now how sure are you?
-// "It isn't number three. I made that up." Whoever you picked is still going to prison. You still know your first number because she asked; if
-// nobody had, you'd swear you were sure from the start. A real witness in America, told she'd picked the same man twice: "Bingo. I did it right."
-// The hidden layer: number 3 IS the thief. Only he has the cut through his eyebrow, so "I made that up" is the lie. Facts: docs/research.md.
+// officer says "Good. That's him." He's a drawing, so the voice gives you the answer: number three. Now how sure are you? "It isn't number three.
+// I made that up." Was that your memory, or just my voice? Then the film runs back and you can check it: only one of the six has the cut through
+// his eyebrow. If it isn't the one you picked, an innocent man goes to prison, and he walks. It's number three: "I lied about lying." You got a
+// rewind; a real witness doesn't. In America, one picked a man twice, and police told her so: "Bingo. I did it right." Before I said anything,
+// how sure were you? Facts: docs/research.md.
 // Our own drawings; nobody real. The rig, the street, the woman's shape, the cell wall and the court are from reels 19, 20, 25 and 26. 30 fps, no motion blur.
 (() => {
   const { W, H, scene, canvas, clamp, lerp, el, mulberry32 } = C;
@@ -152,7 +153,7 @@
     eye(g, -1, -ex, ey, close, eo); eye(g, 1, ex, ey, close, eo);
     g.strokeStyle = L.hair; g.lineCap = 'round'; g.lineWidth = L.brow;
     const by0 = o.browY || 0, tilt = L.browTilt + (o.worry || 0);
-    browLine(g, -1, ex, ey, tilt, by0, false); browLine(g, 1, ex, ey, tilt, by0, !!L.nick);
+    browLine(g, -1, ex, ey, tilt, by0, false); browLine(g, 1, ex, ey, tilt, by0 + (o.browR || 0), !!L.nick);
     g.fillStyle = L.hair;
     const hh = hw + 6;
     if (L.style === 'side') { g.beginPath(); g.moveTo(-hh, -38); g.bezierCurveTo(-hh - 10, -250, -80, -300, 16, -292); g.bezierCurveTo(140, -292, hh + 16, -220, hh, -38); g.bezierCurveTo(hh - 18, -112, 150, -158, 96, -176); g.bezierCurveTo(30, -196, -44, -176, -96, -192); g.bezierCurveTo(-140, -160, -hh + 22, -110, -hh, -38); g.fill(); }
@@ -476,11 +477,12 @@
       titleOut: en('n01'), n02: at('n02'), n02e: en('n02'), n03: at('n03'), whoever: wi('n03', 8), n03e: en('n03'), n04: at('n04'), n04e: en('n04'),
       o01: at('o01'), o01e: en('o01'), o02: at('o02'), o02e: en('o02'), n05: at('n05'), drawing: wi('n05', 2), cant: wi('n05', 5), n05e: en('n05'),
       n06: at('n06'), n07: at('n07'), n08: at('n08'), n09: at('n09'), n09e: en('n09'), n10: at('n10'), n11: at('n11'), n11e: en('n11'), n11b: at('n11b'),
-      n12: at('n12'), prison: wi('n12', 8), n12e: en('n12'), n14: at('n14'), good: wi('n14', 6), swear: wi('n14', 9), n15: at('n15'), n15b: at('n15b'), n15be: en('n15b'),
-      n16: at('n16'), ronald: wi('n16', 6), n16e: en('n16'), n18: at('n18'), o03: at('o03'), o03e: en('o03'), o04: at('o04'), o04e: en('o04'), end: tb('end'),
+      n12: at('n12'), n12e: en('n12'), n13: at('n13'), eyebrow: wi('n13', 3), n13e: en('n13'), n14: at('n14'), n14e: en('n14'), n15: at('n15'), innocent: wi('n15', 7), walks: wi('n15', 13), n15e: en('n15'), n16: at('n16'), n16e: en('n16'),
+      n17: at('n17'), lied: wi('n17', 1), lying: wi('n17', 3), n17e: en('n17'), n18: at('n18'), areal: wi('n18', 4), n18e: en('n18'),
+      n19: at('n19'), picked: wi('n19', 3), told: wi('n19', 9), n20: at('n20'), n20e: en('n20'), n21: at('n21'), n21e: en('n21'), n22: at('n22'), n22e: en('n22'), end: tb('end'),
     };
     T.walk = T.n02 - 0.3; T.grab = T.n02e + 0.02; T.run = T.grab + 0.18; T.gone = T.run + 1.05; T.bump = T.gone - 0.25; T.smash = T.bump + 0.32; T.cut1 = T.n03 - 0.06;
-    T.clock0 = T.cut1 + 0.05; T.clock1 = T.clock0 + 5.0; T.read0 = T.o01e + 0.15; T.read1 = T.o02 - 0.32;
+    T.clock0 = T.cut1 + 0.05; T.clock1 = T.clock0 + 5.0; T.read0 = T.o01e + 0.15; T.read1 = T.o02 - 0.32; T.back0 = T.n13 - 0.78; T.back1 = T.n13 - 0.3; T.clock2 = T.n15e + 0.05;
     return T;
   }
   function talkP(t, pid) {                         // a mouth for one phrase only
@@ -612,24 +614,24 @@
     if (o.tick > 0) tick(g, x + CARD.w - 70, y + 70, 0.9, o.tick);
     g.restore();
   }
-  function bars(g, k) {
+  function bars(g, k, x0 = 75) {
     if (k <= 0) return;
     const off = lerp(-H, 0, k), bw = 40, hw = bw / 2;
     g.save(); g.translate(0, off);
     for (let i = 0; i < 8; i++) {
-      const x = 75 + i * 146;
+      const x = x0 + i * 146;
       g.fillStyle = lg(g, x - hw, 0, x + hw, 0, [0, '#16181c'], [0.35, '#6f747d'], [0.55, '#9ea3ab'], [1, '#1c1e23']); g.fillRect(x - hw, -40, bw, H + 80);
     }
     for (const yy of [214, 1570]) { g.fillStyle = lg(g, 0, yy - 26, 0, yy + 26, [0, '#16181c'], [0.4, '#7c818a'], [1, '#1c1e23']); g.fillRect(-10, yy - 26, W + 20, 52); }
     g.restore();
   }
-  function sureBox(g, t, t0, y) {                    // __/10, a blank nobody fills in for you
+  function sureBox(g, t, t0, y, col = INK, edge = '#d9d3c3') {                    // __/10, a blank nobody fills in for you
     if (t < t0) return;
     const q = pop(t, t0);
     g.save(); g.translate(513, y); g.scale(lerp(0.8, 1, q), lerp(0.8, 1, q)); g.globalAlpha *= clamp((t - t0) * 8);
     R(g, -210, -96, 190, 170, 16); g.fillStyle = '#fffdf4'; g.fill(); g.strokeStyle = INK; g.lineWidth = 9; g.stroke();
     if (((t - t0) % 0.8) < 0.45) { g.fillStyle = INK; g.fillRect(-120, -66, 9, 110); }
-    txt(g, '/ 10', 6, 58, 170, INK, { stroke: '#d9d3c3', sw: 0.05 });
+    txt(g, '/ 10', 6, 58, 170, col, { stroke: edge, sw: 0.05 });
     g.restore();
   }
   function shotLineup(g, t) {
@@ -819,7 +821,7 @@
     const TT = times(), liar = t >= TT.n10 - 0.04;
     g.fillStyle = WALL; g.fillRect(0, 0, W, H);
     for (let k = 0; k < 14; k++) { if (k === 2) continue; const yy = 120 + k * 118; g.fillStyle = k % 2 ? 'rgba(20,19,15,0.16)' : 'rgba(20,19,15,0.42)'; g.fillRect(0, yy, W, k % 2 ? 3 : 5); }
-    const z = 1 + 0.07 * sstep(TT.n08, TT.n10, t) + (liar ? 0.02 : 0) + 0.05 * sstep(TT.n11b, TT.n12, t), [sx, sy] = shakeAt(t, [TT.n10], 22);
+    const z = 1 + 0.07 * sstep(TT.n08, TT.n10, t) + (liar ? 0.02 : 0) + 0.05 * sstep(TT.n11b, TT.n12e, t), [sx, sy] = shakeAt(t, [TT.n10], 22);
     g.save(); g.translate(513 + sx, 900 + sy); g.scale(z, z); g.translate(-513, -900);
     const puzzled = sstep(TT.n10, TT.n10 + 0.35, t), look = liar ? [lerp(0, 18 * Math.sin((t - TT.n10) * 3.2), puzzled), 1] : [0, 1];
     const warm = (1 - sstep(TT.n10 - 0.06, TT.n10 - 0.01, t)) * sstep(TT.n08 - 0.1, TT.n08 + 0.3, t);
@@ -835,69 +837,10 @@
     if (liar) {
       title(g, "IT ISN'T NUMBER 3.", 400, 118, RED, t, TT.n10 - 0.03, { stroke: CREAM, sw: 0.1 });
       if (t >= TT.n11 - 0.04 && t < TT.n11b - 0.04) title(g, 'I MADE THAT UP.', 1452, 132, INK, t, TT.n11 - 0.04, { stroke: CREAM, sw: 0.14 });
-      if (t >= TT.n11b - 0.04) title(g, 'BUT HE LOOKED RIGHT.', 1452, 112, INK, t, TT.n11b - 0.04, { stroke: CREAM, sw: 0.14, fit: 860 });
+      if (t >= TT.n11b - 0.04 && t < TT.n12 - 0.04) title(g, 'BUT HE LOOKED RIGHT.', 1452, 112, INK, t, TT.n11b - 0.04, { stroke: CREAM, sw: 0.14, fit: 860 });
+      if (t >= TT.n12 - 0.04) title(g, 'YOUR MEMORY, OR MY VOICE?', 1452, 112, INK, t, TT.n12 - 0.04, { stroke: CREAM, sw: 0.14, fit: 860 });
     }
     return flashAt(t, TT.n08 - 0.06) * 0.3 + flashAt(t, TT.n10 - 0.03) * 0.5;
-  }
-  // whoever you picked is still going to prison: one cell, and the man in it keeps changing, so nothing picks for you
-  function shotBars(g, t) {
-    const TT = times();
-    g.fillStyle = WALL; g.fillRect(0, 0, W, H);
-    for (let k = 0; k < 14; k++) { if (k === 2) continue; const yy = 120 + k * 118; g.fillStyle = k % 2 ? 'rgba(20,19,15,0.16)' : 'rgba(20,19,15,0.42)'; g.fillRect(0, yy, W, k % 2 ? 3 : 5); }
-    const [sx, sy] = shakeAt(t, [TT.prison], 30), b = t >= TT.prison - 0.03 ? clamp(hit(t, TT.prison - 0.03, 'heavy')) : 0;
-    const n = Math.floor((t - TT.n12 + 0.05) * 6), i = ((n % 6) + 6) % 6;
-    g.save(); g.translate(sx, sy);
-    suspect(g, MEN[i], 513, 860, 1.25, { look: [0, 1], frown: FROWN[i] + 0.15, close: 0, worry: -6 });
-    tileNo(g, 90, 1180, i + 1, 110);
-    if (b > 0) { g.fillStyle = `rgba(10,10,12,${0.26 * b})`; g.fillRect(-60, -60, W + 120, H + 120); bars(g, b); }
-    g.restore();
-    title(g, 'WHOEVER YOU PICKED', 400, 104, b > 0 ? CREAM : INK, t, TT.n12 - 0.04, { stroke: b > 0 ? INK : WALL, sw: 0.1 });
-    if (t >= wi('n12', 4) - 0.04) title(g, 'IS STILL GOING TO PRISON.', 1430, 104, CREAM, t, wi('n12', 4) - 0.04, { stroke: INK, sw: 0.16 });
-    return flashAt(t, TT.n12 - 0.05) * 0.35;
-  }
-  // if I hadn't asked you first: the second number slides over the first, and only the second is left
-  function numBox(g, x, y, label, k = 1, ta = 1) {
-    g.save(); g.translate(x, y); g.scale(k, k);
-    R(g, -150, -92, 150, 176, 16); g.fillStyle = '#fffdf4'; g.fill(); g.strokeStyle = INK; g.lineWidth = 9; g.stroke();
-    g.globalAlpha *= ta;
-    txt(g, '/10', 18, 54, 120, INK);
-    txt(g, label, 0, -128, 56, INK, { align: 'center', kind: 'semi', fit: 330 });
-    g.restore();
-  }
-  function shotOverwrite(g, t) {
-    const TT = times();
-    g.fillStyle = '#d9d3c3'; g.fillRect(0, 0, W, H);
-    const u = sstep(TT.good + 0.02, TT.good + 0.55, t), y = 900, x1 = lerp(275, 513, u), x2 = lerp(735, 513, u), k = 1.25;
-    numBox(g, x1, y, 'FIRST', k, 1 - sstep(0.1, 0.6, u));
-    if (u < 0.95) { g.save(); g.globalAlpha = 1 - clamp(u * 3); g.strokeStyle = INK; g.lineWidth = 12; g.lineCap = 'round'; g.beginPath(); g.moveTo(488, y); g.lineTo(538, y); g.moveTo(516, y - 26); g.lineTo(538, y); g.lineTo(516, y + 26); g.stroke(); g.restore(); }
-    g.save(); g.shadowColor = 'rgba(0,0,0,0.3)'; g.shadowBlur = 24 * u; g.shadowOffsetY = 10 * u; numBox(g, x2, y, 'AFTER “GOOD”', k); g.restore();
-    if (t >= TT.good - 0.04) title(g, 'ONE “GOOD.”', 560, 150, RED, t, TT.good - 0.04, { stroke: '#d9d3c3', sw: 0.02 });
-    return flashAt(t, TT.n14 - 0.05) * 0.3;
-  }
-  // the witness box: you, your hands on the rail, and what you'll say
-  function shotBox(g, t) {
-    const TT = times();
-    if (!CT) makeCourt();
-    const z = 1.02 + 0.03 * sstep(TT.swear, TT.n15, t);
-    g.save(); g.translate(513, 800); g.scale(z / CS, z / CS); g.translate(-513 * CS, -800 * CS); g.drawImage(CT.bg, 0, 0); g.restore();
-    fan(g, 300, 300, t, 0.7); fan(g, 770, 296, t + 1, 0.6);
-    const top = 1420;
-    // the mic
-    g.strokeStyle = '#25272c'; g.lineWidth = 12; g.lineCap = 'round'; g.beginPath(); g.moveTo(513, top + 10); g.quadraticCurveTo(516, top - 120, 532, top - 196); g.stroke();
-    g.fillStyle = '#2e3036'; R(g, 505, top - 262, 58, 84, 26); g.fill(); g.fillStyle = 'rgba(255,255,255,0.18)'; R(g, 513, top - 254, 12, 66, 6); g.fill();
-    // the rail
-    g.fillStyle = lg(g, 0, top + 40, 0, 1920, [0, '#8a5a33'], [1, '#4a2a12']); g.fillRect(-10, top + 30, W + 20, 560);
-    g.fillStyle = lg(g, 0, top - 16, 0, top + 34, [0, '#c69060'], [1, '#7a4c28']); R(g, -10, top - 16, W + 20, 50, 16); g.fill();
-    g.fillStyle = 'rgba(255,240,210,0.35)'; g.fillRect(0, top - 12, W, 5);
-    for (const [hx, k] of [[170, 1], [856, -1]]) {
-      g.strokeStyle = S0.skin; g.lineWidth = 150; g.lineCap = 'round'; g.beginPath(); g.moveTo(hx, top + 60); g.lineTo(hx - 70 * k, H + 120); g.stroke();
-      g.strokeStyle = S0.skinD; g.lineWidth = 4; g.beginPath(); g.moveTo(hx - 75 * k * 0.2 + 76, top + 80); g.lineTo(hx - 70 * k + 76, H + 120); g.stroke();
-      g.fillStyle = S0.skin; ell(g, hx, top + 4, 92, 48, -0.04 * k); g.fill();
-      g.strokeStyle = S0.skinD; g.lineWidth = 7; g.lineCap = 'round'; for (let i = 0; i < 4; i++) { const fx = hx - 52 + i * 34; g.beginPath(); g.moveTo(fx, top - 22); g.quadraticCurveTo(fx + 3, top + 18, fx, top + 44); g.stroke(); }
-    }
-    bubble(g, 'I WAS THIS SURE FROM THE START.', 513, 840, t, wi('n14', 11) - 0.05, { tx: 513, w: 860, h: 150, size: 80 });
-    txt(g, 'WELLS & BRADFIELD, 1998', 513, 1012, 34, '#5a544a', { kind: 'semi', align: 'center', a: clamp((t - TT.swear) * 3), stroke: '#f2e4c8', sw: 0.2 });
-    return flashAt(t, TT.swear - 0.05) * 0.35;
   }
   // a real witness. No likeness: shapes, her back to us, and her own words, the same size and in plain type: this part isn't the game
   function shotReal(g, t) {
@@ -911,21 +854,24 @@
       txt(g, String(i + 1), x, y + 214, 44, lit ? '#ffc46e' : '#7c808a', { kind: 'mono', align: 'center' });
     }
     g.fillStyle = '#05060a'; ell(g, 513, 1500, 108, 134); g.fill(); g.beginPath(); g.moveTo(240, 2100); g.bezierCurveTo(240, 1740, 400, 1670, 513, 1660); g.bezierCurveTo(626, 1670, 786, 1740, 786, 2100); g.closePath(); g.fill();
-    txt(g, 'A REAL CASE, IN AMERICA', 513, 330, 44, '#ffc46e', { kind: 'mono', align: 'center', a: clamp((t - TT.n15 + 0.1) * 6) });
-    const a1 = clamp((t - TT.n15 + 0.1) * 6);
-    txt(g, '“IT IS BETWEEN NUMBER FOUR', 513, 438, 62, CREAM, { kind: 'mono', align: 'center', fit: 860, a: a1 });
-    txt(g, 'AND NUMBER FIVE.”', 513, 518, 62, CREAM, { kind: 'mono', align: 'center', fit: 860, a: a1 });
-    if (t >= wi('n15', 3) - 0.05) txt(g, 'THEN, TOLD IT WAS THE SAME MAN:', 513, 646, 42, '#9aa0a8', { kind: 'mono', align: 'center', fit: 860, a: clamp((t - wi('n15', 3) + 0.05) * 6) });
-    if (t >= TT.n15b - 0.05) txt(g, '“BINGO. I DID IT RIGHT.”', 513, 738, 62, CREAM, { kind: 'mono', align: 'center', fit: 860, a: clamp((t - TT.n15b + 0.05) * 6) });
-    txt(g, 'INNOCENCE PROJECT · CBS 60 MINUTES, 2009', 513, 1524, 32, '#8a8f98', { kind: 'semi', align: 'center', a: clamp((t - TT.n15) * 3) });
+    txt(g, 'A REAL CASE, IN AMERICA', 513, 330, 44, '#ffc46e', { kind: 'mono', align: 'center', a: clamp((t - TT.n19 + 0.1) * 6) });
+    const a1 = clamp((t - TT.picked + 0.05) * 6);
+    if (a1 > 0) {
+      txt(g, 'AT FIRST, SHE SAID:', 513, 414, 42, '#9aa0a8', { kind: 'mono', align: 'center', fit: 860, a: a1 });
+      txt(g, '“IT IS BETWEEN NUMBER FOUR', 513, 494, 62, CREAM, { kind: 'mono', align: 'center', fit: 860, a: a1 });
+      txt(g, 'AND NUMBER FIVE.”', 513, 574, 62, CREAM, { kind: 'mono', align: 'center', fit: 860, a: a1 });
+    }
+    if (t >= TT.told - 0.05) txt(g, 'THEN, TOLD IT WAS THE SAME MAN:', 513, 700, 42, '#9aa0a8', { kind: 'mono', align: 'center', fit: 860, a: clamp((t - TT.told + 0.05) * 6) });
+    if (t >= TT.n20 - 0.05) txt(g, '“BINGO. I DID IT RIGHT.”', 513, 792, 62, CREAM, { kind: 'mono', align: 'center', fit: 860, a: clamp((t - TT.n20 + 0.05) * 6) });
+    txt(g, 'INNOCENCE PROJECT · CBS 60 MINUTES, 2009', 513, 1524, 32, '#8a8f98', { kind: 'semi', align: 'center', a: clamp((t - TT.n19) * 3) });
     return 0;
   }
   // Ronald Cotton: years on a wall. No likeness: a shape, its back to us, and tally marks (reel 20)
-  function shotCotton(g, t) {
+  function shotCotton(g, t, band = 1) {
     const TT = times();
     if (!WALLC) makeCell();
     g.drawImage(WALLC, 0, 0);
-    const u = sstep(TT.n16 + 0.1, TT.n16e + 0.4, t), yr = Math.round(lerp(1984, 1995, u));
+    const u = sstep(TT.n21 + 0.1, TT.n21e + 0.4, t), yr = Math.round(lerp(1984, 1995, u));
     const sw = ((u * 9) % 1), lx = lerp(-520, 1180, sw), la = 0.11 * Math.sin(sw * Math.PI) * (u < 1 ? 1 : 0);
     if (la > 0.002) { g.fillStyle = `rgba(245,230,190,${la})`; for (let i = 0; i < 4; i++) { const bx = lx + i * 110; g.beginPath(); g.moveTo(bx + 240, 480); g.lineTo(bx + 330, 480); g.lineTo(bx + 90, 1620); g.lineTo(bx, 1620); g.closePath(); g.fill(); } }
     const n = Math.round(u * TALLY.length);
@@ -935,66 +881,123 @@
     ell(g, 0, 0, 58, 72); g.fill(); R(g, -32, 30, 64, 90, 10); g.fill();
     g.beginPath(); g.moveTo(-146, 330); g.bezierCurveTo(-150, 140, -84, 96, 0, 88); g.bezierCurveTo(84, 96, 150, 140, 146, 330); g.closePath(); g.fill();
     g.restore();
-    g.fillStyle = 'rgba(16,17,20,0.8)'; g.fillRect(0, 262, W, 410);
-    txt(g, 'RONALD COTTON', 513, 376, 118, '#f7f1e2', { align: 'center', fit: 860 });
-    txt(g, String(yr), 513, 548, 170, u >= 1 ? '#ffb347' : '#ece7d6', { align: 'center' });
-    txt(g, 'THE WRONG MAN', 513, 636, 66, '#ffb347', { align: 'center', a: clamp((t - TT.n16) * 6) });
+    if (band > 0) {
+      g.save(); g.globalAlpha = band;
+      g.fillStyle = 'rgba(16,17,20,0.8)'; g.fillRect(0, 262, W, 410);
+      txt(g, 'RONALD COTTON', 513, 376, 118, '#f7f1e2', { align: 'center', fit: 860 });
+      txt(g, String(yr), 513, 548, 170, u >= 1 ? '#ffb347' : '#ece7d6', { align: 'center' });
+      txt(g, 'CLEARED BY DNA', 513, 636, 66, '#ffb347', { align: 'center', a: clamp((t - TT.n21) * 6) });
+      g.restore();
+    }
     return 0;
   }
-  // he really is one of these six
-  function shotSix(g, t) {
-    const TT = times(), t0 = TT.n18 - 0.6;
-    g.fillStyle = '#d9d3c3'; g.fillRect(0, 0, W, H);
-    for (let i = 0; i < 6; i++) card(g, i, t, { stare: 1 });
-    txt(g, 'HE REALLY IS ONE OF THESE SIX', 513, 356, 84, INK, { align: 'center', fit: 860 });
-    if (t >= t0 + 0.25) title(g, 'ONLY ONE HAS A CUT', 1316, 104, RED, t, t0 + 0.25, { stroke: '#d9d3c3', sw: 0.02 });
-    if (t >= t0 + 0.45) title(g, 'IN HIS EYEBROW.', 1430, 104, RED, t, t0 + 0.45, { stroke: '#d9d3c3', sw: 0.02 });
-    txt(g, "YOU'RE THE TEST SUBJECT", 513, 1520, 40, '#5a544a', { kind: 'semi', align: 'center' });
-    return flashAt(t, t0) * 0.3;
+  // back to the robbery: it runs backwards, he comes at you again, and it stops with his face filling the frame. The cut gets a ring.
+  const NICK = [800, 715];                           // the gap in his left eyebrow at the freeze, in the frame
+  function ring(g, x, y, r, k, lw = 11) {
+    if (k <= 0) return;
+    g.save(); g.strokeStyle = RED; g.lineWidth = lw; g.lineCap = 'round'; g.beginPath(); g.arc(x, y, r, -Math.PI / 2, -Math.PI / 2 + TAU * k); g.stroke(); g.restore();
   }
-  // the last shot: he turns his clipboard round. All six, and the same two lines, the same takes.
-  let SHEET = null;
-  function makeSheet() {
-    SHEET = offscreen(880, 760); const g = SHEET.getContext('2d');
-    g.fillStyle = '#fffdf6'; g.fillRect(0, 0, 880, 760);
-    for (let i = 0; i < 6; i++) {
-      const x = 18 + (i % 3) * 286, y = 22 + Math.floor(i / 3) * 366, w = 272, h = 350;
-      wallLines(g, x, y, w, h);
-      g.save(); R(g, x, y, w, h, 8); g.clip();
-      suspect(g, MEN[i], x + w / 2, y + 165, 0.5, { look: [0, 1], frown: FROWN[i], smile: SMILE[i] });
+  function shotAgain(g, t) {
+    const TT = times(), t1 = TT.back1, peak = TT.run + 0.72 * (TT.gone - TT.run), from = TT.run - 0.12;
+    let tau = peak;
+    if (t < t1) tau = lerp(TT.smash + 0.22, from, sstep(TT.back0, t1, t));
+    else if (t < TT.eyebrow) { const u = clamp((t - t1) / (TT.eyebrow - t1)); tau = lerp(from, peak, 1 - Math.pow(1 - u, 1.4)); }
+    const fz = sstep(TT.eyebrow - 0.02, TT.eyebrow + 0.6, t), k = lerp(1, 1.5, fz), nx = lerp(NICK[0], 680, fz), ny = lerp(NICK[1], 800, fz);
+    g.save(); g.translate(nx, ny); g.scale(k, k); g.translate(-NICK[0], -NICK[1]);
+    crime(g, tau);
+    g.restore();
+    if (t < t1) {                                     // two arrows pointing back
+      g.save(); g.translate(513, 372); g.fillStyle = CREAM; g.strokeStyle = INK; g.lineWidth = 8; g.lineJoin = 'round';
+      for (const dx of [-42, 42]) { g.beginPath(); g.moveTo(dx + 42, -50); g.lineTo(dx + 42, 50); g.lineTo(dx - 42, 0); g.closePath(); g.stroke(); g.fill(); }
       g.restore();
-      tileNo(g, x + 10, y + h - 72, i + 1, 62);
-      R(g, x, y, w, h, 8); g.strokeStyle = '#121212'; g.lineWidth = 5; g.stroke();
     }
+    ring(g, nx, ny, 74 * k, sstep(TT.eyebrow + 0.08, TT.eyebrow + 0.42, t), 12);
+    if (t >= TT.eyebrow + 0.28) title(g, 'A CUT.', 590, 170, RED, t, TT.eyebrow + 0.28, { stroke: CREAM, sw: 0.1, x: 640 });
+    return flashAt(t, TT.back0) * 0.3;
   }
-  function sketchHands(g, x0, x1, y) {
-    g.save(); g.strokeStyle = '#47474d'; g.lineCap = 'round'; g.lineJoin = 'round';
-    for (const [hx, k] of [[x0, 1], [x1, -1]]) {
-      g.lineWidth = 6; g.beginPath(); g.moveTo(hx - 60 * k, y + 50); g.lineTo(hx - 150 * k, H + 40); g.moveTo(hx + 44 * k, y + 56); g.lineTo(hx + 10 * k, H + 40); g.stroke();
-      ell(g, hx, y, 62, 52, 0.2 * k); g.fillStyle = PAPERC; g.fill(); g.lineWidth = 6; g.stroke();
-      g.lineWidth = 4; for (let i = 0; i < 4; i++) { const fy = y - 30 + i * 20; g.beginPath(); g.moveTo(hx - 34 * k, fy); g.quadraticCurveTo(hx + 22 * k, fy - 6, hx + 44 * k, fy + 6); g.stroke(); }
-    }
+  // only one of these six has that cut: six strips, eyes and eyebrows only, so the check takes a second at phone size
+  const STR = { x: 60, w: 890, h: 150, gap: 12, y0: 396, s: 1.5 };
+  function strip(g, i, t, o = {}) {
+    const { x, w, h, gap, y0, s } = STR, y = y0 + i * (h + gap), cx = x + w / 2 + 40, cy = y + h / 2 + 50 * s;
+    g.save();
+    if (o.pop) { g.translate(x + w / 2, y + h / 2); g.scale(o.pop, o.pop); g.translate(-x - w / 2, -y - h / 2); }
+    g.save(); R(g, x, y, w, h, 8); g.clip();
+    g.fillStyle = WALL; g.fillRect(x, y, w, h);
+    g.translate(cx, cy); g.scale(s, s);
+    head(g, MEN[i], { look: [0, 0], close: 0, frown: 0, smile: 0 });
+    g.restore();
+    tileNo(g, x + 14, y + 30, i + 1, 90);
+    R(g, x, y, w, h, 8); g.strokeStyle = '#121212'; g.lineWidth = 6; g.stroke();
+    if (o.dim > 0) { R(g, x - 3, y - 3, w + 6, h + 6, 8); g.fillStyle = `rgba(217,211,195,${o.dim})`; g.fill(); }
+    if (o.lit > 0) { R(g, x - 4, y - 4, w + 8, h + 8, 10); g.strokeStyle = GREEN; g.lineWidth = 10; g.stroke(); ring(g, cx + 98 * s, y + h / 2 - 40, 52, o.lit, 9); }
+    if (o.tick > 0) tick(g, x + w - 78, y + h / 2, 0.8, o.tick);
     g.restore();
   }
-  function shotLast(g, t) {
+  function shotStrips(g, t) {
     const TT = times();
-    if (!SHEET) makeSheet();
-    g.fillStyle = PAPERC; g.fillRect(0, 0, W, H);
-    const r = mulberry32(11); g.fillStyle = 'rgba(120,100,70,0.06)'; for (let i = 0; i < 500; i++) g.fillRect(r() * W, r() * H, 1 + r() * 3, 1 + r() * 3);
-    const op = talkP(t, 'o03') + talkP(t, 'o04');
-    sketchOfficer(g, 513, 500, 0.72, { op, gone: true });
-    const cw = 900, ch = 800, cx = 505, cy = 1180, ticks = sstep(TT.o04 - 0.03, TT.o04 + 0.22, t);
-    g.save(); g.translate(cx, cy); g.rotate(-0.008);
-    g.fillStyle = 'rgba(0,0,0,0.25)'; R(g, -cw / 2 + 10, -ch / 2 + 14, cw, ch, 18); g.fill();
-    g.fillStyle = lg(g, -cw / 2, -ch / 2, cw / 2, ch / 2, [0, '#9a6a3e'], [1, '#6e4423']); R(g, -cw / 2, -ch / 2, cw, ch, 18); g.fill();
-    g.drawImage(SHEET, -440, -372);
-    g.fillStyle = '#b9bdc4'; R(g, -96, -ch / 2 - 24, 192, 54, 12); g.fill(); g.fillStyle = 'rgba(255,255,255,0.35)'; R(g, -86, -ch / 2 - 18, 172, 10, 5); g.fill();
-    if (ticks > 0) for (let i = 0; i < 6; i++) { const x = -440 + 18 + (i % 3) * 286 + 272 - 56, y = -372 + 22 + Math.floor(i / 3) * 366 + 58; tick(g, x, y, 0.8, ticks); }
+    g.fillStyle = '#d9d3c3'; g.fillRect(0, 0, W, H);
+    const lit = sstep(TT.n16 - 0.04, TT.n16 + 0.08, t), q = lit > 0 ? clamp(hit(t, TT.n16 - 0.04, 'heavy')) : 0;
+    for (let i = 0; i < 6; i++) { if (i !== 2) strip(g, i, t, { pop: clamp(hit(t, TT.n14 - 0.08 + i * 0.05, 'heavy')), dim: lit * 0.72 }); }
+    strip(g, 2, t, { pop: clamp(hit(t, TT.n14 - 0.08 + 0.1, 'heavy')) * (1 + 0.03 * q), lit, tick: sstep(TT.n16 + 0.02, TT.n16 + 0.3, t) });
+    if (t < TT.n16 - 0.04) {
+      txt(g, 'ONLY ONE HAS THAT CUT', 60, 356, 84, INK, { fit: 660 });
+      const left = Math.min(5, Math.max(0, Math.ceil(TT.clock2 - t - 1e-3)));
+      g.save(); g.translate(838, 324); R(g, -112, -44, 224, 88, 12); g.fillStyle = '#121212'; g.fill();
+      txt(g, '00:' + String(left).padStart(2, '0'), 0, 27, 68, left <= 2 ? '#ff4a30' : '#ffb347', { kind: 'mono', align: 'center' });
+      g.restore();
+      if (t >= TT.innocent - 0.04) title(g, 'AN INNOCENT MAN GOES TO PRISON,', 1436, 92, INK, t, TT.innocent - 0.04, { stroke: '#d9d3c3', sw: 0.02, fit: 880 });
+      if (t >= TT.walks - 0.04) title(g, 'AND HE WALKS.', 1526, 88, RED, t, TT.walks - 0.04, { stroke: '#d9d3c3', sw: 0.02 });
+    } else title(g, "IT'S NUMBER 3.", 366, 140, GREEN, t, TT.n16 - 0.04, { stroke: CREAM, sw: 0.1 });
+    return flashAt(t, TT.n14 - 0.1) * 0.3 + flashAt(t, TT.clock2) * 0.2;
+  }
+  // number 3, as big as in the first close-up
+  function closeUp(g, t, o = {}) {
+    g.fillStyle = WALL; g.fillRect(0, 0, W, H);
+    for (let k = 0; k < 14; k++) { if (k === 2) continue; const yy = 120 + k * 118; g.fillStyle = k % 2 ? 'rgba(20,19,15,0.16)' : 'rgba(20,19,15,0.42)'; g.fillRect(0, yy, W, k % 2 ? 3 : 5); }
+    const z = o.z ?? 1;
+    g.save(); g.translate(513, 900); g.scale(z, z); g.translate(-513, -900);
+    suspect(g, THIEF, 513, 900, 1.34, { look: [0, 1], close: o.close ?? 0, frown: o.frown ?? 0.1, smile: o.smile ?? 0, browR: o.browR ?? 0 });
     g.restore();
-    sketchHands(g, cx - 430, cx + 430, cy + 390);
-    if (t < TT.o04 - 0.04) bubble(g, 'WHICH ONE?', 770, 396, t, TT.o03 - 0.05, { tx: 610, w: 340, h: 96, size: 60 });
-    if (t >= TT.o04 - 0.04) title(g, 'GOOD.', 366, 124, YEL, t, TT.o04 - 0.04, { stroke: INK });
-    return flashAt(t, TT.o03 - 0.1) * 0.35;
+    tileNo(g, 90, 1200, 3, 110);
+  }
+  // I lied about lying: the cross flips over, in the place it landed, and I MADE THAT UP comes back where it was and gets struck out. He smirks only once she's finished, so the line stays hers.
+  function shotLied(g, t) {
+    const TT = times(), smirk = sstep(TT.n17e - 0.02, TT.n17e + 0.42, t);
+    closeUp(g, t, { z: 1 + 0.04 * sstep(TT.n17, TT.n18, t), frown: lerp(0.1, 0, smirk), smile: 0.46 * smirk, browR: -38 * smirk });
+    const f = sstep(TT.lying - 0.02, TT.lying + 0.18, t), sx = Math.max(0.03, Math.abs(Math.cos(f * Math.PI)));
+    g.save(); g.translate(860, 1250); g.scale(sx, 1); g.translate(-860, -1250);
+    if (f < 0.5) cross(g, 860, 1250, 1.3, 1); else tick(g, 860, 1250, 1.3, 1);
+    g.restore();
+    title(g, "IT'S NUMBER 3.", 400, 140, GREEN, t, TT.n16, { stroke: CREAM, sw: 0.1 });
+    title(g, 'I MADE THAT UP.', 1452, 132, INK, t, TT.n17 - 0.04, { stroke: CREAM, sw: 0.14 });
+    const k = sstep(TT.lied, TT.lying + 0.12, t);
+    if (k > 0) { g.save(); g.strokeStyle = RED; g.lineWidth = 16; g.lineCap = 'round'; g.beginPath(); g.moveTo(170, 1412); g.lineTo(lerp(170, 856, k), 1412 - 8 * k); g.stroke(); g.restore(); }
+    return flashAt(t, TT.n17 - 0.05) * 0.3;
+  }
+  // you got a rewind; a real witness doesn't: the two arrows from the robbery, on the dark, and they go out
+  function shotRewound(g, t) {
+    const TT = times();
+    g.fillStyle = '#0f1115'; g.fillRect(0, 0, W, H);
+    const off = sstep(TT.areal - 0.05, TT.areal + 0.12, t), a = 1 - 0.86 * off;
+    g.save(); g.translate(513, 860); g.scale(2.6, 2.6); g.globalAlpha = a; g.fillStyle = CREAM;
+    for (const dx of [-42, 42]) { g.beginPath(); g.moveTo(dx + 42, -50); g.lineTo(dx + 42, 50); g.lineTo(dx - 42, 0); g.closePath(); g.fill(); }
+    g.restore();
+    title(g, 'YOU GET A REWIND.', 560, 124, CREAM, t, TT.n18 - 0.04, { stroke: '#0f1115', sw: 0.02, a: 1 - 0.7 * off });
+    if (t >= TT.areal - 0.04) title(g, "A REAL WITNESS DOESN'T.", 1200, 112, '#ffc46e', t, TT.areal - 0.04, { stroke: '#0f1115', sw: 0.02, fit: 860 });
+    return 0;
+  }
+  // the last question: the same wall, nobody's face, and the blank from the first test. A held moment, and into the navy of the card.
+  function shotAsk(g, t) {
+    const TT = times(), k = sstep(TT.n22 - 0.42, TT.n22 - 0.06, t);
+    shotCotton(g, t, 1 - k);
+    if (k > 0) { g.fillStyle = `rgba(10,11,15,${0.82 * k})`; g.fillRect(0, 0, W, H); }
+    if (t >= TT.n22 - 0.04) title(g, 'BEFORE I SAID ANYTHING,', 590, 86, CREAM, t, TT.n22 - 0.04, { stroke: '#0f1115', sw: 0.02, fit: 860 });
+    if (t >= wi('n22', 4) - 0.04) title(g, 'HOW SURE WERE YOU?', 724, 122, YEL, t, wi('n22', 4) - 0.04, { stroke: '#0f1115', sw: 0.02, fit: 860 });
+    sureBox(g, t, TT.n22 + 0.05, 950, CREAM, '#0f1115');
+    txt(g, "YOU'RE THE TEST SUBJECT", 513, 1526, 40, '#b9b4a6', { kind: 'semi', align: 'center', a: clamp((t - TT.n22) * 3) });
+    const out = sstep(TT.end - 0.4, TT.end, t);
+    if (out > 0) { g.fillStyle = `rgba(10,14,21,${out})`; g.fillRect(0, 0, W, H); }
+    return 0;
   }
 
   // ================================================================ the film
@@ -1011,14 +1014,14 @@
       else if (t < TT.n05 - 0.03) fl = shotOfficer(g, t);
       else if (t < TT.n06 - 0.05) fl = shotDrawing(g, t);
       else if (t < TT.n08 - 0.06) fl = shotReveal(g, t);
-      else if (t < TT.n12 - 0.05) fl = shotThree(g, t);
-      else if (t < TT.n14 - 0.05) fl = shotBars(g, t);
-      else if (t < TT.swear - 0.05) fl = shotOverwrite(g, t);
-      else if (t < TT.n15 - 0.05) fl = shotBox(g, t);
-      else if (t < TT.n16 - 0.05) fl = shotReal(g, t);
-      else if (t < TT.n18 - 0.6) fl = shotCotton(g, t);
-      else if (t < TT.o03 - 0.1) fl = shotSix(g, t);
-      else fl = shotLast(g, t);
+      else if (t < TT.back0) fl = shotThree(g, t);
+      else if (t < TT.n14 - 0.1) fl = shotAgain(g, t);
+      else if (t < TT.n17 - 0.05) fl = shotStrips(g, t);
+      else if (t < TT.n18 - 0.05) fl = shotLied(g, t);
+      else if (t < TT.n19 - 0.05) fl = shotRewound(g, t);
+      else if (t < TT.n21 - 0.05) fl = shotReal(g, t);
+      else if (t < TT.n22 - 0.45) fl = shotCotton(g, t);
+      else fl = shotAsk(g, t);
       if (fl > 0.002) { g.fillStyle = `rgba(255,253,244,${fl})`; g.fillRect(0, 0, W, H); }
       g.restore();
     },
