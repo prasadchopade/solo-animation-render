@@ -1,5 +1,5 @@
 {
- "note": "Reel 31: The Last 1,000 (working title), episode 1 of a voted serial. Draft 4. Narrator: af_heart. Meera and Ravi are character voices chosen by audition; x01-x04 audition how 'Amma' is said and are not placed. Fiction; the bible is docs/research.md.",
+ "note": "Reel 31: The Last 1,000 (working title), episode 1 of a voted serial. Draft 6. Narrator: af_heart. Meera and Ravi are character voices chosen by audition; x01-x04 audition how 'Amma' is said and are not placed. Fiction; the bible is docs/research.md.",
  "voice": "af_heart",
  "speed": 1.0,
  "ref_text": "The night was cold and very quiet. Most of the street was asleep, and the lamps hummed over the empty road. Somewhere far away, a train rolled past, and then the silence came back.",
@@ -138,25 +138,25 @@
    "text_kokoro": "You're the ship they're drowning in, and the last thousand people alive call you [Amma](/ˈʌmmɑː/)."
   },
   {
-   "id": "n06",
-   "text": "You've got power for one door, no time for a second, and everyone watching this gets a vote."
-  },
-  {
    "id": "n07",
    "text": "Ten seconds as their mother, and you're still picking by degree."
   },
   {
+   "id": "n06",
+   "text": "You've got power for one door, no time for another, and everyone watching this gets a vote."
+  },
+  {
+   "id": "n10",
+   "text": "Open hers, and the only man who can run you drowns, and a fifteen-year-old has forty days to learn how, or you all sink."
+  },
+  {
    "id": "n08",
-   "text": "They're begging you to save each other, because they're married, and you gave Meera away yourself.",
-   "text_kokoro": "They're begging you to save each other, because they're married, and you gave [Meera](/mˈiːɹɑː/) away yourself."
+   "text": "But Meera and Ravi are married, and you gave the bride away yourself.",
+   "text_kokoro": "But [Meera](/mˈiːɹɑː/) and [Ravi](/ɹˈʌvi/) are married, and you gave the bride away yourself."
   },
   {
    "id": "n09",
    "text": "And she's carrying the only baby since the world ended."
-  },
-  {
-   "id": "n10",
-   "text": "Open hers, and a fifteen-year-old has forty days to learn what only he knew, or you all sink."
   },
   {
    "id": "n11",
@@ -164,8 +164,8 @@
   },
   {
    "id": "n12",
-   "text": "So, Amma. Doctor, or engineer?",
-   "text_kokoro": "So, [Amma](/ˈʌmmɑː/). Doctor, or engineer?"
+   "text": "So, Amma. Meera, or Ravi?",
+   "text_kokoro": "So, [Amma](/ˈʌmmɑː/). [Meera](/mˈiːɹɑː/), or [Ravi](/ɹˈʌvi/)?"
   },
   {
    "id": "x01",

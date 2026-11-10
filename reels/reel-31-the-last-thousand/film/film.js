@@ -209,8 +209,8 @@
     if (o.couple !== false) {
       // bride and groom, from above, faces turned up to you, waving
       const s = h / 1000;
-      g.save(); g.translate(w / 2 - 190 * s, h * 0.5); g.scale(s * 0.68, s * 0.68); bust(g, MEERA, { body: '#d32f3a', smile: 1, op: 0.16 + (o.live ?? 0) * 0.08 * Math.sin(t * 8), look: [0, -6], wet: 0, w0: 52 }); garland(g, 0, 250); g.restore();
-      g.save(); g.translate(w / 2 + 190 * s, h * 0.5); g.scale(s * 0.72, s * 0.72); bust(g, { ...RAVI, oil: false, stub: 0 }, { body: '#f4e7c8', smile: 1, op: 0.16 + (o.live ?? 0) * 0.08 * Math.sin(t * 8 + 2), look: [0, -6] }); garland(g, 0, 250); g.restore();
+      g.save(); g.translate(w / 2 - 190 * s, h * 0.5); g.scale(s * 0.68, s * 0.68); bust(g, MEERA, { body: '#d32f3a', smile: 1, op: 0, look: [0, -6], wet: 0, w0: 58, roll: 0.09, worry: 2, browY: -6 }); garland(g, 0, 250); g.restore();
+      g.save(); g.translate(w / 2 + 190 * s, h * 0.5); g.scale(s * 0.72, s * 0.72); bust(g, { ...RAVI, oil: false, stub: 0 }, { body: '#f4e7c8', smile: 1, op: 0, look: [0, -6], w0: 58, roll: -0.09, worry: 4, browY: -6 }); garland(g, 0, 250); g.restore();
     }
   }
   function garland(g, x, y) { for (let i = 0; i < 15; i++) { const a = Math.PI * (i / 14), px = x + Math.cos(a) * 124, py = y + Math.sin(a) * 120 - 40; ell(g, px, py, 19, 19); g.fillStyle = i % 2 ? '#f3932b' : '#ffd043'; g.fill(); } }
@@ -275,6 +275,16 @@
     if (o.cam) { const rec = o.rec !== false; g.fillStyle = 'rgba(16,32,44,0.72)'; R(g, FW - 214, 18, 192, 44, 12); g.fill(); ell(g, FW - 192, 40, 9, 9); g.fillStyle = rec ? '#ff4632' : '#7a2a24'; g.fill(); txt(g, o.cam, FW - 174, 53, 34, '#fff', { kind: 'mono' }); }
     g.restore();
   }
+  function noSignal(g, x, y, w, h, t) {
+    g.save(); R(g, x, y, w, h, 26); g.clip();
+    g.fillStyle = '#20262c'; g.fillRect(x, y, w, h);
+    const r = mulberry32(5000 + Math.round(t * 30));
+    for (let i = 0; i < 900; i++) { const v = 90 + r() * 165, px = x + r() * w, py = y + r() * h, ww = 3 + r() * 16; g.fillStyle = `rgb(${v},${v},${v})`; g.fillRect(px, py, ww, 3 + r() * 3); }
+    g.fillStyle = 'rgba(20,26,32,0.55)'; g.fillRect(x, y, w, h);
+    g.restore();
+    txt(g, 'NO SIGNAL', x + w / 2, y + h / 2 + 34, 104, '#fff', { align: 'center', stroke: 'rgba(16,32,44,0.9)', sw: 0.1 });
+    g.strokeStyle = NAVY; g.lineWidth = 12; R(g, x, y, w, h, 26); g.stroke();
+  }
   function plate(g, x, y, n, word, col, o = {}) {
     const s = o.s ?? 1;
     g.save(); g.translate(x, y); g.scale(s, s);
@@ -331,7 +341,10 @@
     txt(g, 'PEOPLE LEFT', tx, CY + 66, 66, YEL); txt(g, 'ON EARTH', tx, CY + 122, 54, PAPER);
     g.restore();
   }
-  function hud(g, t, n) { counter(g, n); }
+  function hud(g, t, n) {
+    counter(g, n);
+    if (t >= times().ship) { R(g, 860, 292, 92, 124, 16); g.fillStyle = RED; g.fill(); g.strokeStyle = PAPER; g.lineWidth = 6; g.stroke(); txt(g, '1', 906, 372, 92, '#fff', { align: 'center' }); txt(g, 'SEC LEFT', 906, 402, 22, '#fff', { align: 'center', kind: 'semi' }); }
+  }
   function countDisc(g, n, q) { ell(g, 504, 986, 124, 124); g.fillStyle = 'rgba(16,32,44,0.3)'; g.fill(); g.save(); g.translate(500, 980); const s = lerp(1.35, 1, q); g.scale(s, s); ell(g, 0, 0, 120, 120); g.fillStyle = RED; g.fill(); g.strokeStyle = PAPER; g.lineWidth = 13; g.stroke(); txt(g, String(n), 0, 70, 196, '#fff', { align: 'center' }); g.restore(); }
 
   function surround(g) {
@@ -350,12 +363,12 @@
     T.parents0 = at('n02') - 0.06; T.parents1 = wi('n02', 9) - 0.06;
     T.stop = at('n04'); T.its = wi('n04', 8);
     T.ship = at('n05') - 0.12; T.you = wi('n05', 0); T.callU = wi('n05', 12);
-    T.power = at('n06') - 0.1; T.most = wi('n06', 12);
     T.degree = at('n07') - 0.14; T.degW = wi('n07', 9);
-    T.photo = at('n08') - 0.12; T.ring = wi('n08', 8); T.merge = wi('n08', 10) - 0.08; T.nM = wi('n08', 13); T.nR = T.nM + 0.25;
+    T.power = at('n06') - 0.1; T.most = wi('n06', 11);
+    T.if1 = at('n10') - 0.12; T.tara = wi('n10', 11) - 0.06; T.dark = wi('n10', 20) - 0.06;
+    T.photo = at('n08') - 0.12; T.nameM = wi('n08', 1); T.nameR = wi('n08', 3); T.ring = wi('n08', 5) - 0.05; T.merge = wi('n08', 7) - 0.08; T.nM = T.merge + 0.45; T.nR = T.nM + 0.2;
     T.scan = at('n09') - 0.14;
-    T.if1 = at('n10') - 0.12; T.dark = wi('n10', 14) - 0.06;
-    T.if2 = at('n11') - 0.12; T.safeW = wi('n11', 3); T.cot = wi('n11', 5) - 0.08; T.old = wi('n11', 10) - 0.08;
+    T.if2 = at('n11') - 0.12; T.safeW = wi('n11', 3); T.ship2 = wi('n11', 2) - 0.1; T.cot = wi('n11', 5) - 0.08; T.old = wi('n11', 10) - 0.08;
     T.last = at('n12') - 0.14;
     memo.T = T; return T;
   }
@@ -390,7 +403,8 @@
     else { countDisc(g, 1, 1); if (t >= T.stop && t < T.its - 0.05) band(g, 'STOP', 500, 980, 150, RED, '#fff', pop(t, T.stop)); }
     shouts(g, t);
     g.restore();
-    hud(g, t, 1000);
+    const kc = pop(t, 1.15);
+    if (kc > 0.002) { g.save(); g.globalAlpha *= clamp(kc * 3); g.translate(0, lerp(-46, 0, kc)); hud(g, t, 1000); g.restore(); }
   }
   function shouts(g, t) {
     const T = times(), tb1 = T.at('m01'), tb2 = T.at('r01');
@@ -451,7 +465,7 @@
     roomsRow(150, 950, 1226, 92, 82, 118, (x, w) => (x < ROOM_A.x + ROOM_A.w && x + w > ROOM_A.x) || (x < ROOM_B.x + ROOM_B.w && x + w > ROOM_B.x));
     g.restore();
     hull(); g.strokeStyle = NAVY; g.lineWidth = 10; g.stroke();
-    g.font = font(166); g.fillStyle = '#fff'; g.textAlign = 'center'; g.fillText('AMMA', 836, 1062);
+    g.font = font(150); g.fillStyle = '#fff'; g.textAlign = 'center'; g.fillText('AMMA', 802, 1056);
     // deck rail, flags
     g.strokeStyle = NAVY; g.lineWidth = 5; for (let x = 910; x < 1046; x += 22) { g.beginPath(); g.moveTo(x, 884); g.lineTo(x, 854); g.stroke(); } g.beginPath(); g.moveTo(906, 856); g.lineTo(1048, 856); g.stroke();
     for (let i = 0; i < 6; i++) peg(922 + i * 22, 882, 1.1);
@@ -474,20 +488,16 @@
     g.drawImage(ship().c, 0, 0); smoke(g, t); seaFront(g, t);
     if (p < 0.28) { g.save(); g.globalAlpha = 1 - p / 0.28; surround(g); g.restore(); }
   }
+  function shipFeeds(g, t, p) { twoFeeds(g, t, { f1: lerpRect(F1, ROOM_A, p), f2: lerpRect(F2, ROOM_B, p) }); }
   function shotShip(g, t) {
     const T = times(), p = sstep(T.ship, T.ship + 0.8, t), z = 1 + 0.03 * sstep(T.ship + 0.8, T.degree + 0.2, t);
     g.save(); g.translate(540, 1050); g.scale(z, z); g.translate(-540, -1050);
     shipBase(g, t, p);
-    // the lights go out, deck by deck, until only those two rooms are lit
-    if (t >= T.power) {
-      const r = mulberry32(19), S = ship();
-      for (const R0 of S.rooms) { const off = T.power + 0.25 + (R0.y - 684) / 640 * 1.3 + r() * 0.28, k = clamp((t - off) / 0.08); if (k > 0) { g.fillStyle = `rgba(10,22,40,${0.9 * k})`; g.fillRect(R0.x, R0.y, R0.w, R0.h); } }
-    }
-    twoFeeds(g, t, { f1: lerpRect(F1, ROOM_A, p), f2: lerpRect(F2, ROOM_B, p) });
+    shipFeeds(g, t, p);
     const r2 = mulberry32(77), rooms = ship().rooms;
-    for (let i = 0; i < 9; i++) { const R0 = rooms[Math.floor(r2() * rooms.length)], tt = T.callU + 0.06 * i + r2() * 0.2, side = r2() > 0.5 ? 1 : -1; if (t >= tt && t < T.power + 0.3) bubble(g, 'AMMA', Math.min(900, R0.x + R0.w / 2), R0.y - 18, 40, pop(t, tt), side); }
+    for (let i = 0; i < 9; i++) { const R0 = rooms[Math.floor(r2() * rooms.length)], tt = T.callU + 0.06 * i + r2() * 0.2, side = r2() > 0.5 ? 1 : -1; if (t >= tt) bubble(g, 'AMMA', Math.min(900, R0.x + R0.w / 2), R0.y - 18, 40, pop(t, tt), side); }
     g.restore();
-    if (t >= T.you && t < T.power + 0.4) {
+    if (t >= T.you) {
       const q = pop(t, T.you);
       g.save(); g.translate(70, 610); g.scale(lerp(0.5, 1, q), lerp(0.5, 1, q)); g.globalAlpha *= clamp(q * 4);
       txt(g, 'YOU', 0, 0, 190, RED, { stroke: PAPER, sw: 0.1 });
@@ -495,9 +505,17 @@
       g.fillStyle = RED; g.beginPath(); g.moveTo(322, 158); g.lineTo(240, 124); g.lineTo(304, 68); g.closePath(); g.fill();
       g.restore();
     }
+    hud(g, t, 1000);
+  }
+  function shotPower(g, t) {
+    const T = times();
+    g.drawImage(ship().c, 0, 0); smoke(g, t); seaFront(g, t);
+    const r = mulberry32(19), S = ship();
+    for (const R0 of S.rooms) { const off = T.power + 0.1 + (R0.y - 684) / 640 * 1.3 + r() * 0.28, k = clamp((t - off) / 0.08); if (k > 0) { g.fillStyle = `rgba(10,22,40,${0.9 * k})`; g.fillRect(R0.x, R0.y, R0.w, R0.h); } }
+    shipFeeds(g, t, 1);
     if (t >= T.most) {
       const q = pop(t, T.most);
-      band(g, 'MOST VOTES OPENS', 480, 1420, 104, NAVY, YEL, q, -0.02);
+      band(g, 'YOUR VOTES PICK THE DOOR', 480, 1420, 88, NAVY, YEL, q, -0.02);
       g.save(); g.globalAlpha *= clamp(q * 3);
       g.fillStyle = TEAL; R(g, 110, 1486, 370, 52, 14); g.fill(); g.fillStyle = ORG; R(g, 492, 1486, 370, 52, 14); g.fill();
       txt(g, '1  ?', 130, 1530, 50, '#fff'); txt(g, '?  2', 842, 1530, 50, '#fff', { align: 'right' });
@@ -525,10 +543,10 @@
       const r = mulberry32(14); g.fillStyle = '#fff';
       for (let i = 0; i < 80; i++) { const a = r() * TAU, sp = 0.7 + r() * 0.6, ph = r(), u = (t * sp * 0.6 + ph) % 1, rad = lerp(0.55, 0.08, u), px = w / 2 + Math.cos(a) * w * rad, py = h * 0.5 + Math.sin(a) * h * rad * 0.95 - Math.sin(u * Math.PI) * 60; ell(g, px, py, 6, 4, a); g.fill(); }
       // the little girl with the flowers
-      g.save(); g.translate(w / 2, h * 0.87); g.scale(h / 3300, h / 3300); bust(g, TARA, { body: '#ffd043', look: [0, -8], smile: 1, op: 0.12, wet: 0 }); g.restore();
+      g.save(); g.translate(w / 2, h * 0.87); g.scale(h / 3300, h / 3300); bust(g, TARA, { body: '#ffd043', look: [0, -8], smile: 1, op: 0.12, wet: 0 }); for (let i = 0; i < 9; i++) { const a = i / 9 * TAU, rr = i % 2 ? 62 : 34; ell(g, Math.cos(a) * rr, 300 + Math.sin(a) * rr * 0.8, 32, 32); g.fillStyle = i % 3 === 0 ? '#ff7aa2' : i % 3 === 1 ? '#f3932b' : '#ffffff'; g.fill(); } ell(g, 0, 300, 26, 26); g.fillStyle = '#ffd043'; g.fill(); g.restore();
       // waves, up at you
       const wv = Math.sin(t * 9) * 26, s = h / 1100;
-      for (const [hx, hy, col, sk] of [[w / 2 - 440 * s, h * 0.26, '#d32f3a', MEERA.skin], [w / 2 + 440 * s, h * 0.26, '#f4e7c8', RAVI.skin]]) { const dir = hx < w / 2 ? 1 : -1; g.strokeStyle = col; g.lineCap = 'round'; g.lineWidth = 58 * s; g.beginPath(); g.moveTo(hx + dir * 44 * s, hy + 360 * s); g.lineTo(hx + wv * s, hy + 62 * s); g.stroke(); g.fillStyle = sk; ell(g, hx + wv * s, hy, 44 * s, 52 * s); g.fill(); g.strokeStyle = 'rgba(70,35,20,0.4)'; g.lineWidth = 4 * s; for (let i = -2; i < 2; i++) { g.beginPath(); g.moveTo(hx + wv * s + i * 17 * s + 8 * s, hy - 44 * s); g.lineTo(hx + wv * s + i * 17 * s + 8 * s, hy - 14 * s); g.stroke(); } }
+      for (const [hx, hy, col, sk] of [[w / 2 - 440 * s, h * 0.26, '#d32f3a', MEERA.skin], [w / 2 + 440 * s, h * 0.26, '#f4e7c8', RAVI.skin]]) { const dir = hx < w / 2 ? 1 : -1; g.strokeStyle = col; g.lineCap = 'round'; g.lineWidth = 58 * s; g.beginPath(); g.moveTo(hx + dir * 54 * s, hy + 370 * s); g.quadraticCurveTo(hx - dir * 26 * s, hy + 220 * s, hx + wv * s, hy + 62 * s); g.stroke(); g.fillStyle = sk; ell(g, hx + wv * s, hy, 44 * s, 52 * s); g.fill(); g.strokeStyle = 'rgba(70,35,20,0.4)'; g.lineWidth = 4 * s; for (let i = -2; i < 2; i++) { g.beginPath(); g.moveTo(hx + wv * s + i * 17 * s + 8 * s, hy - 44 * s); g.lineTo(hx + wv * s + i * 17 * s + 8 * s, hy - 14 * s); g.stroke(); } }
     }
     g.restore();
   }
@@ -536,7 +554,7 @@
     const T = times(), m = sstep(T.merge, T.merge + 0.55, t);
     const big = { x: 36, y: 446, w: 1008, h: 1070 };
     if (m < 1) {
-      surround(g); twoFeeds(g, t); plates(g, 'M.B.B.S.', 'B.TECH'); shouts(g, t);
+      surround(g); twoFeeds(g, t); plates(g, t >= T.nameM ? 'MEERA' : 'M.B.B.S.', t >= T.nameR ? 'RAVI' : 'B.TECH'); shouts(g, t);
       if (t >= T.ring && m <= 0) {
         const q = pop(t, T.ring);
         for (const [F, P] of [[F1, PH1], [F2, PH2]]) { const k = F.w / FW; g.strokeStyle = RED; g.lineWidth = 11; ell(g, F.x + P.x * k, F.y + P.y * k, (P.w * 0.9) * k * lerp(1.6, 1, q), (P.h * 0.95) * k * lerp(1.6, 1, q), 0); g.stroke(); }
@@ -579,7 +597,7 @@
     g.restore();
     txt(g, '148', 700, 540, 120, PAPER); txt(g, 'BEATS A MINUTE', 700, 590, 40, YEL, { kind: 'semi' });
     band(g, 'DUE IN 3 WEEKS', 495, 1440, 118, RED, '#fff', pop(t, T.scan + 0.15));
-    const up = win(t, T.scan + 0.5, T.if1 - 0.45, 0.4);
+    const up = win(t, T.scan + 0.5, T.if2 - 0.45, 0.4);
     hud(g, t, 1000 + 0.62 * up);
   }
 
@@ -592,15 +610,23 @@
     g.fillStyle = '#42211a'; R(g, 60, 1160, 960, 240, 26); g.fill();
     const a = o.still ? 0.8 : t * 3; g.save(); g.translate(540, 1280); g.rotate(a); g.strokeStyle = '#ffb04a'; g.lineWidth = 26; ell(g, 0, 0, 96, 96); g.stroke(); g.lineWidth = 18; for (let i = 0; i < 3; i++) { const q = i / 3 * TAU; g.beginPath(); g.moveTo(-Math.cos(q) * 92, -Math.sin(q) * 92); g.lineTo(Math.cos(q) * 92, Math.sin(q) * 92); g.stroke(); } g.restore();
   }
-  // if door 1: forty days to work out what he never wrote down
+  // if Meera lives: his feed goes; a fifteen-year-old has forty days; the ship
   function shotIf1(g, t) {
-    const T = times(), u = t - T.if1;
+    const T = times();
+    if (t < T.tara) {
+      surround(g); twoFeeds(g, t); noSignal(g, F2.x, F2.y, F2.w, F2.h, t); plates(g, 'M.B.B.S.', 'B.TECH');
+      tag(g, 'IF MEERA LIVES', 300, 952, 66);
+      hud(g, t, 999);
+      return;
+    }
+    const u = t - T.tara;
     engineBg(g, t, { still: true });
-    const d = Math.max(0, 40 - Math.floor(u * 2.2));
+    const d = Math.max(0, 40 - Math.floor(u * 2.6));
     g.fillStyle = PAPER; R(g, 590, 500, 340, 340, 18); g.fill(); g.strokeStyle = NAVY; g.lineWidth = 9; g.stroke(); g.fillStyle = RED; R(g, 590, 500, 340, 70, 18); g.fill(); txt(g, 'DAYS LEFT', 760, 556, 56, '#fff', { align: 'center' }); txt(g, String(d), 760, 790, 220, NAVY, { align: 'center' });
     g.save(); g.translate(330, 1040); g.scale(1.12, 1.12); bust(g, TARA, { kind: 'suit', look: [0, -8], worry: -18, op: 0.05, frown: 0.5, wet: 0 }); g.restore();
     g.save(); g.translate(350, 1400); g.rotate(-0.05); g.fillStyle = '#d7dde3'; R(g, -250, -130, 500, 270, 12); g.fill(); g.fillStyle = PAPER; R(g, -240, -124, 236, 250, 8); g.fill(); R(g, 4, -124, 236, 250, 8); g.fill(); g.strokeStyle = '#9fb4c0'; g.lineWidth = 3; for (let y = -96; y < 120; y += 34) { g.beginPath(); g.moveTo(-226, y); g.lineTo(-18, y); g.moveTo(18, y); g.lineTo(226, y); g.stroke(); } for (const k of [-1, 1]) { ell(g, k * 270, 40, 60, 46); g.fillStyle = TARA.skin; g.fill(); } g.restore();
     tag(g, 'IF MEERA LIVES', 70, 460, 74);
+    band(g, 'AGE 15', 790, 930, 84, YEL, NAVY, pop(t, T.tara + 0.1), 0.03);
     hud(g, t, 999);
   }
   function shipDark(g, t, a0, dark) {
@@ -611,7 +637,7 @@
     for (const R0 of S.rooms) { const off = a0 + r() * 1.5; if (t < off) { g.fillStyle = `rgba(255,214,120,${0.92 * dark})`; g.fillRect(R0.x, R0.y, R0.w, R0.h); } }
   }
   function shotDark(g, t) {
-    const T = times(), u = clamp((t - T.dark) / (T.if2 - T.dark));
+    const T = times(), u = clamp((t - T.dark) / (T.photo - T.dark));
     const tilt = 0.05 * sstep(0.15, 1, u), sink = 90 * sstep(0.2, 1, u);
     g.save(); g.fillStyle = '#04122e'; g.fillRect(0, 0, W, H); g.translate(540, 1100 + sink); g.rotate(tilt); g.translate(-540, -1100); shipDark(g, t, T.dark + 0.2, sstep(0, 0.2, u)); g.restore();
     tag(g, 'IF MEERA LIVES', 70, 460, 74);
@@ -620,6 +646,12 @@
   // if door 2: you're safe
   function shotIf2(g, t) {
     const T = times();
+    if (t < T.ship2) {
+      surround(g); twoFeeds(g, t); noSignal(g, F1.x, F1.y, F1.w, F1.h, t); plates(g, 'MEERA', 'RAVI');
+      tag(g, 'IF RAVI LIVES', 320, 952, 66);
+      hud(g, t, 999);
+      return;
+    }
     if (t < T.cot) {
       g.drawImage(ship().c, 0, 0); smoke(g, t); seaFront(g, t);
       band(g, "YOU'RE SAFE", 480, 680, 130, '#1b9e6a', '#fff', pop(t, T.safeW));
@@ -640,7 +672,7 @@
       g.save(); g.translate(440, lerp(1090, 1040, up)); g.scale(1.3, 1.3); bust(g, RAVI_OLD, { kind: 'suit', look: [0, lerp(14, -8, up)], close: lerp(0.5, 0.18, up), worry: 2, op: 0, frown: 0.2, browY: lerp(8, 0, up), roll: lerp(0.05, 0, up), w0: 34 }); g.restore();
     }
     tag(g, 'IF RAVI LIVES', 70, 460, 74);
-    hud(g, t, Math.round(lerp(999, 412, Math.pow(sstep(T.old + 0.1, T.last - 0.1, t), 1.3))));
+    hud(g, t, Math.round(lerp(999, 871, sstep(T.old + 0.1, T.last - 0.1, t))));
   }
 
   // ------------------------------------------------------------------ the question, as it started
@@ -650,7 +682,7 @@
     g.save(); g.translate(500, 980); g.scale(z, z); g.translate(-500, -980);
     twoFeeds(g, t, { z: 1.1 });
     plates(g, 'MEERA', 'RAVI');
-    if (t < e1) band(g, 'DOCTOR OR ENGINEER?', 500, 980, 96, RED, '#fff', pop(t, T.last + 0.5));
+    if (t < e1) band(g, 'MEERA OR RAVI?', 500, 980, 112, RED, '#fff', pop(t, T.wi('n12', 2) - 0.1));
     else band(g, 'VOTE 1 OR 2', 500, 980, 128, RED, YEL, pop(t, e1));
     g.restore();
     if (t >= e1 + 0.05) { const q = pop(t, e1 + 0.05); g.save(); g.globalAlpha *= clamp(q * 3); tag(g, 'EPISODE 2 IN 2 DAYS', 430, 1444, 60, NAVY, YEL); g.restore(); }
@@ -668,11 +700,12 @@
       if (t >= T.parents0 && t < T.parents1) shotParents(g, t);
       else if (t < T.ship) shotOpen(g, t);
       else if (t < T.degree) shotShip(g, t);
-      else if (t < T.photo) shotDegree(g, t);
-      else if (t < T.scan) shotPhoto(g, t);
-      else if (t < T.if1) shotScan(g, t);
+      else if (t < T.power) shotDegree(g, t);
+      else if (t < T.if1) shotPower(g, t);
       else if (t < T.dark) shotIf1(g, t);
-      else if (t < T.if2) shotDark(g, t);
+      else if (t < T.photo) shotDark(g, t);
+      else if (t < T.scan) shotPhoto(g, t);
+      else if (t < T.if2) shotScan(g, t);
       else if (t < T.last) shotIf2(g, t);
       else shotEnd(g, t);
       g.restore();
