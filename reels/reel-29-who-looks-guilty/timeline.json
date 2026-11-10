@@ -280,14 +280,14 @@
       "what": "\"Aadhaar\", below 250 Hz"
     },
     {
-      "at": 93.09,
+      "at": 93.22,
       "type": "wav",
       "file": "audio/fx/keys2.wav",
       "gain": 0.34,
       "what": "your keys, shaken (above 3.5 kHz)"
     },
     {
-      "at": 96.75,
+      "at": 96.88,
       "type": "wav",
       "file": "audio/fx/lock.wav",
       "gain": 0.9,
