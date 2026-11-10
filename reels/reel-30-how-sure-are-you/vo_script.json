@@ -1,0 +1,130 @@
+{
+ "note": "Reel 30: How Sure Are You? Cut 3's script: after the twist the game runs straight on to its answer, then the real case, then the last question. The narrator is the series voice (af_heart). The officer is am_michael (audition, 10 Nov: no creak on either line). n15 is the same take as n07: the same words, the same voice. Misaki said \"drawing\" as one syllable (dɹˈYŋ), so n05 has hand-planned phonemes. Facts: docs/research.md.",
+ "voice": "af_heart",
+ "speed": 1.0,
+ "ref_text": "The night was cold and very quiet. Most of the street was asleep, and the lamps hummed over the empty road. Somewhere far away, a train rolled past, and then the silence came back.",
+ "cast_lines": [
+  "o01",
+  "o02"
+ ],
+ "cast": [
+  {
+   "id": "s-michael",
+   "engine": "kokoro",
+   "voice": "am_michael",
+   "speed": 1.0
+  }
+ ],
+ "take": [
+  {
+   "id": "k-heart",
+   "engine": "kokoro",
+   "voice": "af_heart",
+   "speed": 1.0
+  }
+ ],
+ "lines": [
+  {
+   "id": "n01",
+   "text": "You're the only witness. Again."
+  },
+  {
+   "id": "n02",
+   "text": "Watch his face."
+  },
+  {
+   "id": "n03",
+   "text": "This time, he's one of these six, and whoever you pick goes to prison."
+  },
+  {
+   "id": "n04",
+   "text": "Out of ten, how sure are you?"
+  },
+  {
+   "id": "o01",
+   "text": "So? Which one?"
+  },
+  {
+   "id": "o02",
+   "text": "Good. That's him."
+  },
+  {
+   "id": "n05",
+   "text": "He's a drawing, so he can't see what you picked.",
+   "text_kokoro": "He's a [drawing](/dɹˈɔːɪŋ/), so he can't see what you picked."
+  },
+  {
+   "id": "n06",
+   "text": "So here's the answer."
+  },
+  {
+   "id": "n07",
+   "text": "It's number three."
+  },
+  {
+   "id": "n08",
+   "text": "Look at him."
+  },
+  {
+   "id": "n09",
+   "text": "Now how sure are you that it's him?"
+  },
+  {
+   "id": "n10",
+   "text": "It isn't number three."
+  },
+  {
+   "id": "n11",
+   "text": "I made that up."
+  },
+  {
+   "id": "n11b",
+   "text": "But he looked right, didn't he?"
+  },
+  {
+   "id": "n12",
+   "text": "Was that your memory, or just my voice?"
+  },
+  {
+   "id": "n13",
+   "text": "Now watch his eyebrow."
+  },
+  {
+   "id": "n14",
+   "text": "Only one of these six has that cut."
+  },
+  {
+   "id": "n15",
+   "text": "It's number three."
+  },
+  {
+   "id": "n16",
+   "text": "I lied about lying."
+  },
+  {
+   "id": "n17",
+   "text": "If you picked anyone else, an innocent man goes to prison."
+  },
+  {
+   "id": "n18",
+   "text": "And he walks."
+  },
+  {
+   "id": "n19",
+   "text": "It happened in America. Police told a real witness she'd picked the same man again."
+  },
+  {
+   "id": "n20",
+   "text": "In her own words, Bingo. I did it right."
+  },
+  {
+   "id": "n21",
+   "text": "Ronald Cotton lost more than ten years.",
+   "text_kokoro": "Ronald [Cotton](/kˈɑːtən/) lost more than ten years."
+  },
+  {
+   "id": "n22",
+   "text": "Out of ten, how sure are you now?"
+  }
+ ]
+}
