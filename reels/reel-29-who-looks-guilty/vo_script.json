@@ -99,5 +99,14 @@
    "id": "n19",
    "text": "And he's still got your keys."
   }
- ]
+ ],
+ "cast": [
+  {
+   "id": "k-heart",
+   "engine": "kokoro",
+   "voice": "af_heart",
+   "speed": 1.0
+  }
+ ],
+ "cast_lines": []
 }
