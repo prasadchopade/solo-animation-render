@@ -1,0 +1,158 @@
+{
+  "note": "Single source of truth for picture + sound, in BEATS (120 bpm: beat = 0.5 s). film.js reads marks via film/data.js; sync.mjs turns sfx into cues.json; score.py reads marks for the music; vo.json places the narration. Every reel ends with the Root Cause end card: 'end' → 'done' = 3.0 s (6 beats), engine/endcard.",
+  "title": "Your Body, Right Now",
+  "duration": 57.0,
+  "fps": 30,
+  "bpm": 120,
+  "formats": [
+    "9x16"
+  ],
+  "music": {
+    "source": "synth (score.py → scripts/synth.py)"
+  },
+  "voiceover": {
+    "provider": "voice lab",
+    "voice": "k-heart",
+    "file": "vo.json"
+  },
+  "mix": {
+    "music": -7,
+    "sfx": -5,
+    "vo": 3.2,
+    "duck": true,
+    "spectral": true
+  },
+  "marks": {
+    "hook": 0,
+    "end": 108.0,
+    "done": 114.0
+  },
+  "sfx": [
+    {
+      "at": 0.0,
+      "type": "wav",
+      "gain": 0.95,
+      "what": "the ceiling fan, from the first frame until I LOVE YOU, when it winds down and stops",
+      "file": "audio/fx/fan.wav"
+    },
+    {
+      "at": 3.35,
+      "type": "pop",
+      "gain": 0.16,
+      "what": "HAVE YOU EATEN? lands in the empty bubble",
+      "pitch": 0.82
+    },
+    {
+      "at": 23.52,
+      "type": "pop",
+      "gain": 0.16,
+      "what": "SIT UP STRAIGHT lands",
+      "pitch": 0.9
+    },
+    {
+      "at": 23.9,
+      "type": "wav",
+      "gain": 0.5,
+      "what": "his spine snaps straight: tok",
+      "file": "audio/fx/tok.wav"
+    },
+    {
+      "at": 26.52,
+      "type": "tick",
+      "gain": 0.1,
+      "what": "the green tick",
+      "pitch": 1.3
+    },
+    {
+      "at": 33.98,
+      "type": "chomp",
+      "gain": 0.09,
+      "what": "a guest chewing, in the gap",
+      "pitch": 1.0
+    },
+    {
+      "at": 34.1,
+      "type": "chomp",
+      "gain": 0.09,
+      "what": "a guest chewing, in the gap",
+      "pitch": 1.12
+    },
+    {
+      "at": 34.04,
+      "type": "pop",
+      "gain": 0.16,
+      "what": "WAIT TILL WE GET HOME lands",
+      "pitch": 0.76
+    },
+    {
+      "at": 34.52,
+      "type": "thud",
+      "gain": 0.5,
+      "what": "his blood runs cold: a low thump as he freezes",
+      "pitch": 1.1
+    },
+    {
+      "at": 40.12,
+      "type": "wav",
+      "gain": 0.5,
+      "what": "his stomach falls, below the voice",
+      "file": "audio/fx/fall.wav"
+    },
+    {
+      "at": 40.78,
+      "type": "wav",
+      "gain": 0.9,
+      "what": "and lands, below the voice",
+      "file": "audio/fx/land.wav"
+    },
+    {
+      "at": 45.4,
+      "type": "pop",
+      "gain": 0.1,
+      "what": "I LOVE YOU lands",
+      "pitch": 0.7
+    },
+    {
+      "at": 49.16,
+      "type": "paper",
+      "gain": 0.14,
+      "what": "the letters slip apart",
+      "pitch": 1.1
+    },
+    {
+      "at": 98.64,
+      "type": "tick",
+      "gain": 0.3,
+      "what": "his thumb on the green button",
+      "pitch": 0.66
+    },
+    {
+      "at": 99.38,
+      "type": "wav",
+      "gain": 0.4,
+      "what": "it rings: one double ring on the line",
+      "file": "audio/fx/ringback.wav"
+    },
+    {
+      "at": 101.58,
+      "type": "wav",
+      "gain": 0.42,
+      "what": "she picks up",
+      "file": "audio/fx/pickup.wav"
+    },
+    {
+      "at": 103.78,
+      "type": "wav",
+      "gain": 0.11,
+      "what": "a pressure cooker, some way off, where she is",
+      "file": "audio/fx/cooker.wav"
+    },
+    {
+      "at": "end",
+      "type": "wav",
+      "file": "../../engine/endcard/endcard.wav",
+      "gain": 1.0,
+      "what": "end card sound"
+    }
+  ]
+}
