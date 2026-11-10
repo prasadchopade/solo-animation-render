@@ -1,5 +1,5 @@
 {
- "note": "Reel 30: How Sure Are You? Cut 3's script: after the twist the game runs straight on to its answer, then the real case, then the last question. The narrator is the series voice (af_heart). The officer is am_michael (audition, 10 Nov: no creak on either line). n15 is the same take as n07: the same words, the same voice. Misaki said \"drawing\" as one syllable (dɹˈYŋ), so n05 has hand-planned phonemes. Facts: docs/research.md.",
+ "note": "Reel 30: How Sure Are You? Cut 3's script: after the twist the game runs straight on to its answer, then the real case, then the last question. The narrator is the series voice (af_heart). The officer is am_michael (audition, 10 Nov: no creak on either line). n16 is the same take as n07: the same words, the same voice. Misaki said \"drawing\" as one syllable (dɹˈYŋ), so n05 has hand-planned phonemes. Facts: docs/research.md.",
  "voice": "af_heart",
  "speed": 1.0,
  "ref_text": "The night was cold and very quiet. Most of the street was asleep, and the lamps hummed over the empty road. Somewhere far away, a train rolled past, and then the silence came back.",
@@ -95,23 +95,23 @@
   },
   {
    "id": "n15",
-   "text": "It's number three."
+   "text": "If it isn't the one you picked, an innocent man goes to prison, and he walks."
   },
   {
    "id": "n16",
-   "text": "I lied about lying."
+   "text": "It's number three."
   },
   {
    "id": "n17",
-   "text": "If you picked anyone else, an innocent man goes to prison."
+   "text": "I lied about lying."
   },
   {
    "id": "n18",
-   "text": "And he walks."
+   "text": "You got a rewind. A real witness doesn't."
   },
   {
    "id": "n19",
-   "text": "It happened in America. A real witness picked a man twice, and police told her so."
+   "text": "In America, one picked a man twice, and police told her so."
   },
   {
    "id": "n20",
@@ -124,7 +124,7 @@
   },
   {
    "id": "n22",
-   "text": "Before I said anything, out of ten, how sure were you?"
+   "text": "Before I said anything, how sure were you?"
   }
  ]
 }
