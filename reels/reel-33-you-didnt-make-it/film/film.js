@@ -450,9 +450,14 @@
   function shotSwim(g, t) {
     const TT = times(), u = clamp((t - TT.splash) / (TT.reach - TT.splash)), s = lerp(0.82, 1.22, u), by = lerp(815, 830, u), L = 1140 + 26 * Math.sin(t * 6);
     level(g, t, { L, s, by, op: 0.34 + 0.15 * Math.sin(t * 5.2), top() { const ph = (t - TT.splash) * 1.9; if (u < 1) { strokeArm(g, -1, (ph % 1), L); strokeArm(g, 1, ((ph + 0.5) % 1), L); } } });
-    if (t > TT.reach - 0.05) {                                // your hands get him: on his shoulders, at the water
+    if (t > TT.reach - 0.05) {                                // you've got him: your fists close on his shoulders, at the water
       const q = sstep(TT.reach - 0.05, TT.reach + 0.2, t);
-      for (const k of [-1, 1]) { const hx = 540 + k * lerp(420, 250, q), hy = lerp(1420, 1180, q), r = Math.PI - k * lerp(-0.1, 0.95, q); myArm(g, 540 + k * 620, 2040, hx + 92 * Math.sin(r), hy - 92 * Math.cos(r), 112); palm(g, hx, hy, 1.0, r, ME); }
+      for (const k of [-1, 1]) {
+        const gx = 540 + k * 290, gy = 1050 + 6 * Math.sin(t * 5 + k);
+        const hx = lerp(540 + k * 420, gx, q), hy = lerp(1420, gy, q);
+        myArm(g, 540 + k * 620, 2040, hx + k * 30, hy + 64, 112);
+        if (q < 0.7) palm(g, hx, hy, 1.0, Math.PI + k * 0.1, ME); else fist(g, hx, hy, 0.95, k * 0.15);
+      }
     }
     const fl = 0.55 * Math.exp(-Math.max(0, t - TT.splash) * 9); if (!NOFX && fl > 0.01) { g.fillStyle = `rgba(255,255,255,${fl})`; g.fillRect(0, 0, W, H); }
     droplets(g, t, TT.splash, 30);
@@ -474,9 +479,10 @@
         }
       },
       top() {
+        if (lift > 0.3) bubbles(g, t, TT.under - 0.05, 18, { y: 1650, w: 760, spread: 0.35 });   // your air, going up as you go under
         for (const k of [-1, 1]) {                       // your hands are knocked away, down out of sight
-          const yy = lerp(1180, 2300, away), xx = 540 + k * lerp(250, 420, away), r = Math.PI - k * lerp(0.95, -0.1, away);
-          myArm(g, 540 + k * 620, 2040 + 400 * away, xx + 92 * Math.sin(r), yy - 92 * Math.cos(r), 112); palm(g, xx, yy, 1.0, r, ME);
+          const xx = 540 + k * lerp(290, 560, away), yy = lerp(1050 + 6 * Math.sin(t * 5 + k), 2300, away);   // your grip on him, torn off
+          myArm(g, 540 + k * 620, 2040 + 400 * away, xx + k * 30, yy + 64, 112); fist(g, xx, yy, 0.95, k * 0.15);
         }
       } });
     g.restore();
@@ -542,7 +548,7 @@
   function shotBlank(g, t) {
     const TT = times(), u = clamp((t - TT.surface) / (TT.fight - TT.surface));
     level(g, t, { L: 1540 + 30 * Math.sin(t * 5), s: lerp(2.0, 2.3, u), by: 800, op: 0.32 + 0.1 * Math.sin(t * 6.3), look: [-16, 4], dead: 1, worry: 2, close: 0.08 });
-    const fl = Math.exp(-Math.max(0, t - TT.surface) * 12); if (!NOFX && fl > 0.01) { g.fillStyle = `rgba(255,255,255,${fl * 0.5})`; g.fillRect(0, 0, W, H); }
+    const fl = Math.exp(-Math.max(0, t - TT.surface) * 12); if (!NOFX && fl > 0.01) { g.fillStyle = `rgba(255,255,255,${fl * 0.28})`; g.fillRect(0, 0, W, H); }
     if (t >= wi('n10', 2) - 0.04) title(g, "HE DOESN'T KNOW IT'S YOU", 1470, 104, CREAM, t, wi('n10', 2) - 0.04, { stroke: INK, sw: 0.12, fit: 840 });
   }
   // the wall: smooth concrete, wet at the bottom, one lip at the top
