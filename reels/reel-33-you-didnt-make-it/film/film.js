@@ -369,7 +369,7 @@
     const ex = pop(t, TT.call + 0.05);
     const a = t < TT.call ? 1 : 1 - ex;
     button(g, '1', 'JUMP IN', ...BTN[0], { s: 1 + 0.012 * hot * Math.sin(t * 9), a, dx: 700 * (t < TT.call ? 0 : ex) });
-    button(g, '2', 'CALL FOR HELP', ...BTN[1], { s: 1 + 0.012 * hot * Math.sin(t * 9 + 2), a, dx: 700 * (t < TT.call ? 0 : ex), fill: t >= TT.call - 0.02 ? YEL : CREAM });
+    button(g, '2', 'CALL FOR HELP', ...BTN[1], { s: 1 + 0.012 * hot * Math.sin(t * 9 + 2), a, dx: 700 * (t < TT.call ? 0 : ex), fill: t >= TT.n04 - 0.02 ? YEL : CREAM });
     if (up > 0) { g.save(); g.fillStyle = `rgba(16,32,42,${0.14 * up})`; g.fillRect(0, 0, W, H); g.restore(); phoneHand(g, 560, lerp(2000, 960, up), -0.02, 1.9, sec); }
   }
   function shotFlat(g, t) {
@@ -429,7 +429,7 @@
     ripples(g, y0 + 6, Math.max(y0 + 40, L + 40), t, { rows: 14, n: 20, light: 0.5 });
     if (!o.noArms) arms(g, bx, by, s, t, {});
     bro(g, bx, by, s, { t, op: o.op ?? 0.34, look: o.look ?? [0, 3], worry: o.worry ?? 14, browY: -6, roll: o.roll ?? 0, close: o.close ?? 0, dead: o.dead ?? 0 });
-    frontWater(g, by + 138 * s, t, { a: 0.78, amp: 0.8 });
+    frontWater(g, o.yw ?? (by + 138 * s), t, { a: 0.78, amp: 0.8 });
     surfaceFront(g, L, t);
     if (o.top) o.top();
     g.restore();
@@ -457,18 +457,28 @@
     droplets(g, t, TT.splash, 30);
   }
   function shotClimb(g, t) {
-    const TT = times(), u = sstep(TT.grab, TT.under, t), lift = sstep(TT.under - 0.1, TT.under + 0.25, t);
-    const L = lerp(1140, -240, lift), s = lerp(1.22, 1.8, u), by = lerp(830, 740, u), ty = 90 * u;
-    level(g, t, { L, s, by, noArms: true, op: 0.42 + 0.2 * Math.sin(t * 7), look: [0, lerp(3, -16, u)], worry: 16, dead: u, ty,
+    const TT = times(), lift = sstep(TT.under - 0.1, TT.under + 0.25, t);
+    const a = sstep(TT.grab - 0.02, TT.grab + 0.16, t);            // his arms come up out of the water, past the top of the frame
+    const b = sstep(TT.grab + 0.14, TT.grab + 0.3, t);             // his hands come down on your head
+    const rise = sstep(TT.grab + 0.24, TT.under + 0.12, t);        // he pushes himself up on you, out of the water
+    const jolt = 44 * Math.exp(-Math.pow((t - (TT.grab + 0.32)) / 0.06, 2)) + 30 * Math.exp(-Math.pow((t - (TT.under + 0.02)) / 0.06, 2));
+    const L = lerp(1140, -240, lift), s = lerp(1.22, 1.7, rise), by = lerp(830, 430, rise), yw = 998;
+    level(g, t, { L, s, by, yw, ty: -jolt, noArms: true, op: 0.42 + 0.2 * Math.sin(t * 7), look: [0, lerp(3, -12, rise)], worry: 16, dead: rise,
       top() {
-        const q = sstep(TT.grab - 0.05, TT.under - 0.02, t);
+        const q = Math.max(b, rise);
         for (const k of [-1, 1]) {                       // your hands, still on him, pushed down and away
           const yy = lerp(1110, 1700, q), xx = 540 + k * lerp(270, 360, q), r = Math.PI - k * lerp(0.95, -0.1, q); myArm(g, 540 + k * 620, 2040 + 300 * q, xx + 92 * Math.sin(r), yy - 92 * Math.cos(r), 112); palm(g, xx, yy, 1.0, r, ME);
         }
-        g.save(); g.beginPath(); g.rect(-300, -3000, W + 600, Math.min(L, by + 138 * s + 4) + 3000); g.clip();   // as you go under, his arms are above the surface: out of sight
-        for (const k of [-1, 1]) {                       // his arms, from his shoulders, up over the water and round your head
-          const sx = 540 + k * 250 * s, sy = by + 300 * s, hx = 540 + k * lerp(430, 300, q), hy = lerp(by + 430, 150, q), ex = 540 + k * lerp(520, 470, q), ey = lerp(by + 440, by - 60, q);
-          limb(g, sx, sy, ex, ey, hx, hy, 78); palm(g, hx, hy, 1.25, Math.PI + k * lerp(0.9, 0.35, q));
+        g.save(); g.beginPath(); g.rect(-300, -3000, W + 600, Math.min(L, yw + 4) + 3000); g.clip();   // his arms only show above the water
+        for (const k of [-1, 1]) {
+          const sx = 540 + k * 250 * s, sy = by + 300 * s;
+          if (b < 0.5) {                                 // up out of the water, fingers up
+            const hx = 540 + k * lerp(440, 340, a), hy = lerp(yw + 420, -260, a), ex = 540 + k * lerp(520, 480, a), ey = lerp(yw + 440, (sy + hy) / 2, a);
+            limb(g, sx, sy, ex, ey, hx, hy + 70, 80); palm(g, hx, hy, 1.3, Math.PI + k * 0.25);
+          } else {                                       // down on your head: his fingers hang into the top of the frame
+            const hx = 540 + k * lerp(330, 280, b), hy = lerp(-200, 70, b), ex = 540 + k * 500, ey = lerp(by + 40, by - 120, rise);
+            limb(g, sx, sy, ex, ey, hx, hy - 150, 84); palm(g, hx, hy, 1.7, k * 0.14);
+          }
         }
         g.restore();
       } });
@@ -519,10 +529,16 @@
     g.restore();
   }
   function shotUnder(g, t) {
-    const TT = times();
+    const TT = times(), k1 = Math.sin(t * 6.4), k2 = Math.sin(t * 6.4 + 2.6);
+    const jolt = 40 * (Math.pow(Math.max(0, k1), 10) + Math.pow(Math.max(0, k2), 10)), by = lerp(-500, 360, sstep(TT.under, TT.under + 0.35, t));
     underwater(g, t, { top: 230 });
-    legsAbove(g, Math.sin(t * 7.2), Math.sin(t * 7.2 + 2.2), lerp(-500, 0, sstep(TT.under, TT.under + 0.3, t)));
-    for (const k of [-1, 1]) { const h = Math.sin(t * 5 + k) * 26; myArm(g, 540 + k * 700, 2040, 540 + k * 300, 1500 + h, 118); palm(g, 540 + k * 280, 1410 + h, 1.05, Math.PI + k * 0.25, ME); }
+    g.save(); g.translate(0, -jolt);
+    legsAbove(g, k1, k2, by);
+    for (const [k, fx, fy] of [[-1, 400 + 46 * k1, 900 + 34 * k1 + by], [1, 680 + 46 * k2, 880 + 34 * k2 + by]]) {
+      const hx = fx + k * 150, hy = fy + 40, r = Math.PI - k * 0.95;
+      myArm(g, 540 + k * 720, 2060, hx + 92 * Math.sin(r), hy - 92 * Math.cos(r), 118); palm(g, hx, hy, 1.05, r, ME);
+    }
+    g.restore();
     bubbles(g, t, TT.under, 34, { y: 1560, w: 760 });
   }
   function shotBlank(g, t) {
@@ -689,9 +705,10 @@
     const breathe = sstep(TT.n23 - 0.2, TT.n23 + 0.3, t), knows = sstep(wi('n23', 4) - 0.1, wi('n23', 4) + 0.55, t);
     const by = HY + 14 * Math.sin(t * 2.5) - 70 * hold - 26 * breathe, zoom = 1 + 0.5 * sstep(TT.n23 - 0.3, TT.n23e, t);
     const BX = 205, bob = 8 * Math.sin(t * 2.6);
-    const op = lerp(0.34 + 0.12 * Math.sin(t * 5.1), 0.46 + 0.28 * Math.sin(t * 6.2), hold) * (1 - knows * 0.92);
+    const gasp = Math.pow(0.5 + 0.5 * Math.sin(t * 10.5), 1.6);
+    const op = lerp(0.34 + 0.12 * Math.sin(t * 5.1), lerp(0.3 + 0.2 * Math.sin(t * 6.2), 0.06 + 0.36 * gasp, breathe), hold) * (1 - knows);
     cross(g, t, {
-      broY: by, yw: HY + 130, zoom, oy: 900, ox: 500, op, look: [0, lerp(3, 7, knows)], worry: lerp(14, 20, knows), browY: lerp(-6, -12, knows), close: 0, smile: knows * 0.6, roll: -0.03 + 0.06 * hold, noLeft: hold > 0.5,
+      broY: by, yw: HY + 130, zoom, oy: 900, ox: 500, op, look: [0, lerp(3, 1, knows)], worry: lerp(14, 3, knows), browY: lerp(-6, -15, knows), close: 0.25 * gasp * breathe * (1 - knows), smile: knows, roll: -0.03 + 0.06 * hold, noLeft: hold > 0.5,
       hug(yw) { if (t >= land) bottle(g, BX, yw - 22 + bob, 0.62, 0.86); },
       over(yw, b1) {                                        // his arm comes down on it and locks over the top, out to the side, away from his face
         if (hold <= 0.5) return;
@@ -727,14 +744,16 @@
     if (ph > 0) phoneHand(g, 760, lerp(2000, 1290, ph), 0.12, 0.96, Math.max(0, t - (wi('n22', 11) - 0.2)));
   }
   function shotHome(g, t) {
-    const TT = times();
+    const TT = times(), e = sstep(TT.home, TT.home + 1.0, t), cy0 = 900 + (HY + 14 * Math.sin(TT.home * 2.5) - 96 - 900) * 1.5;   // where his face was in the last close-up
+    g.save(); g.translate(lerp(560, 540, e), lerp(cy0, 860, e)); g.scale(lerp(1.5, 1, e), lerp(1.5, 1, e)); g.translate(-540, -860);
     g.fillStyle = lg(g, 0, 0, 0, H, [0, '#f6c98f'], [1, '#eeb077']); g.fillRect(0, 0, W, H);
     R(g, 40, 640, 250, 380, 12); g.fillStyle = lg(g, 0, 640, 0, 1020, [0, '#2d4f8f'], [0.6, '#e88f6a'], [1, '#f7c978']); g.fill(); g.strokeStyle = '#8d5a33'; g.lineWidth = 16; g.stroke();
     g.strokeStyle = '#8d5a33'; g.lineWidth = 10; g.beginPath(); g.moveTo(165, 640); g.lineTo(165, 1020); g.moveTo(40, 830); g.lineTo(290, 830); g.stroke();
     g.fillStyle = '#c98f5c'; R(g, 24, 1018, 282, 18, 6); g.fill();
     bottle(g, 214, 948, 0.27, 0.02);                        // it came home too
     const br = 3 * Math.sin(t * 1.4);
-    bro(g, 540, 860 + br, 1, { t, dry: true, towel: true, look: [0, 3], worry: 2, browY: -2, smile: 0.9, op: 0 });
+    bro(g, 540, 860 + br, 1, { t, dry: true, towel: true, look: [0, 3], worry: 2, browY: lerp(-12, -2, e), smile: 0.9, op: 0 });
+    g.restore();
     // your phone comes up where the two buttons were on the first frame: a chat with your family, and the words people will send
     const up = sstep(TT.n26 - 0.15, TT.n26 + 0.3, t), y0 = lerp(2100, 1104, up);
     if (up > 0) {

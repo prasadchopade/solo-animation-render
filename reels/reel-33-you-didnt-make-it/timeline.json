@@ -156,6 +156,13 @@
       "pitch": 0.8
     },
     {
+      "at": 38.01,
+      "type": "thud",
+      "gain": 0.36,
+      "what": "his hands come down on your head (low)",
+      "pitch": 0.85
+    },
+    {
       "at": 45.85,
       "type": "wav",
       "gain": 0.72,
