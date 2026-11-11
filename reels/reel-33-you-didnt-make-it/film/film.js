@@ -430,6 +430,7 @@
     if (!o.noArms) arms(g, bx, by, s, t, {});
     bro(g, bx, by, s, { t, op: o.op ?? 0.34, look: o.look ?? [0, 3], worry: o.worry ?? 14, browY: -6, roll: o.roll ?? 0, close: o.close ?? 0, dead: o.dead ?? 0 });
     frontWater(g, o.yw ?? (by + 138 * s), t, { a: 0.78, amp: 0.8 });
+    if (o.mid) o.mid();
     surfaceFront(g, L, t);
     if (o.top) o.top();
     g.restore();
@@ -451,37 +452,34 @@
     level(g, t, { L, s, by, op: 0.34 + 0.15 * Math.sin(t * 5.2), top() { const ph = (t - TT.splash) * 1.9; if (u < 1) { strokeArm(g, -1, (ph % 1), L); strokeArm(g, 1, ((ph + 0.5) % 1), L); } } });
     if (t > TT.reach - 0.05) {                                // your hands get him: on his shoulders, at the water
       const q = sstep(TT.reach - 0.05, TT.reach + 0.2, t);
-      for (const k of [-1, 1]) { const hx = 540 + k * lerp(420, 270, q), hy = lerp(1420, 1110, q), r = Math.PI - k * lerp(-0.1, 0.95, q); myArm(g, 540 + k * 620, 2040, hx + 92 * Math.sin(r), hy - 92 * Math.cos(r), 112); palm(g, hx, hy, 1.0, r, ME); }
+      for (const k of [-1, 1]) { const hx = 540 + k * lerp(420, 250, q), hy = lerp(1420, 1180, q), r = Math.PI - k * lerp(-0.1, 0.95, q); myArm(g, 540 + k * 620, 2040, hx + 92 * Math.sin(r), hy - 92 * Math.cos(r), 112); palm(g, hx, hy, 1.0, r, ME); }
     }
     const fl = 0.55 * Math.exp(-Math.max(0, t - TT.splash) * 9); if (!NOFX && fl > 0.01) { g.fillStyle = `rgba(255,255,255,${fl})`; g.fillRect(0, 0, W, H); }
     droplets(g, t, TT.splash, 30);
   }
-  function shotClimb(g, t) {
+  function shotClimb(g, t) {                                 // he climbs you: his hands come up out of the water at you and grab you, his face comes up over you, you go under
     const TT = times(), lift = sstep(TT.under - 0.1, TT.under + 0.25, t);
-    const a = sstep(TT.grab - 0.02, TT.grab + 0.16, t);            // his arms come up out of the water, past the top of the frame
-    const b = sstep(TT.grab + 0.14, TT.grab + 0.3, t);             // his hands come down on your head
-    const rise = sstep(TT.grab + 0.24, TT.under + 0.12, t);        // he pushes himself up on you, out of the water
-    const jolt = 44 * Math.exp(-Math.pow((t - (TT.grab + 0.32)) / 0.06, 2)) + 30 * Math.exp(-Math.pow((t - (TT.under + 0.02)) / 0.06, 2));
-    const L = lerp(1140, -240, lift), s = lerp(1.22, 1.7, rise), by = lerp(830, 430, rise), yw = 998;
-    level(g, t, { L, s, by, yw, ty: -jolt, noArms: true, op: 0.42 + 0.2 * Math.sin(t * 7), look: [0, lerp(3, -12, rise)], worry: 16, dead: rise,
-      top() {
-        const q = Math.max(b, rise);
-        for (const k of [-1, 1]) {                       // your hands, still on him, pushed down and away
-          const yy = lerp(1110, 1700, q), xx = 540 + k * lerp(270, 360, q), r = Math.PI - k * lerp(0.95, -0.1, q); myArm(g, 540 + k * 620, 2040 + 300 * q, xx + 92 * Math.sin(r), yy - 92 * Math.cos(r), 112); palm(g, xx, yy, 1.0, r, ME);
-        }
-        g.save(); g.beginPath(); g.rect(-300, -3000, W + 600, Math.min(L, yw + 4) + 3000); g.clip();   // his arms only show above the water
+    const reach = sstep(TT.grab - 0.02, TT.grab + 0.28, t), rise = sstep(TT.grab + 0.24, TT.under + 0.1, t), away = sstep(TT.grab, TT.grab + 0.24, t);
+    const jolt = 40 * Math.exp(-Math.pow((t - (TT.grab + 0.3)) / 0.06, 2)) + 28 * Math.exp(-Math.pow((t - (TT.under + 0.02)) / 0.06, 2));
+    const shake = rise * (1 - lift) * Math.sin(t * 43);
+    const L = lerp(1140, -240, lift), s = lerp(1.22, 1.9, rise), by = lerp(830, 440, rise), yw = 998;
+    g.save(); g.translate(540, 1000); g.rotate(-0.06 * rise + 0.008 * shake); g.translate(-540 + 8 * shake, -1000 - jolt);
+    level(g, t, { L, s, by, yw, noArms: true, op: 0.45 + 0.2 * Math.sin(t * 7), look: [0, lerp(3, 12, rise)], worry: 16, dead: rise,
+      mid() {                                            // his arms come up out of the water at you: the hands grow as they get close, and grab you
         for (const k of [-1, 1]) {
-          const sx = 540 + k * 250 * s, sy = by + 300 * s;
-          if (b < 0.5) {                                 // up out of the water, fingers up
-            const hx = 540 + k * lerp(440, 340, a), hy = lerp(yw + 420, -260, a), ex = 540 + k * lerp(520, 480, a), ey = lerp(yw + 440, (sy + hy) / 2, a);
-            limb(g, sx, sy, ex, ey, hx, hy + 70, 80); palm(g, hx, hy, 1.3, Math.PI + k * 0.25);
-          } else {                                       // down on your head: his fingers hang into the top of the frame
-            const hx = 540 + k * lerp(330, 280, b), hy = lerp(-200, 70, b), ex = 540 + k * 500, ey = lerp(by + 40, by - 120, rise);
-            limb(g, sx, sy, ex, ey, hx, hy - 150, 84); palm(g, hx, hy, 1.7, k * 0.14);
-          }
+          const hs = lerp(0.88, 2.7, reach * reach), hx = 540 + k * lerp(488, 505, reach), hy = lerp(1057, 1000, reach) + 140 * rise, r = Math.PI + k * lerp(1.5, -0.15, reach);
+          const sx = 540 + k * 240 * s, sy = by + 300 * s, wx = hx + 92 * hs * Math.sin(r), wy = hy - 92 * hs * Math.cos(r);
+          taper(g, sx, sy, 66 * s, wx, wy, 76 * hs, BRO.skinD); taper(g, sx, sy, 58 * s, wx, wy, 68 * hs, BRO.skin);
+          palm(g, hx, hy, hs, r);
         }
-        g.restore();
+      },
+      top() {
+        for (const k of [-1, 1]) {                       // your hands are knocked away, down out of sight
+          const yy = lerp(1180, 2300, away), xx = 540 + k * lerp(250, 420, away), r = Math.PI - k * lerp(0.95, -0.1, away);
+          myArm(g, 540 + k * 620, 2040 + 400 * away, xx + 92 * Math.sin(r), yy - 92 * Math.cos(r), 112); palm(g, xx, yy, 1.0, r, ME);
+        }
       } });
+    g.restore();
   }
   function underwater(g, t, o = {}) {
     const top = o.top ?? 300;
