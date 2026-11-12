@@ -338,7 +338,7 @@
     LN = { bg };
   }
   // the near ground's own things, drawn every frame at their world spots (so they can sit in front of the crowd's feet)
-  const LEAF = [574, 1708], CUP = [905, 1520], PAPER_ = [262, 1650], BAG = [452, 1612];
+  const LEAF = [574, 1708], CUP = [1010, 1530], PAPER_ = [262, 1650], BAG = [452, 1612];
   function nearLitter(g) {
     g.save(); g.translate(...CUP); g.rotate(0.3); g.fillStyle = 'rgba(0,0,0,0.18)'; ell(g, 6, 26, 46, 14); g.fill(); g.fillStyle = '#f4efe2'; g.beginPath(); g.moveTo(-30, -34); g.lineTo(30, -34); g.lineTo(22, 30); g.lineTo(-22, 30); g.closePath(); g.fill(); g.fillStyle = '#c94a2a'; g.fillRect(-26, -16, 50, 12); ell(g, 0, -34, 30, 9); g.fillStyle = '#e6dfcf'; g.fill(); g.restore();
     g.save(); g.translate(...PAPER_); g.fillStyle = '#ece6d4'; g.beginPath(); for (let i = 0; i < 9; i++) { const a = i / 9 * TAU, rr = 30 + 12 * ((i * 37) % 5) / 5; g.lineTo(Math.cos(a) * rr * 1.3, Math.sin(a) * rr * 0.6); } g.closePath(); g.fill(); g.strokeStyle = 'rgba(0,0,0,0.15)'; g.lineWidth = 3; g.stroke(); g.restore();
@@ -471,9 +471,9 @@
   function menAt(t) {
     const TT = times();
     const F = TT.freeze, F1 = TT.freeze + 0.5;                                  // the line-up slides in as you look up at them
-    const m1 = key(t, [[0, 420, 700, 0.15, 0], [TT.b1 - 0.55, 330, 690, 0.42, 0], [TT.b1, 150, 760, 1.05, 0], [TT.b1 + 0.6, -760, 800, 1.3, 0], [F, -760, 800, 1.3, 0], [F1, SPOT[0][0], SPOT[0][1], SPOT[0][2], 0]]);
-    const m2 = key(t, [[0, 590, 690, 0.12, 0], [TT.b2 - 1.1, 570, 690, 0.3, 0], [TT.b2 - 0.25, 548, 760, 0.95, 0], [TT.b2, 540, 830, 1.75, 0], [TT.b2 + 0.32, 544, 800, 1.6, 0], [TT.b2 + 0.6, 530, 680, 0.66, 0], [TT.b2 + 1.0, 500, 610, 0.44, 0], [F, 470, 606, 0.43, 0], [F1, SPOT[1][0], SPOT[1][1], SPOT[1][2], 0]]);   // he holds through the slip, then steps well back
-    const m3 = key(t, [[0, 1300, 900, 1.3, 1], [TT.b3 - 0.6, 1220, 860, 1.25, 1], [TT.b3, 980, 760, 0.95, 1], [TT.b3 + 0.45, 880, 660, 0.6, 1], [TT.b3 + 1.6, 830, 630, 0.4, 1], [F, 820, 626, 0.38, 1], [F1, SPOT[2][0], SPOT[2][1], SPOT[2][2], 0]]);
+    const m1 = key(t, [[0, 420, 700, 0.15, 0], [TT.b1 - 0.55, 330, 690, 0.42, 0], [TT.b1, 150, 760, 1.05, 0], [TT.b1 + 0.55, 70, 770, 1.12, 0], [TT.b1 + 1.0, -760, 800, 1.3, 0], [F, -760, 800, 1.3, 0], [F1, SPOT[0][0], SPOT[0][1], SPOT[0][2], 0]]);
+    const m2 = key(t, [[0, 590, 690, 0.12, 0], [TT.b2 - 1.1, 570, 690, 0.3, 0], [TT.b2 - 0.25, 420, 760, 0.95, 0], [TT.b2, 260, 810, 1.3, 0], [TT.b2 + 0.32, 270, 800, 1.25, 0], [TT.b2 + 0.6, 400, 690, 0.66, 0], [TT.b2 + 1.0, 470, 610, 0.44, 0], [F, 470, 606, 0.43, 0], [F1, SPOT[1][0], SPOT[1][1], SPOT[1][2], 0]]);   // he holds through the slip, then steps well back
+    const m3 = key(t, [[0, 1480, 900, 1.3, 1], [TT.b2 + 0.35, 1480, 900, 1.3, 1], [TT.b3 - 0.6, 1230, 862, 1.25, 1], [TT.b3, 980, 760, 0.95, 1], [TT.b3 + 0.45, 880, 660, 0.6, 1], [TT.b3 + 1.6, 800, 630, 0.4, 1], [F, 795, 626, 0.38, 1], [F1, SPOT[2][0], SPOT[2][1], SPOT[2][2], 0]]);
     const g3 = sstep(TT.b3 + 0.5, TT.b3 + 0.7, t) * (1 - sstep(TT.b3 + 1.3, TT.b3 + 1.5, t));   // three glances back at you once
     if (t < F) m3[3] = Math.min(m3[3], 1 - g3);
     return [m1, m2, m3];
@@ -485,7 +485,8 @@
     const bob = walk * 9 * Math.sin(t * TAU * 1.9), sway = walk * 4 * Math.sin(t * Math.PI * 1.9);
     const drop = sstep(TT.b2 + 0.95, TT.b2 + 1.55, t);                        // your eyes drop: the floor at your feet
     const up = sstep(TT.n02 - 0.05, TT.gone + 0.1, t);                        // you look up at them: the floor is out of shot by "gone"
-    let camY = lerp(lerp(-110, 100, drop), -150, up), zoom = lerp(1 + 0.035 * sstep(0, TT.b2, t), 1.35, up) + 0.05 * sstep(TT.freeze + 0.5, TT.clock1, t);
+    const jolt = sstep(TT.b2, TT.b2 + 0.3, t);                                // the bump knocks your eyes down
+    let camY = lerp(lerp(lerp(-110, 60, jolt), 100, drop), -150, up), zoom = lerp(1 + 0.035 * sstep(0, TT.b2, t), 1.35, up) + 0.05 * sstep(TT.freeze + 0.5, TT.clock1, t);
     const dn = sstep(TT.down0, TT.down1, t);                                  // "Look down."
     camY = lerp(camY, 700, dn); zoom = lerp(zoom, 1, dn);
     const back = sstep(TT.up0, TT.up1, t);                                    // back up at the three, the wide frame
@@ -494,24 +495,24 @@
   }
 
   // the wallet, as a function of t: in your hand, falling, on the ground (world coordinates), then in the thief's hand
-  const WG = [600, 1556];                            // where it lies: in the world, by your right foot (on screen y ≈ 1456, inside Instagram's safe zone)
+  const WG = [770, 1556];                            // where it lies: in the world, by your right foot (on screen y ≈ 1456, inside Instagram's safe zone)
   function walletAt(t, hand) {
     const TT = times();
     if (t < TT.drop) return { st: 'hand' };
-    const d = t - TT.drop, fall = 0.26;
+    const d = t - TT.drop, fall = 0.4;
     if (d < fall) {                                 // it falls from your fingers to the exact spot it then lies on
-      const u = d / fall, gy = WG[1] - camAt(TT.drop + fall).camY;
-      return { st: 'fall', x: lerp(hand.x - 70, WG[0], u), y: lerp(hand.y - 10, gy, u * u) - 50 * u * (1 - u), rot: lerp(-0.12, -0.2 - TAU, u), s: hand.s * lerp(1.05, 0.74, u), flatK: sstep(0.55, 1, u) };
+      const u = d / fall, gy = WG[1] - camAt(TT.drop + fall).camY, h0 = handAt(TT.drop);
+      return { st: 'fall', x: lerp(h0.x - 70, WG[0], u), y: lerp(h0.y - 10, gy, u * u) - 50 * u * (1 - u), rot: lerp(-0.12, -0.16, u) - 0.8 * Math.sin(u * Math.PI), s: h0.s * lerp(1.05, 0.74, u), flatK: sstep(0.55, 1, u) };
     }
     return { st: 'ground', x: WG[0], y: WG[1], rot: -0.16, s: 0.74 };
   }
   function handAt(t) {
     const TT = times(), c = camAt(t);
-    let x = 812, y = 1452 + c.bob * 0.6, rot = -0.05, s = 1.0, open = 0;
+    let x = 812, y = 1350 + c.bob * 0.6, rot = -0.05, s = 1.0, open = 0;
     const jolt = (t0, a) => (t >= t0 ? a * Math.exp(-(t - t0) * 6) * Math.sin((t - t0) * 22) : 0);
     rot += jolt(TT.b1, 0.05) + jolt(TT.b2, 0.16) + jolt(TT.b3, 0.09);
-    y += (t >= TT.b2 ? 60 * Math.exp(-(t - TT.b2) * 5) : 0) + 620 * sstep(TT.b2 + 0.15, TT.b2 + 0.75, t);   // your arm drops to your side
-    x += 70 * sstep(TT.b2 + 0.1, TT.b2 + 0.6, t);
+    y += (t >= TT.b2 ? 60 * Math.exp(-(t - TT.b2) * 5) : 0) + 620 * sstep(TT.b2 + 0.5, TT.b2 + 1.0, t);   // your arm drops to your side
+    x += 230 * sstep(TT.b2 + 0.02, TT.b2 + 0.25, t) + 70 * sstep(TT.b2 + 0.45, TT.b2 + 0.95, t);   // knocked aside, then down to your side
     const up = sstep(TT.lift, TT.lift + 0.35, t) * (1 - sstep(TT.lower, TT.lower + 0.3, t));
     x = lerp(x, 690, up); y = lerp(y, 1180, up) + 520 * sstep(TT.lower, TT.lower + 0.3, t); rot = lerp(rot, -0.55, up); open = up;
     return { x, y, s, rot, open };
@@ -531,21 +532,22 @@
     crowd(g, tt, c.camY, frozen, 'back', F);
     g.save(); g.translate(0, -c.camY); nearLitter(g); g.restore();
     const hd = handAt(t), wl = walletAt(t, hd);
-    if (wl.st === 'ground' && !o.noWallet && men[1][2] > 0.7) wallet(g, wl.x, wl.y - c.camY, wl.s, wl.rot, { flat: true });
-    if (o.men !== false) for (const i of order) {
+    const drawMan = (i) => {
       const [x, y, s, turn] = men[i], close = s > 0.8;
       const look = close ? [0, 6] : (i === 1 && t < TT.b2 - 0.3 ? [6, 9] : [i === 2 ? -6 : 0, 2]);
       const mood = o.mood ? o.mood(i, t) : {};
       const blink = !frozen && !o.noBlink && s < 0.8 && !(i === 1 && Math.abs(t - TT.b2) < 1.0) && ((t + 1.1 + i * 1.3) % 3.1) < 0.12 ? 1 : 0;   // never on frame 0, never two at once, never in number two's bump
       const op = i === 1 && t > TT.b2 - 0.35 && t < TT.b2 + 0.55 ? 0.45 * sstep(TT.b2 - 0.35, TT.b2 - 0.1, t) * (1 - sstep(TT.b2 + 0.32, TT.b2 + 0.55, t)) : 0;
-      person(g, MEN[i], x, y - c.camY, s, { turn, look: mood.look || look, close: mood.close ?? blink, op: mood.op ?? op, frown: mood.frown ?? (i === 2 ? 0.25 : 0.1), worry: mood.worry ?? (i === 1 ? (op > 0 ? -10 : -7) : 0), smile: mood.smile ?? 0, phase: frozen ? 1.2 : tt * 7 + i, noLegs: s > 0.9, arm: mood.arm });
-    }
+      person(g, MEN[i], x, y - c.camY, s, { turn, look: mood.look || look, close: mood.close ?? blink, op: mood.op ?? op, frown: mood.frown ?? (i === 2 ? 0.25 : 0.1), worry: mood.worry ?? (i === 1 ? (op > 0 ? -10 : -7) : 0), smile: mood.smile ?? 0, phase: frozen ? 1.2 : tt * 7 + i, noLegs: s > 1.2, arm: mood.arm });
+    };
+    if (o.men !== false) order.filter((i) => men[i][2] < 0.35).forEach(drawMan);
     if (F < Infinity) crowd(g, tt, c.camY, frozen, 'front', F);
+    if (o.men !== false) order.filter((i) => men[i][2] >= 0.35).forEach(drawMan);
     if (o.after) o.after(g, c);
-    if (wl.st === 'ground' && !o.noWallet && !(men[1][2] > 0.7)) wallet(g, wl.x, wl.y - c.camY, wl.s, wl.rot, { flat: true });   // while number two fills the frame it's behind his legs
+    if (wl.st === 'ground' && !o.noWallet) wallet(g, wl.x, wl.y - c.camY, wl.s, wl.rot, { flat: true });
     if (!o.noShoes) myShoes(g, c.camY);
-    if (wl.st === 'fall' && !o.noWallet) wallet(g, wl.x, wl.y, wl.s, wl.rot, { flatK: wl.flatK });
     if (o.hand !== false && hd.y < 2200) myHand(g, hd.x, hd.y, hd.s, hd.rot, { hold: wl.st === 'hand', open: hd.open });
+    if (wl.st === 'fall' && !o.noWallet) wallet(g, wl.x, wl.y, wl.s, wl.rot, { flatK: wl.flatK });
     g.restore();
     return { c, wl };
   }
@@ -625,14 +627,14 @@
   // 4 · "It slipped out of your hand four seconds in, while you were face to face with number two." The film runs back to 0:03.75 and
   //     forward slowly through the bump, then holds at 0:04.08: his face fills the top, your wallet falls at the bottom. HIS FACE / YOUR WALLET.
   //     "Magicians call that misdirection." over the held frame. The sound-off review: without this, misdirection was told, not shown.
-  const HOLDT = 4.22;
+  const HOLDT = 4.3;
   function shotReplay(g, t) {
     const TT = times(), r0 = TT.face0, r1 = TT.face0 + 0.42, p1 = Math.max(r1 + 2.2, TT.n08e);
     let tau;
     if (t < r1) tau = lerp(TT.freeze + 0.5, 3.75, sstep(r0, r1, t));             // running backwards
     else tau = Math.min(HOLDT, lerp(3.75, HOLDT, (t - r1) / (p1 - r1)));          // forward at about a fifth of the speed, then held
     const push = 1 + 0.05 * sstep(p1, TT.fin, t);
-    g.save(); g.translate(0, -260); g.translate(540, 900); g.scale(push, push); g.translate(-540, -900);
+    g.save(); g.translate(0, -160); g.translate(540, 900); g.scale(push, push); g.translate(-540, -900);
     const { c } = lane(g, tau, { noBlink: true, noShoes: true });
     g.restore();
     if (t >= r1) { g.fillStyle = 'rgba(255,248,230,0.08)'; g.fillRect(0, 0, W, H); }
@@ -648,17 +650,17 @@
     else if (wl.st === 'fall') [wx, wy] = [(wl.x - 540) * c.zoom + 540 + c.sway, (wl.y - 960 + c.bob) * c.zoom + 960];
     else [wx, wy] = walletOnScreen(c);
     const rk = sstep(r1 + 0.2, r1 + 0.6, t);
-    g.save(); g.translate(0, -260); g.translate(540, 900); g.scale(push, push); g.translate(-540, -900);      // the labels ride the same frame
+    g.save(); g.translate(0, -160); g.translate(540, 900); g.scale(push, push); g.translate(-540, -900);      // the labels ride the same frame
     ring(g, wx, wy, 104, rk, 12);
     if (rk > 0.6) { g.save(); g.globalAlpha = clamp((rk - 0.6) * 3); txt(g, 'YOUR WALLET', wx - 128, wy + 24, 70, YEL, { align: 'right', stroke: INK, sw: 0.14 }); g.restore(); }
     // and where your eyes were: his face
     const fk = sstep(TT.numtwo - 0.3, TT.numtwo + 0.1, t);
     if (fk > 0) {
       g.save(); g.globalAlpha = fk;
-      txt(g, 'HIS FACE', 250, 660, 84, CREAM, { align: 'center', stroke: INK, sw: 0.14 });
-      g.strokeStyle = INK; g.lineWidth = 16; g.lineCap = 'round'; g.beginPath(); g.moveTo(290, 690); g.quadraticCurveTo(330, 760, 420, 780); g.stroke();
-      g.strokeStyle = CREAM; g.lineWidth = 9; g.beginPath(); g.moveTo(290, 690); g.quadraticCurveTo(330, 760, 420, 780); g.stroke();
-      g.fillStyle = CREAM; g.beginPath(); g.moveTo(434, 784); g.lineTo(404, 794); g.lineTo(412, 764); g.closePath(); g.fill();
+      txt(g, 'HIS FACE', 660, 600, 84, CREAM, { align: 'center', stroke: INK, sw: 0.14 });
+      g.strokeStyle = INK; g.lineWidth = 16; g.lineCap = 'round'; g.beginPath(); g.moveTo(620, 630); g.quadraticCurveTo(560, 710, 450, 720); g.stroke();
+      g.strokeStyle = CREAM; g.lineWidth = 9; g.beginPath(); g.moveTo(620, 630); g.quadraticCurveTo(560, 710, 450, 720); g.stroke();
+      g.fillStyle = CREAM; g.beginPath(); g.moveTo(436, 721); g.lineTo(462, 704); g.lineTo(464, 736); g.closePath(); g.fill();
       g.restore();
     }
     g.restore();
