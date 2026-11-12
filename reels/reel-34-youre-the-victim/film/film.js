@@ -555,7 +555,7 @@
     if (out < 1) { g.save(); g.globalAlpha = 1 - out; txt(g, "YOU'RE THE", 513, 380, 104, CREAM, { align: 'center', stroke: INK, sw: 0.14 }); txt(g, 'VICTIM', 513, 560, 210, YEL, { align: 'center', fit: 860, stroke: INK, sw: 0.12 }); g.restore(); }
     // the counts, small, as each man reaches you
     for (const [p, n, x, y] of [['c1', 1, 200, 470], ['c2', 2, 540, 360], ['c3', 3, 880, 420]]) {
-      const t0 = at(p) - 0.03, k = win3(t, t0, t0 + 0.9);
+      const t0 = at(p) - 0.03, k = win3(t, t0, t0 + 0.6);
       if (k > 0) { g.save(); g.globalAlpha = k; g.translate(x, y); const q = pop(t, t0); g.scale(lerp(0.6, 1, q), lerp(0.6, 1, q)); tileNo(g, 0, 0, n, 112); g.restore(); }
     }
     if (t >= TT.gone - 0.04 && t < TT.freeze) title(g, 'YOUR WALLET?', 850, 120, CREAM, t, TT.gone - 0.04, { stroke: INK, sw: 0.14 });
