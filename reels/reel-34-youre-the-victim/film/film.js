@@ -467,12 +467,26 @@
     for (let i = 0; i < ks.length - 1; i++) { const a = ks[i], b = ks[i + 1]; if (t <= b[0]) { const u = sstep(a[0], b[0], t); return a.slice(1).map((v, j) => lerp(v, b[j + 1], u)); } }
     return ks[ks.length - 1].slice(1);
   };
+  const spline = (t, ks) => {                       // through [time, ...values], Catmull-Rom tangents: eases only at the two ends
+    const n = ks.length;
+    if (t <= ks[0][0]) return ks[0].slice(1);
+    if (t >= ks[n - 1][0]) return ks[n - 1].slice(1);
+    let i = 0; while (t > ks[i + 1][0]) i++;
+    const a = ks[i], b = ks[i + 1], h = b[0] - a[0], u = (t - a[0]) / h;
+    const tan = (k) => (k <= 0 || k >= n - 1) ? null : ks[k].map((_, j) => (ks[k + 1][j] - ks[k - 1][j]) / (ks[k + 1][0] - ks[k - 1][0]));
+    const ma = tan(i), mb = tan(i + 1);
+    const h00 = 2 * u ** 3 - 3 * u ** 2 + 1, h10 = u ** 3 - 2 * u ** 2 + u, h01 = -2 * u ** 3 + 3 * u ** 2, h11 = u ** 3 - u ** 2;
+    return a.slice(1).map((v, j) => h00 * v + h10 * h * (ma ? ma[j + 1] : 0) + h01 * b[j + 1] + h11 * h * (mb ? mb[j + 1] : 0));
+  };
   function menAt(t) {
     const TT = times();
     const F = TT.freeze, F1 = TT.freeze + 0.5;                                  // the line-up slides in as you look up at them
     const m1 = key(t, [[0, 420, 700, 0.15, 0], [TT.b1 - 0.55, 330, 690, 0.42, 0], [TT.b1, 150, 760, 1.05, 0], [TT.b1 + 0.55, 70, 770, 1.12, 0], [TT.b1 + 1.0, -760, 800, 1.3, 0], [F, -760, 800, 1.3, 0], [F1, SPOT[0][0], SPOT[0][1], SPOT[0][2], 0]]);
     const m2 = key(t, [[0, 590, 690, 0.12, 0], [TT.b2 - 1.1, 570, 690, 0.3, 0], [TT.b2 - 0.25, 420, 760, 0.95, 0], [TT.b2, 260, 810, 1.3, 0], [TT.b2 + 0.32, 270, 800, 1.25, 0], [TT.b2 + 0.6, 400, 690, 0.66, 0], [TT.b2 + 1.0, 470, 610, 0.44, 0], [F, 470, 606, 0.43, 0], [F1, SPOT[1][0], SPOT[1][1], SPOT[1][2], 0]]);   // he holds through the slip, then steps well back
-    const m3 = key(t, [[0, 1480, 900, 1.3, 1], [TT.b2 + 0.35, 1480, 900, 1.3, 1], [TT.b3 - 0.6, 1260, 862, 1.25, 1], [TT.b3, 1030, 760, 0.95, 1], [TT.b3 + 0.39, 880, 652, 0.51, 1], [TT.b3 + 0.79, 820, 643, 0.47, 1], [TT.b3 + 1.6, 765, 632, 0.41, 1], [F, 750, 626, 0.38, 1], [F1, SPOT[2][0], SPOT[2][1], SPOT[2][2], 0]]);
+    // number three: in from your right, past you, up the lane. His feet are level with the wallet at about 5.78 s, clear of it even mid-stride;
+    // after that they're well beyond it. His head is inside the 950 line from about 6.0 s.
+    const P3W = [[TT.b2 + 0.35, 1480, 900, 1.3, 1], [TT.b3 - 0.6, 1260, 862, 1.25, 1], [TT.b3, 1030, 760, 0.95, 1], [TT.b3 + 0.34, 940, 668, 0.56, 1], [TT.b3 + 0.59, 828, 645, 0.475, 1], [TT.b3 + 1.6, 765, 632, 0.41, 1], [F, 750, 626, 0.38, 1]];
+    const m3 = t < F ? spline(t, P3W) : key(t, [[F, 750, 626, 0.38, 1], [F1, SPOT[2][0], SPOT[2][1], SPOT[2][2], 0]]);
     const g3 = sstep(TT.b3 + 0.9, TT.b3 + 1.05, t) * (1 - sstep(TT.b3 + 1.45, TT.b3 + 1.6, t));   // three glances back at you once
     if (t < F) m3[3] = Math.min(m3[3], 1 - g3);
     return [m1, m2, m3];
@@ -494,7 +508,7 @@
   }
 
   // the wallet, as a function of t: in your hand, falling, on the ground (world coordinates), then in the thief's hand
-  const WG = [740, 1525];                            // where it lies: in the world, by your right foot (on screen y ≈ 1456, inside Instagram's safe zone)
+  const WG = [710, 1525];                            // where it lies: in the world, by your right foot (on screen y ≈ 1456, inside Instagram's safe zone)
   function walletAt(t, hand) {
     const TT = times();
     if (t < TT.drop) return { st: 'hand' };
