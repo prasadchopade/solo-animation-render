@@ -46,8 +46,9 @@
     if (!v) { const A = hexRGB(a), B = hexRGB(b); v = '#' + A.map((x, i) => Math.round(lerp(x, B[i], k)).toString(16).padStart(2, '0')).join(''); MIXC.set(key, v); }
     return v;
   };
-  function shakeAt(t, list, smooth = false) {       // list: [time, amplitude]; a decaying, frame-clocked jitter (smooth: glides between frames)
-    let a = 0; for (const [t0, amp] of list) if (t >= t0) a = Math.max(a, amp * Math.exp(-(t - t0) * 9));
+  function shakeAt(t, list, smooth = false) {       // list: [time, amplitude]; a decaying, frame-clocked jitter (smooth: glides between frames,
+    // and eases in over a frame, so a slowed replay doesn't skip at the hit)
+    let a = 0; for (const [t0, amp] of list) if (t >= t0) a = Math.max(a, amp * Math.exp(-(t - t0) * 9) * (smooth ? sstep(t0, t0 + 0.035, t) : 1));
     if (a < 0.2) return [0, 0];
     const at = (n) => { const r = mulberry32(n * 7 + 3); return [(r() - 0.5) * 2, (r() - 0.5) * 2]; };
     if (!smooth) { const v = at(Math.round(t * 30)); return [v[0] * a, v[1] * a]; }
@@ -295,7 +296,7 @@
     }
     if (kind === 'glass') {                          // a chai glass, held upright
       g.save(); g.rotate(-rot); g.translate(0, 34);
-      glass(g, 0, -20, 0.5);
+      glass(g, 0, -20, o.glassK || 0.5);
       g.fillStyle = sk; R(g, -52, -6, 104, 70, 28); g.fill(); g.save(); g.translate(-k * 42, -10); g.rotate(k * 0.2); R(g, -12, -38, 24, 66, 12); g.fill(); g.restore();
       g.restore(); return;
     }
@@ -426,10 +427,11 @@
   const HAZE = '#f8d4a2', SHADE = '#45303a';
   const P3 = (X, Y, Z, cz) => { const dz = Z - cz; if (dz < 30) return null; const s = FOC / dz; return [540 + X * s, HZ + (EYE - Y) * s, s]; };
   const onFloor = (x, y) => { const s = (y - HZ) / EYE; return [(x - 540) / s, FOC / s]; };     // a floor point seen at (x, y) once you've stopped → [X, Z]
-  const ZS = 2900;                                                                              // the chai stall on your left
+  // the chai stall on your left, well beyond where the three end up, so the season's thief reads as a man at the back, never a fourth suspect
+  const ZS = 3900;
   const SHOPS = (() => {
     const r = mulberry32(3405), out = [];
-    const lay = { '-1': [-4500, [['cloth', 2100], ['grocery', 1800], ['pots', 1700], ['sweets', 1800], ['chai', 1500], ['cloth', 1900], ['grocery', 1700], ['shut', 1500], ['tailor', 1800], ['pots', 1700], ['grocery', 1800]]],
+    const lay = { '-1': [-4500, [['cloth', 2300], ['grocery', 2000], ['pots', 2000], ['sweets', 2100], ['chai', 1500], ['cloth', 1900], ['grocery', 1700], ['shut', 1500], ['tailor', 1800], ['pots', 1700], ['grocery', 1800]]],
       '1': [-4800, [['fruit', 2000], ['tailor', 1800], ['grocery', 1900], ['chemist', 1700], ['cloth', 1900], ['sweets', 1800], ['shut', 1500], ['grocery', 1700], ['pots', 1800], ['cloth', 1800]]] };
     const cols = { '-1': ['#eaa597', '#f0cf86', '#92cfc5', '#cbb7e6', '#f2bf8f', '#e9b3c6'], '1': ['#f6c48e', '#9fcfee', '#f4adc0', '#ecdc7e', '#c5b8ea', '#f3a98f'] };
     const aws = ['stripeR', '#2b6fb3', '#e2a92a', 'stripeB', '#c2453a', '#7a59b8'];
@@ -483,7 +485,7 @@
         poly(g, [pt(za, a0, 0), pt(zb, a0, 0), pt(zb, a1, out), pt(za, a1, out)], tone(c));
       }
       poly(g, [pt(sh.z0 + 40, a1, out), pt(z1 - 40, a1, out), pt(z1 - 40, a1 - 60, out), pt(sh.z0 + 40, a1 - 60, out)], 'rgba(0,0,0,0.16)');
-      if ((sh.kind === 'cloth' || sh.kind === 'fruit' || sh.kind === 'pots') && (sh.z0 + sh.z1) / 2 - cz > 3200) {
+      if ((sh.kind === 'cloth' || sh.kind === 'fruit') && (sh.z0 + sh.z1) / 2 - cz > 3200) {   // (hanging pots read as a grey staircase beside VICTIM: the fresh review)
         for (let j = 0; j < 5; j++) {
           const zz = sh.z0 + (j + 0.5) * len / 5, p0 = pt(zz, a1 - 20, out * 0.7), p1 = pt(zz, a1 - 520, out * 0.7); if (!p0 || !p1) continue;
           const c = sh.kind === 'fruit' ? '#f2c230' : sh.kind === 'pots' ? '#d7dadd' : GOODS[(j + 2) % GOODS.length], wv = 0.03 * Math.sin(tw * 2.1 + j);
@@ -639,26 +641,31 @@
   }
 
   // ------------------------------------------------------------------ the crowd: people at their own depths, walking both ways, in the low sun
-  const LOOKS = [
-    { L: { skin: '#c99068', skinD: '#a06a46', skinH: '#ddb08c', hair: '#17110d', style: 'part', must: 'thin', jaw: 1.0, ew: 42, eh: 22, brow: 13, browTilt: 0 }, D: { a: '#f1efe8', b: '#cfcabc', collar: '#e8e4da', sleeve: 'long', cuff: '#e8e4da', leg: '#4b4f5a', shoe: '#2b2420' } },
+  // Nobody here may be taken for one of the three or for the season's thief (the fresh review of final 9: a grey-haired extra in cream
+  // stood under the thief's cap). The women and children face you; the men are only ever seen from behind, and none of them is grey, or
+  // in beige, checks, light blue or green, or in a cap. Nobody walks on your left, where the stall and the thief are.
+  const WOMEN = [
     { L: { skin: '#b57d58', skinD: '#8c5a3a', skinH: '#cc9a74', hair: '#1a1410', style: 'long', jaw: 0.92, ew: 44, eh: 24, brow: 11, browTilt: -2, braid: true }, D: { a: '#ef7fa8', b: '#cf5b86', sleeve: 'short', kameez: true, dupatta: '#ffd84a', leg: '#f3e6d8', shoe: '#8a3a2a' } },
-    { L: { skin: '#d4a079', skinD: '#ab7a55', skinH: '#e6bc97', hair: '#6c6a66', mHair: '#7a7874', style: 'recede', must: 'thick', jaw: 1.0, ew: 40, eh: 21, brow: 14, browTilt: 4 }, D: { a: '#e9e2cf', b: '#cbbf9f', sleeve: 'long', cuff: '#e9e2cf', kameez: true, leg: '#e9e2cf', shoe: '#3a2b20' } },
-    { L: { skin: '#a8714d', skinD: '#80522f', skinH: '#c08a64', hair: '#120d0a', style: 'short', jaw: 0.95, ew: 44, eh: 24, brow: 13, browTilt: -3 }, D: { a: '#8e6fd1', b: '#6c4fae', sleeve: 'long', cuff: '#8e6fd1', leg: '#2f3442', shoe: '#e8e6e0' } },
-    { L: { skin: '#c48a5c', skinD: '#9a6640', skinH: '#d9a47a', hair: '#1a1410', style: 'bun', jaw: 0.94, ew: 44, eh: 24, brow: 11, browTilt: 0 }, D: { a: '#4aa3df', b: '#2f7fba', sleeve: 'short', kameez: true, dupatta: '#f6efe2', leg: '#f6efe2', shoe: '#5a3a2a' } },
-    { L: { skin: '#bd8a64', skinD: '#946243', skinH: '#d8a983', hair: '#17110d', style: 'part', must: 'thin', jaw: 1.02, ew: 42, eh: 22, brow: 14, browTilt: 2 }, D: { a: '#f2c14e', b: '#d39f2c', collar: '#e8b43c', sleeve: 'short', leg: '#3f3a36', shoe: '#2b2420' } },
+    { L: { skin: '#c48a5c', skinD: '#9a6640', skinH: '#d9a47a', hair: '#1a1410', style: 'bun', jaw: 0.94, ew: 44, eh: 24, brow: 11, browTilt: 0 }, D: { a: '#4a6fd8', b: '#3554b0', sleeve: 'short', kameez: true, dupatta: '#f6efe2', leg: '#f6efe2', shoe: '#5a3a2a' } },
     { L: { skin: '#c99068', skinD: '#a06a46', skinH: '#ddb08c', hair: '#1a1410', style: 'long', jaw: 0.9, ew: 45, eh: 25, brow: 11, browTilt: -2 }, D: { a: '#e7a8c2', b: '#c9809f', sleeve: 'long', cuff: '#e7a8c2', leg: '#3a3f6a', shoe: '#f0ece4' } },
-    { L: { skin: '#b57d58', skinD: '#8c5a3a', skinH: '#cc9a74', hair: '#1a1410', style: 'messy', jaw: 0.92, ew: 46, eh: 26, brow: 12, browTilt: -4 }, D: { a: '#e05a6f', b: '#bd3f54', sleeve: 'short', leg: '#3a3f4b', shoe: '#f0ece4' } },
-    { L: { skin: '#d4a079', skinD: '#ab7a55', skinH: '#e6bc97', hair: '#8a8580', style: 'bun', jaw: 0.95, ew: 40, eh: 21, brow: 11, browTilt: 3 }, D: { a: '#5b6fb5', b: '#43549a', sleeve: 'long', cuff: '#5b6fb5', kameez: true, dupatta: '#d9d4c8', leg: '#d9d4c8', shoe: '#3a2b20' } },
-    { L: { skin: '#a8714d', skinD: '#80522f', skinH: '#c08a64', hair: '#120d0a', style: 'part', must: 'thin', jaw: 1.0, ew: 42, eh: 22, brow: 14, browTilt: 1 }, D: { a: '#d9d4c8', b: '#b8b2a4', collar: '#cfc9bb', sleeve: 'short', leg: '#5a6070', shoe: '#2b2420' } },
+    { L: { skin: '#d4a079', skinD: '#ab7a55', skinH: '#e6bc97', hair: '#8a8580', style: 'bun', jaw: 0.95, ew: 40, eh: 21, brow: 11, browTilt: 3 }, D: { a: '#7a59b8', b: '#5b3f94', sleeve: 'long', cuff: '#7a59b8', kameez: true, dupatta: '#d9d4c8', leg: '#d9d4c8', shoe: '#3a2b20' } },
+    { L: { skin: '#a8714d', skinD: '#80522f', skinH: '#c08a64', hair: '#120d0a', style: 'long', jaw: 0.92, ew: 44, eh: 24, brow: 11, browTilt: -1, braid: true }, D: { a: '#e3b23c', b: '#c4952a', sleeve: 'short', kameez: true, dupatta: '#c8323c', leg: '#f3e6d8', shoe: '#5a3a2a' } },
+  ];
+  const MEN_BACK = [
+    { L: { skin: '#a8714d', skinD: '#80522f', skinH: '#c08a64', hair: '#120d0a', style: 'short', jaw: 0.95, ew: 44, eh: 24, brow: 13, browTilt: -3 }, D: { a: '#8e6fd1', b: '#6c4fae', sleeve: 'long', cuff: '#8e6fd1', leg: '#2f3442', shoe: '#e8e6e0' } },
+    { L: { skin: '#bd8a64', skinD: '#946243', skinH: '#d8a983', hair: '#17110d', style: 'short', jaw: 1.02, ew: 42, eh: 22, brow: 14, browTilt: 2 }, D: { a: '#f2c14e', b: '#d39f2c', sleeve: 'short', leg: '#3f3a36', shoe: '#2b2420' } },
+    { L: { skin: '#b57d58', skinD: '#8c5a3a', skinH: '#cc9a74', hair: '#1a1410', style: 'short', jaw: 0.92, ew: 46, eh: 26, brow: 12, browTilt: -4 }, D: { a: '#2f3f6e', b: '#22305a', sleeve: 'short', leg: '#3a3f4b', shoe: '#f0ece4' } },
+    { L: { skin: '#c99068', skinD: '#a06a46', skinH: '#ddb08c', hair: '#17110d', style: 'short', jaw: 1.0, ew: 42, eh: 22, brow: 13, browTilt: 0 }, D: { a: '#e05a6f', b: '#bd3f54', sleeve: 'short', leg: '#4b4f5a', shoe: '#2b2420' } },
   ];
   const CROWD = (() => {
     const r = mulberry32(3477), out = [];
-    for (let i = 0; i < 19; i++) {
+    for (let i = 0; i < 17; i++) {
       let X, Z0, v;
-      if (i < 9) { const sd = i % 2 ? 1 : -1; X = sd * (1060 + r() * 240); Z0 = -4000 + r() * 19000; v = (r() > 0.5 ? 1 : -1) * (500 + r() * 380); }
-      else if (r() > 0.45) { X = (r() - 0.5) * 1400; Z0 = 4300 + r() * 3000; v = 150 + r() * 200; }
-      else { X = (r() - 0.5) * 1400; Z0 = 10000 + r() * 4500; v = -(130 + r() * 170); }
-      out.push({ X, Z0, v, P: LOOKS[i % LOOKS.length], ph: r() * TAU, cad: 1.7 + r() * 0.5, kid: i % 9 === 4, carry: r() });
+      if (i < 6) { X = 1060 + r() * 240; Z0 = -4000 + r() * 19000; v = (r() > 0.5 ? 1 : -1) * (500 + r() * 380); }
+      else if (r() > 0.45) { X = -600 + r() * 1300; Z0 = 4600 + r() * 2800; v = 150 + r() * 200; }
+      else { X = -600 + r() * 1300; Z0 = 10000 + r() * 4500; v = -(130 + r() * 170); }
+      const toward = v < 0, P = toward ? WOMEN[i % WOMEN.length] : (i % 3 ? MEN_BACK[i % MEN_BACK.length] : WOMEN[(i + 2) % WOMEN.length]);
+      out.push({ X, Z0, v, P, ph: r() * TAU, cad: 1.7 + r() * 0.5, kid: i % 7 === 4 && toward });
     }
     return out;
   })();
@@ -780,12 +787,15 @@
   function menAt(t) {
     const TT = times();
     const F = TT.freeze, F1 = TT.freeze + 0.5;                                  // the line-up slides in as you look up at them
-    const m1 = key(t, [[0, 470, 700, 0.15, 0], [TT.b1 - 0.55, 330, 690, 0.42, 0], [TT.b1, 150, 760, 1.05, 0], [TT.b1 + 0.55, 70, 770, 1.12, 0], [TT.b1 + 1.0, -760, 800, 1.3, 0], [F, -760, 800, 1.3, 0], [F1, SPOT[0][0], SPOT[0][1], SPOT[0][2], 0]]);
+    if (t >= TT.fin) return SPOT.map(([x, y, s]) => [x + 120, y, s, 0]);      // the last shot: a little to your right, clear of the stall
+    const m1 = key(t, [[0, 470, 700, 0.15, 0], [TT.b1 - 0.55, 330, 690, 0.42, 0], [TT.b1, 150, 760, 1.05, 0], [TT.b1 + 0.55, 70, 770, 1.12, 0], [TT.b1 + 1.0, -760, 800, 1.3, 0], [F - 0.4, -760, 800, 1.3, 0], [F, -300, 800, 1.3, 0], [F1, SPOT[0][0], SPOT[0][1], SPOT[0][2], 0]]);
     const m2 = key(t, [[0, 590, 690, 0.12, 0], [TT.b2 - 1.1, 570, 690, 0.3, 0], [TT.b2 - 0.25, 400, 760, 0.95, 0], [TT.b2, 230, 810, 1.3, 0], [TT.b2 + 0.32, 245, 800, 1.25, 0], [TT.b2 + 0.6, 400, 690, 0.66, 0], [TT.b2 + 1.0, 470, 610, 0.44, 0], [F, 470, 606, 0.43, 0], [F1, SPOT[1][0], SPOT[1][1], SPOT[1][2], 0]]);   // he holds through the slip, then steps well back
     // number three: in from your right, past you, up the lane. His feet are level with the wallet at about 5.78 s, clear of it even mid-stride;
     // after that they're well beyond it. His head is inside the 950 line from about 6.0 s.
-    // (12 Nov rebuild: his free hand rests behind his back as he passes, so no hand of his comes near the wallet)
-    const P3W = [[TT.b2 + 0.35, 1500, 900, 1.3, 1], [TT.b3 - 0.6, 1290, 862, 1.25, 1], [TT.b3, 1080, 760, 0.95, 1], [TT.b3 + 0.34, 965, 668, 0.56, 1], [TT.b3 + 0.59, 828, 645, 0.475, 1], [TT.b3 + 1.6, 765, 632, 0.41, 1], [F, 750, 626, 0.38, 1]];
+    // (the fresh review of final 9: his near arm hung right beside the wallet at 4.6-5.4 s while he was close and big. He now passes
+    // further right, 130 px or more clear of it, and drifts in towards the middle once he's small: his head is inside 950 by about 6.3 s,
+    // before his glance back.)
+    const P3W = [[TT.b2 + 0.35, 1560, 900, 1.3, 1], [TT.b3 - 0.6, 1360, 862, 1.25, 1], [TT.b3, 1230, 760, 0.95, 1], [TT.b3 + 0.34, 1070, 668, 0.56, 1], [TT.b3 + 0.59, 930, 645, 0.475, 1], [TT.b3 + 0.85, 840, 638, 0.445, 1], [TT.b3 + 1.6, 765, 632, 0.41, 1], [F, 750, 626, 0.38, 1]];
     const m3 = t < F ? spline(t, P3W) : key(t, [[F, 750, 626, 0.38, 1], [F1, SPOT[2][0], SPOT[2][1], SPOT[2][2], 0]]);
     return [m1, m2, m3];
   }
@@ -799,7 +809,7 @@
       const live = !o.still;
       const dart = live ? 4 * NB(t * 0.9 + i * 7) : 0;
       const base = [{ frown: 0.22, worry: -2 }, { frown: 0.08, worry: -8 }, { frown: 0.3, worry: -3 }][i];
-      return { walk: 0, breath: live ? 3 * Math.sin(t * TAU * 0.27 + i * 1.9) : 0, look: md.look || [dart, 4], close: md.close ?? (live && !o.noBlink ? blinkAt(t, i) : 0), frown: md.frown ?? base.frown, worry: md.worry ?? base.worry, smile: 0, headYaw: md.headYaw ?? (live ? 0.04 * NC(t * 0.4 + i * 3) : 0), tilt: md.tilt ?? 0, hands: i === 2 ? { l: 'bag' } : undefined, arms: i === 2 ? { l: { a1: 0.08, a2: 0.05, hand: 'bag' } } : undefined, bagSwing: 0, legs: true };
+      return { walk: 0, breath: live ? 3 * Math.sin(t * TAU * 0.27 + i * 1.9) : 0, look: md.look || [dart, 4], close: md.close ?? (live && !o.noBlink ? blinkAt(t, i) : 0), frown: md.frown ?? base.frown, worry: md.worry ?? base.worry, smile: 0, headYaw: md.headYaw ?? (live ? 0.04 * NC(t * 0.4 + i * 3) : 0), tilt: md.tilt ?? 0, arms: i === 2 ? { r: { a1: 0.1, a2: 0.05, hand: 'bag' } } : undefined, bagSwing: 0, legs: true };
     }
     if (i === 0) {                                  // ONE: walking at you, eyes on his phone; looks up too late, a look as he squeezes past
       const ph = t * Math.PI * 1.9 + 0.4, up = sstep(TT.b1 - 0.27, TT.b1 - 0.12, t), pass = sstep(TT.b1 - 0.3, TT.b1 + 0.08, t), away = sstep(TT.b1 + 0.3, TT.b1 + 0.65, t);
@@ -810,26 +820,31 @@
     if (i === 1) {                                  // TWO: hurrying, checking his watch; looks up too late; walks into you; "sorry, sorry", palms up; steps back and stares
       const ph = t * Math.PI * 2.25, hurry = 1 - sstep(TT.b2 - 0.08, TT.b2 + 0.02, t);
       const watch = winK(t, 0.45, 0.8, TT.b2 - 0.62, TT.b2 - 0.36), up = sstep(TT.b2 - 0.42, TT.b2 - 0.24, t);
-      // his palms come up only once the wallet is on the floor and he's stepping back: no hand of his anywhere near it while it falls
-      const hitK = t >= TT.b2 ? Math.exp(-(t - TT.b2) * 9) : 0, sorry = winK(t, TT.b2 + 0.46, TT.b2 + 0.64, TT.b2 + 0.95, TT.b2 + 1.3);
-      const tuck = winK(t, TT.b2 - 0.25, TT.b2 - 0.1, TT.b2 + 0.45, TT.b2 + 0.6);   // through the bump his arms stay in at his sides
+      // through the bump his arms stay in at his sides; then both hands come up to his chest, palms out ("sorry, sorry"), and stay there as
+      // he steps back: high and to the left, nowhere near the wallet (the fresh review of final 9: a hand that swung up to his shoulder
+      // swept through it as it landed). The ramps on the impact keep the slow replay from skipping.
+      const hitK = t >= TT.b2 ? Math.exp(-(t - TT.b2) * 9) * sstep(TT.b2, TT.b2 + 0.035, t) : 0, sorry = winK(t, TT.b2 + 0.06, TT.b2 + 0.24, TT.b2 + 1.0, TT.b2 + 1.35);
+      const tuck = winK(t, TT.b2 - 0.25, TT.b2 - 0.1, TT.b2 + 0.04, TT.b2 + 0.12);
       const stepBack = winK(t, TT.b2 + 0.5, TT.b2 + 0.62, TT.b2 + 0.9, TT.b2 + 1.02);
       const startle = TT.b2 - 0.35 < t && t < TT.b2 + 0.55 ? 0.45 * sstep(TT.b2 - 0.35, TT.b2 - 0.1, t) * (1 - sstep(TT.b2 + 0.32, TT.b2 + 0.55, t)) : 0;
       const talk = sorry * 0.17 * Math.abs(Math.sin((t - TT.b2 - 0.1) * Math.PI * 4.4));
       const shake = sorry * 0.12 * Math.sin((t - TT.b2) * TAU * 3.1);
       return { walk: Math.max(hurry, stepBack * 0.55), phase: ph, look: [lerp(14 * watch, 0, up), lerp(16 * watch + 2, 3, up)], browY: 8 * watch * (1 - up), op: Math.max(startle, talk), worry: up > 0.5 ? lerp(-10, -7, sstep(TT.b2 + 0.4, TT.b2 + 1.2, t)) : 0,
         frown: 0.06, headYaw: shake, tilt: 0.06 * hitK, squash: 0.05 * hitK, swing: 0.22 * Math.sin(ph) * hurry + 0.5 * hitK * Math.sin((t - TT.b2) * 22),
-        arms: { r: watch > 0.01 ? { a1: 0.22, a2: 1.85, hand: 'watch', w: watch } : sorry > 0.01 ? { a1: 0.32, a2: -2.4, hand: 'open', w: sorry } : { a1: -0.06, a2: 0.1, hand: 'watch', w: tuck }, l: sorry > 0.01 ? { a1: 0.32, a2: -2.4, hand: 'open', w: sorry } : { a1: -0.06, a2: 0.1, w: tuck } }, hands: { r: 'watch' }, legs: true };
+        arms: { r: watch > 0.01 ? { a1: 0.22, a2: 1.85, hand: 'watch', w: watch } : sorry > 0.01 ? { a1: 0.12, a2: 2.55, hand: 'open', w: sorry } : { a1: -0.06, a2: 0.1, hand: 'watch', w: tuck }, l: sorry > 0.01 ? { a1: 0.12, a2: 2.55, hand: 'open', w: sorry } : { a1: -0.06, a2: 0.1, w: tuck } }, hands: { r: 'watch' }, legs: true };
     }
     // THREE: from behind, an old man's walk, the bag in his right hand; one glance back over his shoulder
     const ph = t * Math.PI * 1.55 + 1.0, g3 = winK(t, TT.b3 + 0.95, TT.b3 + 1.07, TT.b3 + 1.35, TT.b3 + 1.47);
     const bump = t >= TT.b3 ? Math.exp(-(t - TT.b3) * 5) * Math.sin((t - TT.b3) * 14) : 0;
-    const turn = sstep(F, F1, t);                     // the freeze turns him round to you
-    const backV = turn < 0.5;
-    return { walk: t < F ? 1 : 0, phase: ph, back: backV, showFace: backV && g3 > 0.5, headYaw: backV ? (g3 > 0.5 ? -0.95 : 0) : 0, yaw: backV ? 0.9 * turn * 2 : -0.9 * (1 - (turn - 0.5) * 2),
-      // his free arm is bent in front of him (out of sight from behind), so no hand of his comes anywhere near the wallet as he passes it;
-      // the bag hangs in his other hand, on the side away from it
-      look: [14, 2], frown: 0.25, worry: -3, arms: backV ? { r: { a1: 0.1, a2: 0.05, hand: 'bag' }, l: { a1: 0.03, a2: 0.0, hand: 'hidden', len: [1, 0.08] } } : { l: { a1: 0.08, a2: 0.05, hand: 'bag' } }, swingK: [1, 0.35], bagSwing: 0.18 * Math.sin(ph + 0.8) * (t < F ? 1 : 0) + 0.5 * bump, legs: true };
+    // the freeze turns him round to you, head first: his face comes round over his shoulder (as in his glance), then his body follows,
+    // its back turning edge-on before his front does, so the face never flips (the fresh review: a 180° turn in one frame)
+    const u = clamp((t - F) / (F1 - F)), backV = u < 0.42;
+    const hyTot = t < F ? (g3 > 0.5 ? -0.95 : 0) : -0.75 * sstep(0, 0.2, u) * (1 - sstep(0.42, 1, u));
+    const phi = t < F ? 0 : -0.7 * (backV ? sstep(0, 0.42, u) : 1 - sstep(0.42, 1, u));   // continuous through the switch: width, head and shading don't jump
+    // the bag stays on the same side of the picture all the way round (in his right hand from behind, his left from the front), clear of
+    // number two in the line-up
+    return { walk: t < F ? 1 : 0, phase: ph, back: backV, showFace: backV && (t < F ? g3 > 0.5 : u > 0.1), headYaw: hyTot - phi * 0.6, yaw: phi,
+      look: [14, 2], frown: 0.25, worry: -3, arms: { r: { a1: 0.1, a2: 0.05, hand: 'bag' } }, swingK: [1, 0.35], bagSwing: 0.18 * Math.sin(ph + 0.8) * (t < F ? 1 : 0) + 0.5 * bump, legs: true };
   }
 
   // ------------------------------------------------------------------ the camera: you walk until the second bump, then stop
@@ -858,10 +873,9 @@
     camY = lerp(camY, 700, dn); zoom = lerp(zoom, 1, dn);
     const back = sstep(TT.up0, TT.up1, t);                                    // back up at the three of them, close
     camY = lerp(camY, -190, back); zoom = lerp(zoom, 1.65, back);
-    if (t >= TT.fin) { camY = -60; zoom = 1.08; }                             // the last shot: wider, the stall on your left in it
+    if (t >= TT.fin) { camY = -60; zoom = 1.0; }                              // the last shot: wider, the stall on your left in it
     let roll = 0.004 * NA(t * 0.5) + kick(t, TT.b1, -0.045) + kick(t, TT.b2, 0.075, 13, 6) + kick(t, TT.b3, 0.03, 16, 8);
     let pan = kick(t, TT.b1, 34, 12, 7) - kick(t, TT.b2, 26, 10, 6) - kick(t, TT.b3, 14, 14, 8) + 3 * NB(t * 0.4);
-    if (t >= TT.fin) pan += 130;                                              // the last shot looks a little left: the stall, and him
     return { bob, sway, camY, zoom, roll, pan, camZ: camZAt(t) };
   }
   const camXf = (g, c, sh) => { g.translate(540 + sh[0] + c.sway + c.pan, 960 + sh[1]); g.rotate(c.roll); g.scale(c.zoom, c.zoom); g.translate(-540, -960 + c.bob); };
@@ -872,9 +886,10 @@
     const TT = times();
     if (t < TT.drop) return { st: 'hand' };
     const d = t - TT.drop, fall = 0.4;
-    if (d < fall) {                                 // it falls from your fingers to the exact spot it then lies on
-      const u = d / fall, gy = WG[1] - camAt(TT.drop + fall).camY, h0 = handAt(TT.drop);
-      return { st: 'fall', x: lerp(h0.x - 70, WG[0], u), y: lerp(h0.y - 10, gy, u * u) - 50 * u * (1 - u), rot: lerp(-0.12, -0.16, u) - 0.8 * Math.sin(u * Math.PI), s: h0.s * lerp(1.05, 0.74, u), flatK: sstep(0.55, 1, u) };
+    if (d < fall) {                                 // it falls from exactly where it sat in your fingers to the exact spot it then lies on
+      const u = d / fall, gy = WG[1] - camAt(TT.drop + fall).camY, h0 = handAt(TT.drop), cr = Math.cos(h0.rot), sr = Math.sin(h0.rot);
+      const x0 = h0.x + (-70 * cr + 10 * sr) * h0.s, y0 = h0.y + (-70 * sr - 10 * cr) * h0.s, r0 = h0.rot - 0.12;   // myHand: wallet(-70, -10, 1.05, -0.12)
+      return { st: 'fall', d, x: lerp(x0, WG[0], u), y: lerp(y0, gy, u * u) - 50 * u * (1 - u), rot: lerp(r0, -0.16, u) - 0.8 * Math.sin(u * Math.PI), s: lerp(1.05 * h0.s, 0.74, u), flatK: sstep(0.55, 1, u) };
     }
     return { st: 'ground', x: WG[0], y: WG[1], rot: -0.16, s: 0.74 };
   }
@@ -883,7 +898,7 @@
     let x = 812, y = 1350 + c.bob * 0.6, rot = -0.05, s = 1.0, open = 0;
     const jolt = (t0, a) => (t >= t0 ? a * Math.exp(-(t - t0) * 6) * Math.sin((t - t0) * 22) : 0);
     rot += jolt(TT.b1, 0.05) + jolt(TT.b2, 0.16) + jolt(TT.b3, 0.09);
-    y += (t >= TT.b2 ? 60 * Math.exp(-(t - TT.b2) * 5) : 0) + 620 * sstep(TT.b2 + 0.5, TT.b2 + 1.0, t);   // your arm drops to your side
+    y += (t >= TT.b2 ? 60 * Math.exp(-(t - TT.b2) * 5) * sstep(TT.b2, TT.b2 + 0.035, t) : 0) + 620 * sstep(TT.b2 + 0.5, TT.b2 + 1.0, t);   // your arm drops to your side
     x += 230 * sstep(TT.b2 + 0.02, TT.b2 + 0.25, t) + 70 * sstep(TT.b2 + 0.45, TT.b2 + 0.95, t);   // knocked aside, then down to your side
     const up = sstep(TT.lift, TT.lift + 0.35, t) * (1 - sstep(TT.lower, TT.lower + 0.3, t));
     const upx = sstep(TT.lift + 0.12, TT.lift + 0.42, t) * (1 - sstep(TT.lower, TT.lower + 0.3, t));
@@ -893,7 +908,7 @@
 
   // ------------------------------------------------------------------ the season's thief at the chai stall: he sips, he watches your wallet;
   // at the end he raises his glass to you. He stands by the counter's near end, on your left, and never moves towards you or the wallet.
-  const THIEF_AT = [-1230, ZS + 250];
+  const THIEF_AT = [-1350, ZS + 250];
   function thiefPose(t, tw) {
     const TT = times();
     const sip = Math.max(winK(tw, 0.75, 1.1, 1.55, 1.9), winK(tw, 9.4, 9.75, 10.2, 10.55), winK(tw, 17.6, 17.95, 18.4, 18.75));
@@ -902,7 +917,7 @@
     const cheers = kick(t, TT.n10e + 0.76, 0.14, 20, 8);                    // the glass dips to you on the clink (cues.py)
     const a1 = lerp(lerp(hold.a1, toSip.a1, sip), raise.a1, toast), a2 = lerp(lerp(hold.a2, toSip.a2, sip), raise.a2, toast) + cheers;
     return { walk: 0, breath: 2 * Math.sin(tw * TAU * 0.25), yaw: 0.32, headYaw: -0.12 - 0.12 * sip + 0.06 * toast, look: [lerp(10, 2, toast), lerp(9, 2, toast)], close: sip > 0.6 ? 0.55 : blinkAt(tw, 5, 3.9),
-      frown: 0, smile: lerp(0.18, 0.55, toast), smirk: toast, browUp: 12 * toast, tilt: -0.03 * toast, arms: { l: { a1, a2, hand: 'glass' } }, legs: true };
+      frown: 0, smile: lerp(0.18, 0.55, toast), smirk: toast, browUp: 12 * toast, tilt: -0.03 * toast, arms: { l: { a1, a2, hand: 'glass' } }, glassK: 0.72, legs: true };
   }
 
   // ------------------------------------------------------------------ the scene, at time t: the world, the people by depth, you
@@ -920,9 +935,11 @@
       const toward = p.v < 0, s = q[2] * (p.kid ? 0.7 : 1), ph = tw * Math.PI * p.cad + p.ph;
       actors.push({ fy: q[1], soft: true, X: p.X, Z, draw: (gg) => figure(gg, p.P, q[0], q[1] - 1594 * s, s, { walk: 1, phase: ph, back: !toward, legs: true, yaw: 0.2 * Math.sign(-p.X) * (toward ? 1 : -1), look: [0, 4], close: blinkAt(tw, p.ph * 3), rim: 1 }) });
     }
-    if (o.thief !== false) {
+    // the thief: when the camera's focus is on the three he's soft with the street behind them, and when you look down at your feet
+    // he's left out (only his body would show, at the end of their row: the fresh review of final 9)
+    if (o.thief !== false && c.camY < 450) {
       const q = P3(THIEF_AT[0], 0, THIEF_AT[1], cz);
-      if (q) actors.push({ fy: q[1], soft: false, X: THIEF_AT[0], Z: THIEF_AT[1], draw: (gg) => figure(gg, THIEF_P, q[0], q[1] - 1594 * q[2], q[2], thiefPose(t, tw)) });
+      if (q) actors.push({ fy: q[1], soft: !o.thiefSharp, X: THIEF_AT[0], Z: THIEF_AT[1], draw: (gg) => figure(gg, THIEF_P, q[0], q[1] - 1594 * q[2], q[2], thiefPose(t, tw)) });
     }
     if (o.men !== false) men.forEach((m, i) => {
       const fy = m[1] + 1594 * m[2]; if (m[0] < -700 || m[0] > 1800) return;
@@ -948,8 +965,12 @@
     for (const a of actors) if (!soft || !a.soft) a.draw(g);
     g.translate(0, c.camY);
     if (!o.noShoes) myShoes(g, c.camY);
+    // the falling wallet: under your fingers for its first few hundredths of a second (it slides out from under them: no pop on the replay's
+    // slow frames), then in front of your hand, so the hand never hides it
+    const under = wl.st === 'fall' && wl.d < 0.08;
+    if (under && !o.noWallet) wallet(g, wl.x, wl.y, wl.s, wl.rot, { flatK: wl.flatK });
     if (o.hand !== false && hd.y < 2200) myHand(g, hd.x, hd.y, hd.s, hd.rot, { hold: wl.st === 'hand', open: hd.open, curl: hd.curl });
-    if (wl.st === 'fall' && !o.noWallet) wallet(g, wl.x, wl.y, wl.s, wl.rot, { flatK: wl.flatK });
+    if (wl.st === 'fall' && !under && !o.noWallet) wallet(g, wl.x, wl.y, wl.s, wl.rot, { flatK: wl.flatK });
     g.restore();
     return { c, wl };
   }
@@ -977,7 +998,7 @@
     const TT = times(), F = TT.freeze;
     const fast = (t > TT.b1 - 0.1 && t < TT.b1 + 0.35) || (t > TT.b2 - 0.25 && t < TT.b2 + 0.5) || (t > TT.b3 - 0.1 && t < TT.b3 + 0.3) || (t > F - 0.02 && t < F + 0.55) || (t > TT.lift && t < TT.gone + 0.12) || (t > TT.lower && t < TT.lower + 0.3);
     const pk = sstep(F, F + 0.3, t);
-    blurred(g, t, fast ? 5 : 1, (gg, tt) => lane(gg, tt, { smoothShake: fast, dof: 5.5 * sstep(F, F + 0.3, tt), desat: 0.62 * sstep(F, F + 0.3, tt) }));
+    blurred(g, t, fast ? (t > F - 0.02 && t < F + 0.55 ? 8 : 5) : 1, (gg, tt) => lane(gg, tt, { smoothShake: fast, dof: 5.5 * sstep(F, F + 0.3, tt), desat: 0.62 * sstep(F, F + 0.3, tt) }));
     vignette(g, 1 - 0.3 * pk);
     // frame 0: the role, said twice (the words and the picture), out with the first line
     const out = sstep(TT.n01e - 0.05, TT.n01e + 0.2, t);
@@ -990,11 +1011,11 @@
         const kx = clamp((x + 10) / 70) * clamp((1150 - x) / 70);
         if (k * kx > 0) { g.save(); g.globalAlpha = k * kx; g.translate(clamp(x, 90, 888), y); const q = pop(t, t0); g.scale(lerp(0.6, 1, q), lerp(0.6, 1, q)); tileNo(g, 0, 0, i + 1, 112); g.restore(); }
       }); }
-    if (t >= TT.gone - 0.04 && t < F) title(g, 'YOUR WALLET?', 850, 120, CREAM, t, TT.gone - 0.04, { stroke: INK, sw: 0.14 });
+    if (t >= TT.gone - 0.04 && t < F) title(g, 'YOUR WALLET?', 470, 120, CREAM, t, TT.gone - 0.04, { stroke: INK, sw: 0.14 });   // above their heads, off number two's face
     if (t >= F) {
       // the street stops; the three get their numbers; the ritual line; then the clock
       const c = camAt(t);
-      menAt(t).forEach((m, i) => { const q = pop(t, F + 0.05 + i * 0.12); let [x, y] = toScreen(c, m[0], m[1] - 380 * m[2] - 64); y = Math.max(y, 318); g.save(); g.translate(x, y); g.scale(q, q); tileNo(g, 0, 0, i + 1, 92); g.restore(); });
+      menAt(t).forEach((m, i) => { const q = pop(t, F + 0.05 + i * 0.12); let [x, y] = toScreen(c, m[0], m[1] - 380 * m[2] - 64); y = Math.max(y, 334); g.save(); g.translate(x, y); g.scale(q, q); tileNo(g, 0, 0, i + 1, 92); g.restore(); });
       if (t < TT.clock0) { title(g, 'WHOEVER YOU PICK', 1060, 98, CREAM, t, TT.n03 - 0.04, { stroke: INK, sw: 0.14 }); if (t >= TT.jail - 0.04) title(g, 'GOES TO JAIL', 1180, 128, '#ff5a3a', t, TT.jail - 0.04, { stroke: INK, sw: 0.12 }); }
       else {
         title(g, 'WHICH ONE?', 1090, 128, CREAM, t, TT.clock0, { stroke: INK, sw: 0.12 });
@@ -1033,15 +1054,15 @@
     blurred(g, t, fast ? 6 : 1, (gg, tt) => lane(gg, tt, { mood: hurt, hand: false, dof: 4.5 * sstep(TT.up0 + 0.1, TT.up1, tt), smoothShake: true }));
     vignette(g, 0.8);
     const c = camAt(t);
-    for (let i = 0; i < 3; i++) { const [x, y, s] = SPOT[i], [sx, sy] = toScreen(c, x, y + 430 * s); stamp(g, 'INNOCENT', clamp(sx + (i === 2 ? 20 : i === 0 ? -20 : 0), 170, 880), sy + (i === 1 ? 110 : 0), t, TT.going + i * 0.3, RED, 56, i === 1 ? 0.06 : -0.08); }
+    for (let i = 0; i < 3; i++) { const [x, y, s] = SPOT[i], [sx, sy] = toScreen(c, x, y + 430 * s); stamp(g, 'INNOCENT', clamp(sx + (i === 2 ? -15 : i === 0 ? -20 : 0), 170, 790), sy + (i === 1 ? 110 : 0), t, TT.going + i * 0.3, RED, 56, i === 1 ? 0.06 : -0.08); }
     const bk = sstep(TT.n07e + 0.05, TT.n07e + 0.3, t) * (1 - sstep(TT.nobody - 0.05, TT.nobody + 0.55, t));   // the door shuts; if you spotted it, it lifts
     if (bk > 0) bars(g, bk + 0.04 * Math.exp(-(t - TT.n07e - 0.3) * 10) * Math.sin((t - TT.n07e - 0.3) * 40) * (t > TT.n07e + 0.3 ? 1 : 0));
-    if (t >= TT.n07b - 0.04 && t < TT.face0) title(g, 'SPOTTED IT?', 1258, 112, YEL, t, TT.n07b - 0.04, { stroke: INK, sw: 0.12 });
-    if (t >= TT.bumping - 0.04 && t < TT.n07b - 0.05) title(g, 'FOR BUMPING INTO YOU', 1356, 96, CREAM, t, TT.bumping - 0.04, { stroke: INK, sw: 0.14 });
-    if (t >= TT.nobody - 0.04) title(g, 'NOBODY GOES TO JAIL', 1360, 96, CREAM, t, TT.nobody - 0.04, { stroke: INK, sw: 0.14 });
+    if (t >= TT.n07b - 0.04 && t < TT.face0) title(g, 'SPOTTED IT?', 1310, 112, YEL, t, TT.n07b - 0.04, { stroke: INK, sw: 0.12 });
+    if (t >= TT.bumping - 0.04 && t < TT.n07b - 0.05) title(g, 'FOR BUMPING INTO YOU', 1340, 96, CREAM, t, TT.bumping - 0.04, { stroke: INK, sw: 0.14 });
+    if (t >= TT.nobody - 0.04) title(g, 'NOBODY GOES TO JAIL', 1420, 96, CREAM, t, TT.nobody - 0.04, { stroke: INK, sw: 0.14 });
     return flashAt(t, TT.n07e + 0.3) * 0.3;
   }
-  function bars(g, k, y0 = 250, y1 = 1300) {        // a cell front over the three of them, from y0 to y1
+  function bars(g, k, y0 = 250, y1 = 1196) {        // a cell front over the three of them, from y0 to y1 (its bottom rail clear of the lines under it)
     const off = lerp(-(y1 + 40), 0, k), bw = 38, hw = bw / 2;
     g.save(); g.translate(0, off); g.beginPath(); g.rect(0, y0 - 30 - off, W, y1 - y0 + 60); g.clip();
     for (let i = 0; i < 8; i++) { const x = 75 + i * 146; g.fillStyle = lg(g, x - hw, 0, x + hw, 0, [0, '#16181c'], [0.35, '#6f747d'], [0.55, '#9ea3ab'], [1, '#1c1e23']); g.fillRect(x - hw, y0, bw, y1 - y0); }
@@ -1069,7 +1090,7 @@
     if (t >= r1) { g.fillStyle = 'rgba(255,248,230,0.08)'; g.fillRect(0, 0, W, H); }
     vignette(g, 0.9);
     // the film's own clock
-    g.save(); g.translate(170, 1060); R(g, -140, -48, 280, 96, 14); g.fillStyle = '#121212'; g.fill(); g.strokeStyle = CREAM; g.lineWidth = 4; g.stroke();
+    g.save(); g.translate(170, 1330); R(g, -140, -48, 280, 96, 14); g.fillStyle = '#121212'; g.fill(); g.strokeStyle = CREAM; g.lineWidth = 4; g.stroke();   // on his shirt, off his jaw
     const sec = Math.floor(tau), cs = Math.floor((tau - sec) * 100);
     txt(g, `0:0${sec}.${String(cs).padStart(2, '0')}`, 0, 28, 70, tau >= 3.99 ? '#ff5a3a' : '#ffb347', { kind: 'mono', align: 'center' }); g.restore();
     if (t < r1) { g.save(); g.translate(540, 1200); g.fillStyle = CREAM; g.strokeStyle = INK; g.lineWidth = 8; g.lineJoin = 'round'; for (const dx of [-46, 46]) { g.beginPath(); g.moveTo(dx + 46, -54); g.lineTo(dx + 46, 54); g.lineTo(dx - 46, 0); g.closePath(); g.stroke(); g.fill(); } g.restore(); return flashAt(t, r0) * 0.25; }
@@ -1077,7 +1098,7 @@
     const hd = handAt(tau), wl = walletAt(tau, hd);
     const scr = (x, y) => { const px = (x - 540) * c.zoom, py = (y - 960 + c.bob) * c.zoom, cr = Math.cos(c.roll), sr = Math.sin(c.roll); return [px * cr - py * sr + 540 + c.sway + c.pan, px * sr + py * cr + 960]; };
     let wx, wy;
-    if (wl.st === 'hand') [wx, wy] = scr(hd.x - 70, hd.y - 10);
+    if (wl.st === 'hand') { const cr = Math.cos(hd.rot), sr = Math.sin(hd.rot); [wx, wy] = scr(hd.x + (-70 * cr + 10 * sr) * hd.s, hd.y + (-70 * sr - 10 * cr) * hd.s); }
     else if (wl.st === 'fall') [wx, wy] = scr(wl.x, wl.y);
     else [wx, wy] = walletOnScreen(c);
     const rk = sstep(r1 + 0.2, r1 + 0.6, t);
@@ -1101,7 +1122,7 @@
   function shotEnd(g, t) {
     const TT = times(), z = 1 + 0.05 * sstep(TT.fin, TT.end, t);
     g.save(); g.translate(470, 760); g.scale(z, z); g.translate(-470, -760);
-    lane(g, t, { mood: (i, tt) => ({ ...hurt(i, tt) }), hand: false, dof: 3 });
+    lane(g, t, { mood: (i, tt) => ({ ...hurt(i, tt) }), hand: false, dof: 3, thiefSharp: true });   // he's small and well behind them; sharp, so his raised glass reads
     g.restore();
     vignette(g, 0.9);
     const band = sstep(TT.n10 - 0.2, TT.n10 + 0.1, t); if (band > 0) { g.fillStyle = `rgba(16,15,12,${0.62 * band})`; R(g, 90, 1068, 860, 300, 26); g.fill(); }
