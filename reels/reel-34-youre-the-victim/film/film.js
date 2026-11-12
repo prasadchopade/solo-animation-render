@@ -366,10 +366,13 @@
     g.fillStyle = p.hair; if (p.toward) { g.beginPath(); g.ellipse(0, 70, 96, 80, 0, Math.PI, TAU); g.fill(); g.fillStyle = 'rgba(30,20,12,0.6)'; for (const k of [-1, 1]) { ell(g, k * 32, 112, 9, 11); g.fill(); } } else { ell(g, 0, 96, 96, 100); g.fill(); }
     g.restore();
   }
-  function crowd(g, t, camY, frozen) {
+  function crowd(g, t, camY, frozen, pass = 'all', F = Infinity) {      // pass 'back': feet above F (behind the far men); 'front': the rest
     const tt = frozen != null ? Math.min(t, frozen) : t;
     for (const p of CROWD) {
       const s = p.d * 0.5, y = HZ - 230 * s * 0.45 + (1 - p.d) * 10 + p.d * 520 - camY, x = ((p.x0 + p.v * tt) % 1400 + 1400) % 1400 - 160;
+      const foot = y + 1060 * s;
+      if (pass === 'back' && foot > F) continue;
+      if (pass === 'front' && foot <= F) continue;
       extra(g, p, x, y + 6 * Math.abs(Math.sin(tt * 7 + p.ph)) * s, s, tt);
     }
   }
@@ -481,10 +484,10 @@
     const walk = 1 - sstep(TT.b2, TT.stop + 0.2, t);
     const bob = walk * 9 * Math.sin(t * TAU * 1.9), sway = walk * 4 * Math.sin(t * Math.PI * 1.9);
     const drop = sstep(TT.b2 + 0.95, TT.b2 + 1.55, t);                        // your eyes drop: the floor at your feet
-    const up = sstep(TT.lower - 0.1, TT.freeze + 0.5, t);                     // you look up at them
+    const up = sstep(TT.n02 - 0.05, TT.gone + 0.1, t);                        // you look up at them: the floor is out of shot by "gone"
     let camY = lerp(lerp(-110, 100, drop), -150, up), zoom = lerp(1 + 0.035 * sstep(0, TT.b2, t), 1.35, up) + 0.05 * sstep(TT.freeze + 0.5, TT.clock1, t);
     const dn = sstep(TT.down0, TT.down1, t);                                  // "Look down."
-    camY = lerp(camY, 430, dn); zoom = lerp(zoom, 1, dn);
+    camY = lerp(camY, 700, dn); zoom = lerp(zoom, 1, dn);
     const back = sstep(TT.up0, TT.up1, t);                                    // back up at the three, the wide frame
     camY = lerp(camY, 100, back);
     return { bob, sway, camY, zoom };
@@ -507,7 +510,7 @@
     let x = 812, y = 1452 + c.bob * 0.6, rot = -0.05, s = 1.0, open = 0;
     const jolt = (t0, a) => (t >= t0 ? a * Math.exp(-(t - t0) * 6) * Math.sin((t - t0) * 22) : 0);
     rot += jolt(TT.b1, 0.05) + jolt(TT.b2, 0.16) + jolt(TT.b3, 0.09);
-    y += (t >= TT.b2 ? 60 * Math.exp(-(t - TT.b2) * 5) : 0) + 300 * sstep(TT.b2 + 0.15, TT.b2 + 0.75, t);   // your arm drops to your side
+    y += (t >= TT.b2 ? 60 * Math.exp(-(t - TT.b2) * 5) : 0) + 620 * sstep(TT.b2 + 0.15, TT.b2 + 0.75, t);   // your arm drops to your side
     x += 70 * sstep(TT.b2 + 0.1, TT.b2 + 0.6, t);
     const up = sstep(TT.lift, TT.lift + 0.35, t) * (1 - sstep(TT.lower, TT.lower + 0.3, t));
     x = lerp(x, 690, up); y = lerp(y, 1180, up) + 520 * sstep(TT.lower, TT.lower + 0.3, t); rot = lerp(rot, -0.55, up); open = up;
@@ -522,11 +525,12 @@
     g.translate(540 + sh[0] + c.sway, 960 + sh[1]); g.scale(c.zoom, c.zoom); g.translate(-540, -960 + c.bob);
     g.fillStyle = '#9fd3ee'; g.fillRect(-200, -400, W + 400, 400 - c.camY + 2);    // sky above the drawn lane, for when you look ahead and the camera shakes
     g.drawImage(LN.bg, 0, -c.camY);
-    crowd(g, tt, c.camY, frozen);
-    g.save(); g.translate(0, -c.camY); nearLitter(g); g.restore();
-    // the wallet on the ground (under the men's feet in drawing order is fine: it's nearer than all of them)
-    const hd = handAt(t), wl = walletAt(t, hd);
     const men = menAt(t), order = [0, 2, 1];
+    const far = men.filter((m) => m[2] < 0.35 && m[0] > -200 && m[0] < 1280).map((m) => m[1] - c.camY + 1594 * m[2]);
+    const F = far.length ? Math.min(...far) : Infinity;
+    crowd(g, tt, c.camY, frozen, 'back', F);
+    g.save(); g.translate(0, -c.camY); nearLitter(g); g.restore();
+    const hd = handAt(t), wl = walletAt(t, hd);
     if (wl.st === 'ground' && !o.noWallet && men[1][2] > 0.7) wallet(g, wl.x, wl.y - c.camY, wl.s, wl.rot, { flat: true });
     if (o.men !== false) for (const i of order) {
       const [x, y, s, turn] = men[i], close = s > 0.8;
@@ -536,9 +540,10 @@
       const op = i === 1 && t > TT.b2 - 0.35 && t < TT.b2 + 0.55 ? 0.45 * sstep(TT.b2 - 0.35, TT.b2 - 0.1, t) * (1 - sstep(TT.b2 + 0.32, TT.b2 + 0.55, t)) : 0;
       person(g, MEN[i], x, y - c.camY, s, { turn, look: mood.look || look, close: mood.close ?? blink, op: mood.op ?? op, frown: mood.frown ?? (i === 2 ? 0.25 : 0.1), worry: mood.worry ?? (i === 1 ? (op > 0 ? -10 : -7) : 0), smile: mood.smile ?? 0, phase: frozen ? 1.2 : tt * 7 + i, noLegs: s > 0.9, arm: mood.arm });
     }
+    if (F < Infinity) crowd(g, tt, c.camY, frozen, 'front', F);
     if (o.after) o.after(g, c);
     if (wl.st === 'ground' && !o.noWallet && !(men[1][2] > 0.7)) wallet(g, wl.x, wl.y - c.camY, wl.s, wl.rot, { flat: true });   // while number two fills the frame it's behind his legs
-    myShoes(g, c.camY);
+    if (!o.noShoes) myShoes(g, c.camY);
     if (wl.st === 'fall' && !o.noWallet) wallet(g, wl.x, wl.y, wl.s, wl.rot, { flatK: wl.flatK });
     if (o.hand !== false && hd.y < 2200) myHand(g, hd.x, hd.y, hd.s, hd.rot, { hold: wl.st === 'hand', open: hd.open });
     g.restore();
@@ -554,10 +559,12 @@
     const out = sstep(TT.n01e - 0.05, TT.n01e + 0.2, t);
     if (out < 1) { g.save(); g.globalAlpha = 1 - out; txt(g, "YOU'RE THE", 513, 380, 104, CREAM, { align: 'center', stroke: INK, sw: 0.14 }); txt(g, 'VICTIM', 513, 560, 210, YEL, { align: 'center', fit: 860, stroke: INK, sw: 0.12 }); g.restore(); }
     // the counts, small, as each man reaches you
-    for (const [p, n, x, y] of [['c1', 1, 200, 470], ['c2', 2, 540, 360], ['c3', 3, 880, 420]]) {
-      const t0 = at(p) - 0.03, k = win3(t, t0, t0 + 0.6);
-      if (k > 0) { g.save(); g.globalAlpha = k; g.translate(x, y); const q = pop(t, t0); g.scale(lerp(0.6, 1, q), lerp(0.6, 1, q)); tileNo(g, 0, 0, n, 112); g.restore(); }
-    }
+    { const c0 = camAt(t), M = menAt(t);
+      [['c1', 0], ['c2', 1], ['c3', 2]].forEach(([p, i]) => {
+        const t0 = at(p) - 0.03, k = win3(t, t0, t0 + 0.8), m = M[i];
+        let [x, y] = toScreen(c0, m[0], m[1] - 330 * m[2] - 70); y = clamp(y, 330, 900);
+        if (k > 0 && x > 70 && x < 1010) { g.save(); g.globalAlpha = k; g.translate(clamp(x, 90, 930), y); const q = pop(t, t0); g.scale(lerp(0.6, 1, q), lerp(0.6, 1, q)); tileNo(g, 0, 0, i + 1, 112); g.restore(); }
+      }); }
     if (t >= TT.gone - 0.04 && t < TT.freeze) title(g, 'YOUR WALLET?', 850, 120, CREAM, t, TT.gone - 0.04, { stroke: INK, sw: 0.14 });
     if (t >= TT.freeze) {
       // the street stops; the three get their numbers; the ritual line; then the clock
@@ -599,7 +606,7 @@
     const TT = times();
     lane(g, t, { mood: hurt, hand: false });
     const c = camAt(t);
-    for (let i = 0; i < 3; i++) { const [x, y, s] = SPOT[i], [sx, sy] = toScreen(c, x, y + 430 * s); stamp(g, 'INNOCENT', sx + (i === 2 ? -46 : i === 0 ? 14 : 0), sy + (i === 1 ? 70 : 0), t, TT.going + i * 0.3, RED, 60, i === 1 ? 0.06 : -0.08); }
+    for (let i = 0; i < 3; i++) { const [x, y, s] = SPOT[i], [sx, sy] = toScreen(c, x, y + 430 * s); stamp(g, 'INNOCENT', sx + (i === 2 ? 30 : i === 0 ? -30 : 0), sy + (i === 1 ? 125 : 0), t, TT.going + i * 0.3, RED, 52, i === 1 ? 0.06 : -0.08); }
     const bk = sstep(TT.n07e + 0.05, TT.n07e + 0.3, t) * (1 - sstep(TT.nobody - 0.05, TT.nobody + 0.55, t));   // the door shuts; if you spotted it, it lifts
     if (bk > 0) bars(g, bk);
     if (t >= TT.n07b - 0.04 && t < TT.face0) title(g, 'SPOTTED IT?', 1258, 112, YEL, t, TT.n07b - 0.04, { stroke: INK, sw: 0.12 });
@@ -625,15 +632,15 @@
     if (t < r1) tau = lerp(TT.freeze + 0.5, 3.75, sstep(r0, r1, t));             // running backwards
     else tau = Math.min(HOLDT, lerp(3.75, HOLDT, (t - r1) / (p1 - r1)));          // forward at about a fifth of the speed, then held
     const push = 1 + 0.05 * sstep(p1, TT.fin, t);
-    g.save(); g.translate(540, 900); g.scale(push, push); g.translate(-540, -900);
-    const { c } = lane(g, tau, { noBlink: true });
+    g.save(); g.translate(0, -260); g.translate(540, 900); g.scale(push, push); g.translate(-540, -900);
+    const { c } = lane(g, tau, { noBlink: true, noShoes: true });
     g.restore();
     if (t >= r1) { g.fillStyle = 'rgba(255,248,230,0.08)'; g.fillRect(0, 0, W, H); }
     // the film's own clock
-    g.save(); g.translate(540, 330); R(g, -150, -48, 300, 96, 14); g.fillStyle = '#121212'; g.fill(); g.strokeStyle = CREAM; g.lineWidth = 4; g.stroke();
+    g.save(); g.translate(170, 1060); R(g, -140, -48, 280, 96, 14); g.fillStyle = '#121212'; g.fill(); g.strokeStyle = CREAM; g.lineWidth = 4; g.stroke();
     const sec = Math.floor(tau), cs = Math.floor((tau - sec) * 100);
     txt(g, `0:0${sec}.${String(cs).padStart(2, '0')}`, 0, 28, 70, tau >= 3.99 ? '#ff5a3a' : '#ffb347', { kind: 'mono', align: 'center' }); g.restore();
-    if (t < r1) { g.save(); g.translate(540, 520); g.fillStyle = CREAM; g.strokeStyle = INK; g.lineWidth = 8; g.lineJoin = 'round'; for (const dx of [-46, 46]) { g.beginPath(); g.moveTo(dx + 46, -54); g.lineTo(dx + 46, 54); g.lineTo(dx - 46, 0); g.closePath(); g.stroke(); g.fill(); } g.restore(); return flashAt(t, r0) * 0.25; }
+    if (t < r1) { g.save(); g.translate(540, 1200); g.fillStyle = CREAM; g.strokeStyle = INK; g.lineWidth = 8; g.lineJoin = 'round'; for (const dx of [-46, 46]) { g.beginPath(); g.moveTo(dx + 46, -54); g.lineTo(dx + 46, 54); g.lineTo(dx - 46, 0); g.closePath(); g.stroke(); g.fill(); } g.restore(); return flashAt(t, r0) * 0.25; }
     // the ring follows your wallet: in your fingers, falling, landing
     const hd = handAt(tau), wl = walletAt(tau, hd);
     let wx, wy;
@@ -641,17 +648,17 @@
     else if (wl.st === 'fall') [wx, wy] = [(wl.x - 540) * c.zoom + 540 + c.sway, (wl.y - 960 + c.bob) * c.zoom + 960];
     else [wx, wy] = walletOnScreen(c);
     const rk = sstep(r1 + 0.2, r1 + 0.6, t);
-    g.save(); g.translate(540, 900); g.scale(push, push); g.translate(-540, -900);      // the labels ride the same slow push
+    g.save(); g.translate(0, -260); g.translate(540, 900); g.scale(push, push); g.translate(-540, -900);      // the labels ride the same frame
     ring(g, wx, wy, 104, rk, 12);
-    if (rk > 0.6) { g.save(); g.globalAlpha = clamp((rk - 0.6) * 3); txt(g, 'YOUR WALLET', wx - 128, Math.min(wy + 24, 1500), 70, YEL, { align: 'right', stroke: INK, sw: 0.14 }); g.restore(); }
+    if (rk > 0.6) { g.save(); g.globalAlpha = clamp((rk - 0.6) * 3); txt(g, 'YOUR WALLET', wx - 128, wy + 24, 70, YEL, { align: 'right', stroke: INK, sw: 0.14 }); g.restore(); }
     // and where your eyes were: his face
     const fk = sstep(TT.numtwo - 0.3, TT.numtwo + 0.1, t);
     if (fk > 0) {
       g.save(); g.globalAlpha = fk;
-      txt(g, 'HIS FACE', 300, 560, 84, CREAM, { align: 'center', stroke: INK, sw: 0.14 });
-      g.strokeStyle = INK; g.lineWidth = 16; g.lineCap = 'round'; g.beginPath(); g.moveTo(330, 590); g.quadraticCurveTo(360, 680, 440, 720); g.stroke();
-      g.strokeStyle = CREAM; g.lineWidth = 9; g.beginPath(); g.moveTo(330, 590); g.quadraticCurveTo(360, 680, 440, 720); g.stroke();
-      g.fillStyle = CREAM; g.beginPath(); g.moveTo(452, 728); g.lineTo(420, 732); g.lineTo(436, 704); g.closePath(); g.fill();
+      txt(g, 'HIS FACE', 250, 660, 84, CREAM, { align: 'center', stroke: INK, sw: 0.14 });
+      g.strokeStyle = INK; g.lineWidth = 16; g.lineCap = 'round'; g.beginPath(); g.moveTo(290, 690); g.quadraticCurveTo(330, 760, 420, 780); g.stroke();
+      g.strokeStyle = CREAM; g.lineWidth = 9; g.beginPath(); g.moveTo(290, 690); g.quadraticCurveTo(330, 760, 420, 780); g.stroke();
+      g.fillStyle = CREAM; g.beginPath(); g.moveTo(434, 784); g.lineTo(404, 794); g.lineTo(412, 764); g.closePath(); g.fill();
       g.restore();
     }
     g.restore();
@@ -663,7 +670,7 @@
     g.save(); g.translate(540, 700); g.scale(z, z); g.translate(-540, -700);
     lane(g, t, { mood: (i) => ({ ...hurt(i), close: ((t + i * 1.1) % 3.2) < 0.11 ? 1 : 0 }), hand: false });
     g.restore();
-    const band = sstep(TT.n10 - 0.2, TT.n10 + 0.1, t); if (band > 0) { g.fillStyle = `rgba(16,15,12,${0.62 * band})`; R(g, 40, 1068, 1000, 300, 26); g.fill(); }
+    const band = sstep(TT.n10 - 0.2, TT.n10 + 0.1, t); if (band > 0) { g.fillStyle = `rgba(16,15,12,${0.62 * band})`; R(g, 90, 1068, 860, 300, 26); g.fill(); }
     title(g, 'STILL THINK YOU’RE', 1170, 104, CREAM, t, TT.n10 - 0.04, { stroke: INK, sw: 0.14 });
     if (t >= TT.victim - 0.04) title(g, 'THE VICTIM?', 1310, 150, YEL, t, TT.victim - 0.04, { stroke: INK, sw: 0.12 });
     const out = sstep(TT.end - 0.4, TT.end, t);
