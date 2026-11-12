@@ -1,0 +1,308 @@
+{
+  "note": "Single source of truth for picture + sound, in BEATS (120 bpm: beat = 0.5 s). film.js reads marks via film/data.js; sync.mjs turns sfx into cues.json; score.py reads marks for the music; vo.json places the narration. Every reel ends with the Root Cause end card: 'end' → 'done' = 3.0 s (6 beats), engine/endcard.",
+  "title": "You're the Cashier",
+  "duration": 57.0,
+  "fps": 30,
+  "bpm": 120,
+  "formats": [
+    "9x16"
+  ],
+  "music": {
+    "source": "synth (score.py → scripts/synth.py)"
+  },
+  "voiceover": {
+    "provider": "voice lab",
+    "voice": "k-heart",
+    "file": "vo.json"
+  },
+  "mix": {
+    "music": -7,
+    "sfx": -5,
+    "vo": 3.2,
+    "duck": true,
+    "spectral": true
+  },
+  "marks": {
+    "hook": 0,
+    "end": 108.0,
+    "done": 114.0
+  },
+  "sfx": [
+    {
+      "at": 0.0,
+      "type": "clink",
+      "gain": 0.8,
+      "what": "the blade rings as the light runs along it: the first sound (4-9 kHz)",
+      "pitch": 1.25
+    },
+    {
+      "at": 0.04,
+      "type": "shimmer",
+      "gain": 0.35,
+      "what": "the glint along the edge (above 5 kHz)",
+      "len": 0.45
+    },
+    {
+      "at": 0.0,
+      "type": "idle",
+      "gain": 0.22,
+      "what": "the shop: a far road outside, all below 250 Hz",
+      "len": 5.85
+    },
+    {
+      "at": 5.25,
+      "type": "clink",
+      "gain": 0.35,
+      "what": "the light runs along it again on \"knife\" (above 4 kHz)",
+      "pitch": 1.35
+    },
+    {
+      "at": 6.238,
+      "type": "stamp",
+      "gain": 0.9,
+      "what": "his palm slaps the glass counter (in the gap before his line)",
+      "pitch": 0.8
+    },
+    {
+      "at": 6.258,
+      "type": "clink",
+      "gain": 0.45,
+      "what": "the glass rattles (above 4 kHz)",
+      "pitch": 0.9
+    },
+    {
+      "at": 8.82,
+      "type": "kaching",
+      "gain": 0.75,
+      "what": "the till: the drawer jumps out, its bell (in the gap)"
+    },
+    {
+      "at": 9.28,
+      "type": "riffle",
+      "gain": 0.5,
+      "what": "your hand on the notes (above 4.5 kHz)",
+      "len": 0.3
+    },
+    {
+      "at": 9.94,
+      "type": "whoosh",
+      "gain": 0.55,
+      "what": "his hand comes for it",
+      "pitch": 1.25
+    },
+    {
+      "at": 10.02,
+      "type": "paper",
+      "gain": 0.6,
+      "what": "the notes go"
+    },
+    {
+      "at": 10.76,
+      "type": "steps",
+      "gain": 1.0,
+      "what": "he runs for the door, going away",
+      "len": 0.24,
+      "pitch": 1.05
+    },
+    {
+      "at": 11.2,
+      "type": "steps",
+      "gain": 0.8,
+      "what": "he runs for the door, going away",
+      "len": 0.24,
+      "pitch": 1.05
+    },
+    {
+      "at": 11.14,
+      "type": "deskbell",
+      "gain": 0.38,
+      "what": "the shop door's bell as he goes through it (in the gap)",
+      "pitch": 1.6
+    },
+    {
+      "at": 11.54,
+      "type": "shutter",
+      "gain": 0.65,
+      "what": "the four land (before \"Now pick him\")"
+    },
+    {
+      "at": 11.54,
+      "type": "thunk",
+      "gain": 0.5,
+      "what": "a low knock under them",
+      "pitch": 0.7
+    },
+    {
+      "at": 13.68,
+      "type": "tick",
+      "gain": 0.12,
+      "what": "the clock, 4 left (above 4.5 kHz)",
+      "pitch": 1.6
+    },
+    {
+      "at": 15.68,
+      "type": "tick",
+      "gain": 0.12,
+      "what": "the clock, 3 left (above 4.5 kHz)",
+      "pitch": 1.6
+    },
+    {
+      "at": 17.68,
+      "type": "tick",
+      "gain": 0.2,
+      "what": "the clock, 2 left (above 4.5 kHz)",
+      "pitch": 1.6
+    },
+    {
+      "at": 19.68,
+      "type": "tick",
+      "gain": 0.2,
+      "what": "the clock, 1 left (above 4.5 kHz)",
+      "pitch": 1.6
+    },
+    {
+      "at": 21.68,
+      "type": "buzzer",
+      "gain": 0.42,
+      "what": "time (in the silence the score leaves)",
+      "len": 0.36
+    },
+    {
+      "at": 24.046,
+      "type": "shutter",
+      "gain": 0.55,
+      "what": "the knives land, where the faces were (before \"Now pick his knife\")"
+    },
+    {
+      "at": 24.046,
+      "type": "thunk",
+      "gain": 0.42,
+      "what": "under them",
+      "pitch": 0.76
+    },
+    {
+      "at": 26.086,
+      "type": "tick",
+      "gain": 0.12,
+      "what": "the clock, barely started (above 4.5 kHz)",
+      "pitch": 1.6
+    },
+    {
+      "at": 28.086,
+      "type": "tick",
+      "gain": 0.12,
+      "what": "the clock, barely started (above 4.5 kHz)",
+      "pitch": 1.6
+    },
+    {
+      "at": 29.954,
+      "type": "clink",
+      "gain": 0.55,
+      "what": "knife D lights: its own ring from frame 0 (above 4 kHz, before the line)",
+      "pitch": 1.25
+    },
+    {
+      "at": 29.994,
+      "type": "shimmer",
+      "gain": 0.28,
+      "what": "the glint again",
+      "len": 0.4
+    },
+    {
+      "at": 34.29,
+      "type": "whoosh",
+      "gain": 0.3,
+      "what": "knife D slides to the middle (in the gap)",
+      "pitch": 1.4
+    },
+    {
+      "at": 40.682,
+      "type": "shutter",
+      "gain": 0.35,
+      "what": "the four again (in the gap)"
+    },
+    {
+      "at": 49.622,
+      "type": "whoosh",
+      "gain": 0.35,
+      "what": "the move up past the blade (in the gap)",
+      "pitch": 0.8
+    },
+    {
+      "at": 56.9,
+      "type": "thunk",
+      "gain": 0.6,
+      "what": "the ring round card 2 (in the gap)",
+      "pitch": 0.82
+    },
+    {
+      "at": 61.556,
+      "type": "stamp",
+      "gain": 0.65,
+      "what": "GOES FREE (in the gap)",
+      "pitch": 1.05
+    },
+    {
+      "at": 66.212,
+      "type": "stamp",
+      "gain": 0.62,
+      "what": "INNOCENT, card 1 (in the gap)",
+      "pitch": 1.0
+    },
+    {
+      "at": 66.392,
+      "type": "stamp",
+      "gain": 0.62,
+      "what": "INNOCENT, card 3 (in the gap)",
+      "pitch": 1.04
+    },
+    {
+      "at": 66.572,
+      "type": "stamp",
+      "gain": 0.62,
+      "what": "INNOCENT, card 4 (in the gap)",
+      "pitch": 1.08
+    },
+    {
+      "at": 66.712,
+      "type": "clang",
+      "gain": 0.85,
+      "what": "a cell door (in the gap, before \"You just sent\")",
+      "pitch": 0.92
+    },
+    {
+      "at": 74.93,
+      "type": "thunk",
+      "gain": 0.3,
+      "what": "the title (in the gap)",
+      "pitch": 0.9
+    },
+    {
+      "at": 78.4,
+      "type": "paper",
+      "gain": 0.3,
+      "what": "the two panels slide in (in the gap)"
+    },
+    {
+      "at": 89.234,
+      "type": "thunk",
+      "gain": 0.55,
+      "what": "the shop goes dark (in the gap)",
+      "pitch": 0.62
+    },
+    {
+      "at": 89.354,
+      "type": "clink",
+      "gain": 0.3,
+      "what": "the knife, the only thing left: its ring (above 4 kHz)",
+      "pitch": 1.25
+    },
+    {
+      "at": "end",
+      "type": "wav",
+      "file": "../../engine/endcard/endcard.wav",
+      "gain": 1.0,
+      "what": "end card sound"
+    }
+  ]
+}
