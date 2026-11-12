@@ -1,0 +1,99 @@
+{
+ "note": "Reel 34: You're the Victim (working title). Draft 3, after two cold reads (n07b, for whoever saw the wallet, added at HQ's note): no replay and no study on screen (the study goes to the caption and the pinned comment). Three men bump you in a market lane and your wallet's gone; whoever you pick goes to jail. Look down: it slipped out of your hand at four seconds and has lain at your feet the whole time. The narrator is the series voice (af_heart). Lines that need a real pause are their own lines. Facts: docs/research.md. n07b: misaki flapped 'spotted' to /spˈɑTᵻd/ ('spodded') in every take, so its t is planned by hand; n07c ('saw it', nothing to flap) is the fallback, and only one of the two is placed. The fresh review: misaki said misdirection /mˌɪsdəɹˈɛkʃən/ ('mis-der-ection'); n09 plans 'mis-dye-' (/dI/), n09b 'mis-di-' (/dɪ/). 'Look down' had its stress on Look; n04b gives down the primary stress. Variants are voiced side by side; one of each is placed.",
+ "voice": "af_heart",
+ "speed": 1.0,
+ "ref_text": "The night was cold and very quiet. Most of the street was asleep, and the lamps hummed over the empty road. Somewhere far away, a train rolled past, and then the silence came back.",
+ "cast_lines": [
+  "n01"
+ ],
+ "cast": [
+  {
+   "id": "k-heart-100",
+   "engine": "kokoro",
+   "voice": "af_heart",
+   "speed": 1.0
+  }
+ ],
+ "take": [
+  {
+   "id": "k-heart",
+   "engine": "kokoro",
+   "voice": "af_heart",
+   "speed": 1.0
+  }
+ ],
+ "lines": [
+  {
+   "id": "n01",
+   "text": "You're the victim."
+  },
+  {
+   "id": "c1",
+   "text": "One."
+  },
+  {
+   "id": "c2",
+   "text": "Two."
+  },
+  {
+   "id": "c3",
+   "text": "Three."
+  },
+  {
+   "id": "n02",
+   "text": "And your wallet's gone."
+  },
+  {
+   "id": "n03",
+   "text": "Whoever you pick goes to jail."
+  },
+  {
+   "id": "n04",
+   "text": "Look down."
+  },
+  {
+   "id": "n04b",
+   "text": "Look down.",
+   "text_kokoro": "Look [down](/dˈWn/)."
+  },
+  {
+   "id": "n05",
+   "text": "It's been there the whole time."
+  },
+  {
+   "id": "n06",
+   "text": "Nobody took it."
+  },
+  {
+   "id": "n07",
+   "text": "And whoever you picked is going to jail for bumping into you."
+  },
+  {
+   "id": "n07b",
+   "text": "If you spotted it, nobody goes to jail.",
+   "text_kokoro": "If you [spotted](/spˈɑtᵻd/) it, nobody goes to jail."
+  },
+  {
+   "id": "n07c",
+   "text": "If you saw it, nobody goes to jail."
+  },
+  {
+   "id": "n08",
+   "text": "It slipped out of your hand four seconds in, while you were face to face with number two."
+  },
+  {
+   "id": "n09",
+   "text": "Magicians call that misdirection.",
+   "text_kokoro": "Magicians call that [misdirection](/mˌɪsdIɹˈɛkʃən/)."
+  },
+  {
+   "id": "n09b",
+   "text": "Magicians call that misdirection.",
+   "text_kokoro": "Magicians call that [misdirection](/mˌɪsdɪɹˈɛkʃən/)."
+  },
+  {
+   "id": "n10",
+   "text": "Still think you're the victim?"
+  }
+ ]
+}
