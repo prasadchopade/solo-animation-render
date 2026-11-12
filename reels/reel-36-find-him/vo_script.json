@@ -1,0 +1,8 @@
+{
+ "voice": "af_heart",
+ "speed": 1.12,
+ "lines": [
+  { "id": "v01", "text": "Replace this with your first line of narration." },
+  { "id": "v02", "text": "Spell numbers the way they should be spoken: two hundred forty-two." }
+ ]
+}
