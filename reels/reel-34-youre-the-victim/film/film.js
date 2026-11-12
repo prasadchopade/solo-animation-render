@@ -31,11 +31,13 @@
   const lg = (g, x0, y0, x1, y1, ...stops) => { const q = g.createLinearGradient(x0, y0, x1, y1); stops.forEach(([p, c]) => q.addColorStop(p, c)); return q; };
   const rg = (g, x, y, r0, r1, ...stops) => { const q = g.createRadialGradient(x, y, r0, x, y, r1); stops.forEach(([p, c]) => q.addColorStop(p, c)); return q; };
   const offscreen = (w, h) => { const c = document.createElement('canvas'); c.width = w; c.height = h; return c; };
-  function shakeAt(t, list) {                       // list: [time, amplitude]; a decaying, frame-clocked jitter
+  function shakeAt(t, list, smooth = false) {       // list: [time, amplitude]; a decaying, frame-clocked jitter (smooth: glides between frames, for slow motion)
     let a = 0; for (const [t0, amp] of list) if (t >= t0) a = Math.max(a, amp * Math.exp(-(t - t0) * 9));
     if (a < 0.2) return [0, 0];
-    const r = mulberry32(Math.round(t * 30) * 7 + 3);
-    return [(r() - 0.5) * 2 * a, (r() - 0.5) * 2 * a];
+    const at = (n) => { const r = mulberry32(n * 7 + 3); return [(r() - 0.5) * 2, (r() - 0.5) * 2]; };
+    if (!smooth) { const v = at(Math.round(t * 30)); return [v[0] * a, v[1] * a]; }
+    const f = t * 30, n = Math.floor(f), u = sstep(0, 1, f - n), v0 = at(n), v1 = at(n + 1);
+    return [lerp(v0[0], v1[0], u) * a, lerp(v0[1], v1[1], u) * a];
   }
   const flashAt = (t, t0) => { const d = t - t0; return d < 0 ? 0 : Math.exp(-d * 11) * 0.92; };
   function stamp(g, s, x, y, t, t0, color = RED, size = 120, rot = -0.1) {
@@ -429,7 +431,8 @@
       g.save(); g.translate(0, 14); g.scale(0.9, 0.92); toe(); g.fillStyle = lg(g, -110, -40, 110, 200, [0, '#3f5f8f'], [1, '#26406a']); g.fill(); g.restore();
       g.fillStyle = '#e9e4d6'; g.beginPath(); g.moveTo(-70, -10); g.quadraticCurveTo(0, -52, 70, -10); g.quadraticCurveTo(0, -30, -70, -10); g.fill();   // the toe cap
       g.strokeStyle = '#f4f1e8'; g.lineWidth = 7; g.lineCap = 'round'; for (let i = 0; i < 3; i++) { g.beginPath(); g.moveTo(-36, 56 + i * 30); g.lineTo(36, 56 + i * 30); g.stroke(); }
-      g.fillStyle = '#4a6a94'; R(g, -150, 210, 300, 220, 40); g.fill();             // your jeans' hems
+      g.fillStyle = '#4a6a94'; g.beginPath(); g.moveTo(-150, 250); g.lineTo(150, 250); g.lineTo(196, 1150); g.lineTo(-196, 1150); g.closePath(); g.fill();   // your legs, down to you
+      R(g, -150, 210, 300, 220, 40); g.fill();                                      // your jeans' hems
       g.restore();
     }
   }
@@ -487,7 +490,7 @@
     // after that they're well beyond it. His head is inside the 950 line from about 6.0 s.
     const P3W = [[TT.b2 + 0.35, 1480, 900, 1.3, 1], [TT.b3 - 0.6, 1260, 862, 1.25, 1], [TT.b3, 1030, 760, 0.95, 1], [TT.b3 + 0.34, 940, 668, 0.56, 1], [TT.b3 + 0.59, 828, 645, 0.475, 1], [TT.b3 + 1.6, 765, 632, 0.41, 1], [F, 750, 626, 0.38, 1]];
     const m3 = t < F ? spline(t, P3W) : key(t, [[F, 750, 626, 0.38, 1], [F1, SPOT[2][0], SPOT[2][1], SPOT[2][2], 0]]);
-    const g3 = sstep(TT.b3 + 0.9, TT.b3 + 1.05, t) * (1 - sstep(TT.b3 + 1.45, TT.b3 + 1.6, t));   // three glances back at you once
+    const g3 = sstep(TT.b3 + 0.95, TT.b3 + 1.07, t) * (1 - sstep(TT.b3 + 1.35, TT.b3 + 1.47, t));   // three glances back at you once
     if (t < F) m3[3] = Math.min(m3[3], 1 - g3);
     return [m1, m2, m3];
   }
@@ -499,7 +502,7 @@
     const drop = sstep(TT.b2 + 0.95, TT.b2 + 1.55, t);                        // your eyes drop: the floor at your feet
     const up = sstep(TT.n02 - 0.05, TT.gone + 0.1, t);                        // you look up at them: the floor is out of shot by "gone"
     const jolt = sstep(TT.b2, TT.b2 + 0.3, t);                                // the bump knocks your eyes down
-    let camY = lerp(lerp(lerp(-110, 60, jolt), 100, drop), -150, up), zoom = lerp(1 + 0.035 * sstep(0, TT.b2, t), 1.35, up) + 0.05 * sstep(TT.freeze + 0.5, TT.clock1, t);
+    let camY = lerp(lerp(lerp(-110, 60, jolt), 100, drop), -190, up), zoom = lerp(1 + 0.035 * sstep(0, TT.b2, t), 1.35, up) + 0.05 * sstep(TT.freeze + 0.5, TT.clock1, t);
     const dn = sstep(TT.down0, TT.down1, t);                                  // "Look down."
     camY = lerp(camY, 700, dn); zoom = lerp(zoom, 1, dn);
     const back = sstep(TT.up0, TT.up1, t);                                    // back up at the three, the wide frame
@@ -527,14 +530,15 @@
     y += (t >= TT.b2 ? 60 * Math.exp(-(t - TT.b2) * 5) : 0) + 620 * sstep(TT.b2 + 0.5, TT.b2 + 1.0, t);   // your arm drops to your side
     x += 230 * sstep(TT.b2 + 0.02, TT.b2 + 0.25, t) + 70 * sstep(TT.b2 + 0.45, TT.b2 + 0.95, t);   // knocked aside, then down to your side
     const up = sstep(TT.lift, TT.lift + 0.35, t) * (1 - sstep(TT.lower, TT.lower + 0.3, t));
-    x = lerp(x, 690, up); y = lerp(y, 1180, up) + 520 * sstep(TT.lower, TT.lower + 0.3, t); rot = lerp(rot, -0.55, up); open = up;
+    const upx = sstep(TT.lift + 0.12, TT.lift + 0.42, t) * (1 - sstep(TT.lower, TT.lower + 0.3, t));
+    x = lerp(x, 690, upx); y = lerp(y, 1180, up) + 520 * sstep(TT.lower, TT.lower + 0.3, t); rot = lerp(rot, -0.55, up); open = up;
     return { x, y, s, rot, open };
   }
   function lane(g, t, o = {}) {
     const TT = times();
     if (!LN) makeLane();
     const c = camAt(t), frozen = t >= TT.freeze ? TT.freeze : null, tt = frozen ?? t;
-    const sh = shakeAt(t, [[TT.b1, 14], [TT.b2, 36], [TT.b3, 18]]);
+    const sh = shakeAt(t, [[TT.b1, 14], [TT.b2, 36], [TT.b3, 18]], !!o.smoothShake);
     g.save();
     g.translate(540 + sh[0] + c.sway, 960 + sh[1]); g.scale(c.zoom, c.zoom); g.translate(-540, -960 + c.bob);
     g.fillStyle = '#9fd3ee'; g.fillRect(-200, -400, W + 400, 400 - c.camY + 2);    // sky above the drawn lane, for when you look ahead and the camera shakes
@@ -584,7 +588,7 @@
         const t0 = at(p) - 0.03, k = win3(t, t0, t0 + 0.8), m = M[i];
         let [x, y] = toScreen(c0, m[0], m[1] - 330 * m[2] - 70); y = clamp(y, 330, 900);
         const kx = clamp((x + 10) / 70) * clamp((1150 - x) / 70);
-        if (k * kx > 0) { g.save(); g.globalAlpha = k * kx; g.translate(clamp(x, 90, 930), y); const q = pop(t, t0); g.scale(lerp(0.6, 1, q), lerp(0.6, 1, q)); tileNo(g, 0, 0, i + 1, 112); g.restore(); }
+        if (k * kx > 0) { g.save(); g.globalAlpha = k * kx; g.translate(clamp(x, 90, 888), y); const q = pop(t, t0); g.scale(lerp(0.6, 1, q), lerp(0.6, 1, q)); tileNo(g, 0, 0, i + 1, 112); g.restore(); }
       }); }
     if (t >= TT.gone - 0.04 && t < TT.freeze) title(g, 'YOUR WALLET?', 850, 120, CREAM, t, TT.gone - 0.04, { stroke: INK, sw: 0.14 });
     if (t >= TT.freeze) {
@@ -631,8 +635,8 @@
     const bk = sstep(TT.n07e + 0.05, TT.n07e + 0.3, t) * (1 - sstep(TT.nobody - 0.05, TT.nobody + 0.55, t));   // the door shuts; if you spotted it, it lifts
     if (bk > 0) bars(g, bk);
     if (t >= TT.n07b - 0.04 && t < TT.face0) title(g, 'SPOTTED IT?', 1258, 112, YEL, t, TT.n07b - 0.04, { stroke: INK, sw: 0.12 });
-    if (t >= TT.bumping - 0.04 && t < TT.n07b - 0.05) title(g, 'FOR BUMPING INTO YOU', 1390, 96, CREAM, t, TT.bumping - 0.04, { stroke: INK, sw: 0.14 });
-    if (t >= TT.nobody - 0.04) title(g, 'NOBODY GOES TO JAIL', 1390, 96, CREAM, t, TT.nobody - 0.04, { stroke: INK, sw: 0.14 });
+    if (t >= TT.bumping - 0.04 && t < TT.n07b - 0.05) title(g, 'FOR BUMPING INTO YOU', 1356, 96, CREAM, t, TT.bumping - 0.04, { stroke: INK, sw: 0.14 });
+    if (t >= TT.nobody - 0.04) title(g, 'NOBODY GOES TO JAIL', 1360, 96, CREAM, t, TT.nobody - 0.04, { stroke: INK, sw: 0.14 });
     return flashAt(t, TT.n07e + 0.3) * 0.3;
   }
   function bars(g, k, y0 = 250, y1 = 1300) {        // a cell front over the three of them, from y0 to y1
@@ -654,7 +658,7 @@
     else tau = Math.min(HOLDT, lerp(3.75, HOLDT, (t - r1) / (p1 - r1)));          // forward at about a fifth of the speed, then held
     const push = 1 + 0.05 * sstep(p1, TT.fin, t);
     g.save(); g.translate(0, -160); g.translate(540, 900); g.scale(push, push); g.translate(-540, -900);
-    const { c } = lane(g, tau, { noBlink: true, noShoes: true });
+    const { c } = lane(g, tau, { noBlink: true, noShoes: true, smoothShake: true });
     g.restore();
     if (t >= r1) { g.fillStyle = 'rgba(255,248,230,0.08)'; g.fillRect(0, 0, W, H); }
     // the film's own clock
