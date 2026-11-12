@@ -406,8 +406,11 @@
     if (near) arm(g, P, near, pose(near), phi, o); else { arm(g, P, -1, pose(-1), phi, o); arm(g, P, 1, pose(1), phi, o); }
     g.save(); g.translate(150 * sp * 0.42 + (o.headX || 0), (o.headBob ?? -wk * 4 * Math.cos(2 * ph - 0.5))); g.rotate(o.tilt || 0);
     const hy = clamp((o.headYaw || 0) + phi * 0.6, -1.15, 1.15);
-    if (back && !o.showFace) headBack(g, L, o);
-    else head(g, L, { op: o.op, close: o.close, look: o.look, frown: o.frown, worry: o.worry, smile: o.smile, smirk: o.smirk, browY: o.browY, browUp: o.browUp, yaw: hy, rim: o.rim, hairFlop: o.hairFlop });
+    const face = () => head(g, L, { op: o.op, close: o.close, look: o.look, frown: o.frown, worry: o.worry, smile: o.smile, smirk: o.smirk, browY: o.browY, browUp: o.browUp, yaw: hy, rim: o.rim, hairFlop: o.hairFlop });
+    const fm = back ? (o.faceMix ?? (o.showFace ? 1 : 0)) : 1;                  // seen from behind: 0 the back of his head, 1 his face turned round
+    if (fm <= 0.001) headBack(g, L, o);
+    else if (fm >= 0.999) face();
+    else { g.save(); g.globalAlpha *= 1 - fm; headBack(g, L, o); g.restore(); g.save(); g.globalAlpha *= fm; face(); g.restore(); }
     g.restore();
     g.restore();
     g.restore();
@@ -661,11 +664,13 @@
     const r = mulberry32(3477), out = [];
     for (let i = 0; i < 17; i++) {
       let X, Z0, v;
+      // the ones up the middle never come nearer than about 4,400 in the whole film (well behind where the three end up: the re-check of
+      // final 10 caught a walker coming through them to your wallet in the last shot); the ones on your right are gone once you look down
       if (i < 6) { X = 1060 + r() * 240; Z0 = -4000 + r() * 19000; v = (r() > 0.5 ? 1 : -1) * (500 + r() * 380); }
       else if (r() > 0.45) { X = -600 + r() * 1300; Z0 = 4600 + r() * 2800; v = 150 + r() * 200; }
-      else { X = -600 + r() * 1300; Z0 = 10000 + r() * 4500; v = -(130 + r() * 170); }
+      else { X = -600 + r() * 1300; Z0 = 12500 + r() * 2300; v = -(110 + r() * 150); }
       const toward = v < 0, P = toward ? WOMEN[i % WOMEN.length] : (i % 3 ? MEN_BACK[i % MEN_BACK.length] : WOMEN[(i + 2) % WOMEN.length]);
-      out.push({ X, Z0, v, P, ph: r() * TAU, cad: 1.7 + r() * 0.5, kid: i % 7 === 4 && toward });
+      out.push({ X, Z0, v, P, ph: r() * TAU, cad: 1.7 + r() * 0.5, kid: i % 7 === 4 && toward, side: i < 6 });
     }
     return out;
   })();
@@ -767,7 +772,7 @@
 
   // ------------------------------------------------------------------ the three men: where they are, and how they move
   // Where each man is (head x, y, scale) and how he's turned, as a function of t (lane coordinates).
-  const SPOT = [[330, 606, 0.46], [512, 592, 0.485], [690, 612, 0.465]];   // the line-up the freeze puts them in (big: their faces read on a phone)
+  const SPOT = [[330, 606, 0.46], [512, 592, 0.485], [678, 612, 0.465]];   // the line-up the freeze puts them in (big: their faces read on a phone; number three's ear inside 950 even mid-breath)
   const key = (t, ks) => {                          // piecewise smooth through [time, x, y, s, turn]
     if (t <= ks[0][0]) return ks[0].slice(1);
     for (let i = 0; i < ks.length - 1; i++) { const a = ks[i], b = ks[i + 1]; if (t <= b[0]) { const u = sstep(a[0], b[0], t); return a.slice(1).map((v, j) => lerp(v, b[j + 1], u)); } }
@@ -787,7 +792,7 @@
   function menAt(t) {
     const TT = times();
     const F = TT.freeze, F1 = TT.freeze + 0.5;                                  // the line-up slides in as you look up at them
-    if (t >= TT.fin) return SPOT.map(([x, y, s]) => [x + 120, y, s, 0]);      // the last shot: a little to your right, clear of the stall
+    if (t >= TT.fin) return SPOT.map(([x, y, s]) => [x + 130, y, s, 0]);      // the last shot: a little to your right, clear of the stall
     const m1 = key(t, [[0, 470, 700, 0.15, 0], [TT.b1 - 0.55, 330, 690, 0.42, 0], [TT.b1, 150, 760, 1.05, 0], [TT.b1 + 0.55, 70, 770, 1.12, 0], [TT.b1 + 1.0, -760, 800, 1.3, 0], [F - 0.4, -760, 800, 1.3, 0], [F, -300, 800, 1.3, 0], [F1, SPOT[0][0], SPOT[0][1], SPOT[0][2], 0]]);
     const m2 = key(t, [[0, 590, 690, 0.12, 0], [TT.b2 - 1.1, 570, 690, 0.3, 0], [TT.b2 - 0.25, 400, 760, 0.95, 0], [TT.b2, 230, 810, 1.3, 0], [TT.b2 + 0.32, 245, 800, 1.25, 0], [TT.b2 + 0.6, 400, 690, 0.66, 0], [TT.b2 + 1.0, 470, 610, 0.44, 0], [F, 470, 606, 0.43, 0], [F1, SPOT[1][0], SPOT[1][1], SPOT[1][2], 0]]);   // he holds through the slip, then steps well back
     // number three: in from your right, past you, up the lane. His feet are level with the wallet at about 5.78 s, clear of it even mid-stride;
@@ -831,7 +836,8 @@
       const shake = sorry * 0.12 * Math.sin((t - TT.b2) * TAU * 3.1);
       return { walk: Math.max(hurry, stepBack * 0.55), phase: ph, look: [lerp(14 * watch, 0, up), lerp(16 * watch + 2, 3, up)], browY: 8 * watch * (1 - up), op: Math.max(startle, talk), worry: up > 0.5 ? lerp(-10, -7, sstep(TT.b2 + 0.4, TT.b2 + 1.2, t)) : 0,
         frown: 0.06, headYaw: shake, tilt: 0.06 * hitK, squash: 0.05 * hitK, swing: 0.22 * Math.sin(ph) * hurry + 0.5 * hitK * Math.sin((t - TT.b2) * 22),
-        arms: { r: watch > 0.01 ? { a1: 0.22, a2: 1.85, hand: 'watch', w: watch } : sorry > 0.01 ? { a1: 0.12, a2: 2.55, hand: 'open', w: sorry } : { a1: -0.06, a2: 0.1, hand: 'watch', w: tuck }, l: sorry > 0.01 ? { a1: 0.12, a2: 2.55, hand: 'open', w: sorry } : { a1: -0.06, a2: 0.1, w: tuck } }, hands: { r: 'watch' }, legs: true };
+        // open palms up at his chest, apart (the re-check: two hands meeting at his chest read as fists clutching something)
+        arms: { r: watch > 0.01 ? { a1: 0.22, a2: 1.85, hand: 'watch', w: watch } : sorry > 0.01 ? { a1: -0.15, a2: 2.69, hand: 'open', w: sorry } : { a1: -0.06, a2: 0.1, hand: 'watch', w: tuck }, l: sorry > 0.01 ? { a1: -0.15, a2: 2.69, hand: 'open', w: sorry } : { a1: -0.06, a2: 0.1, w: tuck } }, hands: { r: 'watch' }, legs: true };
     }
     // THREE: from behind, an old man's walk, the bag in his right hand; one glance back over his shoulder
     const ph = t * Math.PI * 1.55 + 1.0, g3 = winK(t, TT.b3 + 0.95, TT.b3 + 1.07, TT.b3 + 1.35, TT.b3 + 1.47);
@@ -839,11 +845,14 @@
     // the freeze turns him round to you, head first: his face comes round over his shoulder (as in his glance), then his body follows,
     // its back turning edge-on before his front does, so the face never flips (the fresh review: a 180° turn in one frame)
     const u = clamp((t - F) / (F1 - F)), backV = u < 0.42;
-    const hyTot = t < F ? (g3 > 0.5 ? -0.95 : 0) : -0.75 * sstep(0, 0.2, u) * (1 - sstep(0.42, 1, u));
+    // from behind, his face comes round through a cross-fade from the back of his head, starting near profile, so neither the glance nor
+    // the freeze's turn flips it in one frame (the re-check of final 10)
+    const hyTot = t < F ? -0.95 : lerp(-1.12, -0.75, sstep(0.1, 0.24, u)) * (1 - sstep(0.42, 1, u));
+    const faceMix = t < F ? g3 : sstep(0.03, 0.16, u);
     const phi = t < F ? 0 : -0.7 * (backV ? sstep(0, 0.42, u) : 1 - sstep(0.42, 1, u));   // continuous through the switch: width, head and shading don't jump
     // the bag stays on the same side of the picture all the way round (in his right hand from behind, his left from the front), clear of
     // number two in the line-up
-    return { walk: t < F ? 1 : 0, phase: ph, back: backV, showFace: backV && (t < F ? g3 > 0.5 : u > 0.1), headYaw: hyTot - phi * 0.6, yaw: phi,
+    return { walk: t < F ? 1 : 0, phase: ph, back: backV, faceMix, headYaw: hyTot - phi * 0.6, yaw: phi,
       look: [14, 2], frown: 0.25, worry: -3, arms: { r: { a1: 0.1, a2: 0.05, hand: 'bag' } }, swingK: [1, 0.35], bagSwing: 0.18 * Math.sin(ph + 0.8) * (t < F ? 1 : 0) + 0.5 * bump, legs: true };
   }
 
@@ -908,7 +917,7 @@
 
   // ------------------------------------------------------------------ the season's thief at the chai stall: he sips, he watches your wallet;
   // at the end he raises his glass to you. He stands by the counter's near end, on your left, and never moves towards you or the wallet.
-  const THIEF_AT = [-1350, ZS + 250];
+  const THIEF_AT = [-1400, ZS + 250];
   function thiefPose(t, tw) {
     const TT = times();
     const sip = Math.max(winK(tw, 0.75, 1.1, 1.55, 1.9), winK(tw, 9.4, 9.75, 10.2, 10.55), winK(tw, 17.6, 17.95, 18.4, 18.75));
@@ -931,6 +940,7 @@
     // everyone in the lane, by depth: the crowd (soft, behind, when the camera focuses on faces), the three, the thief
     const actors = [];
     for (const p of CROWD) {
+      if (p.side && t >= TT.down0) continue;
       const Z = crowdAt(p, tw), q = P3(p.X, 0, Z, cz); if (!q || q[2] > 0.95 || q[2] < 0.045) continue;
       const toward = p.v < 0, s = q[2] * (p.kid ? 0.7 : 1), ph = tw * Math.PI * p.cad + p.ph;
       actors.push({ fy: q[1], soft: true, X: p.X, Z, draw: (gg) => figure(gg, p.P, q[0], q[1] - 1594 * s, s, { walk: 1, phase: ph, back: !toward, legs: true, yaw: 0.2 * Math.sign(-p.X) * (toward ? 1 : -1), look: [0, 4], close: blinkAt(tw, p.ph * 3), rim: 1 }) });
@@ -939,7 +949,8 @@
     // he's left out (only his body would show, at the end of their row: the fresh review of final 9)
     if (o.thief !== false && c.camY < 450) {
       const q = P3(THIEF_AT[0], 0, THIEF_AT[1], cz);
-      if (q) actors.push({ fy: q[1], soft: !o.thiefSharp, X: THIEF_AT[0], Z: THIEF_AT[1], draw: (gg) => figure(gg, THIEF_P, q[0], q[1] - 1594 * q[2], q[2], thiefPose(t, tw)) });
+      // (sharp in the last shot, so his raised glass reads, but a touch soft: pin-sharp, he looked pasted on beside the blurred stall)
+      if (q) actors.push({ fy: q[1], soft: !o.thiefSharp, X: THIEF_AT[0], Z: THIEF_AT[1], draw: (gg) => { gg.save(); if (o.thiefSharp) gg.filter = 'blur(1.1px)'; figure(gg, THIEF_P, q[0], q[1] - 1594 * q[2], q[2], thiefPose(t, tw)); gg.restore(); } });
     }
     if (o.men !== false) men.forEach((m, i) => {
       const fy = m[1] + 1594 * m[2]; if (m[0] < -700 || m[0] > 1800) return;
@@ -1090,7 +1101,7 @@
     if (t >= r1) { g.fillStyle = 'rgba(255,248,230,0.08)'; g.fillRect(0, 0, W, H); }
     vignette(g, 0.9);
     // the film's own clock
-    g.save(); g.translate(170, 1330); R(g, -140, -48, 280, 96, 14); g.fillStyle = '#121212'; g.fill(); g.strokeStyle = CREAM; g.lineWidth = 4; g.stroke();   // on his shirt, off his jaw
+    g.save(); g.translate(170, 1466); R(g, -140, -48, 280, 96, 14); g.fillStyle = '#121212'; g.fill(); g.strokeStyle = CREAM; g.lineWidth = 4; g.stroke();   // low on his shirt: off his jaw, under YOUR WALLET
     const sec = Math.floor(tau), cs = Math.floor((tau - sec) * 100);
     txt(g, `0:0${sec}.${String(cs).padStart(2, '0')}`, 0, 28, 70, tau >= 3.99 ? '#ff5a3a' : '#ffb347', { kind: 'mono', align: 'center' }); g.restore();
     if (t < r1) { g.save(); g.translate(540, 1200); g.fillStyle = CREAM; g.strokeStyle = INK; g.lineWidth = 8; g.lineJoin = 'round'; for (const dx of [-46, 46]) { g.beginPath(); g.moveTo(dx + 46, -54); g.lineTo(dx + 46, 54); g.lineTo(dx - 46, 0); g.closePath(); g.stroke(); g.fill(); } g.restore(); return flashAt(t, r0) * 0.25; }
