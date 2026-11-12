@@ -113,11 +113,12 @@
     if (t < TT.dots0) { const tw = worldClock(t); return { x: XC[i], z: ZC0[i] + V[i] * (tw - TT.m2), h: 0, tg: tw }; }
     const tg = TT.F + Math.max(0, t - TT.dots0 - 0.1);                        // they start walking again as the lane goes dark
     const lane = (tt) => ({ x: XC[i], z: ZF[i] + AHEAD[i] + V[i] * (tt - TT.back0), y: 0, h: 0 });
-    if (t < TT.back0 || (i !== 2 && t < TT.back1)) { const u = seg(TT.dots0, TT.dots1, t); return { x: lerp(XC[i], SG[i][0], u), z: lerp(ZF[i], SGZ, u), y: SG[i][1] * u, h: (PI / 2) * u, tg }; }
+    const spin = (tt) => 0.07 * Math.max(0, Math.min(tt, TT.back0) - TT.dots1);   // they turn slowly on the spot: bodies, not flat marks
+    if (t < TT.back0 || (i !== 2 && t < TT.back1)) { const u = seg(TT.dots0, TT.dots1, t); return { x: lerp(XC[i], SG[i][0], u), z: lerp(ZF[i], SGZ, u), y: SG[i][1] * u, h: (PI / 2) * u + spin(t), tg }; }
     if (i !== 2) return { ...lane(t), tg };
     const u = seg(TT.back0, TT.back1, t), L = lane(t);                           // number three walks out of the dark, back into the lane
     const rub = seg(TT.rub0, TT.rub0 + 0.7, t) * (1 - seg(TT.rub1 - 0.7, TT.rub1, t));
-    return { x: lerp(SG[i][0], L.x, u), z: lerp(SGZ, L.z, u), y: SG[i][1] * (1 - u), h: (PI / 2) * (1 - u), tg,
+    return { x: lerp(SG[i][0], L.x, u), z: lerp(SGZ, L.z, u), y: SG[i][1] * (1 - u), h: (PI / 2 + spin(t)) * (1 - u), tg,
       pose: rub > 0.001 ? { arms: { r: { wrist: [-0.085, 0.215, -0.025], pole: [-0.25, 0.25, -1], w: rub } }, headPitch: -0.2 * rub + 0.05 * rub * Math.sin(t * 2.2), headTilt: 0.1 * rub * Math.sin(t * 1.7), shrug: 0.025 * rub } : null };
   };
   const MEN = [0, 1, 2, 3].map((i) => ({ i, S: STYLES[i], look: LOOKS[i], track: trackOf(i), face: FACES[i] }));
@@ -168,6 +169,7 @@
   // ------------------------------------------------------------------ the camera
   const mixc = (a, b, u) => { const o = {}; for (const k in a) o[k] = lerp(a[k], b[k], u); return o; };
   const DOTCAM = { x: 0, y: 1.9, z: SGZ - 26, yaw: 0, pitch: 0, roll: 0, f: 6500, cx: 515, cy: 1005 };
+  const dotCam = (t) => mixc(DOTCAM, { ...DOTCAM, x: -0.46, y: 1.2, f: 8600 }, seg(TT.three - 0.3, TT.three + 1.3, t));   // in on number three when he's named
   function camPOV(t) {
     const A = (tt) => {                               // looking up the lane at the four of them (a long lens: his eyes have settled on them)
       let gx = 0, gz = 0; for (let i = 0; i < 4; i++) { gx += XA[i] / 4; gz += (ZA0[i] + V[i] * tt) / 4; }
@@ -198,16 +200,17 @@
   }
   function camAt(t) {
     if (t < TT.dots0) return camPOV(t);
-    if (t < TT.back0) return mixc(camPOV(TT.dots0), DOTCAM, seg(TT.dots0, TT.dots1, t));
+    if (t < TT.back0) return mixc(camPOV(TT.dots0), dotCam(t), seg(TT.dots0, TT.dots1, t));
     if (t < TT.back1) {                               // back down to the lane: the view swings in behind number three, and keeps him in the middle
-      const u = seg(TT.back0, TT.back1, t), c = mixc(DOTCAM, camEnd(t), u), tr = MEN[2].track(t);
+      const u = seg(TT.back0, TT.back1, t), D = dotCam(t), c = mixc(D, camEnd(t), u), tr = MEN[2].track(t);
       const aim = Math.atan2(tr.x - c.x, tr.z - c.z), k = Math.sin(PI * u);
-      c.yaw = lerp(c.yaw, aim, k); c.f = Math.exp(lerp(Math.log(DOTCAM.f), Math.log(camEnd(t).f), u));
+      c.yaw = lerp(c.yaw, aim, k); c.f = Math.exp(lerp(Math.log(D.f), Math.log(camEnd(t).f), u));
       return c;
     }
     return camEnd(t);
   }
 
+  const blinkAt = (t, i, period = 3.3) => { const u = (((t + 1.1 + i * 1.37) % period) + period) % period; return u < 0.06 ? sstep(0, 0.06, u) : u < 0.15 ? 1 - sstep(0.07, 0.15, u) : 0; };
   // ------------------------------------------------------------------ the lane with everyone in it
   // o.dof: how soft the lane is behind the people; o.bg: a canvas filter for the lane (the far wall, close up, is loud);
   // o.cast: who's in it; o.alpha(m): how solid each is; o.dark: 0–1, the lane gone dark
@@ -227,7 +230,8 @@
     if (dark > 0) { g.fillStyle = R.rgba(NIGHT, dark); g.fillRect(-4000, -4000, 9000, 9000); }
     const F = {};
     for (const a of cast) {
-      const face = a.m === THF ? thiefFace(t) : a.m.face, fo = { face, ...(o.fig ? o.fig(a.m) : {}) };
+      const tr0 = a.m.track(t), lagged = a.m.look.bag ? 1.25 * (R.skel(a.m.S, tr0.tg - 0.075, tr0.pose || {}).hipY - R.skel(a.m.S, tr0.tg, tr0.pose || {}).hipY) : 0;
+      const face = a.m === THF ? thiefFace(t) : { ...a.m.face, close: blinkAt(t, a.m.i) }, fo = { face, bagLag: lagged, ...(o.fig ? o.fig(a.m) : {}) };
       if (a.a < 0.999 || fo.blur > 0.4) {               // faint or soft: drawn whole into a buffer first, so his limbs don't show through each other
         F[a.m.i] = R.figure(fresh(buf(4)), cam, a.m, t, fo);
         g.save(); g.globalAlpha *= a.a; if (fo.blur > 0.4) g.filter = `blur(${fo.blur.toFixed(1)}px)`; g.drawImage(buf(4), 0, 0); g.restore();
@@ -311,17 +315,17 @@
     const out = sstep(TT.w1a - 0.45, TT.w1a - 0.2, t);
     if (out < 1) { g.save(); g.globalAlpha = 1 - out; txt(g, "YOU'RE THE", 515, 400, 104, CREAM, { align: 'center', stroke: INK, sw: 0.14 }); txt(g, 'THIEF', 515, 590, 230, YEL, { align: 'center', fit: 860, stroke: INK, sw: 0.12 }); g.restore(); }
     if (t >= TT.clock0 - 0.6 && t < TT.F) {
-      title(g, 'WHICH ONE?', 1330, 128, CREAM, t, TT.clock0 - 0.6, { stroke: INK, sw: 0.12 });
+      title(g, 'WHICH ONE?', 452, 128, CREAM, t, TT.clock0 - 0.6, { stroke: INK, sw: 0.12 });   // up in the sky: nothing may cover their feet
       const left = Math.min(Math.ceil(TT.clock1 - TT.clock0), Math.max(0, Math.ceil(TT.clock1 - t - 1e-3)));
-      g.save(); g.translate(515, 1440); RR(g, -110, -44, 220, 88, 12); g.fillStyle = '#121212'; g.fill(); g.strokeStyle = CREAM; g.lineWidth = 4; g.stroke();
+      g.save(); g.translate(515, 548); RR(g, -110, -44, 220, 88, 12); g.fillStyle = '#121212'; g.fill(); g.strokeStyle = CREAM; g.lineWidth = 4; g.stroke();
       txt(g, '00:0' + left, 0, 27, 68, left <= 1 ? '#ff4a30' : '#ffb347', { kind: 'mono', align: 'center' }); g.restore();
     }
     if (t >= TT.F) {
       // the same bag, four times; then the same phone, four times
       const kb = sstep(TT.bag - 0.05, TT.bag + 0.3, t) * (1 - sstep(TT.phone - 0.25, TT.phone - 0.05, t)), kp = sstep(TT.phone - 0.05, TT.phone + 0.3, t) * (1 - sstep(TT.dots0 - 0.3, TT.dots0, t));
       for (const m of MEN) { const f = F[m.i]; if (!f) continue; if (kb > 0 && f.bagC) ring(g, f.bagC[0], f.bagC[1], Math.max(f.bagC[2], f.bagC[3]) * 1.12, kb, 9); if (kp > 0 && f.phoneC) ring(g, f.phoneC[0], f.phoneC[1], f.phoneC[2] * 1.5, kp, 8); }
-      if (t < TT.phone - 0.1) title(g, 'SAME BAG', 1330, 150, YEL, t, TT.bag - 0.04, { stroke: INK, sw: 0.12 });
-      else if (t < TT.dots0) title(g, 'SAME PHONE', 1330, 150, YEL, t, TT.phone - 0.04, { stroke: INK, sw: 0.12 });
+      if (t < TT.phone - 0.1) title(g, 'SAME BAG', 480, 150, YEL, t, TT.bag - 0.04, { stroke: INK, sw: 0.12 });
+      else if (t < TT.dots0) title(g, 'SAME PHONE', 480, 150, YEL, t, TT.phone - 0.04, { stroke: INK, sw: 0.12, a: 1 - sstep(TT.dots0 - 0.35, TT.dots0 - 0.05, t) });
       const fl = flashAt(t, TT.F) * 0.3; if (fl > 0.003) { g.fillStyle = `rgba(255,253,244,${fl.toFixed(3)})`; g.fillRect(0, 0, W, H); }
     }
   }
@@ -338,7 +342,7 @@
     if (dark > 0.02) {
       g.save(); g.globalAlpha = dark * (1 - back);
       g.fillStyle = rg(g, 515, 1000, 80, 900, [0, 'rgba(60,70,120,0.22)'], [1, 'rgba(60,70,120,0)']); g.fillRect(0, 0, W, H);
-      for (const yy of [0, 2.08]) { const a = cam.P(-2.4, yy, SGZ), b = cam.P(2.4, yy, SGZ); if (!a || !b) continue; g.strokeStyle = 'rgba(255,231,168,0.22)'; g.lineWidth = 3; g.beginPath(); g.moveTo(a[0], a[1] + 4); g.lineTo(b[0], b[1] + 4); g.stroke(); }
+      for (const yy of [0, 2.08]) { const a = cam.P(-3.4, yy, SGZ), b = cam.P(3.4, yy, SGZ); if (!a || !b) continue; g.strokeStyle = 'rgba(255,231,168,0.22)'; g.lineWidth = 3; g.beginPath(); g.moveTo(a[0], a[1] + 4); g.lineTo(b[0], b[1] + 4); g.stroke(); }
       g.restore();
     }
     const DF = {};
@@ -351,7 +355,7 @@
       tileNo(g, lerp(x, x - 0.62 * s, side), lerp(y, f.P.head[1], side), m.i + 1, lerp(clamp(0.2 * s, 64, 118), 78, side), a);
       if (m.i === 2) ring(g, lerp(x, x - 0.62 * s, side), f.P.head[1], 62, sstep(TT.three - 0.05, TT.three + 0.4, t) * (1 - sstep(TT.back0, TT.back0 + 0.4, t)), 9);
     }
-    if (t >= TT.picked - 0.04 && t < TT.back0 + 0.3) { const a = 1 - sstep(TT.back0 - 0.1, TT.back0 + 0.3, t); title(g, 'YOU PICKED', 372, 96, CREAM, t, TT.picked - 0.04, { stroke: INK, sw: 0.14, a }); title(g, 'A WALK', 500, 150, YEL, t, TT.picked + 0.18, { stroke: INK, sw: 0.12, a }); }
+    if (t >= TT.picked - 0.04 && t < TT.three + 0.2) { const a = 1 - sstep(TT.three - 0.5, TT.three + 0.1, t); title(g, 'YOU PICKED', 372, 96, CREAM, t, TT.picked - 0.04, { stroke: INK, sw: 0.14, a }); title(g, 'A WALK', 500, 150, YEL, t, TT.picked + 0.18, { stroke: INK, sw: 0.12, a }); }
     vignette(g, 0.9 * (1 - dark));
     if (t > TT.back0) brim(g, t, sstep(TT.back0 + 0.55, TT.back1, t));          // his eyes again
   }
