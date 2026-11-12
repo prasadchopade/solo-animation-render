@@ -1,9 +1,9 @@
 // Reel 34 · You're the Victim (working title). Tests desk, episode 9 of "You're the test subject".
 // A packed market lane, your POV, your wallet in your hand. Three men bump you: one, two, three. Your wallet's gone, and whoever you pick
 // goes to jail. Look down: nobody took it. It slipped out of your hand at second four, while the second man's face was in yours, and it has
-// lain at your feet, in shot, the whole time you were choosing. Then, while you look at the three men's faces, the season's thief (maroon cap,
-// mole) picks it up and walks off. Facts: docs/research.md.
-// Our own drawings; nobody real. The face rig and the season's thief are from reels 20, 25, 26 and 30. 30 fps, no motion blur.
+// lain at your feet, in shot, the whole time you were choosing: whoever you picked is going to jail for bumping into you. Magicians call that
+// misdirection. Still think you're the victim? Facts: docs/research.md.
+// Our own drawings; nobody real. The face rig is from reels 20, 25, 26 and 30. 30 fps, no motion blur.
 (() => {
   const { W, H, scene, canvas, clamp, lerp, el, mulberry32 } = C;
   const K = window.KIT;
@@ -104,13 +104,11 @@
   }
   // The three men share one skin; they differ in age, hair, moustache, glasses and what they carry, never in colour (desk: reels 27, 29, 30).
   // ONE: about twenty, a lot of hair, clean-shaven, earphones and a backpack. TWO: about thirty-five, an office shirt, a side parting, a thin
-  // moustache, an ID card. THREE: about sixty, grey, glasses, a thick grey moustache, a bag of vegetables. The thief: reel 20's man, the cap and the mole.
+  // moustache, an ID card. THREE: about sixty, grey, glasses, a thick grey moustache, a bag of vegetables. Nobody here is a thief.
   const S0 = { skin: '#bd8a64', skinD: '#946243', skinH: '#d8a983' };
   const ONE = { ...S0, hair: '#17110d', style: 'messy', must: null, stub: 0, brow: 13, browTilt: -5, jaw: 0.92, ew: 47, eh: 27 };
   const TWO = { ...S0, hair: '#15100c', style: 'part', must: 'thin', stub: 0, brow: 15, browTilt: 3, jaw: 1.03, ew: 43, eh: 23 };
   const THREE = { ...S0, hair: '#a7a29b', mHair: '#b5b0a8', style: 'recede', must: 'thick', stub: 0, brow: 15, browTilt: 4, jaw: 1.0, ew: 42, eh: 22, specs: true };
-  const THIEF = { skin: '#b27a54', skinD: '#8a583a', skinH: '#cf9a72', hair: '#15100c', style: 'cap', must: 'thin', stub: 0.55, brow: 15, browTilt: 8, jaw: 0.98, ew: 43, eh: 22, mole: [84, 62], moleR: 11 };
-  const MAGI = { skin: '#c99068', skinD: '#9d6747', skinH: '#e2b48d', hair: '#120d0a', style: 'slick', must: null, stub: 0, brow: 14, browTilt: -2, jaw: 0.95, ew: 44, eh: 24 };
 
   function head(g, L, o = {}) {
     const op = o.op ?? 0, close = o.close ?? 0, hw = 186 * L.jaw, drop = 104 * op, chin = 232 + drop, ey = -28, ex = 80;
@@ -191,7 +189,6 @@
     ONE: { a: '#5db3e4', b: '#3d8fc2', collar: null, sleeve: 'short' },
     TWO: { a: '#eef2f8', b: '#c9d3e2', check: '#5f80c0', collar: '#e4eaf3', sleeve: 'long' },
     THREE: { a: '#dcc8a0', b: '#b9a47c', collar: '#cbb68e', sleeve: 'short', pocket: true },
-    THIEF: { a: '#aac3d8', b: '#7f9bb4', collar: '#9db6cb', sleeve: 'long' },
   };
   function torso(g, P, o = {}) {
     const by = 168, D = P.D;
@@ -262,7 +259,6 @@
     { L: TWO, D: { ...SH.TWO, leg: '#2b3140' }, kit: 'id' },
     { L: THREE, D: { ...SH.THREE, leg: '#5a5048' }, kit: 'veg' },
   ];
-  const TH = { L: THIEF, D: { ...SH.THIEF, leg: '#30343c' } };
 
   // ------------------------------------------------------------------ the lane: a market street at noon, drawn once, taller than the frame so the camera can look down
   const LH = H + 760;                                // world height; the camera's tilt (camY) moves the window down it
@@ -398,18 +394,23 @@
       g.fillStyle = 'rgba(120,60,30,0.18)'; for (let i = 0; i < 4; i++) { ell(g, -96 + i * 8, 12 + i * 34, 14, 8); g.fill(); }
       g.save(); g.translate(40, -40); g.rotate(-2.45); R(g, 0, -26, 168, 52, 26); g.fillStyle = lg(g, 0, -26, 0, 26, [0, '#e4b08a'], [1, '#c48e68']); g.fill(); R(g, 130, -16, 30, 32, 12); g.fillStyle = '#f0d2bc'; g.fill(); g.restore();
     } else {
-      // palm up, fingers spread: empty
-      g.fillStyle = lg(g, -160, -160, 160, 160, [0, '#e1ad88'], [1, '#b17a55']);
-      ell(g, 100, 40, 140, 120, -0.4); g.fill();
-      for (let i = 0; i < 4; i++) { g.save(); g.translate(20 - i * 4, -10 + i * 6); g.rotate(-2.2 + i * 0.3); R(g, 0, -20, 190 - i * 18, 40, 20); g.fill(); g.restore(); }
-      g.save(); g.translate(170, -60); g.rotate(-1.4); R(g, 0, -24, 150, 48, 24); g.fill(); g.restore();
-      g.strokeStyle = 'rgba(120,60,30,0.3)'; g.lineWidth = 5; g.beginPath(); g.moveTo(30, 40); g.quadraticCurveTo(100, 90, 190, 40); g.stroke();
+      // open and empty, the palm to you, fingers spread up: nothing in it
+      g.save(); g.translate(120, 40); g.rotate(0.55);
+      const skin = lg(g, -150, -260, 150, 160, [0, '#e7b590'], [1, '#b98058']);
+      g.fillStyle = skin;
+      const fing = [[-78, -0.2, 190], [-26, -0.06, 220], [26, 0.06, 210], [76, 0.2, 170]];
+      for (const [fx, a, L] of fing) { g.save(); g.translate(fx, -70); g.rotate(a); R(g, -24, -L, 48, L + 30, 24); g.fill(); g.strokeStyle = 'rgba(120,60,30,0.22)'; g.lineWidth = 3; g.beginPath(); g.moveTo(-10, -L * 0.55); g.lineTo(10, -L * 0.55); g.stroke(); g.restore(); }
+      g.save(); g.translate(-108, 40); g.rotate(-0.85); R(g, -24, -150, 50, 170, 25); g.fill(); g.restore();
+      R(g, -112, -96, 224, 230, 90); g.fill();
+      g.strokeStyle = 'rgba(120,60,30,0.3)'; g.lineWidth = 5; g.lineCap = 'round';
+      g.beginPath(); g.moveTo(-70, -20); g.quadraticCurveTo(0, 20, 80, -30); g.moveTo(-60, 40); g.quadraticCurveTo(-10, 70, 40, 100); g.stroke();
+      g.restore();
     }
     g.restore();
   }
   function myShoes(g, camY) {                       // the toes of your own trainers, at the bottom of the world
     for (const k of [-1, 1]) {
-      g.save(); g.translate(540 + k * 176, 1800 - camY); g.rotate(k * 0.07);
+      g.save(); g.translate(540 + k * 176, 1860 - camY); g.rotate(k * 0.07);
       g.fillStyle = 'rgba(0,0,0,0.2)'; ell(g, 0, 40, 150, 46); g.fill();
       const toe = () => { g.beginPath(); g.moveTo(-118, 260); g.bezierCurveTo(-128, 40, -86, -66, 0, -70); g.bezierCurveTo(86, -66, 128, 40, 118, 260); g.closePath(); };
       toe(); g.fillStyle = '#f2efe6'; g.fill();                                   // the white sole round the toe
@@ -432,11 +433,11 @@
     T = {
       n01e: en('n01'), c1: at('c1'), c2: at('c2'), c2e: en('c2'), c3: at('c3'), n02: at('n02'), gone: wi('n02', 3), n02e: en('n02'),
       n03: at('n03'), jail: wi('n03', 5), n03e: en('n03'), n04: at('n04'), n04e: en('n04'), n05: at('n05'), n05e: en('n05'), n06: at('n06'), n06e: en('n06'),
-      n07: at('n07'), going: wi('n07', 4), bumping: wi('n07', 9), n07e: en('n07'), n08: at('n08'), four: wi('n08', 6), numtwo: wi('n08', 16), n08e: en('n08'),
+      n07: at('n07'), going: wi('n07', 4), bumping: wi('n07', 9), n07e: en('n07'), n08: at('n08'), four: wi('n08', 6), face: wi('n08', 12), numtwo: wi('n08', 16), n08e: en('n08'),
       n09: at('n09'), mis: wi('n09', 3), n09e: en('n09'), n10: at('n10'), victim: wi('n10', 3), n10e: en('n10'), end: tb('end'),
     };
     // the bumps, and the wallet: it leaves your hand at four seconds exactly, the jolt of the second bump
-    T.b1 = T.c1 + 0.22; T.b2 = 3.84; T.drop = 4.0; T.b3 = T.c3 + 0.3;
+    T.b1 = T.c1 - 0.08; T.b2 = 3.95; T.drop = 4.0; T.b3 = T.c3 - 0.08;   // each bump lands just before its number
     T.stop = T.b2 + 0.12;                            // you stop dead
     T.look = T.b2 + 0.35;                            // after the bump your eyes drop a little: the near ground comes into the frame
     T.lift = T.n02 - 0.05; T.lower = T.n03 - 0.25;   // the empty hand comes up, then goes
@@ -458,7 +459,7 @@
   function menAt(t) {
     const TT = times();
     const m1 = key(t, [[0, 420, 700, 0.15, 0], [TT.b1 - 0.55, 330, 690, 0.42, 0], [TT.b1, 150, 760, 1.05, 0], [TT.b1 + 0.55, 210, 650, 0.56, 0], [TT.freeze, SPOT[0][0], SPOT[0][1], SPOT[0][2], 0]]);
-    const m2 = key(t, [[0, 590, 690, 0.12, 0], [TT.b2 - 1.1, 570, 690, 0.3, 0], [TT.b2 - 0.25, 548, 760, 0.95, 0], [TT.b2, 540, 830, 1.75, 0], [TT.b2 + 0.5, 548, 640, 0.72, 0], [TT.freeze, SPOT[1][0], SPOT[1][1], SPOT[1][2], 0]]);
+    const m2 = key(t, [[0, 590, 690, 0.12, 0], [TT.b2 - 1.1, 570, 690, 0.3, 0], [TT.b2 - 0.25, 548, 760, 0.95, 0], [TT.b2, 540, 830, 1.75, 0], [TT.b2 + 0.32, 544, 800, 1.6, 0], [TT.b2 + 0.85, 548, 640, 0.72, 0], [TT.freeze, SPOT[1][0], SPOT[1][1], SPOT[1][2], 0]]);
     const m3 = key(t, [[0, 1300, 900, 1.3, 1], [TT.b3 - 0.6, 1220, 860, 1.25, 1], [TT.b3, 980, 760, 0.95, 1], [TT.b3 + 0.45, 880, 660, 0.6, 1], [TT.b3 + 0.9, SPOT[2][0], SPOT[2][1], SPOT[2][2], 0]]);
     return [m1, m2, m3];
   }
@@ -502,6 +503,7 @@
     const sh = shakeAt(t, [[TT.b1, 14], [TT.b2, 36], [TT.b3, 18]]);
     g.save();
     g.translate(540 + sh[0] + c.sway, 960 + sh[1]); g.scale(c.zoom, c.zoom); g.translate(-540, -960 + c.bob);
+    g.fillStyle = '#9fd3ee'; g.fillRect(-200, -400, W + 400, 400 - c.camY + 2);    // sky above the drawn lane, for when you look ahead and the camera shakes
     g.drawImage(LN.bg, 0, -c.camY);
     crowd(g, tt, c.camY, frozen);
     g.save(); g.translate(0, -c.camY); nearLitter(g); g.restore();
@@ -512,14 +514,14 @@
       const [x, y, s, turn] = men[i], close = s > 0.8;
       const look = close ? [0, 6] : (i === 1 && t < TT.b2 - 0.3 ? [0, 22] : [i === 0 ? 10 : i === 2 ? -10 : 0, 2]);
       const mood = o.mood ? o.mood(i, t) : {};
-      const blink = !frozen && ((t + i * 1.3) % 3.1) < 0.12 ? 1 : 0;
-      const op = i === 1 && t > TT.b2 - 0.35 && t < TT.b2 + 0.35 ? 0.45 * sstep(TT.b2 - 0.35, TT.b2 - 0.1, t) * (1 - sstep(TT.b2 + 0.15, TT.b2 + 0.35, t)) : 0;
+      const blink = !frozen && ((t + 1.1 + i * 1.3) % 3.1) < 0.12 ? 1 : 0;   // never on frame 0, never two at once
+      const op = i === 1 && t > TT.b2 - 0.35 && t < TT.b2 + 0.55 ? 0.45 * sstep(TT.b2 - 0.35, TT.b2 - 0.1, t) * (1 - sstep(TT.b2 + 0.32, TT.b2 + 0.55, t)) : 0;
       person(g, MEN[i], x, y - c.camY, s, { turn, look: mood.look || look, close: mood.close ?? blink, op: mood.op ?? op, frown: mood.frown ?? (i === 2 ? 0.25 : 0.1), worry: mood.worry ?? (i === 1 && op > 0 ? -10 : 0), smile: mood.smile ?? 0, phase: frozen ? 1.2 : tt * 7 + i, noLegs: s > 0.9, arm: mood.arm });
     }
     if (o.after) o.after(g, c);
-    if (wl.st === 'ground') wallet(g, wl.x, wl.y - c.camY, wl.s, wl.rot, { flat: true });
+    if (wl.st === 'ground' && !o.noWallet) wallet(g, wl.x, wl.y - c.camY, wl.s, wl.rot, { flat: true });
     myShoes(g, c.camY);
-    if (wl.st === 'fall') wallet(g, wl.x, wl.y, wl.s, wl.rot, { flatK: wl.flatK });
+    if (wl.st === 'fall' && !o.noWallet) wallet(g, wl.x, wl.y, wl.s, wl.rot, { flatK: wl.flatK });
     if (o.hand !== false && hd.y < 2200) myHand(g, hd.x, hd.y, hd.s, hd.rot, { hold: wl.st === 'hand', open: hd.open });
     g.restore();
     return { c, wl };
@@ -580,9 +582,9 @@
     lane(g, t, { mood: hurt, hand: false });
     const c = camAt(t);
     for (let i = 0; i < 3; i++) { const [x, y, s] = SPOT[i], [sx, sy] = toScreen(c, x, y + 430 * s); stamp(g, 'INNOCENT', sx, sy + (i === 1 ? 70 : 0), t, TT.going + i * 0.3, RED, 50, i === 1 ? 0.06 : -0.08); }
-    if (t >= TT.bumping - 0.04) title(g, 'FOR BUMPING INTO YOU', 1390, 96, CREAM, t, TT.bumping - 0.04, { stroke: INK, sw: 0.14 });
     const bk = sstep(TT.n07e + 0.05, TT.n07e + 0.3, t) * (1 - sstep(TT.face0 - 0.3, TT.face0, t));
     if (bk > 0) bars(g, bk);
+    if (t >= TT.bumping - 0.04) title(g, 'FOR BUMPING INTO YOU', 1390, 96, CREAM, t, TT.bumping - 0.04, { stroke: INK, sw: 0.14 });
     return flashAt(t, TT.n07e + 0.3) * 0.3;
   }
   function bars(g, k) {
@@ -596,11 +598,21 @@
   //     "Magicians call that misdirection." No replay: the fall is there to go back for.
   function shotFace(g, t) {
     const TT = times(), k = sstep(TT.face0, TT.face0 + 1.6, t), [hx, hy] = toScreen(camAt(t), SPOT[1][0], SPOT[1][1]);
+    const fl0 = TT.face - 0.06, fl1 = fl0 + 1.25;
+    if (t >= fl0 && t < fl1) {                        // the moment the line names: 0:03.9, his face in yours, cropped to the face
+      const tau = 3.86 + 0.1 * (t - fl0);           // stops before 4.0: the wallet never shows here
+      g.save(); g.translate(540, 760); g.scale(1.55, 1.55); g.translate(-540, -760);
+      lane(g, tau, { hand: false, noWallet: true });
+      g.restore();
+      g.fillStyle = 'rgba(255,248,230,0.12)'; g.fillRect(0, 0, W, H);
+      g.save(); g.translate(540, 330); R(g, -150, -48, 300, 96, 14); g.fillStyle = '#121212'; g.fill(); g.strokeStyle = CREAM; g.lineWidth = 4; g.stroke(); txt(g, '0:03.9', 0, 28, 70, '#ff5a3a', { kind: 'mono', align: 'center' }); g.restore();
+      return flashAt(t, fl0) * 0.35;
+    }
     const z = lerp(1, 2.3, k), cx = lerp(540, hx, k), cy = lerp(960, hy + 40, k);
     g.save(); g.translate(540, 900); g.scale(z, z); g.translate(-cx, -cy);
-    lane(g, t, { mood: (i) => ({ ...hurt(i), close: ((t + i * 1.1) % 3.2) < 0.11 ? 1 : 0 }), hand: false });
+    lane(g, t, { mood: (i) => ({ ...hurt(i), close: ((t + i * 1.1) % 3.2) < 0.11 ? 1 : 0, look: i === 1 ? [0, 2 + 8 * Math.sin(t * 0.7)] : undefined }), hand: false });
     g.restore();
-    if (t >= TT.four - 0.04 && t < TT.n09 - 0.1) { const q = pop(t, TT.four - 0.04); g.save(); g.translate(540, 330); g.scale(lerp(0.8, 1, q), lerp(0.8, 1, q)); R(g, -120, -48, 240, 96, 14); g.fillStyle = '#121212'; g.fill(); g.strokeStyle = CREAM; g.lineWidth = 4; g.stroke(); txt(g, '0:04', 0, 28, 74, '#ff5a3a', { kind: 'mono', align: 'center' }); g.restore(); }
+    if (t >= TT.four - 0.04 && t < TT.n09 - 0.1 && !(t >= TT.face - 0.06 && t < TT.face + 1.19)) { const q = pop(t, TT.four - 0.04); g.save(); g.translate(540, 330); g.scale(lerp(0.8, 1, q), lerp(0.8, 1, q)); R(g, -120, -48, 240, 96, 14); g.fillStyle = '#121212'; g.fill(); g.strokeStyle = CREAM; g.lineWidth = 4; g.stroke(); txt(g, '0:04', 0, 28, 74, '#ff5a3a', { kind: 'mono', align: 'center' }); g.restore(); }
     if (t >= TT.n09 - 0.04) title(g, 'MISDIRECTION', 1300, 150, YEL, t, TT.mis - 0.04, { stroke: INK, sw: 0.11 });
     return 0;
   }

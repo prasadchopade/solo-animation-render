@@ -29,6 +29,235 @@
   },
   "sfx": [
     {
+      "at": 0.0,
+      "type": "idle",
+      "gain": 0.4,
+      "what": "the market: scooters and handcarts, all below 250 Hz",
+      "len": 8.3
+    },
+    {
+      "at": 4.582,
+      "type": "street",
+      "gain": 0.55,
+      "what": "the market, full band, only while nobody is talking",
+      "len": 0.84
+    },
+    {
+      "at": 7.982,
+      "type": "street",
+      "gain": 0.55,
+      "what": "the market, full band, only while nobody is talking",
+      "len": 0.92
+    },
+    {
+      "at": 11.542,
+      "type": "street",
+      "gain": 0.55,
+      "what": "the market, full band, only while nobody is talking",
+      "len": 0.72
+    },
+    {
+      "at": 2.502,
+      "type": "bicyclebell",
+      "gain": 0.28,
+      "what": "a bicycle bell up the lane (in the gap)",
+      "pitch": 1.05
+    },
+    {
+      "at": 11.662,
+      "type": "autohorn",
+      "gain": 0.16,
+      "what": "a far auto horn (in the gap)",
+      "pitch": 1.0
+    },
+    {
+      "at": 2.542,
+      "type": "whoosh",
+      "gain": 0.36,
+      "what": "number one comes past your face",
+      "pitch": 1.15
+    },
+    {
+      "at": 2.902,
+      "type": "hit",
+      "gain": 0.42,
+      "what": "his shoulder knocks yours",
+      "pitch": 1.25,
+      "len": 0.42
+    },
+    {
+      "at": 7.28,
+      "type": "whoosh",
+      "gain": 0.5,
+      "what": "number two comes straight at you",
+      "pitch": 0.95
+    },
+    {
+      "at": 7.68,
+      "type": "hit",
+      "gain": 0.95,
+      "what": "he walks right into you: the big one",
+      "pitch": 1.0,
+      "len": 0.7
+    },
+    {
+      "at": 9.542,
+      "type": "whoosh",
+      "gain": 0.32,
+      "what": "number three squeezes past",
+      "pitch": 1.2
+    },
+    {
+      "at": 9.862,
+      "type": "hit",
+      "gain": 0.38,
+      "what": "his bag knocks your arm",
+      "pitch": 1.4,
+      "len": 0.36
+    },
+    {
+      "at": 12.742,
+      "type": "whoosh",
+      "gain": 0.22,
+      "what": "your hand comes up",
+      "pitch": 1.3
+    },
+    {
+      "at": 16.55,
+      "type": "shutter",
+      "gain": 0.5,
+      "what": "the street freezes (just before \"Whoever\")"
+    },
+    {
+      "at": 16.55,
+      "type": "vboom",
+      "gain": 0.45,
+      "what": "under it, low",
+      "pitch": 1.0
+    },
+    {
+      "at": 16.71,
+      "type": "gclick",
+      "gain": 0.3,
+      "what": "number 1 lands (above 4.5 kHz)"
+    },
+    {
+      "at": 16.95,
+      "type": "gclick",
+      "gain": 0.3,
+      "what": "number 2 lands (above 4.5 kHz)"
+    },
+    {
+      "at": 17.19,
+      "type": "gclick",
+      "gain": 0.3,
+      "what": "number 3 lands (above 4.5 kHz)"
+    },
+    {
+      "at": 21.234,
+      "type": "tick",
+      "gain": 0.12,
+      "what": "the clock, 5 left",
+      "pitch": 1.6
+    },
+    {
+      "at": 23.234,
+      "type": "tick",
+      "gain": 0.12,
+      "what": "the clock, 4 left",
+      "pitch": 1.6
+    },
+    {
+      "at": 25.234,
+      "type": "tick",
+      "gain": 0.12,
+      "what": "the clock, 3 left",
+      "pitch": 1.6
+    },
+    {
+      "at": 27.234,
+      "type": "tick",
+      "gain": 0.2,
+      "what": "the clock, 2 left",
+      "pitch": 1.6
+    },
+    {
+      "at": 29.234,
+      "type": "tick",
+      "gain": 0.2,
+      "what": "the clock, 1 left",
+      "pitch": 1.6
+    },
+    {
+      "at": 31.234,
+      "type": "buzzer",
+      "gain": 0.42,
+      "what": "time (in the silence the score leaves)",
+      "len": 0.36
+    },
+    {
+      "at": 31.474,
+      "type": "vboom",
+      "gain": 0.6,
+      "what": "the drop to your feet (before the word)",
+      "pitch": 0.9
+    },
+    {
+      "at": 33.208,
+      "type": "tray",
+      "gain": 0.45,
+      "what": "the ring closes on the wallet (above 4 kHz)",
+      "pitch": 1.0
+    },
+    {
+      "at": 34.29,
+      "type": "ticker",
+      "gain": 0.14,
+      "what": "the strip fills (above 4.5 kHz)",
+      "len": 2.18
+    },
+    {
+      "at": 41.414,
+      "type": "thunk",
+      "gain": 0.5,
+      "what": "NOBODY TOOK IT lands (in the gap)",
+      "pitch": 0.75
+    },
+    {
+      "at": 44.944,
+      "type": "thunk",
+      "gain": 0.32,
+      "what": "INNOCENT on number 1 (low knock and a high tick)",
+      "pitch": 0.68
+    },
+    {
+      "at": 45.544,
+      "type": "thunk",
+      "gain": 0.32,
+      "what": "INNOCENT on number 2 (low knock and a high tick)",
+      "pitch": 0.68
+    },
+    {
+      "at": 46.144,
+      "type": "thunk",
+      "gain": 0.32,
+      "what": "INNOCENT on number 3 (low knock and a high tick)",
+      "pitch": 0.68
+    },
+    {
+      "at": 50.922,
+      "type": "clang",
+      "gain": 0.9,
+      "what": "the cell door (in the gap)"
+    },
+    {
+      "at": 68.634,
+      "type": "shimmer",
+      "gain": 0.18,
+      "what": "MISDIRECTION (5-9 kHz)",
+      "len": 0.8
+    },
+    {
       "at": "end",
       "type": "wav",
       "file": "../../engine/endcard/endcard.wav",
