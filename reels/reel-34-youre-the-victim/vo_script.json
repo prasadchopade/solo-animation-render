@@ -1,0 +1,68 @@
+{
+ "note": "Reel 34: You're the Victim (working title). Draft 3, after two cold reads: no replay and no study on screen (the study goes to the caption and the pinned comment). Three men bump you in a market lane and your wallet's gone; whoever you pick goes to jail. Look down: it slipped out of your hand at four seconds and has lain at your feet the whole time. The narrator is the series voice (af_heart). Lines that need a real pause are their own lines. Facts: docs/research.md.",
+ "voice": "af_heart",
+ "speed": 1.0,
+ "ref_text": "The night was cold and very quiet. Most of the street was asleep, and the lamps hummed over the empty road. Somewhere far away, a train rolled past, and then the silence came back.",
+ "take": [
+  {
+   "id": "k-heart",
+   "engine": "kokoro",
+   "voice": "af_heart",
+   "speed": 1.0
+  }
+ ],
+ "lines": [
+  {
+   "id": "n01",
+   "text": "You're the victim."
+  },
+  {
+   "id": "c1",
+   "text": "One."
+  },
+  {
+   "id": "c2",
+   "text": "Two."
+  },
+  {
+   "id": "c3",
+   "text": "Three."
+  },
+  {
+   "id": "n02",
+   "text": "And your wallet's gone."
+  },
+  {
+   "id": "n03",
+   "text": "Whoever you pick goes to jail."
+  },
+  {
+   "id": "n04",
+   "text": "Look down."
+  },
+  {
+   "id": "n05",
+   "text": "It's been there the whole time."
+  },
+  {
+   "id": "n06",
+   "text": "Nobody took it."
+  },
+  {
+   "id": "n07",
+   "text": "And whoever you picked is going to jail for bumping into you."
+  },
+  {
+   "id": "n08",
+   "text": "It slipped out of your hand four seconds in, while you were face to face with number two."
+  },
+  {
+   "id": "n09",
+   "text": "Magicians call that misdirection."
+  },
+  {
+   "id": "n10",
+   "text": "Still think you're the victim?"
+  }
+ ]
+}
