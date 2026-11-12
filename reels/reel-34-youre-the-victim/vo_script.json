@@ -3,6 +3,17 @@
  "voice": "af_heart",
  "speed": 1.0,
  "ref_text": "The night was cold and very quiet. Most of the street was asleep, and the lamps hummed over the empty road. Somewhere far away, a train rolled past, and then the silence came back.",
+ "cast_lines": [
+  "n01"
+ ],
+ "cast": [
+  {
+   "id": "k-heart-100",
+   "engine": "kokoro",
+   "voice": "af_heart",
+   "speed": 1.0
+  }
+ ],
  "take": [
   {
    "id": "k-heart",
