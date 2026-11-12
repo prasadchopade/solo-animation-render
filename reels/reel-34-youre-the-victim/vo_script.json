@@ -1,5 +1,5 @@
 {
- "note": "Reel 34: You're the Victim (working title). Draft 3, after two cold reads (n07b, for whoever saw the wallet, added at HQ's note): no replay and no study on screen (the study goes to the caption and the pinned comment). Three men bump you in a market lane and your wallet's gone; whoever you pick goes to jail. Look down: it slipped out of your hand at four seconds and has lain at your feet the whole time. The narrator is the series voice (af_heart). Lines that need a real pause are their own lines. Facts: docs/research.md.",
+ "note": "Reel 34: You're the Victim (working title). Draft 3, after two cold reads (n07b, for whoever saw the wallet, added at HQ's note): no replay and no study on screen (the study goes to the caption and the pinned comment). Three men bump you in a market lane and your wallet's gone; whoever you pick goes to jail. Look down: it slipped out of your hand at four seconds and has lain at your feet the whole time. The narrator is the series voice (af_heart). Lines that need a real pause are their own lines. Facts: docs/research.md. n07b: misaki flapped 'spotted' to /spˈɑTᵻd/ ('spodded') in every take, so its t is planned by hand; n07c ('saw it', nothing to flap) is the fallback, and only one of the two is placed.",
  "voice": "af_heart",
  "speed": 1.0,
  "ref_text": "The night was cold and very quiet. Most of the street was asleep, and the lamps hummed over the empty road. Somewhere far away, a train rolled past, and then the silence came back.",
@@ -65,7 +65,12 @@
   },
   {
    "id": "n07b",
-   "text": "If you spotted it, nobody goes to jail."
+   "text": "If you spotted it, nobody goes to jail.",
+   "text_kokoro": "If you [spotted](/spˈɑtᵻd/) it, nobody goes to jail."
+  },
+  {
+   "id": "n07c",
+   "text": "If you saw it, nobody goes to jail."
   },
   {
    "id": "n08",

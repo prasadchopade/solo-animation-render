@@ -433,7 +433,7 @@
     T = {
       n01e: en('n01'), c1: at('c1'), c2: at('c2'), c2e: en('c2'), c3: at('c3'), n02: at('n02'), gone: wi('n02', 3), n02e: en('n02'),
       n03: at('n03'), jail: wi('n03', 5), n03e: en('n03'), n04: at('n04'), n04e: en('n04'), n05: at('n05'), n05e: en('n05'), n06: at('n06'), n06e: en('n06'),
-      n07: at('n07'), going: wi('n07', 4), bumping: wi('n07', 9), n07e: en('n07'), n08: at('n08'), four: wi('n08', 6), face: wi('n08', 12), numtwo: wi('n08', 16), n08e: en('n08'),
+      n07: at('n07'), going: wi('n07', 4), bumping: wi('n07', 9), n07e: en('n07'), n07b: at('n07b'), nobody: wi('n07b', 4), n07be: en('n07b'), n08: at('n08'), four: wi('n08', 6), face: wi('n08', 12), numtwo: wi('n08', 16), n08e: en('n08'),
       n09: at('n09'), mis: wi('n09', 3), n09e: en('n09'), n10: at('n10'), victim: wi('n10', 3), n10e: en('n10'), end: tb('end'),
     };
     // the bumps, and the wallet: it leaves your hand at four seconds exactly, the jolt of the second bump
@@ -442,7 +442,7 @@
     T.look = T.b2 + 0.35;                            // after the bump your eyes drop a little: the near ground comes into the frame
     T.lift = T.n02 - 0.05; T.lower = T.n03 - 0.25;   // the empty hand comes up, then goes
     T.freeze = T.n03 - 0.08; T.clock0 = T.n03e + 0.05; T.clock1 = T.clock0 + 5.0;
-    T.down0 = T.n04 - 0.12; T.down1 = T.n04 + 0.45;  // "Look down."
+    T.down0 = T.n04 - 0.1; T.down1 = T.n04 + 0.3;    // "Look down.": a fast drop, the hit
     T.up0 = T.n07 - 0.35; T.up1 = T.n07 + 0.1;       // back up at the three of them
     T.face0 = T.n08 - 0.1; T.fin = T.n10 - 0.25;
     return T;
@@ -582,9 +582,11 @@
     lane(g, t, { mood: hurt, hand: false });
     const c = camAt(t);
     for (let i = 0; i < 3; i++) { const [x, y, s] = SPOT[i], [sx, sy] = toScreen(c, x, y + 430 * s); stamp(g, 'INNOCENT', sx, sy + (i === 1 ? 70 : 0), t, TT.going + i * 0.3, RED, 50, i === 1 ? 0.06 : -0.08); }
-    const bk = sstep(TT.n07e + 0.05, TT.n07e + 0.3, t) * (1 - sstep(TT.face0 - 0.3, TT.face0, t));
+    const bk = sstep(TT.n07e + 0.05, TT.n07e + 0.3, t) * (1 - sstep(TT.nobody - 0.05, TT.nobody + 0.55, t));   // the door shuts; if you spotted it, it lifts
     if (bk > 0) bars(g, bk);
-    if (t >= TT.bumping - 0.04) title(g, 'FOR BUMPING INTO YOU', 1390, 96, CREAM, t, TT.bumping - 0.04, { stroke: INK, sw: 0.14 });
+    if (t >= TT.n07b - 0.04 && t < TT.face0) title(g, 'SPOTTED IT?', 372, 112, YEL, t, TT.n07b - 0.04, { stroke: INK, sw: 0.12 });
+    if (t >= TT.bumping - 0.04 && t < TT.n07b - 0.05) title(g, 'FOR BUMPING INTO YOU', 1390, 96, CREAM, t, TT.bumping - 0.04, { stroke: INK, sw: 0.14 });
+    if (t >= TT.nobody - 0.04) title(g, 'NOBODY GOES TO JAIL', 1390, 96, CREAM, t, TT.nobody - 0.04, { stroke: INK, sw: 0.14 });
     return flashAt(t, TT.n07e + 0.3) * 0.3;
   }
   function bars(g, k) {
