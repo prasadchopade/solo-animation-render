@@ -1,0 +1,30 @@
+{
+ "note": "Reel 36 Find Him, take 2 (draft 3, after two cold reads). The narrator is the series voice (af_heart, speed 1.0); lines that need a real pause are their own lines. w01 is the woman whose bag it is (a cast run: af_sarah, af_nicole, af_bella, hf_alpha), and isn't a narration line. n11 ('picked goes') is voiced beside n11c ('chose goes'): reel 35's 'picked the' lost its t in every take, and a lost t here turns the cost line back into the rule ('Whoever you pick goes to jail'). Read the phonemes and the transcriptions before placing either. Facts: docs/research.md.",
+ "voice": "af_heart",
+ "speed": 1.0,
+ "ref_text": "The night was cold and very quiet. Most of the street was asleep, and the lamps hummed over the empty road. Somewhere far away, a train rolled past, and then the silence came back.",
+ "cast_lines": ["w01"],
+ "cast": [
+  { "id": "w-sarah", "engine": "kokoro", "voice": "af_sarah", "speed": 1.0 },
+  { "id": "w-nicole", "engine": "kokoro", "voice": "af_nicole", "speed": 1.0 },
+  { "id": "w-bella", "engine": "kokoro", "voice": "af_bella", "speed": 1.0 },
+  { "id": "w-alpha", "engine": "kokoro", "voice": "hf_alpha", "speed": 1.0 }
+ ],
+ "take": [{ "id": "k-heart", "engine": "kokoro", "voice": "af_heart", "speed": 1.0 }],
+ "lines": [
+  { "id": "n01", "text": "You get one look at this man before he runs." },
+  { "id": "n02", "text": "So learn his face." },
+  { "id": "w01", "text": "My bag!" },
+  { "id": "n03", "text": "Don't lose him!" },
+  { "id": "n04", "text": "And now a hundred men are wearing his cap." },
+  { "id": "n05", "text": "Whoever you pick goes to jail." },
+  { "id": "n06", "text": "Find him." },
+  { "id": "n07", "text": "Did you even look behind them?" },
+  { "id": "n08", "text": "He's been standing right there the whole time." },
+  { "id": "n09", "text": "When every hand went up for a cap, he took his off." },
+  { "id": "n10", "text": "With a stranger, your brain goes by the hair and the cap." },
+  { "id": "n11", "text": "And the man you picked goes to jail, for a cap he caught a minute ago." },
+  { "id": "n11c", "text": "And the man you chose goes to jail, for a cap he caught a minute ago." },
+  { "id": "n12", "text": "So did you learn his face, or his cap?" }
+ ]
+}
