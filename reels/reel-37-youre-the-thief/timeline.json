@@ -1,7 +1,7 @@
 {
   "note": "Single source of truth for picture + sound, in BEATS (120 bpm: beat = 0.5 s). Reel 37 has NO end card (the user's one-off exception, 13 Nov 2026): the film runs from 'hook' to 'end' = the whole duration, and its last frame runs into frame 0.",
   "title": "You're the Thief",
-  "duration": 43.9,
+  "duration": 52.3667,
   "fps": 30,
   "bpm": 120,
   "formats": [
@@ -11,19 +11,160 @@
     "source": "synth (score.py → scripts/synth.py)"
   },
   "voiceover": {
-    "provider": "kokoro-82m local",
-    "voice": "af_heart",
+    "provider": "voice lab",
+    "voice": "k-heart",
     "file": "vo.json"
   },
   "mix": {
-    "music": -10,
-    "sfx": -6,
-    "vo": 0,
-    "duck": true
+    "music": -7,
+    "sfx": -5,
+    "vo": 3.2,
+    "duck": true,
+    "spectral": true
   },
   "marks": {
     "hook": 0,
-    "end": 87.8
+    "end": 104.7334
   },
-  "sfx": []
+  "sfx": [
+    {
+      "at": 0.0,
+      "type": "wav",
+      "gain": 1.0,
+      "what": "reel 37's own sounds (sound.py): footsteps from the walk model, the lane's bed, the dark, the cap, the push",
+      "file": "audio/_r37_fx.wav"
+    },
+    {
+      "at": 0.04,
+      "type": "clink",
+      "gain": 0.34,
+      "what": "a spoon in his glass: the first sound (4-9 kHz)",
+      "pitch": 1.0
+    },
+    {
+      "at": 5.45,
+      "type": "street",
+      "gain": 0.4,
+      "what": "the lane, full band, only while nobody is talking",
+      "len": 0.79
+    },
+    {
+      "at": 8.45,
+      "type": "street",
+      "gain": 0.4,
+      "what": "the lane, full band, only while nobody is talking",
+      "len": 0.56
+    },
+    {
+      "at": 10.99,
+      "type": "street",
+      "gain": 0.4,
+      "what": "the lane, full band, only while nobody is talking",
+      "len": 0.7
+    },
+    {
+      "at": 13.81,
+      "type": "street",
+      "gain": 0.4,
+      "what": "the lane, full band, only while nobody is talking",
+      "len": 0.6
+    },
+    {
+      "at": 16.43,
+      "type": "street",
+      "gain": 0.4,
+      "what": "the lane, full band, only while nobody is talking",
+      "len": 0.79
+    },
+    {
+      "at": 22.046,
+      "type": "street",
+      "gain": 0.3,
+      "what": "the lane under the clock (nobody is talking)",
+      "len": 2.98
+    },
+    {
+      "at": 5.97,
+      "type": "whoosh",
+      "gain": 0.3,
+      "what": "his head turns to the lane (in the gap after the first line)",
+      "pitch": 1.1
+    },
+    {
+      "at": 17.41,
+      "type": "whoosh",
+      "gain": 0.34,
+      "what": "he's up and after them (in the gap after Four)",
+      "pitch": 0.95
+    },
+    {
+      "at": 22.046,
+      "type": "tick",
+      "gain": 0.14,
+      "what": "the clock, 3 left",
+      "pitch": 1.6
+    },
+    {
+      "at": 24.046,
+      "type": "tick",
+      "gain": 0.14,
+      "what": "the clock, 2 left",
+      "pitch": 1.6
+    },
+    {
+      "at": 26.046,
+      "type": "tick",
+      "gain": 0.22,
+      "what": "the clock, 1 left",
+      "pitch": 1.6
+    },
+    {
+      "at": 28.006,
+      "type": "shutter",
+      "gain": 0.42,
+      "what": "the lane stops (in the silence before \"Same bag\")"
+    },
+    {
+      "at": 28.708,
+      "type": "coin",
+      "gain": 0.3,
+      "what": "four rings on four bags (before the word)",
+      "pitch": 0.95
+    },
+    {
+      "at": 30.162,
+      "type": "coin",
+      "gain": 0.3,
+      "what": "four rings on four phones (before the word)",
+      "pitch": 1.12
+    },
+    {
+      "at": 49.656,
+      "type": "thunk",
+      "gain": 0.42,
+      "what": "YOU PICKED A WALK lands (a low knock and a high click)",
+      "pitch": 0.72
+    },
+    {
+      "at": 65.242,
+      "type": "gclick",
+      "gain": 0.34,
+      "what": "a ring on number three's tile (above 4.5 kHz)"
+    },
+    {
+      "at": 82.266,
+      "type": "hit",
+      "gain": 0.5,
+      "what": "what you just did (in the gap)",
+      "pitch": 0.9,
+      "len": 0.62
+    },
+    {
+      "at": 90.33,
+      "type": "vboom",
+      "gain": 0.34,
+      "what": "his eyes find you (low, under the word)",
+      "pitch": 0.85
+    }
+  ]
 }

@@ -66,7 +66,7 @@
     pelYaw: 0.10, pelRoll: 0.05, sway: 0.022, surge: 0.008, chestYaw: 0.12, lean: 0.05, leanOsc: 0.01, arm: 0.42, armBias: 0.02, armLag: 0.04, ab: 0.10, elbow: 0.22, elbowDyn: 0.38, elbowIn: 0.10,
     headPitch: 0, nod: 0.012, headFwd: 0.015, headStab: 0.8, slump: 0, shrug: 0, ph0: 0, toeOut: 0.02 };
   const style = (o) => ({ ...STYLE0, ...o });
-  const BODY = { thigh: 0.415, shin: 0.395, hipW: 0.085, spine: 0.45, shW: 0.168, neck: 0.06, uarm: 0.26, farm: 0.235 };
+  const BODY = { thigh: 0.415, shin: 0.395, hipW: 0.085, spine: 0.45, shW: 0.160, neck: 0.06, uarm: 0.26, farm: 0.235 };
   const rot2 = (a, b, th) => [a * Math.cos(th) - b * Math.sin(th), a * Math.sin(th) + b * Math.cos(th)];
   // One foot at its own phase q (0 = it lands): the ankle [forward, up] relative to the pelvis' place on the path, and the
   // foot's pitch (+ toes up). On the ground the foot pivots on its heel, lies flat, then pivots on its toes; in the air it's
@@ -116,7 +116,7 @@
     const pel = [pf, hipY, sway];
     const chest = [pel[0] + Math.sin(lean) * BODY.spine + S.slump * 0.03, pel[1] + Math.cos(lean) * BODY.spine - S.slump * 0.03, sway * 0.45];
     const yawC = -S.chestYaw * Math.cos(TAU * (qL - 0.05)) + (o.twist || 0), rollC = -rollP * 0.6, sw = BODY.shW;
-    const shUp = S.shrug + (o.shrug || 0);
+    const shUp = S.shrug + (o.shrug || 0) - 0.018;
     const shL = [chest[0] + sw * Math.sin(yawC) + S.slump * 0.035, chest[1] + sw * Math.sin(rollC) + shUp, chest[2] + sw * Math.cos(yawC)];
     const shR = [chest[0] - sw * Math.sin(yawC) + S.slump * 0.035, chest[1] - sw * Math.sin(rollC) + shUp, chest[2] - sw * Math.cos(yawC)];
     const cy = Math.cos(yawC), sy = Math.sin(yawC), ry = (v) => [v[0] * cy + v[2] * sy, v[1], -v[0] * sy + v[2] * cy];
@@ -208,10 +208,10 @@
     const arm = (sh, el, wr) => {
       const m = mid(sh, el, 0.5);
       limb(m, el, 0.052, 0.048, Lk.skin); limb(el, wr, 0.048, 0.040, Lk.skin); rim(el, wr, 0.048, 0.040); hand(el, wr, Lk.skin);
-      limb(sh, mid(sh, el, 0.62), 0.066, 0.060, Lk.shirt);
+      limb(sh, mid(sh, el, 0.62), 0.058, 0.057, Lk.shirt);
       g.strokeStyle = 'rgba(0,0,0,0.16)'; g.lineWidth = Math.max(1, 0.014 * s); const q = mid(sh, el, 0.62), ang = Math.atan2(el[1] - sh[1], el[0] - sh[0]), r = 0.062 * q[2];
       g.beginPath(); g.moveTo(q[0] - Math.sin(ang) * r, q[1] + Math.cos(ang) * r); g.lineTo(q[0] + Math.sin(ang) * r, q[1] - Math.cos(ang) * r); g.stroke();
-      rim(sh, mid(sh, el, 0.62), 0.07, 0.062);
+      rim(sh, mid(sh, el, 0.62), 0.058, 0.057);
     };
     // the trunk's line on screen, and across it
     const A = P.pel, Bc = P.chest, tl = Math.hypot(Bc[0] - A[0], Bc[1] - A[1]) || 1, ux = (Bc[0] - A[0]) / tl, uy = (Bc[1] - A[1]) / tl, nx = -uy, ny = ux;

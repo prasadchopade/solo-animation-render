@@ -91,10 +91,30 @@
 
   // ------------------------------------------------------------------ timing (the narration's words set it once there's a voice; until then, a plan)
   const TT = (() => {
-    const T = { w1a: 2.45, w1b: 2.80, cross: [3.30, 4.55, 5.95, 7.25], w2a: 7.95, w2b: 8.35, clock0: 10.3, clock1: 13.3,
-      bag: 13.75, phone: 14.65, dots0: 16.9, dots1: 18.6, picked: 22.1, three: 28.0, back0: 29.3, back1: 30.6, rub0: 32.4, rub1: 35.6,
-      pull0: 35.8, pull1: 37.7, stop0: 38.0, stop1: 38.7, turn0: 38.5, turn1: 39.8, push0: 41.2, END: C.DUR };
-    T.m1 = (T.w1a + T.w1b) / 2; T.m2 = (T.w2a + T.w2b) / 2; T.F = T.clock1;
+    const W = (p) => K.words(p), at = (p) => W(p)[0].t0, wi = (p, i) => W(p)[Math.min(i, W(p).length - 1)].t0, en = (p) => W(p)[W(p).length - 1].t1;
+    let T;
+    if (!W('n11').length) {                             // no narration placed yet: the motion test's plan
+      T = { w1a: 2.45, w1b: 2.80, cross: [3.30, 4.55, 5.95, 7.25], w2a: 7.95, w2b: 8.35, clock0: 10.3, clock1: 13.3,
+        bag: 13.75, phone: 14.65, dots0: 16.9, dots1: 18.6, picked: 22.1, three: 28.0, back0: 29.3, back1: 30.6, rub0: 32.4, rub1: 35.6,
+        pull0: 35.8, pull1: 37.7, stop0: 38.0, stop1: 38.7, turn0: 38.5, turn1: 39.8, push0: 41.2 };
+    } else {
+      T = { w1a: en('n01') + 0.12 };                    // "...Pick who you rob." and he turns to watch them cross
+      T.w1b = T.w1a + 0.35;
+      T.cross = ['c1', 'c2', 'c3', 'c4'].map((p) => at(p) + 0.2);       // each is in front of him as his number is said
+      T.w2a = T.cross[3] + 0.68; T.w2b = T.w2a + 0.4;                   // four has gone by: he's up and after them
+      T.clock0 = en('n02') + 0.1; T.clock1 = T.clock0 + 3.0;            // "...gets robbed." and three seconds
+      T.bag = at('n03'); T.phone = wi('n03', 2);                        // "Same bag. Same phone."
+      T.dots0 = at('n04') - 0.08; T.dots1 = T.dots0 + 1.7;              // "Take everything else away,"
+      T.picked = wi('n05', 5);                                          // "...You picked a walk."
+      T.three = wi('n06', 16);                                          // "...like number three's."
+      T.back0 = en('n06') + 0.2; T.back1 = T.back0 + 1.3;               // the lane comes back
+      T.rub0 = at('n08') - 0.25; T.rub1 = en('n08') + 0.7;              // "...for being tired."
+      T.pull0 = at('n09') - 0.3; T.pull1 = T.pull0 + 1.9;               // "Everyone walks like that some days," and you're out of his head
+      T.stop0 = en('n09') - 0.15; T.stop1 = T.stop0 + 0.7;              // he stops
+      T.turn0 = at('n10') - 0.3; T.turn1 = T.turn0 + 1.3;               // "and the real thief..." and he looks back
+      T.push0 = en('n10') + 0.3;                                        // into his eye, under "So which one are you?"
+    }
+    T.END = C.DUR; T.m1 = (T.w1a + T.w1b) / 2; T.m2 = (T.w2a + T.w2b) / 2; T.F = T.clock1;
     return T;
   })();
 
@@ -429,6 +449,28 @@
     const cl2 = 1 - sstep(60, 260, rp);                // the light on his eye, until the window takes over
     if (cl2 > 0.003 && mk > 0) { g.save(); g.globalAlpha = mk * cl2; g.fillStyle = '#fffdf6'; ell(g, ax - 0.36 * e.r * k, ay - 0.46 * e.r * k, 0.15 * e.r * k, 0.1 * e.r * k, -0.5); g.fill(); g.restore(); }
   }
+
+  // ------------------------------------------------------------------ for the sound: every footfall, from the same walk the picture draws
+  // (node ../../scripts/probe.mjs 0 "window.R37.steps()" → steps.py). Each: time, who (0–3 the four, 9 the thief), which foot,
+  // how far from the lens (m), where across the frame (-1 left … 1 right), and the shot it's in.
+  window.R37 = { TT, steps() {
+    const out = [], dt = 1 / 240, who = [...MEN, THF];
+    for (const m of who) {
+      let prev = null;
+      for (let t = 0; t < TT.END; t += dt) {
+        const tr = m.track(t), walk = tr.pose && tr.pose.walk != null ? tr.pose.walk : 1, p = m.S.cad * tr.tg + m.S.ph0, q = [p - Math.floor(p), p + 0.5 - Math.floor(p + 0.5)];
+        if (prev) for (const k of [0, 1]) if (q[k] < prev.q[k] - 0.5 && walk > 0.25) {       // this foot has just landed
+          const stage = t >= TT.dots0 + 0.6 && (t < TT.back0 || (m.i !== 2 && t < TT.back1));
+          const shot = m === THF ? (t >= TT.back1 ? (t < TT.pull0 ? 'pov' : 'thief') : null) : t < TT.m1 ? 'approach' : t < TT.m2 ? 'cross' : t < TT.F ? 'line' : t < TT.dots0 ? null : stage ? 'dots' : t >= TT.back0 ? 'lane' : 'dots';
+          if (!shot) continue;
+          const c = R.camera(camAt(t)).toCam(tr.x, 0, tr.z);
+          out.push({ t: +t.toFixed(4), who: m.i, foot: k, d: +Math.hypot(c[0], c[2]).toFixed(2), pan: +clamp(c[0] / Math.max(0.8, c[2]) * 1.3, -1, 1).toFixed(3), shot, walk: +walk.toFixed(2) });
+        }
+        prev = { q };
+      }
+    }
+    return out.sort((a, b) => a.t - b.t);
+  } };
 
   // ================================================================ the film
   if (!window.TL.lab) {
