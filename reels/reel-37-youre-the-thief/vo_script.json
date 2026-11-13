@@ -1,5 +1,5 @@
 {
- "note": "TEMPORARY, for voice run 3 only: three candidates for one short line in the middle of the clock (the voice should talk through the test). 'lines' lists just these (the lab voices every line it's given); the film's lines are under 'held' and go back after the run. Reel 37: You're the Thief (working title). Draft 6. The narrator is the series voice (af_heart, 1.0). Lines that need a real pause are their own lines. Facts: docs/research.md. Two voice runs: 43373776324 (draft 5's lines) and 43375946862 (the reworded and split lines); both runs' takes are in audio/vo_lab/takes. Run 1 showed: 'Pick who you rob' run together when it shared a line with 'You're the thief' (ear 1: 'Pekuyu Rob'), so the first line is two lines; 'Picked someone else?' lost its t in every take (both ears heard 'Pick someone else'), so that line is 'Didn't pick three?'; the twist and the prison line are split so each half gets a set pause. Voiced for comparison in run 2 and not used (their takes are still in the lab folder): 'Pick who to rob.' (ear 1 heard 'Pick you to rob' in two takes of three), 'They chose walks like number three's.', 'If you didn't pick three, you'd make a bad thief.', and 'Picked three?' on its own (it creaks in two takes of three; the whole line n08 is placed).",
+ "note": "TEMPORARY, for voice run 4 only: the line for whoever didn't pick three, reworded (the cloud check on the mix heard \"You'd make\" as \"you make\" through a phone speaker and in noise). Reel 37: You're the Thief (working title). Draft 6. The narrator is the series voice (af_heart, 1.0). Lines that need a real pause are their own lines. Facts: docs/research.md. Two voice runs: 43373776324 (draft 5's lines) and 43375946862 (the reworded and split lines); both runs' takes are in audio/vo_lab/takes. Run 1 showed: 'Pick who you rob' run together when it shared a line with 'You're the thief' (ear 1: 'Pekuyu Rob'), so the first line is two lines; 'Picked someone else?' lost its t in every take (both ears heard 'Pick someone else'), so that line is 'Didn't pick three?'; the twist and the prison line are split so each half gets a set pause. Voiced for comparison in run 2 and not used (their takes are still in the lab folder): 'Pick who to rob.' (ear 1 heard 'Pick you to rob' in two takes of three), 'They chose walks like number three's.', 'If you didn't pick three, you'd make a bad thief.', and 'Picked three?' on its own (it creaks in two takes of three; the whole line n08 is placed).",
  "voice": "af_heart",
  "speed": 1.0,
  "ref_text": "The night was cold and very quiet. Most of the street was asleep, and the lamps hummed over the empty road. Somewhere far away, a train rolled past, and then the silence came back.",
@@ -24,16 +24,12 @@
  ],
  "lines": [
   {
-   "id": "p1",
-   "text": "Don't think."
+   "id": "n07e",
+   "text": "Didn't pick three? You're a bad thief."
   },
   {
-   "id": "p2",
-   "text": "They're getting away."
-  },
-  {
-   "id": "p3",
-   "text": "Trust your gut."
+   "id": "n07f",
+   "text": "Didn't pick three? Then you're a bad thief."
   }
  ],
  "held": [
