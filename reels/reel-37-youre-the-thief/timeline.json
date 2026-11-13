@@ -1,7 +1,7 @@
 {
   "note": "Single source of truth for picture + sound, in BEATS (120 bpm: beat = 0.5 s). Reel 37 has NO end card (the user's one-off exception, 13 Nov 2026): the film runs from 'hook' to 'end' = the whole duration, and its last frame runs into frame 0.",
   "title": "You're the Thief",
-  "duration": 45.6333,
+  "duration": 45.366667,
   "fps": 30,
   "bpm": 120,
   "formats": [
@@ -24,7 +24,7 @@
   },
   "marks": {
     "hook": 0,
-    "end": 91.2666
+    "end": 90.7333
   },
   "sfx": [
     {
@@ -80,18 +80,25 @@
       "at": 21.04,
       "type": "street",
       "gain": 0.16,
-      "what": "the lane under the clock (nobody is talking)",
-      "len": 2.98
+      "what": "the lane under the clock, between the words",
+      "len": 0.76
     },
     {
-      "at": 72.69,
+      "at": 24.75,
+      "type": "street",
+      "gain": 0.16,
+      "what": "the lane under the clock, between the words",
+      "len": 1.12
+    },
+    {
+      "at": 72.2,
       "type": "street",
       "gain": 0.13,
       "what": "the lane again, far off, only in the gaps",
       "len": 0.95
     },
     {
-      "at": 78.55,
+      "at": 78.06,
       "type": "street",
       "gain": 0.13,
       "what": "the lane again, far off, only in the gaps",
@@ -105,7 +112,7 @@
       "pitch": 1.05
     },
     {
-      "at": 66.44,
+      "at": 65.95,
       "type": "autohorn",
       "gain": 0.13,
       "what": "a far auto horn: the lane is back (in the gap)",
@@ -153,34 +160,34 @@
       "what": "the lane stops (in the silence before \"Same bag\")"
     },
     {
-      "at": 27.78,
+      "at": 27.79,
       "type": "coin",
       "gain": 0.3,
       "what": "four rings on four bags (before the word)",
       "pitch": 0.95
     },
     {
-      "at": 29.266,
+      "at": 29.276,
       "type": "coin",
       "gain": 0.3,
       "what": "four rings on four phones (before the word)",
       "pitch": 1.12
     },
     {
-      "at": 45.5,
+      "at": 45.51,
       "type": "thunk",
       "gain": 0.42,
       "what": "YOU PICKED A WALK lands (a low knock and a high click)",
       "pitch": 0.72
     },
     {
-      "at": 58.64,
+      "at": 58.65,
       "type": "gclick",
       "gain": 0.34,
       "what": "a ring on number three's tile (above 4.5 kHz)"
     },
     {
-      "at": 72.85,
+      "at": 72.36,
       "type": "hit",
       "gain": 0.5,
       "what": "what you just did (in the gap)",
@@ -188,7 +195,7 @@
       "len": 0.62
     },
     {
-      "at": 80.73,
+      "at": 80.24,
       "type": "vboom",
       "gain": 0.34,
       "what": "his eyes find you (low, under the word)",
