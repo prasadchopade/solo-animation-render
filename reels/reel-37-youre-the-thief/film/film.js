@@ -231,7 +231,7 @@
     const F = {};
     for (const a of cast) {
       const tr0 = a.m.track(t), lagged = a.m.look.bag ? 1.25 * (R.skel(a.m.S, tr0.tg - 0.075, tr0.pose || {}).hipY - R.skel(a.m.S, tr0.tg, tr0.pose || {}).hipY) : 0;
-      const face = a.m === THF ? thiefFace(t) : { ...a.m.face, close: blinkAt(t, a.m.i) }, fo = { face, bagLag: lagged, ...(o.fig ? o.fig(a.m) : {}) };
+      const face = a.m === THF ? thiefFace(t) : { ...a.m.face, close: blinkAt(tr0.tg, a.m.i) }, fo = { face, bagLag: lagged, ...(o.fig ? o.fig(a.m) : {}) };
       if (a.a < 0.999 || fo.blur > 0.4) {               // faint or soft: drawn whole into a buffer first, so his limbs don't show through each other
         F[a.m.i] = R.figure(fresh(buf(4)), cam, a.m, t, fo);
         g.save(); g.globalAlpha *= a.a; if (fo.blur > 0.4) g.filter = `blur(${fo.blur.toFixed(1)}px)`; g.drawImage(buf(4), 0, 0); g.restore();

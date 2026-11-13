@@ -1,8 +1,103 @@
 {
+ "note": "Reel 37: You're the Thief (working title). Draft 5, after two cold reads (docs/script.md). NOT VOICED YET: the motion test goes to the user first. The narrator is the series voice (af_heart, 1.0). Lines that need a real pause are their own lines. Facts: docs/research.md. Variants are voiced side by side and one of each is placed: reel 35 lost the t of 'picked the' in every take, so n05b, n06b, n07b and n08b avoid 'picked' before a consonant ('chose', 'if you picked').",
  "voice": "af_heart",
- "speed": 1.12,
+ "speed": 1.0,
+ "ref_text": "The night was cold and very quiet. Most of the street was asleep, and the lamps hummed over the empty road. Somewhere far away, a train rolled past, and then the silence came back.",
+ "cast_lines": [
+  "n01"
+ ],
+ "cast": [
+  {
+   "id": "k-heart-100",
+   "engine": "kokoro",
+   "voice": "af_heart",
+   "speed": 1.0
+  }
+ ],
+ "take": [
+  {
+   "id": "k-heart",
+   "engine": "kokoro",
+   "voice": "af_heart",
+   "speed": 1.0
+  }
+ ],
  "lines": [
-  { "id": "v01", "text": "Replace this with your first line of narration." },
-  { "id": "v02", "text": "Spell numbers the way they should be spoken: two hundred forty-two." }
+  {
+   "id": "n01",
+   "text": "You're the thief. Pick who you rob."
+  },
+  {
+   "id": "c1",
+   "text": "One."
+  },
+  {
+   "id": "c2",
+   "text": "Two."
+  },
+  {
+   "id": "c3",
+   "text": "Three."
+  },
+  {
+   "id": "c4",
+   "text": "Four."
+  },
+  {
+   "id": "n02",
+   "text": "Whoever you pick gets robbed."
+  },
+  {
+   "id": "n03",
+   "text": "Same bag. Same phone. So what did you go by?"
+  },
+  {
+   "id": "n04",
+   "text": "Take everything else away, and you still know which one's yours."
+  },
+  {
+   "id": "n05",
+   "text": "You didn't pick a person. You picked a walk."
+  },
+  {
+   "id": "n05b",
+   "text": "You didn't choose a person. You chose a walk."
+  },
+  {
+   "id": "n06",
+   "text": "Men in prison for assault were asked who looked easy to mug. They picked walks like number three's."
+  },
+  {
+   "id": "n06b",
+   "text": "Men in prison for assault were asked who looked easy to mug. They chose walks like number three's."
+  },
+  {
+   "id": "n07",
+   "text": "Picked someone else? You'd make a bad thief."
+  },
+  {
+   "id": "n07b",
+   "text": "If you picked someone else, you'd make a bad thief."
+  },
+  {
+   "id": "n08",
+   "text": "Picked three? You just robbed a man for being tired."
+  },
+  {
+   "id": "n08b",
+   "text": "If you picked three, you just robbed a man for being tired."
+  },
+  {
+   "id": "n09",
+   "text": "Everyone walks like that some days,"
+  },
+  {
+   "id": "n10",
+   "text": "and the real thief is watching for the day you do."
+  },
+  {
+   "id": "n11",
+   "text": "So which one are you?"
+  }
  ]
 }
