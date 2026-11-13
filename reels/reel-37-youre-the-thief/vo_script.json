@@ -1,0 +1,103 @@
+{
+ "note": "Reel 37: You're the Thief (working title). Draft 7. The narrator is the series voice (af_heart, 1.0). Lines that need a real pause are their own lines. Facts: docs/research.md. Four voice runs: 43373776324 (draft 5's lines), 43375946862 (the reworded and split lines), 43444575946 (a line for the middle of the clock) and 43445439756 (the bad-thief line again); every run's takes are in audio/vo_lab/takes. What the runs changed: 'Pick who you rob' ran together when it shared a line with 'You're the thief' (ear 1: 'Pekuyu Rob'), so the first line is two lines. 'Picked someone else?' lost its t in every take (both ears heard 'Pick someone else'), so that line became 'Didn't pick three? You'd make a bad thief.'; the cloud check on the mix then heard 'You'd make' as 'you make' through a phone speaker and in noise, so it's 'You're a bad thief.' The twist and the prison line are split so each half gets a set pause. 'Trust your gut.' (n02p) is said inside the three-second clock, so the voice stays with the viewer through the test; 'Don't think.' was voiced beside it and its first sound was flagged in every take. Voiced for comparison and not used (their takes are still in the lab folder): 'Pick who to rob.', 'They chose walks like number three's.', 'If you didn't pick three, you'd make a bad thief.', 'Picked three?' on its own, 'They're getting away.', 'Didn't pick three? Then you're a bad thief.'",
+ "voice": "af_heart",
+ "speed": 1.0,
+ "ref_text": "The night was cold and very quiet. Most of the street was asleep, and the lamps hummed over the empty road. Somewhere far away, a train rolled past, and then the silence came back.",
+ "cast_lines": [
+  "n01a"
+ ],
+ "cast": [
+  {
+   "id": "k-heart-100",
+   "engine": "kokoro",
+   "voice": "af_heart",
+   "speed": 1.0
+  }
+ ],
+ "take": [
+  {
+   "id": "k-heart",
+   "engine": "kokoro",
+   "voice": "af_heart",
+   "speed": 1.0
+  }
+ ],
+ "lines": [
+  {
+   "id": "n01a",
+   "text": "You're the thief."
+  },
+  {
+   "id": "n01b",
+   "text": "Pick who you rob."
+  },
+  {
+   "id": "c1",
+   "text": "One."
+  },
+  {
+   "id": "c2",
+   "text": "Two."
+  },
+  {
+   "id": "c3",
+   "text": "Three."
+  },
+  {
+   "id": "c4",
+   "text": "Four."
+  },
+  {
+   "id": "n02",
+   "text": "Whoever you pick gets robbed."
+  },
+  {
+   "id": "n02p",
+   "text": "Trust your gut."
+  },
+  {
+   "id": "n03",
+   "text": "Same bag. Same phone. So what did you go by?"
+  },
+  {
+   "id": "n04",
+   "text": "Take everything else away, and you still know which one's yours."
+  },
+  {
+   "id": "n05a",
+   "text": "You didn't pick a person."
+  },
+  {
+   "id": "n05c",
+   "text": "You picked a walk."
+  },
+  {
+   "id": "n06a",
+   "text": "Men in prison for assault were asked who looked easy to mug."
+  },
+  {
+   "id": "n06c",
+   "text": "They picked walks like number three's."
+  },
+  {
+   "id": "n07",
+   "text": "Didn't pick three? You're a bad thief."
+  },
+  {
+   "id": "n08",
+   "text": "Picked three? You just robbed a man for being tired."
+  },
+  {
+   "id": "n09",
+   "text": "Everyone walks like that some days,"
+  },
+  {
+   "id": "n10",
+   "text": "and the real thief is watching for the day you do."
+  },
+  {
+   "id": "n11",
+   "text": "So which one are you?"
+  }
+ ]
+}
