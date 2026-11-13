@@ -86,7 +86,7 @@
   const FACES = [{ smile: 0.25 }, { smile: 0.7, browY: 0.03 }, { lid: 0.75, smile: -0.35, browTilt: -0.05 }, { browTilt: 0.07, smile: -0.15 }];
   const V = STYLES.map((s) => s.stride * s.cad);   // metres a second: 1.38, 1.25, 0.79, 1.36
   // Season 1's thief (reels 20–35): the maroon cap, the mole on his left cheek, the thin moustache, stubble, the green shirt.
-  const THIEF = { skin: '#b27a54', skinD: '#8a583a', skinH: '#cf9a72', hair: '#15100c', style: 'short', cap: true, capTurn: 0.38, must: 0.075, stub: 0.6, brow: 0.085, browTilt: 0.05, ew: 0.23, eh: 0.118, mole: [0.47, -0.42], shirt: '#37a18a', leg: '#20262f', shoe: '#121212', sole: '#3a3a3a' };
+  const THIEF = { skin: '#b27a54', skinD: '#8a583a', skinH: '#cf9a72', hair: '#15100c', style: 'short', cap: true, capTurn: 0.38, must: 0.075, stub: 0.6, brow: 0.085, browTilt: 0.05, ew: 0.23, eh: 0.118, mole: [0.47, -0.42], phone: SAME.phone, shirt: '#37a18a', leg: '#20262f', shoe: '#121212', sole: '#3a3a3a' };
   const PROWL = R.style({ stride: 1.0, cad: 0.792, duty: 0.63, roll: 0.9, stepH: 0.045, pelYaw: 0.08, pelRoll: 0.04, sway: 0.02, chestYaw: 0.1, arm: 0.3, elbow: 0.25, elbowDyn: 0.3, lean: 0.04, headStab: 0.92 });
 
   // ------------------------------------------------------------------ timing (the narration's words set it once there's a voice; until then, a plan)
@@ -95,21 +95,25 @@
     let T;
     if (!W('n11').length) {                             // no narration placed yet: the motion test's plan
       T = { w1a: 2.45, w1b: 2.80, cross: [3.30, 4.55, 5.95, 7.25], w2a: 7.95, w2b: 8.35, clock0: 10.3, clock1: 13.3,
-        bag: 13.75, phone: 14.65, dots0: 16.9, dots1: 18.6, picked: 22.1, three: 28.0, back0: 29.3, back1: 30.6, rub0: 32.4, rub1: 35.6,
-        pull0: 35.8, pull1: 37.7, stop0: 38.0, stop1: 38.7, turn0: 38.5, turn1: 39.8, push0: 41.2 };
+        bag: 13.75, phone: 14.65, dots0: 16.9, dots1: 18.6, picked: 22.1, cell0: 23.3, cell1: 23.85, men: 24.0, point: [26.0, 26.7], push3: 27.4, walks: 27.6,
+        three: 28.3, back0: 29.3, back1: 30.6, rub0: 32.4, rub1: 37.3, pull0: 35.8, pull1: 37.7, stop0: 38.0, stop1: 38.7, turn0: 38.5, turn1: 39.8, push0: 41.2 };
     } else {
-      T = { w1a: en('n01') + 0.12 };                    // "...Pick who you rob." and he turns to watch them cross
+      T = { w1a: en('n01b') + 0.12 };                    // "...Pick who you rob." and he turns to watch them cross
       T.w1b = T.w1a + 0.35;
       T.cross = ['c1', 'c2', 'c3', 'c4'].map((p) => at(p) + 0.2);       // each is in front of him as his number is said
       T.w2a = T.cross[3] + 0.68; T.w2b = T.w2a + 0.4;                   // four has gone by: he's up and after them
       T.clock0 = en('n02') + 0.1; T.clock1 = T.clock0 + 3.0;            // "...gets robbed." and three seconds
       T.bag = at('n03'); T.phone = wi('n03', 2);                        // "Same bag. Same phone."
       T.dots0 = at('n04') - 0.08; T.dots1 = T.dots0 + 1.7;              // "Take everything else away,"
-      T.picked = wi('n05', 5);                                          // "...You picked a walk."
-      T.three = wi('n06', 16);                                          // "...like number three's."
-      T.back0 = en('n06') + 0.2; T.back1 = T.back0 + 1.3;               // the lane comes back
-      T.rub0 = at('n08') - 0.25; T.rub1 = en('n08') + 0.7;              // "...for being tired."
-      T.pull0 = at('n09') - 0.3; T.pull1 = T.pull0 + 1.9;               // "Everyone walks like that some days," and you're out of his head
+      T.picked = at('n05c');                                          // "...You picked a walk."
+      T.cell0 = en('n05c') + 0.14; T.cell1 = T.cell0 + 0.55;            // a barred door runs shut across the dark: the men who were asked
+      T.men = at('n06a'); T.point = [wi('n06a', 8) - 0.2, wi('n06a', 10) - 0.05];   // "...who looked easy to mug": two of them point
+      T.push3 = at('n06c') - 0.05; T.walks = wi('n06c', 1);             // "They picked walks like number three's": in through the bars, to him
+      T.three = wi('n06c', 4);                                          // "...number three's."
+      T.back0 = en('n06c') + 0.2; T.back1 = T.back0 + 1.3;               // the lane comes back
+      T.rub0 = at('n08') - 0.25;                                        // "...for being tired."
+      T.pull0 = en('n08') + 0.22; T.pull1 = T.pull0 + 1.9;              // the cap comes down on what you did; then you're out of his head
+      T.rub1 = T.pull0 + 1.5;
       T.stop0 = en('n09') - 0.15; T.stop1 = T.stop0 + 0.7;              // he stops
       T.turn0 = at('n10') - 0.3; T.turn1 = T.turn0 + 1.3;               // "and the real thief..." and he looks back
       T.push0 = en('n10') + 0.3;                                        // into his eye, under "So which one are you?"
@@ -134,7 +138,7 @@
     const tg = TT.F + Math.max(0, t - TT.dots0 - 0.1);                        // they start walking again as the lane goes dark
     const lane = (tt) => ({ x: XC[i], z: ZF[i] + AHEAD[i] + V[i] * (tt - TT.back0), y: 0, h: 0 });
     const spin = (tt) => 0.07 * Math.max(0, Math.min(tt, TT.back0) - TT.dots1);   // they turn slowly on the spot: bodies, not flat marks
-    if (t < TT.back0 || (i !== 2 && t < TT.back1)) { const u = seg(TT.dots0, TT.dots1, t); return { x: lerp(XC[i], SG[i][0], u), z: lerp(ZF[i], SGZ, u), y: SG[i][1] * u, h: (PI / 2) * u + spin(t), tg }; }
+    if (t < TT.back0) { const u = seg(TT.dots0, TT.dots1, t); return { x: lerp(XC[i], SG[i][0], u), z: lerp(ZF[i], SGZ, u), y: SG[i][1] * u, h: (PI / 2) * u + spin(t), tg }; }
     if (i !== 2) return { ...lane(t), tg };
     const u = seg(TT.back0, TT.back1, t), L = lane(t);                           // number three walks out of the dark, back into the lane
     const rub = seg(TT.rub0, TT.rub0 + 0.7, t) * (1 - seg(TT.rub1 - 0.7, TT.rub1, t));
@@ -145,11 +149,16 @@
   // the thief on his feet: 3.2 m behind number three and to his right. He stops, and turns to look back over his left shoulder
   // at you: his face comes round into the frame, the mole on the cheek towards you.
   const z3 = (t) => ZF[2] + V[2] * (t - TT.back0), TX = XC[2] + 0.75;
+  const dist = (t) => lerp(3.4, 2.0, seg(TT.back1 - 0.3, TT.pull0 - 0.3, t));      // how far behind number three he is: he closes on him while you watch
+  // number three's phone: in the thief's left hand when you next see him, then into his own back pocket (the lift itself is never shown)
+  const TAKE = TT.pull0 + 0.17, POCKET = [TT.pull0 + 0.95, TT.pull0 + 1.6];
   const thiefTrack = (t) => {
-    const d = TT.stop1 - TT.stop0, tau = clamp(t - TT.stop0, 0, d), zs = z3(Math.min(t, TT.stop0)) - 3.2 + V[2] * (tau - tau * tau / (2 * d));
+    const d = TT.stop1 - TT.stop0, tau = clamp(t - TT.stop0, 0, d), zs = z3(Math.min(t, TT.stop0)) - dist(t) + V[2] * (tau - tau * tau / (2 * d));
     const walk = 1 - tau / d, tn = seg(TT.turn0 + 0.15, TT.turn1, t), hd = seg(TT.turn0, TT.turn0 + 0.8, t), hold = seg(TT.turn1 - 0.1, TT.push0 + 0.5, t);
+    const put = seg(POCKET[0], POCKET[1], t), aw = t < TAKE - 0.5 ? 0 : 1 - seg(POCKET[1] + 0.22, POCKET[1] + 0.7, t), eye = t < TAKE - 0.5 ? 0 : 1 - seg(POCKET[0] - 0.1, POCKET[1] - 0.1, t);
+    const arms = aw > 0.001 ? { l: { wrist: [lerp(-0.02, -0.10, put), lerp(-0.32, -0.37, put), lerp(0.26, 0.10, put)], pole: [lerp(-0.6, -1, put), lerp(-0.3, 0.2, put), lerp(1, 0.8, put)], w: aw } } : null;
     return { x: TX, z: zs, h: -1.2 * tn - 0.12 * hold, tg: Math.min(t, TT.stop0 + d * 0.5),
-      pose: { walk, twist: -0.45 * seg(TT.turn0 + 0.1, TT.turn1 - 0.1, t) - 0.08 * hold, headYaw: -1.0 * hd - 0.3 * hold, headTilt: -0.05 * hd, headPitch: 0.05 * hd, shrug: 0.01 * hd }, hd, hold };
+      pose: { walk, arms, twist: -0.45 * seg(TT.turn0 + 0.1, TT.turn1 - 0.1, t) - 0.08 * hold, headYaw: -1.0 * hd - 0.3 * hold - 0.32 * eye, headTilt: -0.05 * hd, headPitch: 0.05 * hd + 0.1 * hold + 0.26 * eye, shrug: 0.01 * hd }, hd, hold };
   };
   const THF = { i: 9, S: PROWL, look: THIEF, track: thiefTrack };
   const thiefFace = (t) => { const tr = thiefTrack(t), k = tr.hd, bk = Math.floor((t + 0.37) / 2.9), bu = (t + 0.37) - bk * 2.9, blink = t > TT.push0 - 0.2 ? 0 : bu < 0.07 ? bu / 0.07 : bu < 0.16 ? 1 - (bu - 0.07) / 0.09 : 0;
@@ -189,7 +198,11 @@
   // ------------------------------------------------------------------ the camera
   const mixc = (a, b, u) => { const o = {}; for (const k in a) o[k] = lerp(a[k], b[k], u); return o; };
   const DOTCAM = { x: 0, y: 1.9, z: SGZ - 26, yaw: 0, pitch: 0, roll: 0, f: 6500, cx: 515, cy: 1005 };
-  const dotCam = (t) => mixc(DOTCAM, { ...DOTCAM, x: -0.46, y: 1.2, f: 8600 }, seg(TT.three - 0.3, TT.three + 1.3, t));   // in on number three when he's named
+  const dotCam = (t) => {                              // back a little for the men who were asked; then in through the bars on number three
+    const c1 = seg(TT.cell0, TT.cell1 + 0.1, t), p = seg(TT.push3, TT.push3 + 1.35, t), drift = clamp((t - TT.cell1) / 4);
+    const wide = mixc(DOTCAM, { ...DOTCAM, f: 5330 * (1 + 0.03 * drift), cy: 905 }, c1), near = { ...DOTCAM, x: -1.07, y: 1.05, f: 12000, cy: 1005 };
+    const c = mixc(wide, near, p); c.f = Math.exp(lerp(Math.log(wide.f), Math.log(near.f), p)); return c;
+  };
   function camPOV(t) {
     const A = (tt) => {                               // looking up the lane at the four of them (a long lens: his eyes have settled on them)
       let gx = 0, gz = 0; for (let i = 0; i < 4; i++) { gx += XA[i] / 4; gz += (ZA0[i] + V[i] * tt) / 4; }
@@ -214,9 +227,10 @@
   function camEnd(t) {                                // his eyes again, on number three's back; then out of his head, and behind him
     const tr = thiefTrack(t), hj = jointWorld(THF, Math.min(t, TT.stop0), 'head');
     const u = pullU(t), bd = PULL(t), hz = hj[2] + (tr.z - thiefTrack(Math.min(t, TT.stop0)).z);
-    const px = lerp(hj[0], tr.x, u * 0.8) - 0.24 * u, py = lerp(hj[1] + 0.02, 1.62, u * 0.8) + 0.03 * u, pz = lerp(hz, tr.z, u * 0.8) - bd;
-    const push = seg(TT.turn1, TT.push0, t);
-    return { x: px, y: py, z: pz + 0.06 * push, yaw: lerp(Math.atan2(XC[2] - TX, 3.2), 0.035, u) + 0.004 * NA(t * 0.5), pitch: 0.002 * NB(t * 0.5), roll: 0.004 * NC(t * 0.4), f: 1400 * (1 + 0.05 * push), cx: 540, cy: lerp(800, 770, u) };
+    const px = lerp(hj[0], tr.x, u * 0.8) - 0.24 * u, py = lerp(hj[1] + 0.02, 1.40, u), pz = lerp(hz, tr.z, u * 0.8) - bd;
+    const push = seg(TT.turn1, TT.push0, t), drop = t < TAKE ? seg(TT.pull0 - 1.05, TT.pull0 - 0.2, t) : 0;      // his eyes go down to the phone in number three's pocket
+    return { x: px, y: py, z: pz + 0.06 * push, yaw: lerp(Math.atan2(XC[2] - TX + 0.07 * drop, dist(t)), 0.035, u) + 0.004 * NA(t * 0.5), pitch: -0.2 * drop + 0.002 * NB(t * 0.5), roll: 0.004 * NC(t * 0.4),
+      f: 1400 * (1 + 0.25 * drop) * (1 + 0.05 * push), cx: 540, cy: lerp(800, 720, u) };
   }
   function camAt(t) {
     if (t < TT.dots0) return camPOV(t);
@@ -248,6 +262,7 @@
       if (filt) { g.save(); g.filter = filt; g.drawImage(buf(0), 0, 0); g.restore(); }
     }
     if (dark > 0) { g.fillStyle = R.rgba(NIGHT, dark); g.fillRect(-4000, -4000, 9000, 9000); }
+    if (o.under) o.under(g, cam);
     const F = {};
     for (const a of cast) {
       const tr0 = a.m.track(t), lagged = a.m.look.bag ? 1.25 * (R.skel(a.m.S, tr0.tg - 0.075, tr0.pose || {}).hipY - R.skel(a.m.S, tr0.tg, tr0.pose || {}).hipY) : 0;
@@ -350,32 +365,110 @@
     }
   }
 
-  // ------------------------------------------------------------------ 2 · everything else taken away: four walks, in dots
+  // ------------------------------------------------------------------ 2 · everything else taken away: four walks, in dots; then the men who were asked
+  // 2b · a barred door runs shut across the dark; under it, three men's heads from behind, watching; two of them point at the same
+  // walk. The bars and the heads are shorthand for "in prison": in the 1981 study the men watched videotape (docs/research.md), so
+  // the lights are people again for them. Then in through the bars, to number three.
+  const BARS = [85, 265, 445, 625, 805, 985], WATCH = [{ x: 118, y: 1362, r: 100, k: 0 }, { x: 482, y: 1330, r: 112, k: 1 }, { x: 846, y: 1368, r: 98, k: 2 }];
+  const F0X = (() => { const q = R.camera(dotCam(TT.push3)).P(SG[2][0], 0.9, SGZ); return q ? q[0] : 340; })();   // where number three is on screen when the push begins
+  const SIL = '#05070f', RIM = 'rgba(150,170,232,0.55)';
+  function cell(g, t, f3, part) {                     // part 'bars': the door (behind the numbers); 'men': the heads and hands (in front of everything but the words)
+    const inn = clamp((t - TT.cell0) / (TT.cell1 - TT.cell0)), out = seg(TT.push3, TT.push3 + 1.2, t);
+    if (inn <= 0 || out >= 1) return;
+    if (part === 'bars') return cellBars(g, t, f3, inn, out);
+    return cellMen(g, t, f3, out);
+  }
+  function cellBars(g, t, f3, inn, out) {
+    // the door: it runs in from the right and stops dead
+    const run = (u) => (1 - u * u) * 1200, off = run(inn), smear = Math.abs(run(clamp((t - 1 / 30 - TT.cell0) / (TT.cell1 - TT.cell0))) - off);   // it's smeared by its own speed while it runs
+    const dt = t - TT.cell1, shake = dt > 0 ? 8 * Math.exp(-dt * 15) * Math.cos(dt * 58) : 0;
+    const sB = Math.pow(1 + 1.3 * out, 2.6), aB = 1 - sstep(0.3, 0.8, out);      // through it: the bars open out round number three as the view goes in
+    g.save();
+    for (const bx of BARS) {
+      const x = out > 0 ? f3[0] + (bx - F0X) * sB : bx + off + shake + smear / 2, w = 28 * sB, ww = w + smear;
+      if (x + ww < -40 || x - ww > W + 40 || aB <= 0.003) continue;
+      g.globalAlpha = aB * w / ww;
+      g.fillStyle = lg(g, x - ww / 2, 0, x + ww / 2, 0, [0, '#6b79aa'], [0.18, '#3b466e'], [0.6, '#262e4c'], [1, '#10142a']); g.fillRect(x - ww / 2, -20, ww, H + 40);
+    }
+    g.restore();
+  }
+  function cellMen(g, t, f3, out) {
+    // the men: dark from behind, the far light along the tops of them. They come up as the door shuts, and fall away as the view goes in past them
+    const up = ease((t - TT.cell0 - 0.05) / 0.5), away = out * out, spread = 1.1 * out, sc = 1 + 0.9 * out;
+    for (const m of WATCH) {
+      const r = m.r, rx = (m.k === 2 ? 0.93 : 0.86) * r;
+      g.save(); g.translate(m.x + 4 * Math.sin(t * 0.8 + m.k * 2.1) + (m.x - 512) * spread, m.y + (1 - up) * 640 + 1100 * away + 2.5 * Math.sin(t * 1.1 + m.k)); g.scale(sc, sc);
+      g.fillStyle = SIL;
+      g.beginPath(); g.moveTo(-2.7 * r, 6.4 * r); g.lineTo(-2.7 * r, 3.0 * r); g.bezierCurveTo(-2.6 * r, 2.3 * r, -1.3 * r, 2.12 * r, -0.55 * r, 1.96 * r); g.lineTo(0.55 * r, 1.96 * r);
+      g.bezierCurveTo(1.3 * r, 2.12 * r, 2.6 * r, 2.3 * r, 2.7 * r, 3.0 * r); g.lineTo(2.7 * r, 6.4 * r); g.closePath(); g.fill();
+      g.fillRect(-0.5 * r, 1.5 * r, r, 0.6 * r);
+      ell(g, 0, r, rx, r); g.fill();
+      for (const sg of [-1, 1]) { ell(g, sg * (rx + 0.01 * r), 1.14 * r, 0.12 * r, 0.24 * r); g.fill(); }
+      g.strokeStyle = RIM; g.lineWidth = 4; g.lineCap = 'round';
+      g.beginPath(); g.ellipse(0, r, rx, r, 0, PI * 1.1, PI * 1.9); g.stroke();
+      for (const sg of [-1, 1]) { g.beginPath(); g.moveTo(sg * 2.62 * r, 2.7 * r); g.bezierCurveTo(sg * 2.5 * r, 2.3 * r, sg * 1.3 * r, 2.12 * r, sg * 0.62 * r, 1.98 * r); g.stroke(); }
+      g.restore();
+    }
+    // two of them point: a forearm up from below the frame, a fist, one finger, at the same man
+    const finger = (t0, hand, base, ph) => {
+      const k = ease((t - t0) / 0.4); if (k <= 0) return;
+      const ox = (hand[0] - 512) * spread, oy = 1100 * away, jab = 16 * Math.sin(PI * clamp((t - t0 - 0.3) / 0.26));
+      let hx = lerp(base[0], hand[0], k) + ox, hy = lerp(base[1], hand[1], k) + 2.5 * Math.sin(t * 1.4 + ph) + oy;
+      const an = Math.atan2(f3[1] - hy, f3[0] - hx), c = Math.cos(an), s = Math.sin(an), n = c < 0 ? [-s, c] : [s, -c];   // n: the side of it the far light is on
+      hx += c * jab; hy += s * jab;
+      g.save(); g.lineCap = 'round'; g.lineJoin = 'round'; g.strokeStyle = SIL; g.fillStyle = SIL;
+      g.lineWidth = 84 * sc; g.beginPath(); g.moveTo(base[0] + ox, base[1] + 340 + oy); g.lineTo(hx - c * 44 * sc, hy - s * 44 * sc); g.stroke();      // his forearm, up from below the frame
+      g.transform(c * sc, s * sc, n[0] * sc, n[1] * sc, hx, hy);                 // the hand's own frame: x along the finger, y towards the light
+      g.beginPath(); g.roundRect(-74, -50, 114, 98, 30); g.fill();              // the fist
+      for (const [bx, by] of [[42, 0], [40, -24], [31, -44]]) { g.beginPath(); g.arc(bx, by, 17, 0, TAU); g.fill(); }   // three fingers curled
+      g.lineWidth = 27; g.beginPath(); g.moveTo(18, 30); g.lineTo(152, 30); g.stroke();                               // the one that points
+      g.lineWidth = 25; g.beginPath(); g.moveTo(-44, 40); g.lineTo(2, 66); g.stroke();                                // his thumb
+      g.strokeStyle = RIM; g.lineWidth = 3.5;
+      g.beginPath(); g.moveTo(34, 43.5); g.lineTo(152, 43.5); g.stroke();
+      g.beginPath(); g.moveTo(-50, 50); g.lineTo(-2, 77); g.stroke();
+      g.restore();
+    };
+    finger(TT.point[0], [300, 1470], [330, 1720], 0.4);
+    finger(TT.point[1], [684, 1492], [760, 1750], 1.9);
+  }
+  const STAGE = { x: 0.7, back: 0, front: 0.5 };       // the light on the dark stage: from the side they're walking towards
+  const mixL = (a, b, u) => ({ x: lerp(a.x, b.x, u), back: lerp(a.back, b.back, u), front: lerp(a.front, b.front, u) });
   function shotDots(g, t) {
     const inn = seg(TT.dots0, TT.dots1, t), back = seg(TT.back0, TT.back1, t);
     const dark = sstep(TT.dots0, TT.dots0 + 0.9, t) * (1 - sstep(TT.back0 + 0.15, TT.back1, t));
-    const body = (m) => (t < TT.back0 ? 1 - sstep(TT.dots0 + 0.3, TT.dots0 + 1.05, t) : m.i === 2 ? sstep(TT.back0 + 0.25, TT.back0 + 0.95, t) : 0);
-    const dim = sstep(TT.three - 0.15, TT.three + 0.35, t);
-    const dota = (m) => sstep(TT.dots0 + 0.2, TT.dots0 + 0.95, t) * (m.i === 2 ? 1 - sstep(TT.back0 + 0.45, TT.back0 + 1.05, t) : (1 - 0.8 * dim) * (1 - sstep(TT.back0, TT.back0 + 0.5, t)));
-    const { cam, F } = drawLane(g, t, { dark, alpha: body, dof: 2.2 + 3.3 * (1 - back), bg: back < 1 && dark < 0.999 ? 'saturate(0.6)' : '' });
-    // the stage: a line of ground under each row, a soft pool of light
-    if (dark > 0.02) {
-      g.save(); g.globalAlpha = dark * (1 - back);
-      g.fillStyle = rg(g, 515, 1000, 80, 900, [0, 'rgba(60,70,120,0.22)'], [1, 'rgba(60,70,120,0)']); g.fillRect(0, 0, W, H);
-      for (const yy of [0, 2.08]) { const a = cam.P(-3.4, yy, SGZ), b = cam.P(3.4, yy, SGZ); if (!a || !b) continue; g.strokeStyle = 'rgba(255,231,168,0.22)'; g.lineWidth = 3; g.beginPath(); g.moveTo(a[0], a[1] + 4); g.lineTo(b[0], b[1] + 4); g.stroke(); }
-      g.restore();
-    }
+    const men = sstep(TT.cell0 + 0.05, TT.cell0 + 0.6, t);                     // the lights are people again, for the men who were asked
+    const only3 = sstep(TT.push3 - 0.25, TT.push3 + 0.3, t);                    // the others go as the view closes on number three
+    const body = (m) => (t < TT.back0 ? Math.max(1 - sstep(TT.dots0 + 0.3, TT.dots0 + 1.05, t), men * (m.i === 2 ? 1 : 1 - only3)) : m.i === 2 ? 1 : sstep(TT.back0 + 0.65, TT.back1 - 0.05, t));
+    const dota = sstep(TT.dots0 + 0.2, TT.dots0 + 0.95, t) * (1 - men);
+    const camO = camAt(t), lite = t < TT.cell0 ? null : mixL(STAGE, R.lightOf(R.camera(camO)), seg(TT.back0, TT.back0 + 0.6, t));
+    const under = (gg, cam) => {                                                // the stage: a soft pool of light, a line of ground under each row
+      if (dark <= 0.02) return;
+      gg.save(); gg.globalAlpha = dark * (1 - back);
+      gg.fillStyle = rg(gg, 515, 1000, 80, 900, [0, `rgba(60,70,120,${(0.22 + 0.14 * men).toFixed(3)})`], [1, 'rgba(60,70,120,0)']); gg.fillRect(0, 0, W, H);
+      for (const yy of [0, 2.08]) { const a = cam.P(-3.4, yy, SGZ), b = cam.P(3.4, yy, SGZ); if (!a || !b) continue; gg.strokeStyle = 'rgba(255,231,168,0.22)'; gg.lineWidth = 3; gg.beginPath(); gg.moveTo(a[0], a[1] + 4); gg.lineTo(b[0], b[1] + 4); gg.stroke(); }
+      gg.restore();
+    };
+    const { cam, F } = drawLane(g, t, { cam: camO, dark, alpha: body, under, fig: lite ? () => ({ light: lite }) : null, dof: 2.2 + 3.3 * (1 - back), bg: back < 1 && dark < 0.999 ? 'saturate(0.6)' : '' });
     const DF = {};
-    for (const m of MEN) { const a = dota(m); if (a > 0.003) DF[m.i] = R.dots(g, cam, m, t, { alpha: a, r: 0.034, trail: 2 }); }
-    // their numbers stay with them
+    if (dota > 0.003) for (const m of MEN) DF[m.i] = R.dots(g, cam, m, t, { alpha: dota, r: 0.034, trail: 2 });
+    const f3 = cam.P(SG[2][0], 0.9, SGZ) || [340, 1120];
+    cell(g, t, f3, 'bars');
+    // their numbers stay with them (in front of the bars: a number is never cut)
     for (const m of MEN) {
       const f = DF[m.i] || F[m.i]; if (!f) continue;
-      const [x, y, s] = tileAt(f), side = inn * (1 - (m.i === 2 ? back : 0));
-      const a = m.i === 2 ? 1 - sstep(TT.back1 - 0.6, TT.back1 - 0.1, t) : (1 - 0.6 * dim) * (1 - sstep(TT.back0, TT.back0 + 0.5, t));
-      tileNo(g, lerp(x, x - 0.62 * s, side), lerp(y, f.P.head[1], side), m.i + 1, lerp(clamp(0.2 * s, 64, 118), 78, side), a);
-      if (m.i === 2) ring(g, lerp(x, x - 0.62 * s, side), f.P.head[1], 62, sstep(TT.three - 0.05, TT.three + 0.4, t) * (1 - sstep(TT.back0, TT.back0 + 0.4, t)), 9);
+      const [x, y, s] = tileAt(f), side = inn * (1 - (m.i === 2 ? back : 0)), size = lerp(clamp(0.2 * s, 64, 118), clamp(0.3 * s, 78, 150), side);
+      const a = m.i === 2 ? 1 - sstep(TT.back1 - 0.6, TT.back1 - 0.1, t) : t < TT.back0 ? 1 - only3 : 0;
+      const tx = lerp(x, x - 0.62 * s, side), ty = lerp(y, f.P.head[1], side);
+      tileNo(g, tx, ty, m.i + 1, size, a);
+      if (m.i === 2) ring(g, tx, ty, size * 0.8, sstep(TT.three - 0.05, TT.three + 0.4, t) * (1 - sstep(TT.back0, TT.back0 + 0.4, t)), 9);
     }
-    if (t >= TT.picked - 0.04 && t < TT.three + 0.2) { const a = 1 - sstep(TT.three - 0.5, TT.three + 0.1, t); title(g, 'YOU PICKED', 372, 96, CREAM, t, TT.picked - 0.04, { stroke: INK, sw: 0.14, a }); title(g, 'A WALK', 500, 150, YEL, t, TT.picked + 0.18, { stroke: INK, sw: 0.12, a }); }
+    cell(g, t, f3, 'men');
+    if (t >= TT.picked - 0.04 && t < TT.cell0 + 0.35) { const a = 1 - sstep(TT.cell0 - 0.05, TT.cell0 + 0.3, t); title(g, 'YOU PICKED', 372, 96, CREAM, t, TT.picked - 0.04, { stroke: INK, sw: 0.14, a }); title(g, 'A WALK', 500, 150, YEL, t, TT.picked + 0.18, { stroke: INK, sw: 0.12, a }); }
+    if (t >= TT.men - 0.04 && t < TT.back0 + 0.35) {
+      const a = 1 - sstep(TT.back0 - 0.05, TT.back0 + 0.3, t);
+      title(g, 'MEN IN PRISON', 372, 96, CREAM, t, TT.men - 0.04, { stroke: INK, sw: 0.14, a });
+      title(g, 'PICKED WALKS LIKE THIS', 500, 150, YEL, t, TT.walks - 0.04, { stroke: INK, sw: 0.12, a });
+    }
     vignette(g, 0.9 * (1 - dark));
     if (t > TT.back0) brim(g, t, sstep(TT.back0 + 0.55, TT.back1, t));          // his eyes again
   }
@@ -385,7 +478,9 @@
   function shotEnd(g, t, o = {}) {
     const bd = PULL(t), u = pullU(t);
     const alpha = (m) => (m === THF ? (bd > 0.24 ? 1 : 0) : 1);
-    const fig = (m) => (m === THF ? { blur: 18 * (1 - sstep(0.24, 1.0, bd)), near: true } : {});
+    const inPocket = t >= POCKET[1] ? 1 : 0;           // it goes from his hand to his pocket at the moment the two are in the same place
+    const fig = (m) => (m === THF ? { blur: 18 * (1 - sstep(0.24, 1.0, bd)), near: true, held: { side: 1, a: 1 - inPocket, to: seg(POCKET[0] + 0.3, POCKET[1], t) }, phoneSide: 1, phoneA: inPocket, phoneIn: seg(POCKET[1], POCKET[1] + 0.25, t) }
+      : m.i === 2 ? { noPhone: t >= TAKE } : {});
     const r = drawLane(g, t, { cast: CASTE, alpha, fig, dof: lerp(2.2, 3.4, u), ...o });
     if (!o.plain) {
       vignette(g, 0.95);
@@ -425,7 +520,7 @@
     const cam = R.camera(camAt(t)), face = thiefFace(t);
     const dry = R.figure(DRY, cam, THF, t, { face });
     const e = ((dry && dry.eyes) || []).slice().sort((a, b) => b.nz - a.nz)[0] || { x: 600, y: 640, r: 14, wf: 1, k: 1 };
-    const u = clamp((t - TT.push0) / (TT.END - TT.push0)), win0 = 0.49 * e.r, kEnd = 1190 / win0, k = Math.exp(Math.log(kEnd) * Math.pow(u, 1.5));
+    const u = clamp((t - TT.push0) / (TT.END - 1 / 30 - TT.push0)), win0 = 0.49 * e.r, kEnd = 1190 / win0, k = Math.exp(Math.log(kEnd) * Math.pow(u, 1.5));
     const ax = lerp(e.x, 540, sstep(0, 0.55, u)), ay = lerp(e.y, 900, sstep(0, 0.55, u)), mk = sstep(4.5, 9, k);
     if (mk < 1) {
       g.save(); g.translate(ax, ay); g.scale(k, k); g.translate(-e.x, -e.y);
@@ -460,7 +555,7 @@
       for (let t = 0; t < TT.END; t += dt) {
         const tr = m.track(t), walk = tr.pose && tr.pose.walk != null ? tr.pose.walk : 1, p = m.S.cad * tr.tg + m.S.ph0, q = [p - Math.floor(p), p + 0.5 - Math.floor(p + 0.5)];
         if (prev) for (const k of [0, 1]) if (q[k] < prev.q[k] - 0.5 && walk > 0.25) {       // this foot has just landed
-          const stage = t >= TT.dots0 + 0.6 && (t < TT.back0 || (m.i !== 2 && t < TT.back1));
+          const stage = t >= TT.dots0 + 0.6 && t < TT.back0;
           const shot = m === THF ? (t >= TT.back1 ? (t < TT.pull0 ? 'pov' : 'thief') : null) : t < TT.m1 ? 'approach' : t < TT.m2 ? 'cross' : t < TT.F ? 'line' : t < TT.dots0 ? null : stage ? 'dots' : t >= TT.back0 ? 'lane' : 'dots';
           if (!shot) continue;
           const c = R.camera(camAt(t)).toCam(tr.x, 0, tr.z);

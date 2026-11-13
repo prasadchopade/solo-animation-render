@@ -1,7 +1,7 @@
 {
   "note": "Single source of truth for picture + sound, in BEATS (120 bpm: beat = 0.5 s). Reel 37 has NO end card (the user's one-off exception, 13 Nov 2026): the film runs from 'hook' to 'end' = the whole duration, and its last frame runs into frame 0.",
   "title": "You're the Thief",
-  "duration": 52.3667,
+  "duration": 45.6333,
   "fps": 30,
   "bpm": 120,
   "formats": [
@@ -24,7 +24,7 @@
   },
   "marks": {
     "hook": 0,
-    "end": 104.7334
+    "end": 91.2666
   },
   "sfx": [
     {
@@ -42,117 +42,145 @@
       "pitch": 1.0
     },
     {
-      "at": 5.45,
+      "at": 4.72,
       "type": "street",
-      "gain": 0.4,
-      "what": "the lane, full band, only while nobody is talking",
-      "len": 0.79
+      "gain": 0.13,
+      "what": "the lane, full band but far off, only while nobody is talking (the feet are the sound here)",
+      "len": 0.83
     },
     {
-      "at": 8.45,
+      "at": 7.79,
       "type": "street",
-      "gain": 0.4,
-      "what": "the lane, full band, only while nobody is talking",
-      "len": 0.56
-    },
-    {
-      "at": 10.99,
-      "type": "street",
-      "gain": 0.4,
-      "what": "the lane, full band, only while nobody is talking",
-      "len": 0.7
-    },
-    {
-      "at": 13.81,
-      "type": "street",
-      "gain": 0.4,
-      "what": "the lane, full band, only while nobody is talking",
+      "gain": 0.13,
+      "what": "the lane, full band but far off, only while nobody is talking (the feet are the sound here)",
       "len": 0.6
     },
     {
-      "at": 16.43,
+      "at": 10.37,
       "type": "street",
-      "gain": 0.4,
-      "what": "the lane, full band, only while nobody is talking",
-      "len": 0.79
+      "gain": 0.13,
+      "what": "the lane, full band but far off, only while nobody is talking (the feet are the sound here)",
+      "len": 0.74
     },
     {
-      "at": 22.046,
+      "at": 13.37,
       "type": "street",
-      "gain": 0.3,
+      "gain": 0.13,
+      "what": "the lane, full band but far off, only while nobody is talking (the feet are the sound here)",
+      "len": 0.64
+    },
+    {
+      "at": 16.05,
+      "type": "street",
+      "gain": 0.13,
+      "what": "the lane, full band but far off, only while nobody is talking (the feet are the sound here)",
+      "len": 0.8
+    },
+    {
+      "at": 21.04,
+      "type": "street",
+      "gain": 0.16,
       "what": "the lane under the clock (nobody is talking)",
       "len": 2.98
     },
     {
-      "at": 5.97,
+      "at": 72.69,
+      "type": "street",
+      "gain": 0.13,
+      "what": "the lane again, far off, only in the gaps",
+      "len": 0.95
+    },
+    {
+      "at": 78.55,
+      "type": "street",
+      "gain": 0.13,
+      "what": "the lane again, far off, only in the gaps",
+      "len": 0.47
+    },
+    {
+      "at": 5.84,
+      "type": "bicyclebell",
+      "gain": 0.2,
+      "what": "a bicycle bell up the lane (in the gap, after the whip)",
+      "pitch": 1.05
+    },
+    {
+      "at": 66.44,
+      "type": "autohorn",
+      "gain": 0.13,
+      "what": "a far auto horn: the lane is back (in the gap)",
+      "pitch": 1.0
+    },
+    {
+      "at": 5.24,
       "type": "whoosh",
       "gain": 0.3,
       "what": "his head turns to the lane (in the gap after the first line)",
       "pitch": 1.1
     },
     {
-      "at": 17.41,
+      "at": 17.05,
       "type": "whoosh",
       "gain": 0.34,
       "what": "he's up and after them (in the gap after Four)",
       "pitch": 0.95
     },
     {
-      "at": 22.046,
+      "at": 21.04,
       "type": "tick",
       "gain": 0.14,
       "what": "the clock, 3 left",
       "pitch": 1.6
     },
     {
-      "at": 24.046,
+      "at": 23.04,
       "type": "tick",
       "gain": 0.14,
       "what": "the clock, 2 left",
       "pitch": 1.6
     },
     {
-      "at": 26.046,
+      "at": 25.04,
       "type": "tick",
       "gain": 0.22,
       "what": "the clock, 1 left",
       "pitch": 1.6
     },
     {
-      "at": 28.006,
+      "at": 27.0,
       "type": "shutter",
       "gain": 0.42,
       "what": "the lane stops (in the silence before \"Same bag\")"
     },
     {
-      "at": 28.708,
+      "at": 27.78,
       "type": "coin",
       "gain": 0.3,
       "what": "four rings on four bags (before the word)",
       "pitch": 0.95
     },
     {
-      "at": 30.162,
+      "at": 29.266,
       "type": "coin",
       "gain": 0.3,
       "what": "four rings on four phones (before the word)",
       "pitch": 1.12
     },
     {
-      "at": 49.656,
+      "at": 45.5,
       "type": "thunk",
       "gain": 0.42,
       "what": "YOU PICKED A WALK lands (a low knock and a high click)",
       "pitch": 0.72
     },
     {
-      "at": 65.242,
+      "at": 58.64,
       "type": "gclick",
       "gain": 0.34,
       "what": "a ring on number three's tile (above 4.5 kHz)"
     },
     {
-      "at": 82.266,
+      "at": 72.85,
       "type": "hit",
       "gain": 0.5,
       "what": "what you just did (in the gap)",
@@ -160,7 +188,7 @@
       "len": 0.62
     },
     {
-      "at": 90.33,
+      "at": 80.73,
       "type": "vboom",
       "gain": 0.34,
       "what": "his eyes find you (low, under the word)",

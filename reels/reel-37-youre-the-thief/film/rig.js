@@ -205,9 +205,26 @@
       g.save(); g.translate(x, y); g.rotate(ang); g.fillStyle = tone(c)[0]; g.beginPath(); g.ellipse(0, 0, r * 1.25, r * 0.86, 0, 0, TAU); g.fill();
       g.fillStyle = tone(c)[1]; g.beginPath(); g.ellipse(r * 0.1, r * 0.5 * (psi > 0 ? 1 : -1), r * 0.62, r * 0.3, 0.2, 0, TAU); g.fill(); g.restore();
     };
-    const arm = (sh, el, wr) => {
+    const pocket = (sd) => {                          // a back pocket on screen (sd −1 his right, 1 his left): where, how much of its width faces you, how much of it you see
+      const yp = J.yawP, c = Math.cos(yp), sn = Math.sin(yp), lo = [-0.124, 0.0, 0.078 * sd];
+      const w = F.w3([J.pel[0] + lo[0] * c + lo[2] * sn, J.pel[1] + lo[1], J.pel[2] - lo[0] * sn + lo[2] * c]), q = cam.P(w[0], w[1], w[2]);
+      return q ? { q, k: Math.max(0.24, -Math.cos(psiP + 0.35 * sd)), a: clamp((0.3 - Math.cos(psiP)) * 3), rot: Math.atan2(uy, ux) + PI / 2 } : null;
+    };
+    const heldPhone = (el, wr) => {                   // a phone in his hand, upright, his thumb across it (o.held: { side, a, to }); to: 0 in his hand … 1 just above his back pocket
+      const h = o.held, ang = Math.atan2(wr[1] - el[1], wr[0] - el[0]), to = h.to || 0, pk = to > 0 ? pocket(o.phoneSide || -1) : null;
+      let u = wr[2], x = wr[0] + Math.cos(ang) * 0.05 * u, y = wr[1] + Math.sin(ang) * 0.05 * u - 0.045 * u, rot = 0, k = 1;
+      if (pk) { const pu = pk.q[2]; x = lerp(x, pk.q[0] + Math.sin(pk.rot) * 0.11 * pu, to); y = lerp(y, pk.q[1] - Math.cos(pk.rot) * 0.11 * pu, to); u = lerp(u, pu, to); rot = pk.rot * to; k = lerp(1, pk.k, to); }
+      g.save(); g.globalAlpha *= h.a; g.translate(x, y); g.rotate(rot);
+      g.fillStyle = Lk.phone || '#ece8df'; g.beginPath(); g.roundRect(-0.040 * u * k, -0.075 * u, 0.080 * u * k, 0.15 * u, 0.014 * u); g.fill();
+      g.strokeStyle = 'rgba(0,0,0,0.35)'; g.lineWidth = Math.max(1, 0.008 * u); g.stroke();
+      g.fillStyle = '#23262c'; g.beginPath(); g.roundRect(-0.030 * u * k, -0.065 * u, 0.030 * u * k, 0.034 * u, 0.006 * u); g.fill();
+      g.globalAlpha *= 1 - to; g.fillStyle = tone(Lk.skin)[0]; g.beginPath(); g.ellipse(0.008 * u * k, 0.05 * u, 0.036 * u, 0.017 * u, -0.45, 0, TAU); g.fill();
+      g.restore();
+    };
+    const arm = (sh, el, wr, sd) => {
       const m = mid(sh, el, 0.5);
       limb(m, el, 0.052, 0.048, Lk.skin); limb(el, wr, 0.048, 0.040, Lk.skin); rim(el, wr, 0.048, 0.040); hand(el, wr, Lk.skin);
+      if (o.held && o.held.side === sd && o.held.a > 0.003) heldPhone(el, wr);
       limb(sh, mid(sh, el, 0.62), 0.058, 0.057, Lk.shirt);
       g.strokeStyle = 'rgba(0,0,0,0.16)'; g.lineWidth = Math.max(1, 0.014 * s); const q = mid(sh, el, 0.62), ang = Math.atan2(el[1] - sh[1], el[0] - sh[0]), r = 0.062 * q[2];
       g.beginPath(); g.moveTo(q[0] - Math.sin(ang) * r, q[1] + Math.cos(ang) * r); g.lineTo(q[0] + Math.sin(ang) * r, q[1] - Math.cos(ang) * r); g.stroke();
@@ -272,18 +289,19 @@
       for (const k of [-1, 1]) { const o0 = side * 0.13 * s + k * 0.115 * s * front; g.beginPath(); g.moveTo(...at(1.02, o0 * 0.92)); g.quadraticCurveTo(...at(0.6, o0 * 1.25), ...at(0.2, o0 * 1.5)); g.stroke(); }
       g.globalAlpha = 1;
     };
-    const phone = () => {                              // the phone in his right back pocket: the same on all four
+    const phone = () => {                              // the phone in his right back pocket: the same on all four (o.phoneSide 1: his left; o.phoneA: how much of it is there; o.noPhone: it's gone)
       if (!Lk.phone) return;
-      const fb = Math.cos(psiP); if (fb > 0.3) return;
-      const yp = J.yawP, c = Math.cos(yp), sn = Math.sin(yp), lo = [-0.124, 0.0, -0.078];
-      const w = F.w3([J.pel[0] + lo[0] * c + lo[2] * sn, J.pel[1] + lo[1], J.pel[2] - lo[0] * sn + lo[2] * c]), q = cam.P(w[0], w[1], w[2]); if (!q) return;
-      const k = Math.max(0.24, -Math.cos(psiP - 0.35)), a = clamp((0.3 - fb) * 3), u = q[2];
-      F.phoneC = [q[0], q[1] - 0.045 * u, 0.085 * u];
-      g.save(); g.globalAlpha = a; g.translate(q[0], q[1]); g.rotate(Math.atan2(uy, ux) + PI / 2);
+      const pk = pocket(o.phoneSide || -1); if (!pk || pk.a <= 0) return;
+      const has = !o.noPhone && o.phoneA !== 0;       // the pocket is always there; the phone may not be
+      const { q, k } = pk, u = q[2], up = 0.07 * u * (1 - (o.phoneIn ?? 1));     // o.phoneIn: 0 it's just above the pocket … 1 it's in
+      if (has) F.phoneC = [q[0], q[1] - 0.045 * u, 0.085 * u];
+      g.save(); g.globalAlpha = pk.a; g.translate(q[0], q[1]); g.rotate(pk.rot);
       g.strokeStyle = 'rgba(0,0,0,0.3)'; g.lineWidth = Math.max(1, 0.01 * u); g.beginPath(); g.roundRect(-0.056 * u * k, -0.02 * u, 0.112 * u * k, 0.13 * u, 0.014 * u); g.stroke();
-      g.fillStyle = Lk.phone; g.beginPath(); g.roundRect(-0.040 * u * k, -0.115 * u, 0.080 * u * k, 0.15 * u, 0.014 * u); g.fill();
-      g.strokeStyle = 'rgba(0,0,0,0.35)'; g.lineWidth = Math.max(1, 0.008 * u); g.stroke();
-      g.fillStyle = '#23262c'; g.beginPath(); g.roundRect(-0.030 * u * k, -0.105 * u, 0.030 * u * k, 0.034 * u, 0.006 * u); g.fill();
+      if (has) {
+        g.fillStyle = Lk.phone; g.beginPath(); g.roundRect(-0.040 * u * k, -0.115 * u - up, 0.080 * u * k, 0.15 * u, 0.014 * u); g.fill();
+        g.strokeStyle = 'rgba(0,0,0,0.35)'; g.lineWidth = Math.max(1, 0.008 * u); g.stroke();
+        g.fillStyle = '#23262c'; g.beginPath(); g.roundRect(-0.030 * u * k, -0.105 * u - up, 0.030 * u * k, 0.034 * u, 0.006 * u); g.fill();
+      }
       g.fillStyle = mix(Lk.leg, '#000000', 0.12); g.beginPath(); g.roundRect(-0.056 * u * k, -0.02 * u, 0.112 * u * k, 0.13 * u, 0.014 * u); g.fill();
       g.strokeStyle = 'rgba(255,255,255,0.14)'; g.lineWidth = Math.max(1, 0.007 * u); g.stroke();
       g.restore();
@@ -291,7 +309,7 @@
     // order: what's further from you first
     const dz = (a, b) => (a[3] + b[3]) / 2, tz = P.chest[3];
     const legs = [[P.hL, P.knL, P.anL, P.heL, P.toL], [P.hR, P.knR, P.anR, P.heR, P.toR]].sort((a, b) => dz(b[1], b[2]) - dz(a[1], a[2]));
-    const arms = [[P.shL, P.elL, P.wrL], [P.shR, P.elR, P.wrR]];
+    const arms = [[P.shL, P.elL, P.wrL, 1], [P.shR, P.elR, P.wrR, -1]];
     const behind = arms.filter((a) => dz(a[1], a[2]) > tz + 0.02), infront = arms.filter((a) => !(dz(a[1], a[2]) > tz + 0.02));
     g.save(); g.lineJoin = 'round';
     for (const a of behind.sort((a, b) => dz(b[1], b[2]) - dz(a[1], a[2]))) arm(...a);
