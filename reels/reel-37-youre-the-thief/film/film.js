@@ -137,7 +137,7 @@
     if (t < TT.dots0) { const tw = worldClock(t); return { x: XC[i], z: ZC0[i] + V[i] * (tw - TT.m2), h: 0, tg: tw }; }
     const tg = TT.F + Math.max(0, t - TT.dots0 - 0.1);                        // they start walking again as the lane goes dark
     const lane = (tt) => ({ x: XC[i], z: ZF[i] + AHEAD[i] + V[i] * (tt - TT.back0), y: 0, h: 0 });
-    const spin = (tt) => 0.07 * Math.max(0, Math.min(tt, TT.back0) - TT.dots1);   // they turn slowly on the spot: bodies, not flat marks
+    const spin = (tt) => 0.5 * clamp((tt - TT.dots1) / (TT.cell0 - TT.dots1)) + 0.3 * clamp((tt - TT.cell0) / (TT.back0 - TT.cell0));   // they turn slowly on the spot: bodies, not flat marks
     if (t < TT.back0) { const u = seg(TT.dots0, TT.dots1, t); return { x: lerp(XC[i], SG[i][0], u), z: lerp(ZF[i], SGZ, u), y: SG[i][1] * u, h: (PI / 2) * u + spin(t), tg }; }
     if (i !== 2) return { ...lane(t), tg };
     const u = seg(TT.back0, TT.back1, t), L = lane(t);                           // number three walks out of the dark, back into the lane
@@ -152,6 +152,7 @@
   const dist = (t) => lerp(3.4, 2.0, seg(TT.back1 - 0.3, TT.pull0 - 0.3, t));      // how far behind number three he is: he closes on him while you watch
   // number three's phone: in the thief's left hand when you next see him, then into his own back pocket (the lift itself is never shown)
   const TAKE = TT.pull0 + 0.17, POCKET = [TT.pull0 + 0.95, TT.pull0 + 1.6];
+  TT.take = TAKE; TT.pocket = POCKET[1];                 // for the sound (sound.py reads them from the page)
   const thiefTrack = (t) => {
     const d = TT.stop1 - TT.stop0, tau = clamp(t - TT.stop0, 0, d), zs = z3(Math.min(t, TT.stop0)) - dist(t) + V[2] * (tau - tau * tau / (2 * d));
     const walk = 1 - tau / d, tn = seg(TT.turn0 + 0.15, TT.turn1, t), hd = seg(TT.turn0, TT.turn0 + 0.8, t), hold = seg(TT.turn1 - 0.1, TT.push0 + 0.5, t);
@@ -200,7 +201,8 @@
   const DOTCAM = { x: 0, y: 1.9, z: SGZ - 26, yaw: 0, pitch: 0, roll: 0, f: 6500, cx: 515, cy: 1005 };
   const dotCam = (t) => {                              // back a little for the men who were asked; then in through the bars on number three
     const c1 = seg(TT.cell0, TT.cell1 + 0.1, t), p = seg(TT.push3, TT.push3 + 1.35, t), drift = clamp((t - TT.cell1) / 4);
-    const wide = mixc(DOTCAM, { ...DOTCAM, f: 5330 * (1 + 0.03 * drift), cy: 905 }, c1), near = { ...DOTCAM, x: -1.07, y: 1.05, f: 12000, cy: 1005 };
+    const creep = { ...DOTCAM, f: DOTCAM.f * (1 + 0.05 * clamp((t - TT.dots1) / (TT.cell0 - TT.dots1))) };
+    const wide = mixc(creep, { ...DOTCAM, f: 5330 * (1 + 0.03 * drift), cy: 905 }, c1), near = { ...DOTCAM, x: -1.07, y: 1.05, f: 12000, cy: 1005 };
     const c = mixc(wide, near, p); c.f = Math.exp(lerp(Math.log(wide.f), Math.log(near.f), p)); return c;
   };
   function camPOV(t) {
@@ -380,7 +382,7 @@
   }
   function cellBars(g, t, f3, inn, out) {
     // the door: it runs in from the right and stops dead
-    const run = (u) => (1 - u * u) * 1200, off = run(inn), smear = Math.abs(run(clamp((t - 1 / 30 - TT.cell0) / (TT.cell1 - TT.cell0))) - off);   // it's smeared by its own speed while it runs
+    const run = (u) => (1 - u) * 1200, off = run(inn), smear = Math.abs(run(clamp((t - 1 / 30 - TT.cell0) / (TT.cell1 - TT.cell0))) - off);   // it's smeared by its own speed while it runs
     const dt = t - TT.cell1, shake = dt > 0 ? 8 * Math.exp(-dt * 15) * Math.cos(dt * 58) : 0;
     const sB = Math.pow(1 + 1.3 * out, 2.6), aB = 1 - sstep(0.3, 0.8, out);      // through it: the bars open out round number three as the view goes in
     g.save();

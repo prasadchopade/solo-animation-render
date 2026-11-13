@@ -1,5 +1,5 @@
 {
- "note": "Reel 37: You're the Thief (working title). Draft 6. The narrator is the series voice (af_heart, 1.0). Lines that need a real pause are their own lines. Facts: docs/research.md. Two voice runs: 43373776324 (draft 5's lines) and 43375946862 (the reworded and split lines); both runs' takes are in audio/vo_lab/takes. Run 1 showed: 'Pick who you rob' run together when it shared a line with 'You're the thief' (ear 1: 'Pekuyu Rob'), so the first line is two lines; 'Picked someone else?' lost its t in every take (both ears heard 'Pick someone else'), so that line is 'Didn't pick three?'; the twist and the prison line are split so each half gets a set pause. Lines voiced for comparison and NOT placed (place_vo.py SKIP): n01c (ear 1 heard 'Pick you to rob' in two takes of three), n06d, n07d, n08a and n08c (the combined n08 is placed: 'Picked three?' alone creaks in two takes of three).",
+ "note": "Reel 37: You're the Thief (working title). Draft 6. The narrator is the series voice (af_heart, 1.0). Lines that need a real pause are their own lines. Facts: docs/research.md. Two voice runs: 43373776324 (draft 5's lines) and 43375946862 (the reworded and split lines); both runs' takes are in audio/vo_lab/takes. Run 1 showed: 'Pick who you rob' run together when it shared a line with 'You're the thief' (ear 1: 'Pekuyu Rob'), so the first line is two lines; 'Picked someone else?' lost its t in every take (both ears heard 'Pick someone else'), so that line is 'Didn't pick three?'; the twist and the prison line are split so each half gets a set pause. Voiced for comparison in run 2 and not used (their takes are still in the lab folder): 'Pick who to rob.' (ear 1 heard 'Pick you to rob' in two takes of three), 'They chose walks like number three's.', 'If you didn't pick three, you'd make a bad thief.', and 'Picked three?' on its own (it creaks in two takes of three; the whole line n08 is placed).",
  "voice": "af_heart",
  "speed": 1.0,
  "ref_text": "The night was cold and very quiet. Most of the street was asleep, and the lamps hummed over the empty road. Somewhere far away, a train rolled past, and then the silence came back.",
@@ -30,10 +30,6 @@
   {
    "id": "n01b",
    "text": "Pick who you rob."
-  },
-  {
-   "id": "n01c",
-   "text": "Pick who to rob."
   },
   {
    "id": "c1",
@@ -80,28 +76,12 @@
    "text": "They picked walks like number three's."
   },
   {
-   "id": "n06d",
-   "text": "They chose walks like number three's."
-  },
-  {
    "id": "n07",
    "text": "Didn't pick three? You'd make a bad thief."
   },
   {
-   "id": "n07d",
-   "text": "If you didn't pick three, you'd make a bad thief."
-  },
-  {
    "id": "n08",
    "text": "Picked three? You just robbed a man for being tired."
-  },
-  {
-   "id": "n08a",
-   "text": "Picked three?"
-  },
-  {
-   "id": "n08c",
-   "text": "You just robbed a man for being tired."
   },
   {
    "id": "n09",

@@ -37,7 +37,7 @@
     {
       "at": 0.04,
       "type": "clink",
-      "gain": 0.34,
+      "gain": 0.8,
       "what": "a spoon in his glass: the first sound (4-9 kHz)",
       "pitch": 1.0
     },
@@ -128,28 +128,28 @@
     {
       "at": 21.04,
       "type": "tick",
-      "gain": 0.14,
-      "what": "the clock, 3 left",
+      "gain": 0.24,
+      "what": "the clock, 3 left (the tick and tock a phone plays are in sound.py)",
       "pitch": 1.6
     },
     {
       "at": 23.04,
       "type": "tick",
-      "gain": 0.14,
-      "what": "the clock, 2 left",
+      "gain": 0.24,
+      "what": "the clock, 2 left (the tick and tock a phone plays are in sound.py)",
       "pitch": 1.6
     },
     {
       "at": 25.04,
       "type": "tick",
-      "gain": 0.22,
-      "what": "the clock, 1 left",
+      "gain": 0.34,
+      "what": "the clock, 1 left (the tick and tock a phone plays are in sound.py)",
       "pitch": 1.6
     },
     {
       "at": 27.0,
       "type": "shutter",
-      "gain": 0.42,
+      "gain": 0.7,
       "what": "the lane stops (in the silence before \"Same bag\")"
     },
     {
