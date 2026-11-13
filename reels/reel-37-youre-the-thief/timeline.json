@@ -1,7 +1,7 @@
 {
   "note": "Single source of truth for picture + sound, in BEATS (120 bpm: beat = 0.5 s). Reel 37 has NO end card (the user's one-off exception, 13 Nov 2026): the film runs from 'hook' to 'end' = the whole duration, and its last frame runs into frame 0.",
   "title": "You're the Thief",
-  "duration": 45.366667,
+  "duration": 46.6,
   "fps": 30,
   "bpm": 120,
   "formats": [
@@ -24,7 +24,7 @@
   },
   "marks": {
     "hook": 0,
-    "end": 90.7333
+    "end": 93.2
   },
   "sfx": [
     {
@@ -91,14 +91,21 @@
       "len": 1.12
     },
     {
-      "at": 72.2,
+      "at": 66.37,
       "type": "street",
       "gain": 0.13,
       "what": "the lane again, far off, only in the gaps",
-      "len": 0.95
+      "len": 1.05
     },
     {
-      "at": 78.06,
+      "at": 75.12,
+      "type": "street",
+      "gain": 0.13,
+      "what": "the lane again, far off, only in the gaps",
+      "len": 0.7
+    },
+    {
+      "at": 80.48,
       "type": "street",
       "gain": 0.13,
       "what": "the lane again, far off, only in the gaps",
@@ -112,7 +119,7 @@
       "pitch": 1.05
     },
     {
-      "at": 60.88,
+      "at": 61.38,
       "type": "autohorn",
       "gain": 0.13,
       "what": "a far auto horn as the lane comes back (in the gap before the bad-thief line; the gap before 'Picked three?' stays empty)",
@@ -167,35 +174,41 @@
       "pitch": 0.95
     },
     {
-      "at": 29.276,
+      "at": 30.14,
       "type": "coin",
       "gain": 0.3,
       "what": "four rings on four phones (before the word)",
       "pitch": 1.12
     },
     {
-      "at": 45.51,
+      "at": 46.9,
       "type": "thunk",
       "gain": 0.42,
-      "what": "YOU PICKED A WALK lands (a low knock and a high click)",
+      "what": "their numbers come back and YOU PICKED A WALK lands (a low knock and a high click)",
       "pitch": 0.72
     },
     {
-      "at": 58.65,
+      "at": 38.64,
+      "type": "gclick",
+      "gain": 0.2,
+      "what": "WHICH ONE'S YOURS? (above 4.5 kHz: it's under a word)"
+    },
+    {
+      "at": 60.1,
       "type": "gclick",
       "gain": 0.34,
       "what": "a ring on number three's tile (above 4.5 kHz)"
     },
     {
-      "at": 72.36,
+      "at": 67.59,
       "type": "hit",
       "gain": 0.5,
-      "what": "what you just did (in the gap)",
+      "what": "the cap comes down: what he does next (in the gap after \"a bad thief\")",
       "pitch": 0.9,
       "len": 0.62
     },
     {
-      "at": 80.24,
+      "at": 82.66,
       "type": "vboom",
       "gain": 0.34,
       "what": "his eyes find you (low, under the word)",

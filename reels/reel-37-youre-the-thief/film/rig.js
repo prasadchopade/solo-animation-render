@@ -168,7 +168,7 @@
   function figure(g, cam, W, t, o = {}) {
     const F = placed(cam, W, t, o); if (!F) return null;
     const { P, J, psi, s } = F, Lk = W.look, lt = o.light || lightOf(cam);
-    const psiP = psi - J.yawP, psiC = psi - J.yawC;
+    const psiP = psi - J.yawP, psiC = psi - J.yawC, rimK = o.rim ?? 1;
     // tones: the side towards the sun is lit; with the sun behind him he's in shade with a bright rim
     const bl = lt.back, k0 = 0.10 + 0.34 * bl, lx = lt.x >= 0 ? 1 : -1;
     const tone = (c) => [mix(mix(c, LIT, 0.16 * (1 - bl)), SHD, k0 * 0.5), mix(c, SHD, 0.2 + k0 * 0.8)];
@@ -185,9 +185,9 @@
     const limb = (a, b, ra, rb, c) => { cap(a, b, ra, rb); g.fillStyle = grad(a, b, Math.max(ra * a[2], rb * b[2]), c); g.fill(); };
     const mid = (a, b, u) => [lerp(a[0], b[0], u), lerp(a[1], b[1], u), lerp(a[2], b[2], u), lerp(a[3], b[3], u)];
     const rim = (a, b, ra, rb) => {                   // the low sun on one edge
-      if (bl < 0.05 && Math.abs(lt.x) < 0.25) return;
+      if ((bl < 0.05 && Math.abs(lt.x) < 0.25) || rimK <= 0.01) return;
       const dx = b[0] - a[0], dy = b[1] - a[1], L = Math.hypot(dx, dy) || 1e-3; let nx = -dy / L, ny = dx / L; if (nx * lx - ny * 0.4 < 0) { nx = -nx; ny = -ny; }
-      g.strokeStyle = `rgba(255,226,168,${(0.2 + 0.36 * bl).toFixed(3)})`; g.lineWidth = Math.max(1.2, Math.min(7, 0.011 * s)); g.lineCap = 'round';
+      g.strokeStyle = `rgba(255,226,168,${((0.2 + 0.36 * bl) * rimK).toFixed(3)})`; g.lineWidth = Math.max(1.2, Math.min(7, 0.011 * s)); g.lineCap = 'round';
       g.beginPath(); g.moveTo(a[0] + nx * ra * a[2] * 0.92, a[1] + ny * ra * a[2] * 0.92); g.lineTo(b[0] + nx * rb * b[2] * 0.92, b[1] + ny * rb * b[2] * 0.92); g.stroke();
     };
     const leg = (hp, kn, an, he, to) => {
@@ -202,13 +202,21 @@
     };
     const hand = (el, wr, c) => {
       const ang = Math.atan2(wr[1] - el[1], wr[0] - el[0]), r = 0.047 * wr[2], x = wr[0] + Math.cos(ang) * r * 0.9, y = wr[1] + Math.sin(ang) * r * 0.9;
-      g.save(); g.translate(x, y); g.rotate(ang); g.fillStyle = tone(c)[0]; g.beginPath(); g.ellipse(0, 0, r * 1.25, r * 0.86, 0, 0, TAU); g.fill();
-      g.fillStyle = tone(c)[1]; g.beginPath(); g.ellipse(r * 0.1, r * 0.5 * (psi > 0 ? 1 : -1), r * 0.62, r * 0.3, 0.2, 0, TAU); g.fill(); g.restore();
+      const sd = psi > 0 ? 1 : -1, [c0, c1] = tone(c);
+      g.save(); g.translate(x, y); g.rotate(ang);
+      g.fillStyle = c0; g.beginPath(); g.ellipse(0, 0, r * 1.25, r * 0.86, 0, 0, TAU); g.fill();
+      g.beginPath(); g.ellipse(-r * 0.25, -sd * r * 0.72, r * 0.62, r * 0.3, -sd * 0.5, 0, TAU); g.fill();                    // the thumb
+      if (r > 9) {                                     // close enough to see: the fingers, as three short lines, and the edge of the thumb
+        g.strokeStyle = rgba(mix(c1, '#3a1d12', 0.35), 0.55); g.lineWidth = Math.max(1, r * 0.07); g.lineCap = 'round';
+        for (const k of [-0.34, 0.02, 0.38]) { g.beginPath(); g.moveTo(r * 0.5, sd * r * k); g.lineTo(r * 1.16, sd * r * k * 0.9); g.stroke(); }
+        g.beginPath(); g.moveTo(-r * 0.72, -sd * r * 0.5); g.quadraticCurveTo(-r * 0.2, -sd * r * 0.46, r * 0.22, -sd * r * 0.62); g.stroke();
+      }
+      g.restore();
     };
     const pocket = (sd) => {                          // a back pocket on screen (sd −1 his right, 1 his left): where, how much of its width faces you, how much of it you see
       const yp = J.yawP, c = Math.cos(yp), sn = Math.sin(yp), lo = [-0.124, 0.0, 0.078 * sd];
       const w = F.w3([J.pel[0] + lo[0] * c + lo[2] * sn, J.pel[1] + lo[1], J.pel[2] - lo[0] * sn + lo[2] * c]), q = cam.P(w[0], w[1], w[2]);
-      return q ? { q, k: Math.max(0.24, -Math.cos(psiP + 0.35 * sd)), a: clamp((0.3 - Math.cos(psiP)) * 3), rot: Math.atan2(uy, ux) + PI / 2 } : null;
+      return q ? { q, k: Math.max(0.24, -Math.cos(psiP + 0.35 * sd)), a: clamp((-Math.cos(psiP) - 0.2) * 4), rot: Math.atan2(uy, ux) + PI / 2 } : null;
     };
     const heldPhone = (el, wr) => {                   // a phone in his hand, upright, his thumb across it (o.held: { side, a, to }); to: 0 in his hand … 1 just above his back pocket
       const h = o.held, ang = Math.atan2(wr[1] - el[1], wr[0] - el[0]), to = h.to || 0, pk = to > 0 ? pocket(o.phoneSide || -1) : null;
@@ -258,7 +266,7 @@
         g.globalAlpha = clamp((-front - 0.12) * 4); g.strokeStyle = 'rgba(0,0,0,0.14)'; g.lineWidth = Math.max(1, 0.012 * s);
         const p0 = at(0.84, -w2 * 0.9), p1 = at(0.78, -side * 0.13 * s), p2 = at(0.84, w2 * 0.9); g.beginPath(); g.moveTo(...p0); g.quadraticCurveTo(p1[0], p1[1], p2[0], p2[1]); g.stroke(); g.globalAlpha = 1;
       }
-      if (bl > 0.05 || Math.abs(lt.x) > 0.25) { g.strokeStyle = `rgba(255,226,168,${(0.2 + 0.36 * bl).toFixed(3)})`; g.lineWidth = Math.max(2, Math.min(14, 0.022 * s)); g.beginPath(); g.moveTo(...at(-0.14, lx * w0)); g.lineTo(...at(0.44, lx * w1)); g.lineTo(...at(0.8, lx * w2)); g.lineTo(...at(0.98, lx * w3)); g.stroke(); }
+      if ((bl > 0.05 || Math.abs(lt.x) > 0.25) && rimK > 0.01) { g.strokeStyle = `rgba(255,226,168,${((0.2 + 0.36 * bl) * rimK).toFixed(3)})`; g.lineWidth = Math.max(2, Math.min(14, 0.022 * s)); g.beginPath(); g.moveTo(...at(-0.14, lx * w0)); g.lineTo(...at(0.44, lx * w1)); g.lineTo(...at(0.8, lx * w2)); g.lineTo(...at(0.98, lx * w3)); g.stroke(); }
       g.restore();
     };
     const pelvis = () => {
@@ -286,7 +294,7 @@
     const straps = () => {
       if (!Lk.bag || front < 0.35) return;
       g.globalAlpha = clamp((front - 0.35) * 4); g.strokeStyle = tone(mix(Lk.bag, '#000000', 0.25))[0]; g.lineWidth = Math.max(1.5, 0.036 * s); g.lineCap = 'round';
-      for (const k of [-1, 1]) { const o0 = side * 0.13 * s + k * 0.115 * s * front; g.beginPath(); g.moveTo(...at(1.02, o0 * 0.92)); g.quadraticCurveTo(...at(0.6, o0 * 1.25), ...at(0.2, o0 * 1.5)); g.stroke(); }
+      for (const k of [-1, 1]) { const o0 = side * 0.13 * s + k * 0.115 * s * front, out = k * 0.085 * s * Math.max(0.35, front); g.beginPath(); g.moveTo(...at(1.02, o0 * 0.92)); g.quadraticCurveTo(...at(0.62, o0 + out * 0.45), ...at(0.24, o0 + out)); g.stroke(); }
       g.globalAlpha = 1;
     };
     const phone = () => {                              // the phone in his right back pocket: the same on all four (o.phoneSide 1: his left; o.phoneA: how much of it is there; o.noPhone: it's gone)
@@ -296,14 +304,15 @@
       const { q, k } = pk, u = q[2], up = 0.07 * u * (1 - (o.phoneIn ?? 1));     // o.phoneIn: 0 it's just above the pocket … 1 it's in
       if (has) F.phoneC = [q[0], q[1] - 0.045 * u, 0.085 * u];
       g.save(); g.globalAlpha = pk.a; g.translate(q[0], q[1]); g.rotate(pk.rot);
-      g.strokeStyle = 'rgba(0,0,0,0.3)'; g.lineWidth = Math.max(1, 0.01 * u); g.beginPath(); g.roundRect(-0.056 * u * k, -0.02 * u, 0.112 * u * k, 0.13 * u, 0.014 * u); g.stroke();
+      const pocket_ = () => { g.beginPath(); g.moveTo(-0.058 * u * k, -0.02 * u); g.lineTo(0.058 * u * k, -0.02 * u); g.lineTo(0.058 * u * k, 0.09 * u); g.lineTo(0, 0.118 * u); g.lineTo(-0.058 * u * k, 0.09 * u); g.closePath(); };
       if (has) {
         g.fillStyle = Lk.phone; g.beginPath(); g.roundRect(-0.040 * u * k, -0.115 * u - up, 0.080 * u * k, 0.15 * u, 0.014 * u); g.fill();
         g.strokeStyle = 'rgba(0,0,0,0.35)'; g.lineWidth = Math.max(1, 0.008 * u); g.stroke();
         g.fillStyle = '#23262c'; g.beginPath(); g.roundRect(-0.030 * u * k, -0.105 * u - up, 0.030 * u * k, 0.034 * u, 0.006 * u); g.fill();
       }
-      g.fillStyle = mix(Lk.leg, '#000000', 0.12); g.beginPath(); g.roundRect(-0.056 * u * k, -0.02 * u, 0.112 * u * k, 0.13 * u, 0.014 * u); g.fill();
-      g.strokeStyle = 'rgba(255,255,255,0.14)'; g.lineWidth = Math.max(1, 0.007 * u); g.stroke();
+      pocket_(); g.fillStyle = mix(Lk.leg, '#000000', 0.07); g.fill();
+      if (u > 60) { g.save(); g.scale(0.84, 0.84); g.translate(0, 0.006 * u); pocket_(); g.strokeStyle = 'rgba(0,0,0,0.28)'; g.lineWidth = Math.max(1, 0.006 * u); g.setLineDash([0.012 * u, 0.01 * u]); g.stroke(); g.setLineDash([]); g.restore(); }
+      g.strokeStyle = 'rgba(0,0,0,0.3)'; g.lineWidth = Math.max(1, 0.008 * u); g.beginPath(); g.moveTo(-0.058 * u * k, -0.02 * u); g.lineTo(0.058 * u * k, -0.02 * u); g.stroke();
       g.restore();
     };
     // order: what's further from you first
@@ -335,9 +344,10 @@
     const F = placed(cam, W, t, o); if (!F) return;
     const { J, w3, tr } = F, a = o.a ?? 0.26, L = o.len ?? 3.4, dir = [-SUN[0], -SUN[2]], dl = Math.hypot(dir[0], dir[1]), dx = dir[0] / dl, dzz = dir[1] / dl, px = -dzz, pz = dx;
     const base = w3([J.pel[0], 0, J.pel[2]]), tip = [base[0] + dx * L, 0, base[2] + dzz * L];
-    const q0 = cam.P(base[0], 0, base[2]), q1 = cam.P(tip[0], 0, tip[2]);
+    const q0 = cam.P(base[0], 0, base[2]); let q1 = null, Ls = L;
+    for (; Ls > 0.25 && !(q1 = cam.P(base[0] + dx * Ls, 0, base[2] + dzz * Ls)); Ls *= 0.82);      // the furthest point of it still in front of you
     if (q0 && q1) {
-      const gr = g.createLinearGradient(q0[0], q0[1], q1[0], q1[1]); gr.addColorStop(0, `rgba(58,30,34,${a})`); gr.addColorStop(1, 'rgba(58,30,34,0)');
+      const gr = g.createLinearGradient(q0[0], q0[1], q1[0], q1[1]); gr.addColorStop(0, `rgba(58,30,34,${a})`); gr.addColorStop(1, `rgba(58,30,34,${(a * (1 - Ls / L)).toFixed(3)})`);
       poly3(g, cam, [[base[0] + px * 0.2, 0, base[2] + pz * 0.2], [base[0] - px * 0.2, 0, base[2] - pz * 0.2], [tip[0] - px * 0.13, 0, tip[2] - pz * 0.13], [tip[0] + px * 0.13, 0, tip[2] + pz * 0.13]], gr);
     }
     for (const [he, to, an] of [[J.heL, J.toL, J.anL], [J.heR, J.toR, J.anR]]) {
@@ -373,10 +383,10 @@
   // surface and turn with it; the hair is whatever of the skull is above the hairline, which runs all the way round.
   const SK = [0, 0.32, -0.10, 1.0, 0.98, 1.14], JW = [0, -0.50, 0.15, 0.80, 0.80, 0.84], FC = [0, -0.10, 0.02, 0.98, 1.22, 1.03];
   const HAIR = {                                      // the hairline's height (latitude on the skull, degrees) at the front, the temple corner, by the ear, behind the ear, the nape; and the hair's thickness
-    short: { line: [44, 16, -8, -14, -44], vol: 0.07 },
-    part: { line: [46, 20, -6, -12, -42], vol: 0.10, part: 1 },
-    curly: { line: [42, 18, -4, -10, -40], vol: 0.17, curl: 1 },
-    buzz: { line: [47, 22, -6, -12, -40], vol: 0.03, thin: 0.3 },
+    short: { line: [44, 16, -8, -24, -62], vol: 0.07 },
+    part: { line: [46, 20, -6, -22, -60], vol: 0.10, part: 1 },
+    curly: { line: [42, 18, -4, -20, -58], vol: 0.17, curl: 1 },
+    buzz: { line: [47, 22, -6, -22, -58], vol: 0.03, thin: 0.3 },
   };
   function hull(pts) {                                // convex hull (monotone chain), counter-clockwise
     const p = pts.slice().sort((a, b) => a[0] - b[0] || a[1] - b[1]), cr = (o, a, b) => (a[0] - o[0]) * (b[1] - o[1]) - (a[1] - o[1]) * (b[0] - o[0]);
@@ -388,7 +398,8 @@
     const cs = Math.cos(psi), sn = Math.sin(psi), pitch = o.pitch || 0, lt = o.light || { x: 0, back: 0 }, lx = lt.x >= 0 ? 1 : -1;
     const rot = (p) => [p[0] * cs + p[2] * sn, p[1], -p[0] * sn + p[2] * cs];
     const sil = (E) => { const c = rot([E[0], E[1], E[2]]); return { x: c[0], y: c[1], rx: Math.hypot(E[3] * cs, E[5] * sn), ry: E[4] }; };
-    const sk = sil(SK), jw = sil(JW), dyF = -0.34 * pitch * cs;
+    const sk = sil(SK), jw = sil(JW), dyF = -0.34 * pitch * cs, back = clamp(-cs * 1.25 - 0.1);
+    jw.y += 0.3 * back; jw.ry *= 1 - 0.3 * back; jw.rx *= 1 - 0.16 * back;      // from behind there's no chin: the head ends at the nape
     const pts = [];
     for (let i = 0; i < 26; i++) { const a = i / 26 * TAU; pts.push([sk.x + sk.rx * Math.cos(a), sk.y + sk.ry * Math.sin(a)]); pts.push([jw.x + jw.rx * Math.cos(a), jw.y + jw.ry * Math.sin(a) + dyF * 0.4]); }
     const H = hull(pts), outline = () => { g.beginPath(); H.forEach((p, i) => (i ? g.lineTo(p[0], p[1]) : g.moveTo(p[0], p[1]))); g.closePath(); };
@@ -492,7 +503,7 @@
     let top = hp0;
     if (L.cap) {
       const q = g.createLinearGradient(-1, 1.4, 1, 0.3); q.addColorStop(0, mix('#a32b3d', SHD, 0.12 * bl)); q.addColorStop(1, mix('#5c1520', SHD, 0.2 * bl));
-      top = patch(L.capLine || [17, 13, 3, -5, -9], 0.07, q) || top;
+      top = patch(L.capLine || [7, 7, 3, -5, -9], 0.07, q) || top;
       if (top) {
         const mer = (phi, la0) => { g.beginPath(); let on = false; for (let j = 0; j <= 8; j++) { const th = lerp(86, la0, j / 8) * PI / 180, c = Math.cos(th), p3 = [SK[3] * 1.07 * c * Math.sin(phi), SK[1] + SK[4] * 1.07 * Math.sin(th), SK[2] + SK[5] * 1.07 * c * Math.cos(phi)], p = rot(p3); if (p[2] < SK[2] * cs - 0.05) { on = false; continue; } if (on) g.lineTo(p[0], p[1] + dyF * 0.5); else g.moveTo(p[0], p[1] + dyF * 0.5); on = true; } g.stroke(); };
         g.strokeStyle = 'rgba(40,8,14,0.35)'; g.lineWidth = 0.022; for (const ph of [0.55, 1.6, 2.65, -0.55, -1.6, -2.65]) mer(ph + (L.capTurn ?? 0), Math.abs(ph) > 2 ? -6 : Math.abs(ph) > 1 ? 4 : 16);
