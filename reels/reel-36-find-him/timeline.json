@@ -29,11 +29,349 @@
   },
   "sfx": [
     {
+      "at": 0.04,
+      "type": "clink",
+      "gain": 0.25,
+      "what": "chai glasses at the stall, the first sound",
+      "pan": -0.3
+    },
+    {
+      "at": 8.06,
+      "type": "thunk",
+      "gain": 0.35,
+      "what": "her bag set down on the counter",
+      "pitch": 0.8,
+      "pan": 0.4
+    },
+    {
+      "at": 9.9,
+      "type": "whoosh",
+      "gain": 0.7,
+      "what": "his hand at the bag",
+      "pitch": 1.2,
+      "pan": 0.3
+    },
+    {
+      "at": 10.16,
+      "type": "book",
+      "gain": 0.55,
+      "what": "the bag yanked off the counter",
+      "pitch": 1.3,
+      "pan": 0.3
+    },
+    {
+      "at": 10.48,
+      "type": "thud",
+      "gain": 0.5,
+      "what": "he barges past you",
+      "pitch": 1.6
+    },
+    {
+      "at": 12.37,
+      "type": "splash",
+      "gain": 0.4,
+      "what": "your chai hits the ground (after \"My bag!\")",
+      "pitch": 1.4,
+      "pan": -0.2
+    },
+    {
+      "at": 12.33,
+      "type": "steps",
+      "gain": 0.55,
+      "what": "you running after him (after \"My bag!\")",
+      "len": 0.7350000000000003
+    },
+    {
+      "at": 13.3,
+      "type": "whoosh",
+      "gain": 0.75,
+      "what": "the saris whipping across the lens",
+      "pitch": 0.8
+    },
+    {
+      "at": 13.7,
+      "type": "rumble",
+      "gain": 0.45,
+      "what": "up over the rooftops (low, under 'Don't lose him!')",
+      "len": 1.2
+    },
+    {
+      "at": 16.5,
+      "type": "whoosh",
+      "gain": 0.8,
+      "what": "the dive back down into the lane (after \"him!\")",
+      "pitch": 0.6
+    },
+    {
+      "at": 16.46,
+      "type": "steps",
+      "gain": 0.55,
+      "what": "running again",
+      "len": 1.25
+    },
+    {
+      "at": 17.0,
+      "type": "book",
+      "gain": 0.6,
+      "what": "his foot on the cart",
+      "pitch": 0.8
+    },
+    {
+      "at": 17.5,
+      "type": "plop",
+      "gain": 0.35,
+      "what": "tomatoes landing",
+      "pitch": 1.1,
+      "pan": -0.5
+    },
+    {
+      "at": 17.68,
+      "type": "plop",
+      "gain": 0.35,
+      "what": "tomatoes landing",
+      "pitch": 1.1800000000000002,
+      "pan": -0.25
+    },
+    {
+      "at": 17.86,
+      "type": "plop",
+      "gain": 0.35,
+      "what": "tomatoes landing",
+      "pitch": 1.26,
+      "pan": 0.0
+    },
+    {
+      "at": 18.04,
+      "type": "plop",
+      "gain": 0.35,
+      "what": "tomatoes landing",
+      "pitch": 1.34,
+      "pan": 0.25
+    },
+    {
+      "at": 18.22,
+      "type": "plop",
+      "gain": 0.35,
+      "what": "tomatoes landing",
+      "pitch": 1.4200000000000002,
+      "pan": 0.5
+    },
+    {
+      "at": 18.32,
+      "type": "thud",
+      "gain": 0.45,
+      "what": "you land past the cart",
+      "pitch": 1.4
+    },
+    {
+      "at": 18.5,
+      "type": "whoosh",
+      "gain": 0.7,
+      "what": "out of the lane into the light",
+      "pitch": 0.9
+    },
+    {
+      "at": 19.86,
+      "type": "crash",
+      "gain": 0.9,
+      "what": "he kicks the cart over",
+      "pitch": 1.1
+    },
+    {
+      "at": 19.98,
+      "type": "riffle",
+      "gain": 0.55,
+      "what": "a hundred caps fluttering up",
+      "len": 1.6
+    },
+    {
+      "at": 20.4,
+      "type": "wind",
+      "gain": 0.35,
+      "what": "the caps hanging in the sun, slow",
+      "len": 1.6,
+      "peak": 0.4
+    },
+    {
+      "at": 23.6,
+      "type": "riffle",
+      "gain": 0.4,
+      "what": "the caps coming down onto heads",
+      "len": 0.8
+    },
+    {
+      "at": 27.6,
+      "type": "steamwhistle",
+      "gain": 0.35,
+      "what": "the constable's whistle (a gap: before 'Whoever')",
+      "len": 0.45,
+      "pitch": 1.9
+    },
+    {
+      "at": 27.84,
+      "type": "whoosh",
+      "gain": 0.3,
+      "what": "number 1 pulled into the row",
+      "pitch": 1.3
+    },
+    {
+      "at": 28.24,
+      "type": "whoosh",
+      "gain": 0.3,
+      "what": "number 2 pulled into the row",
+      "pitch": 1.35
+    },
+    {
+      "at": 28.64,
+      "type": "whoosh",
+      "gain": 0.3,
+      "what": "number 3 pulled into the row",
+      "pitch": 1.4000000000000001
+    },
+    {
+      "at": 29.04,
+      "type": "whoosh",
+      "gain": 0.3,
+      "what": "number 4 pulled into the row",
+      "pitch": 1.4500000000000002
+    },
+    {
+      "at": 29.44,
+      "type": "whoosh",
+      "gain": 0.3,
+      "what": "number 5 pulled into the row",
+      "pitch": 1.5
+    },
+    {
+      "at": 28.04,
+      "type": "pop",
+      "gain": 0.12,
+      "what": "tile 1",
+      "pitch": 1.0
+    },
+    {
+      "at": 28.44,
+      "type": "pop",
+      "gain": 0.12,
+      "what": "tile 2",
+      "pitch": 1.06
+    },
+    {
+      "at": 28.84,
+      "type": "pop",
+      "gain": 0.12,
+      "what": "tile 3",
+      "pitch": 1.12
+    },
+    {
+      "at": 29.24,
+      "type": "pop",
+      "gain": 0.12,
+      "what": "tile 4",
+      "pitch": 1.18
+    },
+    {
+      "at": 29.64,
+      "type": "pop",
+      "gain": 0.12,
+      "what": "tile 5",
+      "pitch": 1.24
+    },
+    {
+      "at": 34.87,
+      "type": "tick",
+      "gain": 0.5,
+      "what": "the clock while you look (no words here)"
+    },
+    {
+      "at": 36.87,
+      "type": "tick",
+      "gain": 0.5,
+      "what": "the clock while you look (no words here)"
+    },
+    {
+      "at": 38.87,
+      "type": "tick",
+      "gain": 0.5,
+      "what": "the clock while you look (no words here)"
+    },
+    {
+      "at": 46.26,
+      "type": "hit",
+      "gain": 0.5,
+      "what": "'He's been standing right there': the focus pulls to him",
+      "pitch": 0.9
+    },
+    {
+      "at": 52.32,
+      "type": "rewind",
+      "gain": 0.6,
+      "what": "the film rewinding",
+      "len": 1.1999999999999993
+    },
+    {
+      "at": 54.76,
+      "type": "thud",
+      "gain": 0.45,
+      "what": "the rewind stops in the cap rain",
+      "pitch": 1.2
+    },
+    {
+      "at": 63.42,
+      "type": "whoosh",
+      "gain": 0.55,
+      "what": "the sweep along five caps",
+      "pitch": 1.1
+    },
+    {
+      "at": 70.82,
+      "type": "idle",
+      "gain": 0.4,
+      "what": "the jeep idling",
+      "len": 3.590000000000002
+    },
+    {
+      "at": 76.14,
+      "type": "thunk",
+      "gain": 0.3,
+      "what": "the cap lands in the dust",
+      "pitch": 0.7
+    },
+    {
+      "at": 76.8,
+      "type": "tyres",
+      "gain": 0.45,
+      "what": "the jeep pulling away",
+      "len": 2.0
+    },
+    {
+      "at": 84.9,
+      "type": "thunk",
+      "gain": 0.3,
+      "what": "his empty glass set down on the crate",
+      "pitch": 1.2
+    },
+    {
+      "at": 87.4,
+      "type": "pop",
+      "gain": 0.14,
+      "what": "the cap seated",
+      "pitch": 0.7
+    },
+    {
+      "at": 90.0,
+      "type": "wind",
+      "gain": 0.3,
+      "what": "the camera rising over the sea of caps",
+      "len": 2.6,
+      "peak": 0.7
+    },
+    {
       "at": "end",
       "type": "wav",
       "file": "../../engine/endcard/endcard.wav",
-      "gain": 1,
-      "what": "end card sound (its chord; the dot rings at +0.82 s)"
+      "gain": 1.0,
+      "what": "end card sound"
     }
   ]
 }

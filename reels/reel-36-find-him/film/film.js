@@ -679,7 +679,7 @@
   const BOY = { L: { skin: '#b9845c', skinD: '#90603c', skinH: '#d2a07a', hair: '#15100c', style: 'short', jaw: 0.9, chinK: 0.86, ew: 50, eh: 29, brow: 11, browTilt: -2 }, D: { a: '#f4dc5a', b: '#d8bc3a', sleeve: 'short', leg: '#3a5a9a', shoe: '#e8e6e0' } };
 
   // ------------------------------------------------------------------ timing (the motion test's estimates; the placed voice replaces them)
-  const T = {
+  const T0 = {
     l1: 0.05, l1e: 3.0, l2: 3.3, l2e: 4.5,      // "You get one look at this man before he runs." "So learn his face."
     bag: 3.65, eyes: 4.5, snatch: 5.0, barge: 5.22, wv: 5.3,   // her bag on the bench; his eyes go to it; the snatch; "My bag!"
     chase0: 5.6, look0: 5.95, look1: 6.45, sari: 6.6, map0: 6.9,
@@ -698,6 +698,7 @@
     end0: 41.0, l12: 43.0, l12e: 45.3,          // "So did you learn his face, or his cap?"
     capOn: 43.0, crane: 45.0, end: 48.0,
   };
+  const T = Object.assign({}, T0, window.TIMING || {});   // film/timing.js (retime.py): where the picture follows the placed words
 
   // ------------------------------------------------------------------ the 3D camera: yaw, pitch (> 0 looks down), roll; f, and where the optical axis lands
   const cam0 = (o = {}) => ({ x: 0, y: 1450, z: 0, yaw: 0, pitch: 0, roll: 0, f: 1000, cx: 540, cy: 690, ...o });
@@ -1415,9 +1416,9 @@
 
   // ================================================================ shots 6–8 · the line forms; find him; "Did you even look behind them?"; the focus pull
   const LINE_CAM = [
-    [13.8, -300, 1640, -3500, 0, 0.02, 0], [16.2, -200, 1640, -3100, 0, 0.02, 0], [16.6, -1500, 1650, -1800, 0, 0.02, 0],
-    [20.1, 1450, 1650, -1800, 0, 0.02, 0], [21.0, 200, 1650, -3150, 0, 0.02, 0], [23.25, 160, 1650, -3300, 0, 0.02, 0],
-    [24.5, 300, 1860, -760, 0.02, -0.03, 0], [26.2, 315, 1870, -680, 0.02, -0.03, 0],
+    [13.8, -300, 1640, -3500, 0, 0.02, 0], [T.l6 - 0.1, -200, 1640, -3100, 0, 0.02, 0], [T.l6 + 0.3, -1500, 1650, -1800, 0, 0.02, 0],
+    [T.find1 - 0.2, 1450, 1650, -1800, 0, 0.02, 0], [T.l7 + 0.7, 200, 1650, -3150, 0, 0.02, 0], [T.l8 + 0.05, 160, 1650, -3300, 0, 0.02, 0],
+    [T.l8 + 1.3, 300, 1860, -760, 0.02, -0.03, 0], [T.rew0, 315, 1870, -680, 0.02, -0.03, 0],
   ];
   function constable(t, o = {}) {
     return { X: -2350, Z: -250, draw(g, c) {
@@ -1455,7 +1456,7 @@
 
   // ================================================================ shot 10 · the replay: the same moment, slow and close. Every hand goes up. His comes down.
   // the replay's clock: film time to event time, slow, so the lift lands on "off" (retimed to the placed words)
-  const REPLAY_E = [[27.45, 9.99], [28.6, 10.05], [29.5, 10.11], [30.5, 10.19], [31.5, 10.32], [32.0, 10.38]];
+  const REPLAY_E = T.replay || [[27.45, 9.99], [28.6, 10.05], [29.5, 10.11], [30.5, 10.19], [31.5, 10.32], [32.0, 10.38]];
   const replayE = (t) => { const ks = REPLAY_E; if (t <= ks[0][0]) return ks[0][1]; for (let i = 0; i < ks.length - 1; i++) if (t <= ks[i + 1][0]) return lerp(ks[i][1], ks[i + 1][1], (t - ks[i][0]) / (ks[i + 1][0] - ks[i][0])); return ks[ks.length - 1][1]; };
   function shotReplay(g, t) {
     const u = clamp((t - T.rew1) / (T.l10 - T.rew1)), e = replayE(t);
@@ -1470,10 +1471,10 @@
   }
 
   // ================================================================ shot 11 · "With a stranger, your brain goes by the hair and the cap." A sweep along the five.
-  const SWEEP_CAM = [[32.0, -1900, 1650, -1450, 0, 0.02, 0], [33.15, 1900, 1650, -1450, 0, 0.02, 0], [33.7, 700, 1650, -2500, 0, 0.02, 0], [T.jeep0, 0, 1650, -2750, 0, 0.02, 0]];
+  const SWEEP_CAM = [[T.l10, -1900, 1650, -1450, 0, 0.02, 0], [T.l10 + 1.15, 1900, 1650, -1450, 0, 0.02, 0], [T.l10 + 1.7, 700, 1650, -2500, 0, 0.02, 0], [T.jeep0, 0, 1650, -2750, 0, 0.02, 0]];
   function shotSweep(g, t) {
     const c = camK(t, SWEEP_CAM, { cy: 860 });
-    const flash = ROWX.map((X) => { const d = Math.abs(c.x - X); return t < 33.3 ? clamp(1 - d / 450) : 0.55 * sstep(33.6, 34.0, t); });
+    const flash = ROWX.map((X) => { const d = Math.abs(c.x - X); return t < T.l10 + 1.3 ? clamp(1 - d / 450) : 0.55 * sstep(T.l10 + 1.6, T.l10 + 2.0, t); });
     steps(g, c, t, { flash, thief: {} });
     vignette(g, 0.5);
     return (1 - sstep(T.l10 - 0.15, T.l10 + 0.05, t)) * 0.5;
