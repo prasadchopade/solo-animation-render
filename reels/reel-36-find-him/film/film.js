@@ -285,7 +285,7 @@
       if (L.style === 'bald') {                      // the back of his skull, the band of hair round it, the cap over the top
         g.fillStyle = lg(g, -hw, -200, hw, 160, [0, L.skinH], [0.5, L.skin], [1, L.skinD]); ell(g, 0, -40, hw + 2, 196); g.fill();
         g.save(); g.globalAlpha *= 0.55; g.fillStyle = L.hair; g.beginPath(); g.moveTo(-hw - 2, -120); g.bezierCurveTo(-hw - 4, -10, -120, 70, 0, 74); g.bezierCurveTo(120, 70, hw + 4, -10, hw + 2, -120); g.closePath(); g.fill(); g.restore(); g.strokeStyle = 'rgba(255,222,165,0.4)'; g.lineWidth = 14; g.beginPath(); g.arc(-40, -10, hw * 0.9, Math.PI * 0.95, Math.PI * 1.35); g.stroke();
-      } else { g.fillStyle = L.skinD; R(g, -70, 60, 140, 140, 30); g.fill(); g.fillStyle = L.hair; g.beginPath(); g.moveTo(-hw - 2, -100); g.bezierCurveTo(-hw - 6, 20, -100, 96, 0, 100); g.bezierCurveTo(100, 96, hw + 6, 20, hw + 2, -100); g.closePath(); g.fill(); g.strokeStyle = 'rgba(255,225,190,0.22)'; g.lineWidth = 12; g.beginPath(); g.arc(0, -150, hw * 0.92, Math.PI * 0.62, Math.PI * 0.86); g.stroke(); g.strokeStyle = 'rgba(0,0,0,0.18)'; g.lineWidth = 5; for (let i = -2; i <= 2; i++) { g.beginPath(); g.moveTo(i * 40, -60); g.lineTo(i * 34, 70); g.stroke(); } }
+      } else { g.fillStyle = L.skinD; R(g, -70, 60, 140, 140, 30); g.fill(); g.fillStyle = L.hair; g.beginPath(); g.moveTo(-hw - 2, -110); g.bezierCurveTo(-hw - 4, -40, -110, 30, 0, 34); g.bezierCurveTo(110, 30, hw + 4, -40, hw + 2, -110); g.closePath(); g.fill(); g.strokeStyle = 'rgba(255,225,190,0.22)'; g.lineWidth = 12; g.beginPath(); g.arc(0, -150, hw * 0.92, Math.PI * 0.62, Math.PI * 0.86); g.stroke(); g.strokeStyle = 'rgba(0,0,0,0.18)'; g.lineWidth = 5; for (let i = -2; i <= 2; i++) { g.beginPath(); g.moveTo(i * 40, -60); g.lineTo(i * 34, 70); g.stroke(); } }
       capShape(g, hw + 6, 0, 1); g.fillStyle = '#4a111b'; ell(g, hw * 0.72, -112, 52, 14, 0.35); g.fill(); return;
     }
     if (L.style === 'bald') {
@@ -452,7 +452,7 @@
     const fm = back ? (o.faceMix ?? (o.showFace ? 1 : 0)) : 1;
     if (fm <= 0.001) headBack(g, L, o);
     else if (fm >= 0.999) face();
-    else { g.save(); g.globalAlpha *= 1 - fm; headBack(g, L, o); g.restore(); g.save(); g.globalAlpha *= fm; face(); g.restore(); }
+    else { headBack(g, L, o); g.save(); g.globalAlpha *= fm; face(); g.restore(); }
     g.restore();
     if (o.handFront) { const k = o.handFront, p = armPose(o, k), w = wristOf(o, k); g.save(); g.translate(w.x, w.y); g.rotate(w.ang); hand(g, p.hand || 'relax', L, k, -k * p.a1 + k * p.a2, o); g.restore(); }
     g.restore();
@@ -675,7 +675,7 @@
   const FIVE = [{ L: M1, D: TEE('#5ab8ff', '#3a8fd0') }, { L: M2, D: TEE('#36a08c', '#257a68') }, { L: M3, D: TEE('#8e6fd1', '#6c4fae') }, { L: M4, D: TEE('#3f948a', '#2b736c') }, { L: M5, D: TEE('#ef7fa8', '#cf5b86') }];
   const COP = { L: { skin: '#a8714d', skinD: '#80522f', skinH: '#c08a64', hair: '#120d0a', style: 'short', must: 'thick', brow: 18, browTilt: 4, jaw: 1.06, ew: 42, eh: 21, beret: true },
     D: { a: '#b8a06a', b: '#94804e', collar: '#a28c58', sleeve: 'short', buttons: 'rgba(60,40,20,0.5)', leg: '#9c8656', shoe: '#2a1d14' } };
-  const WOMAN = { L: { skin: '#b57d58', skinD: '#8c5a3a', skinH: '#cc9a74', hair: '#1a1410', style: 'long', jaw: 0.92, ew: 44, eh: 24, brow: 11, browTilt: -2, braid: true }, D: { a: '#4f7fe0', b: '#2f58b0', sleeve: 'short', kameez: true, dupatta: '#ffd84a', leg: '#f3e6d8', shoe: '#8a3a2a' } };
+  const WOMAN = { L: { skin: '#b57d58', skinD: '#8c5a3a', skinH: '#cc9a74', hair: '#1a1410', style: 'bun', jaw: 0.92, ew: 44, eh: 24, brow: 11, browTilt: -2, braid: true }, D: { a: '#e86fa0', b: '#c04f80', sleeve: 'short', kameez: true, dupatta: '#f6efe2', leg: '#f3e6d8', shoe: '#8a3a2a' } };
   const BOY = { L: { skin: '#b9845c', skinD: '#90603c', skinH: '#d2a07a', hair: '#15100c', style: 'short', jaw: 0.9, chinK: 0.86, ew: 50, eh: 29, brow: 11, browTilt: -2 }, D: { a: '#f4dc5a', b: '#d8bc3a', sleeve: 'short', leg: '#3a5a9a', shoe: '#e8e6e0' } };
 
   // ------------------------------------------------------------------ timing (the motion test's estimates; the placed voice replaces them)
@@ -756,7 +756,7 @@
     const sk = SKINS[(r() * SKINS.length) | 0], sh = SHIRTS[(r() * SHIRTS.length) | 0];
     const L = { skin: sk[0], skinD: sk[1], skinH: sk[2], hair: r() < 0.15 ? '#2a2420' : '#15100c', jaw: 0.9 + r() * 0.2, chinK: 0.9 + r() * 0.25, ew: 40 + r() * 8, eh: 20 + r() * 6, brow: 11 + r() * 9, browTilt: -2 + r() * 10, noseW: 0.9 + r() * 0.35 };
     let D = { a: sh[0], b: sh[1], sleeve: r() < 0.3 ? 'long' : 'short', cuff: sh[0], leg: ['#2f3442', '#3f3a36', '#e8e2d6', '#4a4f5c'][(r() * 4) | 0], shoe: '#211a16' };
-    if (kind === 'woman') { L.style = r() < 0.5 ? 'long' : 'bun'; L.braid = L.style === 'long'; L.jaw = 0.9; L.brow = 11; D = { ...D, sleeve: 'short', kameez: true, dupatta: ['#ffd84a', '#ff7fb0', '#f6efe2', '#9fd0ff'][(r() * 4) | 0], leg: '#f3e6d8' }; }
+    if (kind === 'woman') { r(); L.style = 'bun'; L.braid = false; L.jaw = 0.9; L.brow = 11; D = { ...D, sleeve: 'short', kameez: true, dupatta: ['#ffb3cf', '#ff7fb0', '#f6efe2', '#c9b6f0'][(r() * 4) | 0], leg: '#f3e6d8' }; }
     else if (kind === 'old') { L.style = 'bald'; L.hair = '#e8e4dc'; L.must = 'mid'; L.mHair = '#ece8e0'; L.brow = 13; }
     else { L.style = STYLES[(r() * STYLES.length) | 0]; const m = r(); L.must = m < 0.3 ? 'thick' : m < 0.55 ? 'mid' : null; if (kind === 'kid') { L.must = null; L.jaw = 0.88; L.chinK = 0.86; L.ew = 49; L.eh = 28; } }
     return { L, D };
@@ -1042,7 +1042,7 @@
       op: 0.04 * reach, hands: { l: 'glass' },
     };
     // his right hand (the screen's left) holds his glass at his chest, and keeps it level through the run
-    o.arms = { l: { ...armIK(o, -1, -170, 400, 60), hand: 'glass', w: 1 - run * 0.6 } };
+    o.arms = { l: { ...armIK(o, -1, -140, 300, 60), hand: 'glass', w: 1 - run * 0.6 } };
     // his left hand (the screen's right): across to her bag on the counter, a fist round its handle, up to his chest
     if (d > -0.05) {
       const bx = (BAGG.x - F0.x) / F0.s, by = (BAGG.y - F0.y) / F0.s - 40;
@@ -1053,7 +1053,7 @@
   }
   function shotHook(g, t) {
     const d = t - T.snatch, tw = t, push = sstep(0, T.l2e, Math.min(t, T.l2e)), whip = sstep(T.snatch + 0.42, T.chase0, t);
-    const pull = sstep(T.l2e - 0.1, T.eyes + 0.3, t);                          // from his face back to the stall: him, her, her bag
+    const pull = sstep(T.l2e - 0.45, T.eyes + 0.2, t);                          // from his face back to the stall: him, her, her bag
     const sh = shakeAt(t, [[T.snatch + 0.1, 10], [T.barge, 26]]);
     const pan = -1100 * Math.pow(whip, 1.6);
     // the lane behind him, soft (the camera stands where the chai sign is behind it, so no cut-off sign)
@@ -1063,14 +1063,14 @@
     CAMX = 900; world(gb, 1400, tw); light(gb, tw); CAMX = 0; gb.restore();
     g.save(); g.filter = 'blur(6px)'; g.drawImage(bg, 0, 0); g.restore();
     g.fillStyle = 'rgba(255,190,120,0.10)'; g.fillRect(0, 0, W, H);
-    const z = (1 + 0.07 * push) * lerp(1, 0.5, pull), panX = -150 * pull;
+    const z = (1 + 0.07 * push) * lerp(1, 0.5, pull), panX = -200 * pull;
     g.save(); g.translate(sh[0] + pan + panX, sh[1]); g.translate(F0.x, 900); g.scale(z, z); g.translate(-F0.x, -900);
     // the stall's tarp over you, and its bulbs
     g.fillStyle = lg(g, 0, 180, 0, 330, [0, '#2b6fb3'], [1, '#1f4f82']); g.beginPath(); g.moveTo(-1400, 100); g.lineTo(2600, 100); g.lineTo(2600, 220);
     for (let i = 0; i <= 24; i++) { const x = 2600 - i * 170; g.quadraticCurveTo(x - 85, 320, x - 170, 240); } g.lineTo(-1400, 100); g.closePath(); g.fill();
     for (let i = 0; i < 18; i++) { const x = -1130 + i * 150, y = 290 + 26 * Math.sin(i * 1.1 + 0.4 * Math.sin(tw * 1.3 + i)); g.strokeStyle = 'rgba(30,25,20,0.6)'; g.lineWidth = 3; g.beginPath(); g.moveTo(x, 230); g.lineTo(x, y - 14); g.stroke(); bulb(g, x, y, 0.55, 0.85 + 0.15 * Math.sin(tw * 2 + i)); }
     // the woman beside him: she sits down, puts her red bag on the counter, looks at her phone; at the snatch she grabs after it
-    const set = sstep(T.l2e - 0.15, T.l2e + 0.25, t), shock = sstep(T.snatch + 0.05, T.snatch + 0.2, t), after = sstep(T.wv - 0.1, T.wv + 0.15, t);
+    const set = sstep(T.l2e - 0.35, T.l2e + 0.05, t), shock = sstep(T.snatch + 0.05, T.snatch + 0.2, t), after = sstep(T.wv - 0.1, T.wv + 0.15, t);
     const wo = { yaw: -0.35, headYaw: -0.1 - 0.2 * shock, look: shock > 0.5 ? [-16, 2] : [lerp(-6, -2, set), 10 * (1 - shock)], op: 0.45 * shock * (1 - 0.5 * after), browUp: 10 * shock, worry: 6 * shock, legs: false, rim: 1, close: blinkAt(t, 5, 3.1) * (1 - shock) };
     wo.arms = { l: { ...armIK(wo, -1, lerp(lerp(-120, (BAGG.x - WOM.x) / WOM.s, set), -620, after), lerp(lerp(560, (BAGG.y - WOM.y) / WOM.s - 60, set), 160, after), 46), hand: after > 0.5 ? 'open' : set > 0.2 && set < 0.99 ? 'grip' : 'relax', w: 1 },
       r: { a1: 0.3, a2: 1.6, hand: 'relax', w: 1 } };
@@ -1091,7 +1091,7 @@
     g.restore();
     // your own hand and glass at the bottom left; he barges past and it turns over in the air, slow
     const kn = clamp((t - T.barge) / 0.5);
-    if (t < T.barge) myGlassHand(g, 150 + 6 * Math.sin(tw * 1.4), 1640 + 4 * Math.sin(tw * 1.9), 0.62, -0.08, 0.85);
+    if (t < T.barge) myGlassHand(g, 120 + 6 * Math.sin(tw * 1.4), 1600 + 4 * Math.sin(tw * 1.9), 0.62, -0.08, 0.85);
     else {
       myGlassHand(g, 150 - 260 * Math.pow(kn, 0.6), 1640 + 380 * kn, 0.62, -0.08 - 0.5 * kn, -1);
       const u = clamp((t - T.barge) / 0.75), gx = lerp(260, 620, u), gy = lerp(1500, 1700, u) - 300 * Math.sin(u * Math.PI) * 0.6;
@@ -1314,7 +1314,7 @@
 
   // ================================================================ world D · the steps: a broad flight up to a pale hall, the crowd on it, the five in front
   const STEP = { d: 340, h: 270, n: 6, z0: 700 }, BACKZ = 700 + 6 * 340, ROWX = [-1120, -560, 0, 560, 1120];
-  const THIEF_STEP = { X: 280, Y: 270, Z: 700 + 170 };
+  const THIEF_STEP = { X: 280, Y: 540, Z: 700 + 340 + 170 };
   const STEPS_CROWD = (() => {
     const r = mulberry32(3911), out = [];
     const spots = [[-1850, 0, 'old', 0], [-930, 0, 'man', 1], [1480, 0, 'fan', 0], [2350, 0, 'woman', 0],
@@ -1411,9 +1411,9 @@
 
   // ================================================================ shots 6–8 · the line forms; find him; "Did you even look behind them?"; the focus pull
   const LINE_CAM = [
-    [13.8, 0, 1640, -3900, 0, 0.02, 0], [T.l6 - 0.1, 0, 1640, -3600, 0, 0.02, 0], [T.l6 + 0.3, -1350, 1650, -1800, 0, 0.02, 0],
+    [13.8, 0, 1640, -3900, 0, 0.02, 0], [T.l6 - 0.1, 0, 1640, -3600, 0, 0.02, 0], [T.l6 + 0.3, -1350, 1650, -1800, 0, 0.02, 0], [T.l6 + 1.5, -150, 1660, -1800, 0, 0.0, 0], [T.l6 + 2.9, 650, 1660, -1800, 0, 0.0, 0],
     [T.find1 - 0.2, 1300, 1650, -1800, 0, 0.02, 0], [T.l7 + 0.7, 0, 1650, -3500, 0, 0.02, 0], [T.l8 + 0.05, 0, 1650, -3550, 0, 0.02, 0],
-    [T.l8 + 1.3, 270, 1860, -760, 0.02, -0.03, 0], [T.rew0, 285, 1870, -680, 0.02, -0.03, 0],
+    [T.l8 + 1.3, 270, 2120, -420, 0.02, -0.03, 0], [T.rew0, 285, 2130, -340, 0.02, -0.03, 0],
   ];
   function constable(t, o = {}) {
     return { X: -1950, Z: -250, draw(g, c) {
@@ -1469,7 +1469,7 @@
   const SWEEP_CAM = [[T.l10, -1700, 1650, -1450, 0, 0.02, 0], [T.l10 + 1.15, 1700, 1650, -1450, 0, 0.02, 0], [T.l10 + 1.7, 500, 1650, -2800, 0, 0.02, 0], [T.jeep0, 0, 1650, -3500, 0, 0.02, 0]];
   function shotSweep(g, t) {
     const c = camK(t, SWEEP_CAM, { cy: 860 });
-    const flash = ROWX.map((X) => { const d = Math.abs(c.x - X); return t < T.l10 + 1.3 ? clamp(1 - d / 450) : 0.55 * sstep(T.l10 + 1.6, T.l10 + 2.0, t); });
+    const flash = ROWX.map(() => 0);
     steps(g, c, t, { flash, thief: {} });
     vignette(g, 0.5);
     return (1 - sstep(T.l10 - 0.15, T.l10 + 0.05, t)) * 0.5;
@@ -1498,7 +1498,7 @@
   }
   function shotJeep(g, t) {
     const j0 = T.jeep0, goT = j0 + 1.9, capT = j0 + 1.95, ends = T.end0;
-    const c = cam0({ x: lerp(-650, -760, sstep(j0, ends, t)), y: 1050, z: lerp(-3600, -3300, sstep(j0, ends, t)), yaw: -0.14, pitch: 0.02 });
+    const c = cam0({ x: lerp(-650, -760, sstep(j0, ends, t)), y: 1050, z: lerp(-3150, -2950, sstep(j0, ends, t)), yaw: -0.14, pitch: 0.02, cy: 990 });
     const go = Math.pow(sstep(goT, goT + 2.3, t), 1.6), jolt = kick(t, goT, 1, 30, 9);
     const goAt = (tt) => Math.pow(sstep(goT, goT + 2.3, tt), 1.6);
     // inside the van, in its shadow: the man you picked, never his face or his shirt; only his cap catches the light
@@ -1516,7 +1516,7 @@
         { walk: away > 0 && away < 1 ? 1 : 0, phase: t * 8, legs: true, rim: 1, arms: { l: { a1: lerp(0.5, 1.5, slap), a2: lerp(0.6, 0.2, slap), hand: 'open', w: 1 } } });
     } };
     // the cap: off his head with the jolt, out of the open back, into the dust, a bounce
-    const land = { X: JEEP.X + 260, Z: -1750 }, cf = clamp((t - capT) / 0.6), picked = j0 + 3.8;
+    const land = { X: JEEP.X + 260, Z: -1000 }, cf = clamp((t - capT) / 0.6), picked = j0 + 3.8;
     const capObj = { X: land.X, Z: land.Z, draw(gg, cc) {
       if (t < capT || t > picked) return;
       const bounce = t > capT + 0.6 ? 140 * Math.abs(Math.sin((t - capT - 0.6) * 9)) * Math.exp(-(t - capT - 0.6) * 7) : 0;
@@ -1525,7 +1525,7 @@
     } };
     // the boy with his tennis ball: in from the right, down for the cap, up with it, a look at it, a look after the jeep
     const walkIn = sstep(j0 + 2.8, j0 + 3.55, t), bend = winK(t, j0 + 3.55, j0 + 3.72, j0 + 3.85, j0 + 4.0), hold = t > picked;
-    const boy = { X: lerp(-470, land.X + 250, walkIn), Z: lerp(-2400, land.Z - 120, walkIn), draw(gg, cc) {
+    const boy = { X: lerp(-470, land.X + 250, walkIn), Z: lerp(-1800, land.Z - 120, walkIn), draw(gg, cc) {
       if (t < j0 + 2.8) return;
       const po = { walk: walkIn > 0 && walkIn < 1 ? 1 : 0, phase: t * 9, legs: true, rim: 1, lean: 0.25 * bend, headBob: 70 * bend, scale: 0.72, look: hold ? [-6, 10] : [0, 6], smile: 0.1,
         arms: { l: hold ? { a1: 0.6, a2: 1.4, hand: 'grip', w: 1 } : { a1: 0.2 + 0.5 * bend, a2: 0.2, hand: 'open', w: 1 }, r: { a1: 0.25, a2: 0.9, hand: 'fist', w: 1 } } };
