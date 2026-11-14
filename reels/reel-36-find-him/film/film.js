@@ -285,7 +285,7 @@
       if (L.style === 'bald') {                      // the back of his skull, the band of hair round it, the cap over the top
         g.fillStyle = lg(g, -hw, -200, hw, 160, [0, L.skinH], [0.5, L.skin], [1, L.skinD]); ell(g, 0, -40, hw + 2, 196); g.fill();
         g.save(); g.globalAlpha *= 0.55; g.fillStyle = L.hair; g.beginPath(); g.moveTo(-hw - 2, -120); g.bezierCurveTo(-hw - 4, -10, -120, 70, 0, 74); g.bezierCurveTo(120, 70, hw + 4, -10, hw + 2, -120); g.closePath(); g.fill(); g.restore(); g.strokeStyle = 'rgba(255,222,165,0.4)'; g.lineWidth = 14; g.beginPath(); g.arc(-40, -10, hw * 0.9, Math.PI * 0.95, Math.PI * 1.35); g.stroke();
-      } else { g.fillStyle = L.skinD; R(g, -70, 60, 140, 140, 30); g.fill(); g.fillStyle = L.hair; g.beginPath(); g.moveTo(-hw - 2, -110); g.bezierCurveTo(-hw - 4, -40, -110, 30, 0, 34); g.bezierCurveTo(110, 30, hw + 4, -40, hw + 2, -110); g.closePath(); g.fill(); g.strokeStyle = 'rgba(255,225,190,0.22)'; g.lineWidth = 12; g.beginPath(); g.arc(0, -150, hw * 0.92, Math.PI * 0.62, Math.PI * 0.86); g.stroke(); g.strokeStyle = 'rgba(0,0,0,0.18)'; g.lineWidth = 5; for (let i = -2; i <= 2; i++) { g.beginPath(); g.moveTo(i * 40, -60); g.lineTo(i * 34, 70); g.stroke(); } }
+      } else { g.fillStyle = L.skinD; R(g, -70, 60, 140, 140, 30); g.fill(); g.fillStyle = L.hair; g.beginPath(); g.moveTo(-hw - 2, -100); g.bezierCurveTo(-hw - 6, 20, -100, 96, 0, 100); g.bezierCurveTo(100, 96, hw + 6, 20, hw + 2, -100); g.closePath(); g.fill(); g.strokeStyle = 'rgba(255,225,190,0.22)'; g.lineWidth = 12; g.beginPath(); g.arc(0, -150, hw * 0.92, Math.PI * 0.62, Math.PI * 0.86); g.stroke(); g.strokeStyle = 'rgba(0,0,0,0.18)'; g.lineWidth = 5; for (let i = -2; i <= 2; i++) { g.beginPath(); g.moveTo(i * 40, -60); g.lineTo(i * 34, 70); g.stroke(); } }
       capShape(g, hw + 6, 0, 1); g.fillStyle = '#4a111b'; ell(g, hw * 0.72, -112, 52, 14, 0.35); g.fill(); return;
     }
     if (L.style === 'bald') {
@@ -672,10 +672,10 @@
   const M4 = { ...SKIN, hair: '#17110d', style: 'crew', capped: true, must: 'thin', stub: 0.75, brow: 15, browTilt: 5, jaw: 1.0, ew: 44, eh: 23, earK: 1.32 };
   const M5 = { ...SKIN, hair: '#1a130e', style: 'spiky', capped: true, must: 'pencil', stub: 0, brow: 12, browTilt: 3, jaw: 0.92, chinK: 1.02, ew: 47, eh: 27 };
   const TEE = (a, b) => ({ a, b, sleeve: 'short', leg: '#2f3442', shoe: '#1d1a17' });
-  const FIVE = [{ L: M1, D: TEE('#5ab8ff', '#3a8fd0') }, { L: M2, D: TEE('#36a08c', '#257a68') }, { L: M3, D: TEE('#8e6fd1', '#6c4fae') }, { L: M4, D: TEE('#3f948a', '#2b736c') }, { L: M5, D: TEE('#ef7fa8', '#cf5b86') }];
+  const FIVE = [{ L: M1, D: TEE('#5ab8ff', '#3a8fd0') }, { L: M2, D: TEE('#f4f0e6', '#d4cdbd') }, { L: M3, D: TEE('#8e6fd1', '#6c4fae') }, { L: M4, D: TEE('#6f7d92', '#525e72') }, { L: M5, D: TEE('#ef7fa8', '#cf5b86') }];
   const COP = { L: { skin: '#a8714d', skinD: '#80522f', skinH: '#c08a64', hair: '#120d0a', style: 'short', must: 'thick', brow: 18, browTilt: 4, jaw: 1.06, ew: 42, eh: 21, beret: true },
     D: { a: '#b8a06a', b: '#94804e', collar: '#a28c58', sleeve: 'short', buttons: 'rgba(60,40,20,0.5)', leg: '#9c8656', shoe: '#2a1d14' } };
-  const WOMAN = { L: { skin: '#b57d58', skinD: '#8c5a3a', skinH: '#cc9a74', hair: '#1a1410', style: 'bun', jaw: 0.92, ew: 44, eh: 24, brow: 11, browTilt: -2, braid: true }, D: { a: '#e86fa0', b: '#c04f80', sleeve: 'short', kameez: true, dupatta: '#f6efe2', leg: '#f3e6d8', shoe: '#8a3a2a' } };
+  const WOMAN = { L: { skin: '#b57d58', skinD: '#8c5a3a', skinH: '#cc9a74', hair: '#1a1410', style: 'long', jaw: 0.92, ew: 44, eh: 24, brow: 11, browTilt: -2, braid: true }, D: { a: '#4f7fe0', b: '#2f58b0', sleeve: 'short', kameez: true, dupatta: '#ffd84a', leg: '#f3e6d8', shoe: '#8a3a2a' } };
   const BOY = { L: { skin: '#b9845c', skinD: '#90603c', skinH: '#d2a07a', hair: '#15100c', style: 'short', jaw: 0.9, chinK: 0.86, ew: 50, eh: 29, brow: 11, browTilt: -2 }, D: { a: '#f4dc5a', b: '#d8bc3a', sleeve: 'short', leg: '#3a5a9a', shoe: '#e8e6e0' } };
 
   // ------------------------------------------------------------------ timing (the motion test's estimates; the placed voice replaces them)
@@ -756,7 +756,7 @@
     const sk = SKINS[(r() * SKINS.length) | 0], sh = SHIRTS[(r() * SHIRTS.length) | 0];
     const L = { skin: sk[0], skinD: sk[1], skinH: sk[2], hair: r() < 0.15 ? '#2a2420' : '#15100c', jaw: 0.9 + r() * 0.2, chinK: 0.9 + r() * 0.25, ew: 40 + r() * 8, eh: 20 + r() * 6, brow: 11 + r() * 9, browTilt: -2 + r() * 10, noseW: 0.9 + r() * 0.35 };
     let D = { a: sh[0], b: sh[1], sleeve: r() < 0.3 ? 'long' : 'short', cuff: sh[0], leg: ['#2f3442', '#3f3a36', '#e8e2d6', '#4a4f5c'][(r() * 4) | 0], shoe: '#211a16' };
-    if (kind === 'woman') { r(); L.style = 'bun'; L.braid = false; L.jaw = 0.9; L.brow = 11; D = { ...D, sleeve: 'short', kameez: true, dupatta: ['#ffb3cf', '#ff7fb0', '#f6efe2', '#c9b6f0'][(r() * 4) | 0], leg: '#f3e6d8' }; }
+    if (kind === 'woman') { L.style = r() < 0.5 ? 'long' : 'bun'; L.braid = L.style === 'long'; L.jaw = 0.9; L.brow = 11; D = { ...D, sleeve: 'short', kameez: true, dupatta: ['#ffd84a', '#ff7fb0', '#f6efe2', '#9fd0ff'][(r() * 4) | 0], leg: '#f3e6d8' }; }
     else if (kind === 'old') { L.style = 'bald'; L.hair = '#e8e4dc'; L.must = 'mid'; L.mHair = '#ece8e0'; L.brow = 13; }
     else { L.style = STYLES[(r() * STYLES.length) | 0]; const m = r(); L.must = m < 0.3 ? 'thick' : m < 0.55 ? 'mid' : null; if (kind === 'kid') { L.must = null; L.jaw = 0.88; L.chinK = 0.86; L.ew = 49; L.eh = 28; } }
     return { L, D };
@@ -961,7 +961,7 @@
     withRoll(g, c, () => {
       gullyBack(g, c, tw);
       // the far match: a batsman at the wall, a bowler, two fielders
-      if (c.pitch < 0.6) for (const [X, Z, a, look] of [[60, GZ - 400, 0, 0], [-80, 9300, Math.PI, 0], [-2100, 8600, 0.6, 0], [1900, 10200, -0.7, 0]]) drawPerson(g, c, { L: { ...SKIN, hair: '#15100c', style: 'short', jaw: 1, ew: 44, eh: 23, brow: 14, browTilt: 2 }, D: TEE('#f4f0e6', '#d4cdbd') }, X, 0, Z, a, { walk: 0.3, phase: tw * 3 });
+      for (const [X, Z, a, look] of [[60, GZ - 400, 0, 0], [-80, 9300, Math.PI, 0], [-2100, 8600, 0.6, 0], [1900, 10200, -0.7, 0]]) drawPerson(g, c, { L: { ...SKIN, hair: '#15100c', style: 'short', jaw: 1, ew: 44, eh: 23, brow: 14, browTilt: 2 }, D: TEE('#f4f0e6', '#d4cdbd') }, X, 0, Z, a, { walk: 0.3, phase: tw * 3 });
       // shadows on the ground (the sun is low behind the far wall, a little to your right: shadows fall towards you and left)
       const objs = [];
       for (const p of CROWD) { const v = camSpace(c, p.X, 900, p.Z); if (v[2] < 160) continue; objs.push({ d: v[2], k: 'p', p }); }
@@ -1029,75 +1029,79 @@
   // ================================================================ shot 1 · the chai stall. One look at him; the snatch
   const F0 = { x: 560, y: 960, s: 1.38 };                                     // his head on frame 0
   const MOTES = (() => { const r = mulberry32(3660), out = []; for (let i = 0; i < 40; i++) out.push({ x: r() * W, y: 200 + r() * 1500, z: 0.4 + r() * 1.4, k: r() < 0.22 ? 'petal' : 'mote', rot: r() * 3, c: r() < 0.5 ? '#f39a1e' : '#f7c52b', v: 20 + r() * 50 }); return out; })();
-  const BAGG = { x: 1420, y: 1700 };        // the bag on the counter beside him, and the woman beside it (the stall's own coordinates:
-  const WOM = { x: 1430, y: 1010, s: 1.18 }; // the camera pulls back from his face to show them, so on screen they sit inside the safe zone)
+  const BAGPT = { x: 820, y: 1360 };                                           // the bag on the bench, on screen
   function hookPose(t) {
     const d = t - T.snatch, reach = sstep(0, 0.1, d), yank = sstep(0.08, 0.22, d), turn = sstep(0.3, 0.46, d), run = sstep(0.36, 0.62, d);
-    const x = F0.x + 1700 * Math.pow(run, 1.5) + 30 * reach, y = F0.y + 30 * run, s = F0.s * (1 + 0.12 * run);
-    const glance = winK(t, T.eyes, T.eyes + 0.15, T.snatch - 0.05, T.snatch + 0.05);
+    const x = F0.x + 1250 * Math.pow(run, 1.5) + 40 * reach, y = F0.y + 30 * run, s = F0.s * (1 + 0.22 * run);
+    const sip = winK(t, 0.7, 1.05, 1.6, 1.95), glance = winK(t, T.eyes, T.eyes + 0.18, T.snatch - 0.05, T.snatch + 0.05);
     const o = {
-      yaw: lerp(-0.12, 0.9, turn), headYaw: lerp(0.05, 0.25, turn) + 0.08 * glance, back: turn > 0.6, faceMix: 1 - sstep(0.45, 0.66, turn),
-      look: [lerp(0, 18, glance) * (1 - yank) + 6 * turn, lerp(1, 9, glance) * (1 - yank) + yank], frown: 0.06 + 0.2 * reach, smirk: 0.25 * (1 - reach) * sstep(2.3, 3.0, t), smile: 0.08 * sstep(2.3, 3.0, t) * (1 - reach),
-      browY: -6 * glance, close: blinkAt(t, 2, 2.9) * (1 - reach), walk: 2.0 * run, phase: d * 14, legs: false, cap: 1, rim: 1, glassK: 0.6, tilt: 0.04 * yank,
+      yaw: lerp(-0.12, 0.9, turn), headYaw: lerp(0.05, 0.25, turn) + 0.06 * glance, back: turn > 0.6, faceMix: 1 - sstep(0.45, 0.66, turn),
+      look: [lerp(0, 17, glance) * (1 - yank) + 6 * turn, lerp(1, 7, glance) * (1 - yank) + yank], frown: 0.06 + 0.2 * reach, smirk: 0.25 * (1 - reach) * sstep(2.3, 3.0, t), smile: 0.08 * sstep(2.3, 3.0, t) * (1 - reach),
+      browY: -6 * glance, close: blinkAt(t, 2, 2.9) * (1 - reach), walk: 2.0 * run, phase: d * 14, legs: false, cap: 1, rim: 1, glassK: 0.6, tilt: -0.04 * sip + 0.04 * yank,
       op: 0.04 * reach, hands: { l: 'glass' },
     };
-    // his right hand (the screen's left) holds his glass at his chest, and keeps it level through the run
-    o.arms = { l: { ...armIK(o, -1, -140, 300, 60), hand: 'glass', w: 1 - run * 0.6 } };
-    // his left hand (the screen's right): across to her bag on the counter, a fist round its handle, up to his chest
+    // his right hand (the screen's left) holds his glass: below his chin, up to his lips for a sip, down; through the run it stays level
+    const gx = lerp(-170, -130, sip), gy = lerp(lerp(400, 310, sip), 330, yank);
+    o.arms = { l: { ...armIK(o, -1, gx, gy, 60), hand: 'glass', w: 1 - run * 0.6 } };
+    // his left hand (the screen's right): out to the bag, a fist round its handle, in to his chest
     if (d > -0.05) {
-      const bx = (BAGG.x - F0.x) / F0.s, by = (BAGG.y - F0.y) / F0.s - 40;
-      const tx = lerp(lerp(300, bx, reach), 150, yank), ty = lerp(lerp(600, by, reach), 250, yank);
+      const bx = (BAGPT.x - F0.x) / F0.s, by = (BAGPT.y - F0.y) / F0.s - 40;
+      const tx = lerp(lerp(260, bx, reach), 150, yank), ty = lerp(lerp(560, by, reach), 250, yank);
       o.arms.r = { ...armIK(o, 1, tx, ty, 46), hand: reach > 0.5 ? 'fist' : 'open', w: 1 - run * 0.5 };
     }
     return { x, y, s, o, reach, yank, run, d };
   }
   function shotHook(g, t) {
-    const d = t - T.snatch, tw = t, push = sstep(0, T.l2e, Math.min(t, T.l2e)), whip = sstep(T.snatch + 0.42, T.chase0, t);
-    const pull = sstep(T.l2e - 0.45, T.eyes + 0.2, t);                          // from his face back to the stall: him, her, her bag
+    const d = t - T.snatch, tw = t, push = sstep(0, T.snatch, Math.min(t, T.snatch)), whip = sstep(T.snatch + 0.42, T.chase0, t);
     const sh = shakeAt(t, [[T.snatch + 0.1, 10], [T.barge, 26]]);
-    const pan = -1100 * Math.pow(whip, 1.6);
-    // the lane behind him, soft (the camera stands where the chai sign is behind it, so no cut-off sign)
+    const pan = -1100 * Math.pow(whip, 1.6) * 1;
+    // the lane behind him, soft
     const bg = buf(0), gb = bg.getContext('2d');
     gb.setTransform(1, 0, 0, 1, 0, 0); gb.globalAlpha = 1; gb.filter = 'none'; gb.globalCompositeOperation = 'source-over'; gb.clearRect(0, 0, W, H);
-    gb.save(); gb.translate(sh[0] * 0.4 + pan * 0.55 + 60 * push - 120 * pull, sh[1] * 0.4 + 150);
+    gb.save(); gb.translate(sh[0] * 0.4 + pan * 0.55 + 80 * push, sh[1] * 0.4 + 150);
     CAMX = 900; world(gb, 1400, tw); light(gb, tw); CAMX = 0; gb.restore();
     g.save(); g.filter = 'blur(6px)'; g.drawImage(bg, 0, 0); g.restore();
     g.fillStyle = 'rgba(255,190,120,0.10)'; g.fillRect(0, 0, W, H);
-    const z = (1 + 0.07 * push) * lerp(1, 0.5, pull), panX = -200 * pull;
-    g.save(); g.translate(sh[0] + pan + panX, sh[1]); g.translate(F0.x, 900); g.scale(z, z); g.translate(-F0.x, -900);
+    const z = 1 + 0.07 * push;
+    g.save(); g.translate(sh[0] + pan, sh[1]); g.translate(F0.x, 900); g.scale(z, z); g.translate(-F0.x, -900);
     // the stall's tarp over you, and its bulbs
-    g.fillStyle = lg(g, 0, 180, 0, 330, [0, '#2b6fb3'], [1, '#1f4f82']); g.beginPath(); g.moveTo(-1400, 100); g.lineTo(2600, 100); g.lineTo(2600, 220);
-    for (let i = 0; i <= 24; i++) { const x = 2600 - i * 170; g.quadraticCurveTo(x - 85, 320, x - 170, 240); } g.lineTo(-1400, 100); g.closePath(); g.fill();
-    for (let i = 0; i < 18; i++) { const x = -1130 + i * 150, y = 290 + 26 * Math.sin(i * 1.1 + 0.4 * Math.sin(tw * 1.3 + i)); g.strokeStyle = 'rgba(30,25,20,0.6)'; g.lineWidth = 3; g.beginPath(); g.moveTo(x, 230); g.lineTo(x, y - 14); g.stroke(); bulb(g, x, y, 0.55, 0.85 + 0.15 * Math.sin(tw * 2 + i)); }
-    // the woman beside him: she sits down, puts her red bag on the counter, looks at her phone; at the snatch she grabs after it
-    const set = sstep(T.l2e - 0.35, T.l2e + 0.05, t), shock = sstep(T.snatch + 0.05, T.snatch + 0.2, t), after = sstep(T.wv - 0.1, T.wv + 0.15, t);
-    const wo = { yaw: -0.35, headYaw: -0.1 - 0.2 * shock, look: shock > 0.5 ? [-16, 2] : [lerp(-6, -2, set), 10 * (1 - shock)], op: 0.45 * shock * (1 - 0.5 * after), browUp: 10 * shock, worry: 6 * shock, legs: false, rim: 1, close: blinkAt(t, 5, 3.1) * (1 - shock) };
-    wo.arms = { l: { ...armIK(wo, -1, lerp(lerp(-120, (BAGG.x - WOM.x) / WOM.s, set), -620, after), lerp(lerp(560, (BAGG.y - WOM.y) / WOM.s - 60, set), 160, after), 46), hand: after > 0.5 ? 'open' : set > 0.2 && set < 0.99 ? 'grip' : 'relax', w: 1 },
-      r: { a1: 0.3, a2: 1.6, hand: 'relax', w: 1 } };
-    figure(g, WOMAN, WOM.x, WOM.y, WOM.s, wo);
+    g.fillStyle = lg(g, 0, 180, 0, 330, [0, '#2b6fb3'], [1, '#1f4f82']); g.beginPath(); g.moveTo(-300, 100); g.lineTo(1400, 100); g.lineTo(1400, 220);
+    for (let i = 0; i <= 10; i++) { const x = 1400 - i * 170; g.quadraticCurveTo(x - 85, 320, x - 170, 240); } g.lineTo(-300, 100); g.closePath(); g.fill();
+    for (let i = 0; i < 8; i++) { const x = 40 + i * 150, y = 290 + 26 * Math.sin(i * 1.1 + 0.4 * Math.sin(tw * 1.3 + i)); g.strokeStyle = 'rgba(30,25,20,0.6)'; g.lineWidth = 3; g.beginPath(); g.moveTo(x, 230); g.lineTo(x, y - 14); g.stroke(); bulb(g, x, y, 0.55, 0.85 + 0.15 * Math.sin(tw * 2 + i)); }
+    // the woman at the frame's edge: her shoulder, her dupatta, her hand setting the bag down; after the snatch, her arm out after him
+    const set = sstep(T.bag, T.bag + 0.4, t), after = sstep(T.wv - 0.1, T.wv + 0.15, t);
+    g.save(); g.translate(40 * after, 0);
+    g.fillStyle = lg(g, 900, 980, 1200, 1700, [0, '#4f7fe0'], [1, '#2f58b0']);
+    g.beginPath(); g.moveTo(1180, 900); g.bezierCurveTo(1010, 930, 960, 1040, 975, 1170); g.lineTo(950, 1900); g.lineTo(1180, 1900); g.closePath(); g.fill();
+    g.fillStyle = '#ffd84a'; g.beginPath(); g.moveTo(1180, 960); g.quadraticCurveTo(1010, 990, 985, 1110); g.lineTo(1000, 1220); g.quadraticCurveTo(1060, 1080, 1180, 1060); g.closePath(); g.fill();
+    // her hand: down with the bag, then away; at "My bag!" it reaches after him
+    const hx = lerp(lerp(1010, 960, set), 1090, sstep(T.bag + 0.5, T.bag + 0.9, t)) + 60 * after, hy = lerp(lerp(1150, 1330, set), 1250, sstep(T.bag + 0.5, T.bag + 0.9, t)) - 80 * after;
+    g.save(); g.translate(hx, hy); g.rotate(lerp(0.4, 1.9, after)); hand(g, after > 0.5 ? 'open' : 'relax', WOMAN.L, 1, 0); g.restore();
+    g.restore();
     // him
     const th = hookPose(t);
     figure(g, THIEF0, th.x, th.y, th.s, th.o);
-    // the counter between you and them, and her bag on it, then in his fist
-    g.fillStyle = lg(g, 0, 1830, 0, 3200, [0, '#9a6a3c'], [1, '#6a4423']); g.fillRect(-1400, 1830, 4000, 1400);
-    g.fillStyle = 'rgba(255,230,190,0.3)'; g.fillRect(-1400, 1830, 4000, 18); g.fillStyle = 'rgba(40,20,10,0.25)'; g.fillRect(-1400, 1848, 4000, 34);
-    if (th.reach < 0.5) { if (set > 0) redBag(g, lerp(BAGG.x + 40, BAGG.x, set), lerp(BAGG.y - 160, BAGG.y, set), 0.62, 0.08); }
+    // the counter between you and him; the bag on it, then in his fist
+    g.fillStyle = lg(g, 0, 1490, 0, 1920, [0, '#9a6a3c'], [1, '#6a4423']); g.fillRect(-300, 1490, 1700, 700);
+    g.fillStyle = 'rgba(255,230,190,0.3)'; g.fillRect(-300, 1490, 1700, 16); g.fillStyle = 'rgba(40,20,10,0.25)'; g.fillRect(-300, 1506, 1700, 30);
+    if (th.reach < 0.5) { const by = lerp(BAGPT.y - 140, BAGPT.y, set); if (set > 0) redBag(g, BAGPT.x, by, 0.62, 0.08); }
     else {
       const w = wristOf(th.o, 1), dir = [-Math.sin(w.ang), Math.cos(w.ang)];
       const fx = th.x + (w.x + dir[0] * 50) * th.s, fy = th.y + (w.y + dir[1] * 50) * th.s, k = sstep(0.5, 1, th.reach);
-      redBag(g, lerp(BAGG.x, fx + 6, k), lerp(BAGG.y, fy + 26 * th.s, k), 0.62 * th.s / F0.s, lerp(0.08, -0.15 + 0.35 * Math.sin(th.d * 11) * th.yank, k));
+      redBag(g, lerp(BAGPT.x, fx + 6, k), lerp(BAGPT.y, fy + 26 * th.s, k), 0.62 * th.s / F0.s, lerp(0.08, -0.15 + 0.35 * Math.sin(th.d * 11) * th.yank, k));
       g.save(); g.translate(fx - dir[0] * 50 * th.s, fy - dir[1] * 50 * th.s); g.scale(th.s, th.s); g.rotate(w.ang); hand(g, 'fist', THIEF, 1, 0); g.restore();
     }
     g.restore();
     // your own hand and glass at the bottom left; he barges past and it turns over in the air, slow
     const kn = clamp((t - T.barge) / 0.5);
-    if (t < T.barge) myGlassHand(g, 120 + 6 * Math.sin(tw * 1.4), 1600 + 4 * Math.sin(tw * 1.9), 0.62, -0.08, 0.85);
+    if (t < T.barge) myGlassHand(g, 150 + 6 * Math.sin(tw * 1.4), 1640 + 4 * Math.sin(tw * 1.9), 0.62, -0.08, 0.85);
     else {
       myGlassHand(g, 150 - 260 * Math.pow(kn, 0.6), 1640 + 380 * kn, 0.62, -0.08 - 0.5 * kn, -1);
-      const u = clamp((t - T.barge) / 0.75), gx = lerp(260, 620, u), gy = lerp(1500, 1700, u) - 300 * Math.sin(u * Math.PI) * 0.6;
+      const u = clamp((t - T.barge) / 0.75), gx = lerp(260, 620, u), gy = lerp(1560, 1760, u) - 300 * Math.sin(u * Math.PI) * 0.6;
       g.save(); g.translate(gx, gy); g.rotate(3.2 * u * u + 0.3 * u); glass(g, 0, 0, 0.6, lerp(0.85, 0.15, u)); g.restore();
-      g.fillStyle = 'rgba(200,120,50,0.85)'; for (let i = 0; i < 12; i++) { const a = -2.2 + i * 0.22, rr = 40 + 330 * u * (0.6 + 0.4 * ((i * 7) % 5) / 5); ell(g, gx + Math.cos(a) * rr, Math.min(1530, gy + Math.sin(a) * rr * 0.7 + 260 * u * u), 10 - 4 * u, 7 - 2 * u); g.fill(); }
+      g.fillStyle = 'rgba(200,120,50,0.85)'; for (let i = 0; i < 12; i++) { const a = -2.2 + i * 0.22, rr = 40 + 330 * u * (0.6 + 0.4 * ((i * 7) % 5) / 5); ell(g, gx + Math.cos(a) * rr, gy + Math.sin(a) * rr * 0.7 + 260 * u * u, 10 - 4 * u, 7 - 2 * u); g.fill(); }
     }
+    // dust and petals in the low sun, kept off his face
     for (const m of MOTES) {
       const x = m.x + (m.z - 1) * 60 * push + m.v * 0.03 * t, y = m.y + 12 * Math.sin(m.rot + tw);
       if (Math.hypot(x - F0.x, (y - 900) * 0.8) < 420) continue;
@@ -1107,6 +1111,7 @@
     vignette(g, 0.65);
     const out = sstep(T.l2e + 0.1, T.eyes + 0.25, t);
     if (out < 1) { g.save(); g.globalAlpha = 1 - out; txt(g, 'LEARN HIS FACE', 513, 405, 136, CREAM, { align: 'center', fit: 860, stroke: INK, sw: 0.13 }); g.restore(); }
+    // the whip: a streak as the camera swings after him
     if (whip > 0.02) { g.save(); g.globalAlpha = 0.5 * winK(whip, 0, 0.3, 0.7, 1); g.fillStyle = 'rgba(255,240,220,1)'; for (let i = 0; i < 9; i++) { const y = 200 + i * 190; g.fillRect(-100, y, W + 200, 6 + 30 * whip); } g.restore(); }
     return 0;
   }
@@ -1197,8 +1202,8 @@
   function shotMap(g, t) {
     const u = sstep(T.map0 - 0.4, T.lane2 + 0.1, t), me = routeAt(u * 0.86 + 0.02), him = routeAt(u * 0.86 + 0.1);
     const zoomOut = sstep(T.map0, T.map0 + 0.42, t), dive = Math.pow(sstep(T.dive, T.lane2, t), 2.2);
-    const z = lerp(2.3, 1.2, zoomOut) * lerp(1, 9, dive), rot = 0.25 + 0.12 * Math.sin(t * 0.9) + 0.9 * dive;
-    const fk = lerp(1, 0.55, zoomOut), fx = lerp(me[0], him[0], fk), fy = lerp(me[1], him[1], fk);
+    const z = lerp(3.4, 1.05, zoomOut) * lerp(1, 9, dive), rot = 0.25 + 0.12 * Math.sin(t * 0.9) + 0.9 * dive;
+    const fx = lerp(me[0], him[0], 0.5), fy = lerp(me[1], him[1], 0.5);
     g.fillStyle = '#d9c7a4'; g.fillRect(0, 0, W, H);
     g.save(); g.translate(540, 980); g.rotate(rot); g.scale(z, z); g.translate(-fx, -fy);
     // the lanes (the ground between the roofs), warm and dusty
@@ -1213,8 +1218,8 @@
       if (rf.line) { const y = lerp(rf.y0, rf.y1, 0.5); g.strokeStyle = 'rgba(40,30,30,0.5)'; g.lineWidth = 2; g.beginPath(); g.moveTo(rf.x0 + 20, y); g.lineTo(rf.x1 - 20, y); g.stroke(); const r = mulberry32(rf.cloth); for (let x = rf.x0 + 30; x < rf.x1 - 50; x += 40 + r() * 30) { g.fillStyle = ['#d0307a', '#3b5fd0', '#f4dc5a', '#8e44c8', '#ffffff', '#e8413a'][(r() * 6) | 0]; g.fillRect(x, y, 26 + r() * 20, 10 + 6 * Math.sin(t * 5 + x)); } }
     }
     // the two of you, running
-    topPerson(g, me[0], me[1], me[2], 3.4, 'you', t);
-    topPerson(g, him[0], him[1], him[2], 3.4, 'him', t + 0.3);
+    topPerson(g, me[0], me[1], me[2], 2.6, 'you', t);
+    topPerson(g, him[0], him[1], him[2], 2.6, 'him', t + 0.3);
     g.restore();
     // the lift and the dive: a little warm haze, and a white rush into the lane
     g.fillStyle = `rgba(255,230,190,${0.25 * (1 - zoomOut)})`; g.fillRect(0, 0, W, H);
@@ -1313,8 +1318,8 @@
   }
 
   // ================================================================ world D · the steps: a broad flight up to a pale hall, the crowd on it, the five in front
-  const STEP = { d: 340, h: 270, n: 6, z0: 700 }, BACKZ = 700 + 6 * 340, ROWX = [-1120, -560, 0, 560, 1120];
-  const THIEF_STEP = { X: 280, Y: 540, Z: 700 + 340 + 170 };
+  const STEP = { d: 340, h: 270, n: 6, z0: 700 }, BACKZ = 700 + 6 * 340, ROWX = [-1240, -620, 0, 620, 1240];
+  const THIEF_STEP = { X: 310, Y: 270, Z: 700 + 170 };
   const STEPS_CROWD = (() => {
     const r = mulberry32(3911), out = [];
     const spots = [[-1850, 0, 'old', 0], [-930, 0, 'man', 1], [1480, 0, 'fan', 0], [2350, 0, 'woman', 0],
@@ -1411,12 +1416,12 @@
 
   // ================================================================ shots 6–8 · the line forms; find him; "Did you even look behind them?"; the focus pull
   const LINE_CAM = [
-    [13.8, 0, 1640, -3900, 0, 0.02, 0], [T.l6 - 0.1, 0, 1640, -3600, 0, 0.02, 0], [T.l6 + 0.3, -1350, 1650, -1800, 0, 0.02, 0], [T.l6 + 1.5, -150, 1660, -1800, 0, 0.0, 0], [T.l6 + 2.9, 650, 1660, -1800, 0, 0.0, 0],
-    [T.find1 - 0.2, 1300, 1650, -1800, 0, 0.02, 0], [T.l7 + 0.7, 0, 1650, -3500, 0, 0.02, 0], [T.l8 + 0.05, 0, 1650, -3550, 0, 0.02, 0],
-    [T.l8 + 1.3, 270, 2120, -420, 0.02, -0.03, 0], [T.rew0, 285, 2130, -340, 0.02, -0.03, 0],
+    [13.8, 0, 1640, -3950, 0, 0.02, 0], [T.l6 - 0.1, 0, 1640, -3800, 0, 0.02, 0], [T.l6 + 0.3, -1500, 1650, -1800, 0, 0.02, 0],
+    [T.find1 - 0.2, 1450, 1650, -1800, 0, 0.02, 0], [T.l7 + 0.7, 0, 1650, -3800, 0, 0.02, 0], [T.l8 + 0.05, 0, 1650, -3850, 0, 0.02, 0],
+    [T.l8 + 1.3, 300, 1860, -760, 0.02, -0.03, 0], [T.rew0, 315, 1870, -680, 0.02, -0.03, 0],
   ];
   function constable(t, o = {}) {
-    return { X: -1950, Z: -250, draw(g, c) {
+    return { X: -2350, Z: -250, draw(g, c) {
       const wh = winK(t, T.whistle - 0.05, T.whistle + 0.05, T.whistle + 0.45, T.whistle + 0.6), pt = winK(t, 14.2, 14.4, 15.4, 15.7);
       const po = { look: [10, 2], legs: true, rim: 1, frown: 0.3, op: 0.02, breath: 4 * Math.sin(t * 1.3), close: blinkAt(t, 9, 3.5),
         arms: { r: { a1: lerp(0.1, 1.45, pt), a2: lerp(0.2, 0.15, pt), hand: pt > 0.5 ? 'point' : 'relax', w: 1 }, l: { a1: lerp(0.15, 0.4, wh), a2: lerp(0.3, 2.3, wh), hand: 'fist', w: 1 } } };
@@ -1466,7 +1471,7 @@
   }
 
   // ================================================================ shot 11 · "With a stranger, your brain goes by the hair and the cap." A sweep along the five.
-  const SWEEP_CAM = [[T.l10, -1700, 1650, -1450, 0, 0.02, 0], [T.l10 + 1.15, 1700, 1650, -1450, 0, 0.02, 0], [T.l10 + 1.7, 500, 1650, -2800, 0, 0.02, 0], [T.jeep0, 0, 1650, -3500, 0, 0.02, 0]];
+  const SWEEP_CAM = [[T.l10, -1900, 1650, -1450, 0, 0.02, 0], [T.l10 + 1.15, 1900, 1650, -1450, 0, 0.02, 0], [T.l10 + 1.7, 500, 1650, -3000, 0, 0.02, 0], [T.jeep0, 0, 1650, -3800, 0, 0.02, 0]];
   function shotSweep(g, t) {
     const c = camK(t, SWEEP_CAM, { cy: 860 });
     const flash = ROWX.map(() => 0);
@@ -1541,9 +1546,8 @@
   }
 
   // ================================================================ shot 13 · the end. His cap and the bag off the pile; the cap on; the tip; into the sea of caps
-  const END_CAM = [[41.0, 150, 1500, -900, -0.2, 0.02, 0], [43.0, -420, 1520, -420, -0.12, 0.02, 0], [44.5, -470, 1530, -320, -0.12, 0.02, 0], [44.95, -560, 2300, -150, -0.25, 0.32, 0], [47.25, -520, 4700, 1900, -0.05, 1.22, 0]];
+  const END_CAM = [[T.end0, 150, 1500, -900, -0.2, 0.02, 0], [T.capOn, -420, 1520, -420, -0.12, 0.02, 0], [44.5, -470, 1530, -320, -0.12, 0.02, 0], [45.3, -600, 2400, -200, -0.3, 0.3, 0], [T.end, -500, 5000, 1700, -0.05, 1.24, 0]];
   function endThief(t) {
-    t = t - (T.end0 - 41.0);                          // the choreography below is written as if the shot began at 41.0
     const walk = sstep(T.end0, 41.85, t), at = { X: -560, Z: 1180 };
     let X = lerp(250, at.X, walk), Z = lerp(1500, at.Z, walk);
     const away = sstep(44.55, 45.8, t); X = lerp(X, -300, away); Z = lerp(Z, 2700, away);
@@ -1553,7 +1557,7 @@
     const o = { walk: (walk > 0 && walk < 1) || (away > 0 && away < 1) ? 1 : 0, phase: t * 7, legs: true, rim: 1, hands: { r: 'glass' }, glassK: 0.55, look: [0, 2], smile: 0.1, close: blinkAt(t, 4, 3.4) };
     const drink = winK(t, 41.85, 42.0, 42.2, 42.32), hasGlass = t < 42.5, tip = winK(t, 43.95, 44.1, 44.3, 44.45), seat = sstep(43.6, 43.75, t);
     o.tilt = -0.18 * drink;
-    const top = { w: [PILE.X + 40, CRATE.h + 80, PILE.Z] }, topR = { w: [PILE.X - 230, CRATE.h + 60, PILE.Z - 120] };
+    const top = { w: [PILE.X + 40, CRATE.h + 80, PILE.Z] }, topR = { w: [PILE.X + 260, CRATE.h + 60, PILE.Z - 120] };
     // his right hand (the glass): a last swallow, the glass down on the crate; then the bag off the crate and under his arm
     o.armKeys = { r: [[41.85, { h: [240, 430] }], [42.0, { h: [40, 120] }], [42.2, { h: [40, 120] }], [42.32, { h: [240, 430] }], [42.48, topR], [42.62, topR], [42.85, top], [42.95, top], [43.2, { h: [330, 560] }]],
       // his left: to the crate for the cap, up to his head with it, the cap on; then two fingers to the brim, for you
@@ -1566,11 +1570,11 @@
     return { X, Z, a, o, hasGlass };
   }
   function shotEnd(g, t) {
-    const tt = t - (T.end0 - 41.0), c = camK(tt, END_CAM), e = 30;
+    const c = camK(t, END_CAM), e = 30;
     const th = endThief(t);
-    const glassObj = { X: PILE.X - 250, Z: PILE.Z - 140, draw(gg, cc) { if (th.hasGlass) return; const q = PJ(cc, PILE.X - 250, CRATE.h, PILE.Z - 120); if (q) glass(gg, q[0], q[1] - 70 * q[2], q[2] * 0.55, 0); } };
+    const glassObj = { X: PILE.X + 260, Z: PILE.Z - 140, draw(gg, cc) { if (th.hasGlass) return; const q = PJ(cc, PILE.X + 260, CRATE.h, PILE.Z - 120); if (q) glass(gg, q[0], q[1] - 70 * q[2], q[2] * 0.55, 0); } };
     const him = { X: th.X, Z: th.Z, draw(gg, cc) {
-      const tk = sstep(0.95, 1.08, cc.pitch);
+      const tk = sstep(0.75, 1.1, cc.pitch);
       if (tk > 0.001) { gg.save(); gg.globalAlpha *= tk; topDraw(gg, cc, th.X, th.Z, th.a, TEAL.a, th.o.cap, 1, THIEF.skin); gg.restore(); }
       if (tk > 0.999) return;
       gg.save(); gg.globalAlpha *= 1 - tk; this.body(gg, cc); gg.restore();
@@ -1584,8 +1588,8 @@
       if (th.o.capHeld && !v0.front) { const w = wristOf(wo, -1), dir = [-Math.sin(w.ang), Math.cos(w.ang)]; capSprite(gg, v.x + (w.x + dir[0] * 60) * s, v.y - 1594 * s + (w.y + dir[1] * 60 - 30) * s, s, 0.2, 0.9); }
       if (th.o.bag) { const w = wristOf(wo, 1), dir = [-Math.sin(w.ang), Math.cos(w.ang)]; redBag(gg, v.x + (w.x + dir[0] * 50) * s, v.y - 1594 * s + (w.y + dir[1] * 50 + 20) * s, s * 0.9, 0.2); }
     } };
-    const top = sstep(0.95, 1.08, c.pitch);
-    gully(g, c, e, { post: true, thief: false, capGone: tt > 42.8, bagGone: tt > 42.85, extra: [glassObj, him], topK: top });
+    const top = sstep(0.75, 1.1, c.pitch);
+    gully(g, c, e, { post: true, thief: false, capGone: t > 42.8, bagGone: t > 42.85, extra: [glassObj, him], topK: top });
     vignette(g, 0.5);
     return 0;
   }

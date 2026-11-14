@@ -1,7 +1,7 @@
 {
   "note": "Single source of truth for picture + sound, in BEATS (120 bpm: beat = 0.5 s). film.js reads marks via film/data.js; sync.mjs turns sfx into cues.json; score.py reads marks for the music; vo.json places the narration. Every reel ends with the Root Cause end card: 'end' → 'done' = 3.0 s (6 beats), engine/endcard.",
   "title": "Find Him",
-  "duration": 49.5,
+  "duration": 51.0,
   "fps": 30,
   "bpm": 120,
   "formats": [
@@ -24,8 +24,8 @@
   },
   "marks": {
     "hook": 0,
-    "end": 93.0,
-    "done": 99.0
+    "end": 96.0,
+    "done": 102.0
   },
   "sfx": [
     {
@@ -36,7 +36,7 @@
       "pan": -0.3
     },
     {
-      "at": 9.46,
+      "at": 8.06,
       "type": "thunk",
       "gain": 0.35,
       "what": "her bag set down on the counter",
@@ -345,21 +345,21 @@
       "len": 2.0
     },
     {
-      "at": 82.92,
+      "at": 84.9,
       "type": "thunk",
       "gain": 0.3,
       "what": "his empty glass set down on the crate",
       "pitch": 1.2
     },
     {
-      "at": 85.42,
+      "at": 87.4,
       "type": "pop",
       "gain": 0.14,
       "what": "the cap seated",
       "pitch": 0.7
     },
     {
-      "at": 87.92,
+      "at": 90.0,
       "type": "wind",
       "gain": 0.3,
       "what": "the camera rising over the sea of caps",
