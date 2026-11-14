@@ -668,7 +668,7 @@
     farEnd(g, cz); floor(g, cz);
     for (const sh of SHOPS) shop(g, sh, cz, tw);
     for (const [s, side, z, bgc, fg] of SIGNS) {
-      if (SIDE_ON && side === 1 && z > SIDE.z0 - 300 && z < SIDE.z1 + 300) continue;
+      if (SIDE_ON) continue;
       const a = P3(side * (LW - 40), 3650, z, cz), b = P3(side * (LW - 700), 3100, z, cz); if (!a || !b) continue;
       const hz = clamp((z - cz - 2400) / 11000) * 0.6, x0 = Math.min(a[0], b[0]), w = Math.abs(b[0] - a[0]), h = b[1] - a[1];
       R(g, x0, a[1], w, h, 4 * a[2]); g.fillStyle = mix(bgc, HAZE, hz); g.fill(); g.strokeStyle = 'rgba(0,0,0,0.3)'; g.lineWidth = Math.max(1, 4 * a[2]); g.stroke();
@@ -1160,7 +1160,7 @@
   // chai level. He cuts right into a side gully and is gone round the corner; the camera whips after him (up over the rooftops). Clean: no
   // saris, no face pasted on the back of his head (you got one look; this is his back).
   const SIDE = { z0: 7800, z1: 9500 };               // the side gully on the right, where a grocer's is (the chase's world only)
-  let SIDE_ON = false;
+  let SIDE_ON = false, WIDE = null;
   const camLane = (t) => { const d = t - T.chase0, d0 = 0.5; return d < d0 ? 600 + 4800 * d : 600 + 4800 * d0 + 4800 * (d - d0) - 2800 * (d - d0) ** 2; };   // you tire
   const himZ = (t) => 2500 + 6000 * (t - T.chase0);   // he doesn't
   function runPose(t, o = {}) {                       // him, running away from you: the back, the glass level, the bag out at his side
@@ -1171,8 +1171,11 @@
   function drawRunner(g, P, x, y, s, o, t) {          // the figure, plus the bag in his left fist
     figure(g, P, x, y, s, o);
     const w = wristOf(o, -1), dir = [-Math.sin(w.ang), Math.cos(w.ang)];
-    const fx = x + (w.x + dir[0] * 60) * s, fy = y + (w.y + dir[1] * 60) * s;
-    redBag(g, fx, fy + 110 * s, s * 0.95, 0.25 * Math.sin(t * 15.5));
+    const fx = x + (w.x + dir[0] * 60) * s, fy = y + (w.y + dir[1] * 60) * s, rot = 0.25 * Math.sin(t * 15.5), by = fy + 96 * s;
+    g.save(); g.strokeStyle = '#7a0f18'; g.lineWidth = 12 * s; g.lineCap = 'round'; g.beginPath();
+    for (const k of [-1, 1]) { const ax = fx + (Math.cos(rot) * k * 110 - Math.sin(rot) * -16) * s * 0.95, ay = by + (Math.sin(rot) * k * 110 + Math.cos(rot) * -16) * s * 0.95; g.moveTo(fx, fy); g.lineTo(ax, ay); }
+    g.stroke(); g.restore();
+    redBag(g, fx, by, s * 0.95, rot);
   }
   function sideGully(g, cz, hz) {                     // the opening: its floor running off to the right, the far building's side facing you, in shade
     const X0 = LW, X1 = LW + 6000, z0 = SIDE.z0, z1 = SIDE.z1, P = (X, Y, Z) => P3(X, Y, Math.max(Z, cz + 150), cz);
@@ -1185,12 +1188,13 @@
   }
   function shotChase(g, t) {
     const ph = t * 15.5, turn = sstep(6.25, 6.6, t), whip = sstep(6.64, 6.9, t);
-    const B = buf(5), b = B.getContext('2d'); b.setTransform(1, 0, 0, 1, 0, 0); b.globalAlpha = 1; b.filter = 'none'; b.clearRect(0, 0, W, H);
+    if (!WIDE) WIDE = offscreen(W * 2, H);
+    const B = WIDE, b = B.getContext('2d'); b.setTransform(1, 0, 0, 1, 0, 0); b.globalAlpha = 1; b.filter = 'none'; b.clearRect(0, 0, W * 2, H);
     const cz = camLane(t), tw = t;
     const bob = 26 * Math.abs(Math.sin(ph * 0.5)) - 13, roll = 0.016 * Math.sin(ph * 0.5) + 0.03 * turn;
     EYE = 1250 + bob * 3; CAMX = 60 * Math.sin(t * 2.2) + 160 * turn;
     const pan = 300 * sstep(6.3, 6.64, t);
-    b.fillStyle = lg(b, 0, 0, 0, HZ + 60, [0, '#e9814f'], [0.6, '#f6b877'], [1, '#fde7c2']); b.fillRect(0, 0, W, H);
+    b.fillStyle = lg(b, 0, 0, 0, HZ + 60, [0, '#e9814f'], [0.6, '#f6b877'], [1, '#fde7c2']); b.fillRect(0, 0, W * 2, H);
     b.save(); b.translate(540, 960); b.rotate(roll); b.translate(-540 - pan, -960);
     SIDE_ON = true; world(b, cz, tw); SIDE_ON = false; light(b, tw);
     // where he is: straight down the lane, gaining a little less than you; then the cut right into the side gully
@@ -1207,7 +1211,7 @@
     }
     const p = P3(me.X, 0, me.Z, cz);
     if (p) {
-      const o = runPose(t, { yaw: 0.6 * sstep(6.3, 6.55, t), roll: 0.12 * sstep(6.28, 6.45, t) });
+      const o = runPose(t, { walk: 3.0, lean: 0.16, yaw: 0.6 * sstep(6.3, 6.55, t), roll: 0.12 * sstep(6.28, 6.45, t) });
       b.save();
       if (me.Z > SIDE.z0 + 80) { const xc = P3(LW, 0, SIDE.z0, cz); if (xc) { b.beginPath(); b.rect(-2000, -2000, xc[0] + 2000, H + 4000); b.clip(); } }
       drawRunner(b, THIEF0, p[0], p[1] - 1594 * p[2], p[2], o, t);
@@ -1217,11 +1221,9 @@
     EYE = 1400; CAMX = 0;
     // the whip: the frame swings left as you turn after him, smeared, into the light
     if (whip < 0.001) { g.drawImage(B, 0, 0); return 0; }
-    const sh = W * 1.1 * whip * whip, n = 9, spread = 300 * whip;
-    g.fillStyle = '#f3c99a'; g.fillRect(0, 0, W, H);
+    const sh = W * 0.95 * whip * whip, n = 18, spread = 340 * whip;
     for (let i = 0; i < n; i++) { g.globalAlpha = 1 / (i + 1); g.drawImage(B, -sh - spread * (i / (n - 1)), 0); }
     g.globalAlpha = 1;
-    g.save(); g.globalAlpha = 0.45 * whip; g.fillStyle = 'rgba(255,244,226,1)'; for (let i = 0; i < 11; i++) { const y = 140 + i * 160 + 40 * Math.sin(i * 2.3); g.fillRect(-100, y, W + 200, 4 + 26 * whip); } g.restore();
     return 0.8 * sstep(6.76, 6.9, t);
   }
 
@@ -1382,7 +1384,7 @@
   const SKN = (i) => ({ skin: SKINS[i][0], skinD: SKINS[i][1], skinH: SKINS[i][2] });
   const who = (L, D) => ({ L: { jaw: 1, chinK: 1, ew: 43, eh: 23, brow: 14, browTilt: 4, hair: '#15100c', style: 'short', ...L }, D: { sleeve: 'short', leg: '#2f3442', shoe: '#211a16', ...D } });
   const CAMEO = {
-    dada: who({ ...SKN(3), hair: '#ece8e0', style: 'bald', must: 'mid', mHair: '#f2eee6', brow: 12, browTilt: -2, specs: '#5a3a24', jaw: 0.96, chinK: 0.95 }, { a: '#f7f3ea', b: '#dcd5c5', kameez: true, placket: '#cfc6b2', leg: '#efeae0', shoe: '#7a5536' }),
+    dada: who({ ...SKN(3), hair: '#ece8e0', style: 'part', must: 'thick', mHair: '#f2eee6', brow: 16, browTilt: -2, jaw: 1.02, chinK: 0.98 }, { a: '#bcd3e6', b: '#9bb6cc', kameez: true, placket: '#7f98ae', leg: '#e8e2d4', shoe: '#7a5536' }),
     auntie: who({ ...SKN(1), style: 'knot', gajra: true, bindi: true, ear: '#e8bf4a', jaw: 0.94, chinK: 0.92, ew: 45, eh: 25, brow: 11, browTilt: -2 }, { a: '#2f9d6a', b: '#1f7a50', skirt: true, kameez: true, pallu: '#45b884', border: '#f0c23c', leg: '#2f9d6a', shoe: '#8a3a2a' }),
     filmer: who({ ...SKN(5), hair: '#1a1410', style: 'pony', jaw: 0.9, chinK: 0.9, ew: 46, eh: 26, brow: 10, browTilt: -3, ear: '#d8dde4' }, { a: '#ff8a5c', b: '#e2683c', leg: '#3a4a7a', shoe: '#f0ece6' }),
     filmy: who({ ...SKN(2), hair: '#110c09', style: 'part', must: 'thick', shades: true, jaw: 1.04, chinK: 1.05, brow: 16 }, { a: '#2a2a33', b: '#17171d', collar: '#3a3a44', buttons: 'rgba(255,255,255,0.3)', chain: true, leg: '#e8e2d6', shoe: '#e9e4da' }),
@@ -1397,13 +1399,12 @@
     bat: who({ ...SKN(2), style: 'spiky', jaw: 0.92, chinK: 0.92, ew: 46, eh: 26, brow: 13 }, { a: '#ffffff', b: '#dcdcdc', collar: '#ffffff', leg: '#f4f2ec', shoe: '#e9e4da' }),
     aunty2: who({ ...SKN(3), style: 'knot', bindi: true, ear: '#e8bf4a', jaw: 0.96, chinK: 0.98, ew: 42, eh: 22, brow: 12, browTilt: -2 }, { a: '#8e44c8', b: '#6c32a0', skirt: true, kameez: true, pallu: '#a65ad8', border: '#f0c23c', leg: '#8e44c8', shoe: '#6a4a30' }),
   };
-  const RIDER = who({ ...SKN(5), style: 'spiky', hair: '#1a130e', jaw: 0.88, chinK: 0.84, ew: 52, eh: 30, brow: 10, browTilt: -3 }, { a: '#7fd36a', b: '#5fb04a' });   // on his father's shoulders
   const STEPS_CROWD = (() => {
     const r = mulberry32(3911), out = [];
     const spots = [[-1850, 0, 'dada'], [-930, 0, 'auntie'], [1480, 0, 'fan'], [2350, 0, 'filmer'],
       [-1450, 1, 'filmy'], [-330, 1, 'kidcap'], [930, 1, 'cap'], [1950, 1, 'papa'],
-      [-2250, 2, 'balloon'], [-720, 2, 'nani'], [420, 2, 'school'], [1350, 2, 'uncle'], [2650, 2, 'phones'],
-      [-1650, 3, 'bat'], [-60, 3, 'cap'], [1100, 3, 'didi'], [2250, 3, 'cap'], [-2600, 4, 'cap'], [700, 4, 'cap'], [1800, 4, 'aunty2']];
+      [-2250, 2, 'cap'], [-720, 2, 'nani'], [420, 2, 'cap'], [1350, 2, 'uncle'], [2650, 2, 'phones'],
+      [-1650, 3, 'bat'], [-60, 3, 'cap'], [1100, 3, 'didi'], [2250, 3, 'school'], [-2600, 4, 'balloon'], [700, 4, 'cap'], [1800, 4, 'aunty2']];
     for (const [X, k, w] of spots) {
       const P = CAMEO[w] || makeLook(r, 'man');
       if (w === 'fan') { P.L.style = 'curls'; P.L.must = null; }
@@ -1420,15 +1421,15 @@
       case 'fan': po.arms = { r: { a1: 1.2 + 0.25 * f, a2: 1.5, hand: 'grip', w: 1 } }; break;                          // fanning himself with his cap
       case 'dada': po.arms = { r: { a1: 0.24, a2: 0.18, hand: 'grip', w: 1 } }; break;                                   // his stick
       case 'auntie': po.arms = { l: { a1: 0.14, a2: 0.12, hand: 'grip', w: 1 }, r: { a1: 0.2, a2: 1.25, hand: 'relax', w: 1 } }; break;   // her shopping
-      case 'filmer': po.arms = { r: { ...armIK(po, 1, 175, -20, 100), hand: 'fist', w: 1 } }; po.handFront = 1; po.look = [12, 0]; break;  // filming it all
-      case 'filmy': po.arms = { l: { a1: 0.3, a2: 2.15, hand: 'fist', w: 1 }, r: { a1: 0.3, a2: 2.1, hand: 'fist', w: 1 } }; po.tilt = 0.06; po.smirk = 0.6; po.smile = 0.15; break;
-      case 'kidcap': po.cap = { lift: -80, k: 1.34 }; po.arms = { l: { ...armIK(po, -1, -150, -70, 60), hand: 'point', w: 1 } }; po.handFront = -1; po.smile = 0.3; break;   // a cap too big, over his eyes
+      case 'filmer': po.arms = { r: { ...armIK(po, 1, 150, 170, 60), hand: 'fist', w: 1 } }; po.handFront = 1; po.look = [10, 6]; break;  // filming it all
+      case 'filmy': po.arms = { r: { ...armIK(po, 1, 175, -10, 70), hand: 'point', w: 1 } }; po.handFront = 1; po.tilt = 0.06; po.smirk = 0.6; po.smile = 0.15; break;
+      case 'kidcap': po.cap = { lift: -80, k: 1.34 }; po.smile = 0.35; break;   // a cap too big, over his eyes
       case 'phones': po.close = 1; po.tilt = 0.08 * Math.sin(t * 6.3 + p.ph); po.smile = 0.3; break;                    // eyes shut, nodding to his music
-      case 'papa': po.arms = { l: { ...armIK(po, -1, -190, 500, 50), hand: 'hidden', w: 1 }, r: { ...armIK(po, 1, 190, 500, 50), hand: 'hidden', w: 1 } }; po.smile = 0.2; break;
+      case 'papa': po.arms = { l: { ...armIK(po, -1, -250, 900, 40, 'out'), hand: 'fist', w: 1 }, r: { ...armIK(po, 1, 250, 900, 40, 'out'), hand: 'fist', w: 1 } }; po.smile = 0.25; break;
       case 'uncle': po.arms = { l: { a1: 0.3, a2: 1.7, hand: 'hidden', w: 1 }, r: { a1: 0.3, a2: 1.7, hand: 'hidden', w: 1 } }; po.look = [0, 12]; break;   // reading the paper
       case 'balloon': po.arms = { r: { a1: 0.75, a2: 1.75, hand: 'grip', w: 1 } }; break;
       case 'nani': po.arms = { l: { a1: 0.12, a2: 1.35, hand: 'relax', w: 1 }, r: { a1: 0.12, a2: 1.35, hand: 'relax', w: 1 } }; po.worry = 4; break;
-      case 'school': po.arms = { r: { ...armIK(po, 1, 50, 150, 110), hand: 'fist', w: 1 } }; po.handFront = 1; break;   // her kulfi
+      case 'school': po.arms = { r: { ...armIK(po, 1, 120, 260, 50), hand: 'fist', w: 1 } }; po.handFront = 1; po.smile = 0.3; break;   // her kulfi
       case 'didi': po.arms = { l: { a1: 0.3, a2: 2.1, hand: 'fist', w: 1 }, r: { a1: 0.3, a2: 2.15, hand: 'fist', w: 1 } }; po.frown = 0.2; break;
       case 'bat': po.arms = { r: { a1: 0.3, a2: 2.5, hand: 'fist', w: 1 } }; break;
     }
@@ -1439,11 +1440,6 @@
       const h = handPt(v, po, 1, 40); g.save(); g.translate(h.x, h.y); g.rotate(-2.85);
       g.fillStyle = '#3a3a40'; R(g, -15 * s, -40 * s, 30 * s, 210 * s, 12 * s); g.fill();
       g.fillStyle = '#e8c88a'; R(g, -50 * s, 160 * s, 100 * s, 560 * s, 24 * s); g.fill(); g.fillStyle = 'rgba(140,90,40,0.28)'; R(g, 12 * s, 170 * s, 30 * s, 540 * s, 12 * s); g.fill(); g.restore();
-    }
-    if (p.kind === 'papa') {                         // the boy on his shoulders, behind his head (his legs come after)
-      const hx = v.x, hy = v.y - 1594 * s, w = Math.sin(t * 5 + p.ph);
-      figure(g, RIDER, hx + 10 * s, hy - 590 * s, s * 0.6, { rim: 1, smile: 0.5, op: 0.15 + 0.15 * Math.max(0, w), look: [0, 2], close: blinkAt(t, 11, 3.0),
-        arms: { l: { a1: 2.7, a2: 0.35 + 0.2 * w, hand: 'open', w: 1 }, r: { a1: 2.5 + 0.2 * w, a2: 0.5, hand: 'open', w: 1 } } });
     }
   }
   function cameoPost(g, p, v, po, t) {
@@ -1456,12 +1452,8 @@
         g.fillStyle = '#4f8a2e'; for (let i = 0; i < 4; i++) { ell(g, (40 + i * 22) * s, (120 - i * 26) * s, 24 * s, 12 * s, -0.8 + i * 0.3); g.fill(); }
         g.strokeStyle = '#c9b48c'; g.lineWidth = 12 * s; g.beginPath(); g.moveTo(-70 * s, 160 * s); g.quadraticCurveTo(0, -30 * s, 70 * s, 160 * s); g.stroke();
         g.fillStyle = '#e8dcc0'; R(g, -120 * s, 150 * s, 240 * s, 250 * s, 30 * s); g.fill(); g.fillStyle = 'rgba(120,90,50,0.18)'; g.fillRect(-120 * s, 340 * s, 240 * s, 22 * s); g.restore(); break; }
-      case 'filmer': { const h = handPt(v, po, 1, 110); g.save(); g.translate(h.x, h.y); g.rotate(-0.12);
-        g.fillStyle = '#2b2d36'; R(g, -42 * s, -84 * s, 84 * s, 168 * s, 14 * s); g.fill(); g.fillStyle = '#545866'; ell(g, -18 * s, -58 * s, 11 * s, 11 * s); g.fill(); g.fillStyle = 'rgba(255,255,255,0.14)'; R(g, -34 * s, -76 * s, 12 * s, 150 * s, 6 * s); g.fill(); g.restore(); break; }
-      case 'papa': {                                 // the boy's legs over his chest; his hands round the boy's shins
-        const hx = v.x, hy = v.y - 1594 * s;
-        for (const k of [-1, 1]) { const x = hx + k * 180 * s, y0 = hy + 300 * s; g.fillStyle = '#2d4f8e'; R(g, x - 66 * s, y0 - 56 * s, 132 * s, 100 * s, 34 * s); g.fill(); g.fillStyle = RIDER.L.skin; R(g, x - 32 * s, y0 + 20 * s, 64 * s, 240 * s, 30 * s); g.fill(); g.fillStyle = '#e8e6e0'; R(g, x - 46 * s, y0 + 238 * s, 92 * s, 56 * s, 24 * s); g.fill(); g.fillStyle = p.P.L.skin; ell(g, x + k * 6 * s, y0 + 170 * s, 54 * s, 48 * s); g.fill(); }
-        break; }
+      case 'filmer': { const h = handPt(v, po, 1, 60); g.save(); g.translate(h.x - 40 * s, h.y - 30 * s); g.rotate(-0.08);   // held sideways, filming
+        g.fillStyle = '#2b2d36'; R(g, -96 * s, -48 * s, 192 * s, 96 * s, 14 * s); g.fill(); g.fillStyle = '#545866'; ell(g, -66 * s, -22 * s, 12 * s, 12 * s); g.fill(); ell(g, -66 * s, 10 * s, 12 * s, 12 * s); g.fill(); g.fillStyle = 'rgba(255,255,255,0.14)'; R(g, -86 * s, -40 * s, 176 * s, 10 * s, 5 * s); g.fill(); g.restore(); break; }
       case 'uncle': {                                // the newspaper, held open
         const hx = v.x, hy = v.y - 1594 * s; g.save(); g.translate(hx + 10 * s, hy + 560 * s); g.rotate(0.03);
         g.fillStyle = '#f1ece0'; R(g, -300 * s, -190 * s, 600 * s, 400 * s, 8 * s); g.fill(); g.strokeStyle = 'rgba(0,0,0,0.12)'; g.lineWidth = 5 * s; g.beginPath(); g.moveTo(0, -190 * s); g.lineTo(0, 210 * s); g.stroke();
@@ -1473,7 +1465,7 @@
         g.strokeStyle = 'rgba(255,255,255,0.6)'; g.lineWidth = 3 * s; for (const [bx, by] of pts) { g.beginPath(); g.moveTo(tx, ty); g.lineTo(tx + bx * s, ty + (by + 90) * s); g.stroke(); }
         pts.forEach(([bx, by], i) => { const x = tx + (bx + 8 * Math.sin(t * 1.3 + i * 1.7)) * s, y = ty + (by + 6 * Math.sin(t * 1.1 + i)) * s; g.fillStyle = cols[i]; ell(g, x, y, 64 * s, 78 * s); g.fill(); g.beginPath(); g.moveTo(x - 10 * s, y + 86 * s); g.lineTo(x + 10 * s, y + 86 * s); g.lineTo(x, y + 72 * s); g.closePath(); g.fill(); g.fillStyle = 'rgba(255,255,255,0.35)'; ell(g, x - 22 * s, y - 28 * s, 14 * s, 22 * s, -0.4); g.fill(); });
         break; }
-      case 'school': { const h = handPt(v, po, 1, 70); g.save(); g.translate(h.x, h.y); g.rotate(h.ang); g.fillStyle = '#d8b07a'; R(g, -7 * s, 0, 14 * s, 80 * s, 6 * s); g.fill(); g.fillStyle = '#ff8a3c'; R(g, -30 * s, 60 * s, 60 * s, 130 * s, 26 * s); g.fill(); g.fillStyle = 'rgba(255,255,255,0.35)'; R(g, -20 * s, 74 * s, 12 * s, 90 * s, 6 * s); g.fill(); g.restore(); break; }
+      case 'school': { const h = handPt(v, po, 1, 40); g.save(); g.translate(h.x, h.y); g.fillStyle = '#d9a05a'; g.beginPath(); g.moveTo(-40 * s, -30 * s); g.lineTo(40 * s, -30 * s); g.lineTo(0, 70 * s); g.closePath(); g.fill(); g.strokeStyle = 'rgba(120,70,30,0.4)'; g.lineWidth = 3 * s; g.beginPath(); g.moveTo(-26 * s, -20 * s); g.lineTo(12 * s, 40 * s); g.moveTo(26 * s, -20 * s); g.lineTo(-12 * s, 40 * s); g.stroke(); g.fillStyle = '#ff9ec4'; ell(g, 0, -56 * s, 48 * s, 42 * s); g.fill(); g.fillStyle = 'rgba(255,255,255,0.4)'; ell(g, -16 * s, -70 * s, 14 * s, 10 * s); g.fill(); g.restore(); break; }
     }
   }
   // a stray asleep in front of the line, one ear twitching (nobody's dog)
