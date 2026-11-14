@@ -1,7 +1,7 @@
 {
   "note": "Single source of truth for picture + sound, in BEATS (120 bpm: beat = 0.5 s). film.js reads marks via film/data.js; sync.mjs turns sfx into cues.json; score.py reads marks for the music; vo.json places the narration. Every reel ends with the Root Cause end card: 'end' → 'done' = 3.0 s (6 beats), engine/endcard.",
   "title": "Find Him",
-  "duration": 51.0,
+  "duration": 49.5,
   "fps": 30,
   "bpm": 120,
   "formats": [
@@ -24,8 +24,8 @@
   },
   "marks": {
     "hook": 0,
-    "end": 96.0,
-    "done": 102.0
+    "end": 93.0,
+    "done": 99.0
   },
   "sfx": [
     {
@@ -36,7 +36,7 @@
       "pan": -0.3
     },
     {
-      "at": 8.06,
+      "at": 9.46,
       "type": "thunk",
       "gain": 0.35,
       "what": "her bag set down on the counter",
@@ -328,38 +328,38 @@
       "type": "idle",
       "gain": 0.4,
       "what": "the jeep idling",
-      "len": 3.590000000000002
+      "len": 2.4999999999999987
     },
     {
-      "at": 76.14,
+      "at": 75.76,
       "type": "thunk",
       "gain": 0.3,
       "what": "the cap lands in the dust",
       "pitch": 0.7
     },
     {
-      "at": 76.8,
+      "at": 74.62,
       "type": "tyres",
       "gain": 0.45,
       "what": "the jeep pulling away",
       "len": 2.0
     },
     {
-      "at": 84.9,
+      "at": 82.92,
       "type": "thunk",
       "gain": 0.3,
       "what": "his empty glass set down on the crate",
       "pitch": 1.2
     },
     {
-      "at": 87.4,
+      "at": 85.42,
       "type": "pop",
       "gain": 0.14,
       "what": "the cap seated",
       "pitch": 0.7
     },
     {
-      "at": 90.0,
+      "at": 87.92,
       "type": "wind",
       "gain": 0.3,
       "what": "the camera rising over the sea of caps",
