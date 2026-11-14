@@ -366,7 +366,7 @@
     const blink = t > t0 + 5.0 && t < t0 + 5.25 ? sg(t, t0 + 5.0, t0 + 5.08) * (1 - sg(t, t0 + 5.12, t0 + 5.25)) : 0;
     propsBehind(g, 1, hx, hy, R);
     F.bust(g, hx, hy, R, look, { flat: 1 - k, light: { x: -0.6 * k, back: 0 }, close: blink, smile: 0.12 * sg(t, t0 + 5.1, t0 + 5.6), look: [0, 0] });
-    if (back > 0) { g.save(); g.globalAlpha = back; propsFront(g, 1, hx, hy, R); booth(() => boothFront(g, t)); g.restore(); }
+    if (back > 0) { g.save(); g.globalAlpha = back; propsFront(g, 1, hx, hy, R); g.globalAlpha = sg(back, 0.6, 1); booth(() => boothFront(g, t)); g.restore(); }
     g.restore();
     g.save(); g.globalAlpha = 1 - sg(k, 0.5, 0.85); g.strokeStyle = 'rgba(30,34,40,0.5)'; g.lineWidth = 4; g.strokeRect(px, py, pw, ph); g.restore();
     g.restore();
@@ -505,16 +505,33 @@
 
   // ------------------------------------------------------------------ the last picture: him at your glass, his brother's photo beside him
   function finalScene(g, t) {
-    const t0 = T('final'), z = lerp(1, 1.42, sg(t, t0, T('end') - 0.4)), m = M[3];
-    g.save(); g.translate(560, 905); g.scale(z, z); g.translate(-560, -905);
+    const t0 = T('final'), m = M[3], lift = sg(t, t0 + 1.3, t0 + 2.0);
+    // first, exactly as you saw it: him at your glass, his brother's photo in your hand
+    g.save();
     hall(g, t, { board: 2 });
-    F.bust(g, WIN.x + 10, WIN.y, WIN.R + 14, m.now, { light: { x: -0.6, back: 0 }, psi: 0.02, look: [0, 0], smile: 0.08 });
+    man(g, 3, WIN.x, WIN.y, WIN.R, { light: { x: -0.6, back: 0 }, psi: 0.02, look: [0, 0], smile: 0.08 });
     boothFront(g, t);
-    heldPassport(g, m.photo, 585, 600, -0.02);
+    heldPassport(g, m.photo, 575, 612, -0.03);
     g.restore();
-    g.fillStyle = `rgba(255,255,255,${(1 - sg(t, t0, t0 + 0.25)).toFixed(3)})`; g.fillRect(0, 0, W, H);
+    g.fillStyle = 'rgba(255,255,255,' + (1 - sg(t, t0, t0 + 0.25)).toFixed(3) + ')'; g.fillRect(0, 0, W, H);
+    // then the two, lifted out side by side at one size, for a long look (x 40-940: clear of the buttons on the right)
+    if (lift > 0) {
+      g.fillStyle = 'rgba(20,26,40,' + (0.72 * lift).toFixed(3) + ')'; g.fillRect(0, 0, W, H);
+      const cw = 432, gap = 36, x0 = 40, y0 = 640, br = 1 + 0.02 * sg(t, t0 + 2, T('end'));
+      const from = [{ x: WIN.x - 190, y: WIN.y - 260, w: 380 }, { x: 601, y: 676, w: 330 }];
+      const to = [{ x: x0, y: y0, w: cw }, { x: x0 + cw + gap, y: y0, w: cw }];
+      const rect = (i) => ({ x: lerp(from[i].x, to[i].x, lift), y: lerp(from[i].y, to[i].y, lift), w: lerp(from[i].w, to[i].w, lift) });
+      g.save(); g.translate(490, 920); g.scale(br, br); g.translate(-490, -920);
+      const A = rect(0), B = rect(1);
+      g.fillStyle = '#fbf8f1'; RR(g, A.x - 12, A.y - 12, A.w + 24, A.w * F.PH + 24, 14); g.fill(); RR(g, B.x - 12, B.y - 12, B.w + 24, B.w * F.PH + 24, 14); g.fill();
+      liveShot(g, A.x, A.y, A.w, m, t, 3, { still: true });
+      F.photo(g, B.x, B.y, B.w, m.photo);
+      g.restore();
+      txt(g, 'TONIGHT', to[0].x + cw / 2, y0 + cw * F.PH + 74, 40, CREAM, { align: 'center', kind: 'semi', ls: 3, a: sg(lift, 0.7, 1) });
+      txt(g, 'HIS PASSPORT', to[1].x + cw / 2, y0 + cw * F.PH + 74, 40, CREAM, { align: 'center', kind: 'semi', ls: 3, a: sg(lift, 0.7, 1) });
+    }
     const tq = T('ask') + 1.4;
-    if (t > tq) title(g, 'WHAT GAVE HIM AWAY?', 360, 100, YEL, t, tq);
+    if (t > tq) title(g, 'WHAT GAVE HIM AWAY?', 430, 100, YEL, t, tq);
   }
 
   scene({ name: 'seven', from: 'seven', to: 'nine', build(root, S) { S.g = canvas(root); }, run(t, b, S) { const g = S.g; clear(g); g.save(); sevenScene(g, t); g.restore(); } });
