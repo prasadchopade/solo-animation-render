@@ -1,5 +1,5 @@
 {
- "note": "n.. = the narrator (af_heart). a.. = the police artist (am_onyx, chosen from the task=cast audition of four male voices on his own lines; his placed reads are the audition's). Dropped after the first takes run: 'Picked number four?' (heard as 'Pick number four' in every take: it is 'Chose'), \"can't\" (placed as 'cannot': the same meaning on a phone speaker), and '...a picture of your guess.' (heard as 'guests' by Whisper large-v3 in all six takes). After the check on the mix: the two reveal lines open with 'If you chose' (the bare 'Chose number four?' was transcribed, but with low confidence in four of six conditions). 'You cannot say it isn't' (n04) is out of the film; n14 is placed without the comma.",
+ "note": "n.. = the narrator (af_heart). a.. = the police artist (am_onyx, chosen from the task=cast audition of four male voices on his own lines; his placed reads are the audition's). Dropped after the first takes run: 'Picked number four?' (heard as 'Pick number four' in every take: it is 'Chose'), \"can't\" (placed as 'cannot': the same meaning on a phone speaker), and '...a picture of your guess.' (heard as 'guests' by Whisper large-v3 in all six takes). After the check on the mix: the two reveal lines open with 'If you chose' (the bare 'Chose number four?' was transcribed, but with low confidence in four of six conditions). 'You cannot say it isn't' (n04) is out of the film; n14 is placed without the comma. After the fresh review of the first final: n10 says 'number two' and 'looks nothing like' ('doesn't look like' is one weak nt from its opposite); n11 says 'your two guesses'; n12 and n13 have their t's planned ('eighty', 'later': the voice flaps them otherwise) and n13 says 'almost nine years' (1984 to 1993 on screen); the last line is two lines (n14 over the corridor, n15 at the stall, 'beside' because he stands beside the poster); the artist's 'Round, then.' (a03b, from the first audition) replaces the bare 'Round.'.",
  "take": {
   "id": "k-heart",
   "engine": "kokoro",
@@ -37,6 +37,7 @@
   "a01",
   "a02",
   "a03",
+  "a03b",
   "a04",
   "a05",
   "a06"
@@ -65,6 +66,10 @@
   {
    "id": "a03",
    "text": "Round."
+  },
+  {
+   "id": "a03b",
+   "text": "Round, then."
   },
   {
    "id": "a04",
@@ -101,26 +106,31 @@
   },
   {
    "id": "n10",
-   "text": "If you chose him, you were right, and nobody believed you: he doesn't look like the drawing.",
-   "text_kokoro": "If you chose him, you were right, and nobody believed you: he doesn't look like the [drawing](/dɹˈɔːɪŋ/)."
+   "text": "If you chose number two, you were right, and nobody believed you: he looks nothing like the drawing.",
+   "text_kokoro": "If you chose number two, you were right, and nobody believed you: he looks nothing like the [drawing](/dɹˈɔːɪŋ/)."
   },
   {
    "id": "n11",
-   "text": "So number four goes to jail for two of your guesses, because a pencil cannot draw \"not sure\"."
+   "text": "So number four goes to jail for your two guesses, because a pencil cannot draw \"not sure\"."
   },
   {
    "id": "n12",
    "text": "In nineteen eighty-four, a tip told police that Kirk Bloodsworth looked like their sketch.",
-   "text_kokoro": "In nineteen eighty-four, a tip told police that Kirk [Bloodsworth](/blˈʌdzwəɹθ/) looked like their sketch."
+   "text_kokoro": "In nineteen [eighty-four](/ˈAtifˌɔɹ/), a tip told police that Kirk [Bloodsworth](/blˈʌdzwəɹθ/) looked like their sketch."
   },
   {
    "id": "n13",
-   "text": "DNA freed him more than eight years later."
+   "text": "DNA freed him almost nine years later.",
+   "text_kokoro": "DNA freed him almost nine years [later](/lˈAtəɹ/)."
   },
   {
    "id": "n14",
-   "text": "And number two? He's having chai under a picture of your guesses.",
-   "text_kokoro": "And number two? He's having [chai](/ʧˈI/) under a picture of your guesses."
+   "text": "And number two?"
+  },
+  {
+   "id": "n15",
+   "text": "He's having chai beside a picture of your guesses.",
+   "text_kokoro": "He's having [chai](/ʧˈI/) beside a picture of your guesses."
   }
  ]
 }
