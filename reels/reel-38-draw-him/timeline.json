@@ -445,105 +445,105 @@
       "what": "the cell door (the one from The Only Witness), in the clear before the year"
     },
     {
-      "at": 116.8667,
+      "at": 116.8625,
       "type": "gclick",
       "gain": 0.45,
       "what": "a year going by: 1985",
       "pan": -0.31000000000000005
     },
     {
-      "at": 117.303,
+      "at": 117.2969,
       "type": "gclick",
       "gain": 0.45,
       "what": "a year going by: 1986",
       "pan": -0.22000000000000003
     },
     {
-      "at": 117.6697,
+      "at": 117.662,
       "type": "gclick",
       "gain": 0.45,
       "what": "a year going by: 1987",
       "pan": -0.13
     },
     {
-      "at": 118.0091,
+      "at": 117.9999,
       "type": "gclick",
       "gain": 0.45,
       "what": "a year going by: 1988",
       "pan": -0.040000000000000036
     },
     {
-      "at": 118.3409,
+      "at": 118.3301,
       "type": "gclick",
       "gain": 0.45,
       "what": "a year going by: 1989",
       "pan": 0.04999999999999993
     },
     {
-      "at": 118.6803,
+      "at": 118.668,
       "type": "gclick",
       "gain": 0.45,
       "what": "a year going by: 1990",
       "pan": 0.14
     },
     {
-      "at": 119.047,
+      "at": 119.0331,
       "type": "gclick",
       "gain": 0.45,
       "what": "a year going by: 1991",
       "pan": 0.22999999999999998
     },
     {
-      "at": 119.4833,
+      "at": 119.4675,
       "type": "gclick",
       "gain": 0.45,
       "what": "a year going by: 1992",
       "pan": 0.31999999999999995
     },
     {
-      "at": 120.41,
+      "at": 120.39,
       "type": "gclick",
       "gain": 0.45,
       "what": "a year going by: 1993",
       "pan": 0.4099999999999999
     },
     {
-      "at": 120.87,
+      "at": 120.85,
       "type": "wav",
       "file": "audio/fx/roll_6c5066c9.wav",
       "gain": 1.0,
       "what": "the cell door sliding open, in the clear after \"years later\""
     },
     {
-      "at": 122.97,
+      "at": 122.95,
       "type": "thunk",
       "gain": 0.4,
       "what": "the last pin pressed into the notice board",
       "pan": -0.3
     },
     {
-      "at": 123.41,
+      "at": 123.39,
       "type": "wav",
       "file": "audio/fx/walk_d89fa9f1.wav",
       "gain": 1.0,
       "what": "his steps down the corridor, past his own poster"
     },
     {
-      "at": 128.51,
+      "at": 128.49,
       "type": "bicyclebell",
       "gain": 0.26,
       "what": "the street again: a bicycle bell, before \"He is having chai\"",
       "pan": 0.5
     },
     {
-      "at": 137.57,
+      "at": 137.55,
       "type": "wav",
       "file": "audio/fx/sip_fef27931.wav",
       "gain": 1.0,
       "what": "he sips his chai, after the last word"
     },
     {
-      "at": 139.11,
+      "at": 139.09,
       "type": "exhale",
       "gain": 0.35,
       "what": "and breathes out",
