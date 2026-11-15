@@ -246,9 +246,9 @@
     if (o.dim) { g.fillStyle = `rgba(20,24,34,${(0.55 * o.dim).toFixed(3)})`; RR(g, 0, 0, CARD.w, CARD.h, 14); g.fill(); }
     g.restore();
   }
-  function desk(g) {
-    const q = g.createLinearGradient(0, 0, 0, H); q.addColorStop(0, '#647892'); q.addColorStop(1, '#3d4c62'); g.fillStyle = q; g.fillRect(0, 0, W, H);
-    g.strokeStyle = 'rgba(255,255,255,0.04)'; g.lineWidth = 2; for (let i = 0; i < 40; i++) { g.beginPath(); g.moveTo(0, i * 52 + 10); g.lineTo(W, i * 52 - 30); g.stroke(); }
+  function desk(g) {                                 // drawn well past the frame, so a camera move or a shake never shows its edge
+    const q = g.createLinearGradient(0, 0, 0, H); q.addColorStop(0, '#647892'); q.addColorStop(1, '#3d4c62'); g.fillStyle = q; g.fillRect(-W, -H, 3 * W, 3 * H);
+    g.strokeStyle = 'rgba(255,255,255,0.04)'; g.lineWidth = 2; for (let i = -40; i < 80; i++) { g.beginPath(); g.moveTo(-W, i * 52 + 50); g.lineTo(2 * W, i * 52 - 70); g.stroke(); }
   }
   function gridScene(g, t, o = {}) {
     desk(g);
@@ -292,7 +292,7 @@
       g.globalAlpha = 1;
       if (k < 1) { boothScene(g, Math.min(t, T('deal') - 0.001)); g.fillStyle = `rgba(20,26,40,${(0.75 * k).toFixed(3)})`; g.fillRect(0, 0, W, H); }
       g.save(); g.globalAlpha = k; gridScene(g, t); g.restore();
-      if (t > T('pick') - 0.6 && t < T('sure')) title(g, 'WHO DO YOU STOP?', 1440, 96, YEL, t, T('pick') - 0.6, { a: 1 - sg(t, T('sure') - 0.3, T('sure')) });
+      if (t > T('stop') && t < T('sure')) title(g, 'WHO DO YOU STOP?', 1440, 96, YEL, t, T('stop'), { a: 1 - sg(t, T('sure') - 0.3, T('sure')) });
       g.restore();
     },
   });
@@ -347,7 +347,7 @@
       if (t > e && t < e + 0.48) stampAt(g, t, hitT, x - 20, y - 60);
     }
     g.restore();
-    const tl = t0 + 6 * cyc + 0.24 + 0.5;
+    const tl = Math.max(t0 + 6 * cyc + 0.74, T('one7'));            // the title lands on the voice's "one"
     if (t > tl) { title(g, '1 IN 7', 470, 230, YEL, t, tl); txt(g, 'LOOKALIKES GOT THROUGH', 540, 600, 54, CREAM, { align: 'center', kind: 'semi', a: sg(t, tl + 0.25, tl + 0.55), stroke: INK, sw: 0.1 }); }
   }
 
@@ -395,22 +395,24 @@
     g.restore();
     g.strokeStyle = '#9aa6b0'; g.lineWidth = 16; g.strokeRect(wx0, wy0, wx1 - wx0, wy1 - wy0); g.beginPath(); g.moveTo(540, wy0); g.lineTo(540, wy1); g.stroke();
     for (const cx of [130, 320, 760, 950]) { g.fillStyle = '#3f6fae'; RR(g, cx - 80, 1200, 160, 150, 22); g.fill(); g.fillStyle = '#34609a'; RR(g, cx - 86, 1330, 172, 40, 12); g.fill(); g.fillStyle = '#5b6168'; g.fillRect(cx - 70, 1370, 10, 160); g.fillRect(cx + 60, 1370, 10, 160); }
-    const lookUp = sg(t, talk - 0.35, talk + 0.1), tap = talk + 0.5, tapK = t > tap && t < tap + 0.5 ? Math.sin((t - tap) / 0.5 * PI * 2) * 0.5 + 0.5 : 0;
+    const lookUp = sg(t, talk - 0.35, talk + 0.1), tap = T('tap'), tapK = t > tap - 0.24 && t < tap ? Math.sin((t - tap + 0.24) / 0.24 * PI) : 0;   // he lifts his finger and taps once, on the mark (the tap's sound)
     const hx = 540, hy = 960, R = 120;
     g.fillStyle = '#3f6fae'; RR(g, hx - 120, 1180, 240, 180, 26); g.fill();
     F.bust(g, hx, hy, R, m.now, { light: { x: -0.6, back: 0 }, psi: lerp(-0.08, -0.32, lookUp), pitch: lerp(0.18, -0.05, lookUp), look: [lerp(0, -0.05, lookUp), lerp(-0.05, 0.02, lookUp)], smile: 0.18 * lookUp, browUp: 0.04 * lookUp, close: blinkAt(t, 7, 4.1) });
     g.fillStyle = '#c0392b'; RR(g, hx - 210, 1350, 420, 210, 16); g.fill(); g.fillStyle = '#f2c94c'; g.fillRect(hx - 20, 1350, 40, 210); g.fillRect(hx - 210, 1440, 420, 30);
     g.fillStyle = '#f2c94c'; g.beginPath(); g.ellipse(hx - 40, 1345, 46, 22, -0.4, 0, TAU); g.fill(); g.beginPath(); g.ellipse(hx + 40, 1345, 46, 22, 0.4, 0, TAU); g.fill();
-    const pp = { x: hx - 135 + 40 * lookUp, y: 1150 - 50 * lookUp - 12 * tapK };
+    const pp = { x: hx - 135 + 40 * lookUp, y: 1150 - 50 * lookUp };
     const sk = m.now.skin, sleeve = mix(m.now.shirt, '#5f82b2', 0.35);
     const arm = (sx, sy, ex, ey, hx2, hy2) => { g.strokeStyle = sleeve; g.lineCap = 'round'; g.lineWidth = 78; g.beginPath(); g.moveTo(sx, sy); g.quadraticCurveTo(ex, ey, hx2, hy2); g.stroke(); g.strokeStyle = 'rgba(30,40,60,0.18)'; g.lineWidth = 6; g.beginPath(); g.moveTo(sx + 30, sy + 10); g.quadraticCurveTo(ex + 30, ey, hx2 + 20, hy2); g.stroke(); };
     arm(hx - 205, 1150, hx - 250, 1360, pp.x + 10, pp.y + 290); arm(hx + 205, 1150, hx + 270, 1360, pp.x + 250, pp.y + 280);
     g.save(); g.translate(pp.x, pp.y); g.rotate(-0.08 - 0.08 * lookUp); g.scale(0.62, 0.62); page(g, m.photo); g.restore();
     g.fillStyle = sk; g.beginPath(); g.ellipse(pp.x - 6, pp.y + 300, 46, 32, 0.3, 0, TAU); g.fill(); g.beginPath(); g.ellipse(pp.x + 262, pp.y + 290, 46, 32, -0.3, 0, TAU); g.fill();
-    if (t > tap - 0.1) {                                // his forefinger taps the photo's lower corner, clear of the face
-      const fx = pp.x + 205, fy = pp.y + 262 - 10 * tapK;
+    if (t > tap - 0.7) {                                // his forefinger taps the photo's lower corner, clear of the face
+      g.save(); g.globalAlpha = sg(t, tap - 0.7, tap - 0.45);
+      const fx = pp.x + 205, fy = pp.y + 262 - 18 * tapK;
       g.fillStyle = sk; g.beginPath(); g.ellipse(fx, fy, 13, 28, -0.6, 0, TAU); g.fill();
       g.fillStyle = 'rgba(255,235,220,0.55)'; g.beginPath(); g.ellipse(fx - 8, fy - 14, 6, 9, -0.6, 0, TAU); g.fill();
+      g.restore();
     }
     g.restore();
     if (t > talk) title(g, '“THAT’S ME. I JUST GOT OLD.”', 1480, 62, CREAM, t, talk, { fit: 880 });   // its lowest pixel stays above the safe zone's 1536
@@ -448,22 +450,24 @@
     g.restore();
   }
   function broScene(g, t) {
-    const t0 = T('bro'), k = sg(t, t0 + 0.5, t0 + 1.9), s0 = 3.1;
+    const t0 = T('bro'), tc = T('curtain'), tb = T('brother'), k = sg(t, tc, tc + 1.25), s0 = 3.1 * (1 + 0.06 * sg(t, t0, tc)), fa = sg(t, tc - 0.45, tc);
     const pw = CARD.ph * s0, phh = pw * F.PH, cx0 = 540 - pw / 2, cy0 = 900 - phh / 2;
     const headY = cy0 + 0.46 * phh, R0 = pw * 0.30;
     const sA = R0 / FAMILY.bro.R, tx0 = 540 - sA * FAMILY.bro.x, ty0 = headY - sA * FAMILY.bro.y;
     const s = lerp(sA, 1, k), tx = lerp(tx0, 0, k), ty = lerp(ty0, 0, k);
     if (k < 1) { g.save(); camTo(g, C4.x, C4.y, s0); staticGrid(g, t); g.restore(); }
     const x0 = lerp(cx0, -40, k), x1 = lerp(cx0 + pw, W + 40, k), y0 = lerp(cy0, -40, k), y1 = lerp(cy0 + phh, H + 40, k);
-    g.save(); g.beginPath(); g.rect(x0, y0, x1 - x0, y1 - y0); g.clip();
-    g.fillStyle = '#3d4c62'; g.fillRect(0, 0, W, H);
-    const drift = lerp(1, 1.07, sg(t, t0 + 1.9, T('gate')));
-    g.save(); g.translate(540, 900); g.scale(drift, drift); g.translate(-540, -900); g.translate(tx, ty); g.scale(s, s); familyPicture(g, t, sg(t, t0 + 0.1, t0 + 0.6)); g.restore();
-    g.restore();
-    if (k < 0.999) { g.save(); g.strokeStyle = '#fbf8f1'; g.lineWidth = 14; g.strokeRect(x0, y0, x1 - x0, y1 - y0); g.restore(); }
-    if (t > t0 + 1.8) {
-      title(g, 'HIS BROTHER', 395, 120, YEL, t, t0 + 1.8, { x: 360 });
-      g.save(); g.globalAlpha = sg(t, t0 + 1.9, t0 + 2.2); g.strokeStyle = YEL; g.lineWidth = 12; g.lineCap = 'round'; g.beginPath(); g.moveTo(360, 430); g.lineTo(360, 560); g.moveTo(325, 525); g.lineTo(360, 565); g.lineTo(395, 525); g.stroke(); g.restore();
+    if (fa > 0) {
+      g.save(); g.beginPath(); g.rect(x0, y0, x1 - x0, y1 - y0); g.clip();
+      g.globalAlpha = fa; g.fillStyle = '#3d4c62'; g.fillRect(0, 0, W, H);
+      const drift = lerp(1, 1.07, sg(t, tc + 1.25, T('gate')));
+      g.save(); g.translate(540, 900); g.scale(drift, drift); g.translate(-540, -900); g.translate(tx, ty); g.scale(s, s); familyPicture(g, t, 1); g.restore();
+      g.restore();
+      if (k < 0.999) { g.save(); g.globalAlpha = fa; g.strokeStyle = '#fbf8f1'; g.lineWidth = 14; g.strokeRect(x0, y0, x1 - x0, y1 - y0); g.restore(); }
+    }
+    if (t > tb) {
+      title(g, 'HIS BROTHER', 395, 120, YEL, t, tb, { x: 360 });
+      g.save(); g.globalAlpha = sg(t, tb + 0.1, tb + 0.4); g.strokeStyle = YEL; g.lineWidth = 12; g.lineCap = 'round'; g.beginPath(); g.moveTo(360, 430); g.lineTo(360, 560); g.moveTo(325, 525); g.lineTo(360, 565); g.lineTo(395, 525); g.stroke(); g.restore();
     }
   }
 
@@ -498,7 +502,7 @@
     }
   }
   function rewindScene(g, t) {
-    const u = t - T('rewind'), tg = T('rewind') - 0.02 - u * 4.2;
+    const u = t - T('rewind'), tg = T('rewind') - 0.02 - u * (T('rewind') - T('gate')) / Math.max(0.3, T('final') - T('rewind'));   // the whole walk, backwards
     gateScene(g, Math.max(T('gate'), tg));
     g.save(); g.fillStyle = 'rgba(255,255,255,0.05)'; for (let y = 0; y < H; y += 6) g.fillRect(0, y, W, 2);
     const band = (u * 2400) % H; g.fillStyle = 'rgba(255,255,255,0.18)'; g.fillRect(0, band, W, 60);
@@ -534,7 +538,7 @@
       txt(g, 'TONIGHT', to[0].x + cw / 2, y0 + cw * F.PH + 74, 40, CREAM, { align: 'center', kind: 'semi', ls: 3, a: sg(lift, 0.7, 1) });
       txt(g, 'HIS PASSPORT', to[1].x + cw / 2, y0 + cw * F.PH + 74, 40, CREAM, { align: 'center', kind: 'semi', ls: 3, a: sg(lift, 0.7, 1) });
     }
-    const tq = T('ask') + 1.4;
+    const tq = T('q');
     if (t > tq) title(g, 'WHAT GAVE HIM AWAY?', 430, 100, YEL, t, tq);
   }
 
