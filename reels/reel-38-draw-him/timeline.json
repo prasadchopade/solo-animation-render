@@ -256,287 +256,294 @@
       "what": "the second oval, under \"or long?\" (above 4.6 kHz only)"
     },
     {
-      "at": 21.97,
+      "at": 22.76,
       "type": "wav",
       "file": "audio/fx/pencil_4b9d89b8.wav",
       "gain": 1.0,
       "what": "THE line: one dark stroke round the jaw, in the clear after \"Round.\""
     },
     {
-      "at": 23.57,
+      "at": 24.36,
       "type": "wav",
       "file": "audio/fx/rub_b5efc974.wav",
       "gain": 1.0,
       "what": "the long oval rubbed out"
     },
     {
-      "at": 24.45,
+      "at": 25.24,
       "type": "exhale",
       "gain": 0.6,
       "what": "he blows the crumbs at us",
       "len": 0.28
     },
     {
-      "at": 24.99,
+      "at": 25.78,
       "type": "wav",
       "file": "audio/fx/under_43af3b59.wav",
       "gain": 1.0,
       "what": "the flurry heard from under the sheet: dull knocks on the board"
     },
     {
-      "at": 25.93,
+      "at": 26.72,
       "type": "wav",
       "file": "audio/fx/hatch_f74334b8.wav",
       "gain": 1.0,
       "what": "the flurry from above: his hand in three places (left)"
     },
     {
-      "at": 26.4196,
+      "at": 27.2096,
       "type": "wav",
       "file": "audio/fx/hatch_8dc15352.wav",
       "gain": 1.0,
       "what": "the flurry from above: his hand in three places (right)"
     },
     {
-      "at": 26.8804,
+      "at": 27.6704,
       "type": "wav",
       "file": "audio/fx/hatch_86cc5218.wav",
       "gain": 1.0,
       "what": "the flurry from above: his hand in three places (centre)"
     },
     {
-      "at": 34.21,
+      "at": 35.0,
       "type": "wav",
       "file": "audio/fx/dot_21c3bc0e.wav",
       "gain": 1.0,
       "what": "the mole: the tip pressed and twisted, just after \"This one.\""
     },
     {
-      "at": 35.01,
+      "at": 35.8,
       "type": "wav",
       "file": "audio/fx/hatch_7ae8866d.wav",
       "gain": 1.0,
       "what": "shading the cheek"
     },
     {
-      "at": 35.81,
+      "at": 36.6,
       "type": "wav",
       "file": "audio/fx/hatch_0e7d5798.wav",
       "gain": 1.0,
       "what": "the cap, in a maroon wax pencil: a duller, rounder scratch"
     },
     {
-      "at": 37.41,
+      "at": 38.2,
       "type": "wav",
       "file": "audio/fx/tear_772ec200.wav",
       "gain": 1.0,
       "what": "the sheet torn off the pad (the clock has stopped)"
     },
     {
-      "at": 38.09,
+      "at": 38.88,
       "type": "page",
       "gain": 0.45,
       "what": "the sheet flapped upright in front of you"
     },
     {
-      "at": 42.29,
+      "at": 42.68,
       "type": "page",
       "gain": 0.5,
       "what": "the drawing dropping into your hand"
     },
     {
-      "at": 42.79,
+      "at": 43.18,
       "type": "switch",
       "gain": 0.75,
       "what": "the lights of the line-up room snapping on"
     },
     {
-      "at": 50.79,
+      "at": 50.78,
       "type": "tick",
       "gain": 0.9,
-      "what": "the count: 3",
+      "what": "the ring running out: tick 1 of 3",
       "pitch": 0.8
     },
     {
-      "at": 52.39,
+      "at": 52.38,
       "type": "tick",
       "gain": 0.9,
-      "what": "the count: 2",
+      "what": "the ring running out: tick 2 of 3",
       "pitch": 0.8
     },
     {
-      "at": 53.99,
+      "at": 53.98,
       "type": "tick",
       "gain": 0.9,
-      "what": "the count: 1",
+      "what": "the ring running out: tick 3 of 3",
       "pitch": 0.8
     },
     {
-      "at": 55.99,
+      "at": 55.98,
       "type": "page",
       "gain": 0.4,
       "what": "your hand lifting the drawing"
     },
     {
-      "at": 57.15,
+      "at": 57.14,
       "type": "thunk",
       "gain": 0.6,
       "what": "the drawing set against the glass, over number four: a low knock and a high click, then the line"
     },
     {
-      "at": 72.18,
+      "at": 71.7,
       "type": "rewind",
       "gain": 1.0,
       "what": "the film running backwards to frame 0, in the pause after \"But the man you saw\"",
       "len": 1.25
     },
     {
-      "at": 74.98,
+      "at": 74.5,
       "type": "wav",
       "file": "audio/fx/pencil_6472b873.wav",
       "gain": 1.0,
       "what": "a red pencil ringing the mole"
     },
     {
-      "at": 76.02,
+      "at": 75.54,
       "type": "page",
       "gain": 0.3,
       "what": "the frame becomes a card"
     },
     {
-      "at": 79.6,
+      "at": 79.12,
       "type": "page",
       "gain": 0.3,
       "what": "the constable holding the drawing up beside number two, just before \"Chose him?\"",
       "pan": 0.3
     },
     {
-      "at": 86.89,
+      "at": 89.42,
       "type": "wav",
-      "file": "audio/fx/walk_401d3ad5.wav",
+      "file": "audio/fx/walk_826fe586.wav",
       "gain": 1.0,
       "what": "number two walking out, unhurried (low heels: almost nothing in the voice's band)"
     },
     {
-      "at": 89.61,
+      "at": 91.04,
       "type": "wav",
       "file": "audio/fx/cuffs_68d891be.wav",
       "gain": 1.0,
       "what": "the handcuffs on number four: the ratchet, then the lock, before \"So number four goes to jail\""
     },
     {
-      "at": 94.836,
+      "at": 96.266,
       "type": "wav",
       "file": "audio/fx/pencil_5cb414c1.wav",
       "gain": 1.0,
       "what": "the red pencil tracing the jaw you guessed, under \"two\" (above 4.6 kHz only)"
     },
     {
-      "at": 95.61,
+      "at": 96.79,
       "type": "wav",
       "file": "audio/fx/pencil_6b50e5c3.wav",
       "gain": 1.0,
       "what": "the red pencil ringing the mole you guessed, under \"guesses\" (above 4.6 kHz only)"
     },
     {
-      "at": 103.71,
+      "at": 104.94,
       "type": "clang",
       "gain": 0.36,
       "what": "the cell door (the one from The Only Witness), in the clear before the year"
     },
     {
-      "at": 117.8297,
+      "at": 116.8667,
       "type": "gclick",
       "gain": 0.45,
       "what": "a year going by: 1985",
       "pan": -0.31000000000000005
     },
     {
-      "at": 118.0933,
+      "at": 117.303,
       "type": "gclick",
       "gain": 0.45,
       "what": "a year going by: 1986",
       "pan": -0.22000000000000003
     },
     {
-      "at": 118.3148,
+      "at": 117.6697,
       "type": "gclick",
       "gain": 0.45,
       "what": "a year going by: 1987",
       "pan": -0.13
     },
     {
-      "at": 118.5198,
+      "at": 118.0091,
       "type": "gclick",
       "gain": 0.45,
       "what": "a year going by: 1988",
       "pan": -0.040000000000000036
     },
     {
-      "at": 118.7202,
+      "at": 118.3409,
       "type": "gclick",
       "gain": 0.45,
       "what": "a year going by: 1989",
       "pan": 0.04999999999999993
     },
     {
-      "at": 118.9252,
+      "at": 118.6803,
       "type": "gclick",
       "gain": 0.45,
       "what": "a year going by: 1990",
       "pan": 0.14
     },
     {
-      "at": 119.1467,
+      "at": 119.047,
       "type": "gclick",
       "gain": 0.45,
       "what": "a year going by: 1991",
       "pan": 0.22999999999999998
     },
     {
-      "at": 119.4103,
+      "at": 119.4833,
       "type": "gclick",
       "gain": 0.45,
       "what": "a year going by: 1992",
       "pan": 0.31999999999999995
     },
     {
-      "at": 119.97,
+      "at": 120.41,
       "type": "gclick",
       "gain": 0.45,
       "what": "a year going by: 1993",
       "pan": 0.4099999999999999
     },
     {
-      "at": 122.03,
+      "at": 120.87,
+      "type": "wav",
+      "file": "audio/fx/roll_6c5066c9.wav",
+      "gain": 1.0,
+      "what": "the cell door sliding open, in the clear after \"years later\""
+    },
+    {
+      "at": 122.97,
       "type": "thunk",
       "gain": 0.4,
       "what": "the last pin pressed into the notice board",
       "pan": -0.3
     },
     {
-      "at": 122.47,
+      "at": 123.41,
       "type": "wav",
       "file": "audio/fx/walk_d89fa9f1.wav",
       "gain": 1.0,
       "what": "his steps down the corridor, past his own poster"
     },
     {
-      "at": 127.57,
+      "at": 128.51,
       "type": "bicyclebell",
       "gain": 0.26,
-      "what": "the street again: a bicycle bell, before \"And number two?\"",
+      "what": "the street again: a bicycle bell, before \"He is having chai\"",
       "pan": 0.5
     },
     {
-      "at": 137.87,
+      "at": 137.57,
       "type": "wav",
       "file": "audio/fx/sip_fef27931.wav",
       "gain": 1.0,
       "what": "he sips his chai, after the last word"
     },
     {
-      "at": 139.41,
+      "at": 139.11,
       "type": "exhale",
       "gain": 0.35,
       "what": "and breathes out",

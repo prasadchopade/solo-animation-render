@@ -31,6 +31,7 @@
     cell0: 49.6,                                                          // "In 1984, a tip told police that Kirk Bloodsworth looked like their sketch. DNA freed him more than eight years later."
     cor0: 56.8, stall0: 60.2, sip: 63.6, end: 66.5,                       // "And number two? He's having chai under a picture of your guess."
     g2: 46.1, gj: 46.5, gm: 47.1,                                         // "for two of your guesses": the drawing comes up; the jaw, then the mole, in red
+    pick: 20.6, ns: 48.4,                                                 // PICK HIM lands on screen; the caption turns to “NOT SURE”
     glance: 61.7,                                                         // he looks at his own poster on "a picture of your guess"
     n12: 50.1, kirk: 52.6, n13: 55.0, freed: 55.4, n13e: 57.6,            // the cell's words: the year, the name, the DNA
     a2: 6.0, a2e: 7.3, a3: 9.5, a3e: 10.0, a4: 12.2, a4e: 13.9, a5: 15.1, a5e: 15.7, a6: 17.7, a6e: 18.4,   // the artist's other lines, start and end
@@ -120,13 +121,16 @@
   // ================================================================ shot 1 · the chai stall: the snatch, on frame 0
   const F0 = { x: 520, y: 990, s: 1.42 };
   const NECK = [250, 1990];
+  const VP = [612, 716];                                       // where the lane runs out
   function hookPose(t) {
     const d = t - T.snap, yank = sstep(-0.1, 0.03, d), turn = sstep(0.14, 0.34, d), run = sstep(0.2, 1.0, d);
     const o = { yaw: lerp(-0.1, 0.92, turn), headYaw: lerp(0.07, 0.22, turn), back: turn > 0.62, faceMix: 1 - sstep(0.45, 0.7, turn), look: [lerp(2, -4, yank), 3], frown: 0.26, smirk: 0.55 * (1 - yank), smile: 0.12,
       browY: 3, close: 0, walk: 2.2 * run, phase: d * 15, legs: false, cap: 1, rim: 1, tilt: -0.05 + 0.09 * yank, op: 0.04 + 0.05 * yank };
     const fx = lerp(lerp(205, 250, yank), 180, turn), fy = lerp(lerp(285, 250, yank), 240, turn);
     o.arms = { r: { ...armIK(o, 1, fx, fy, 46), hand: 'fist', w: 1 - 0.5 * run } };
-    return { x: F0.x + 34 * yank + 1560 * Math.pow(run, 1.5), y: F0.y + 16 * run, s: F0.s * (1 + 0.1 * run), o, yank, turn, run, d };
+    const flee = sstep(0.3, 1.95, d), k = 1 / (1 + 8.2 * Math.pow(flee, 1.5)), away = sstep(0.05, 0.4, flee), corner = sstep(0.86, 1, flee);
+    o.yaw = lerp(o.yaw, 0.34, away); o.legs = k < 0.45; o.walk = 2.2 * run * (1 - 0.5 * corner);
+    return { x: lerp(VP[0], F0.x + 34 * yank + 70 * turn, k) + 40 * corner, y: lerp(VP[1], F0.y, k), s: F0.s * k, a: 1 - sstep(0.93, 1, flee), k, o, yank, turn, run, d };
   }
   const BEADS = (() => { const r = mulberry32(3838), out = []; for (let i = 0; i < 18; i++) out.push({ vx: (r() - 0.35) * 900, vy: -300 - r() * 900, r: 9 + r() * 6, ph: r() * 6, fl: 1510 + r() * 60 }); return out; })();
   function bead(g, x, y, r) { g.fillStyle = '#b5811a'; ell(g, x, y + r * 0.12, r, r); g.fill(); g.fillStyle = rg(g, x - r * 0.3, y - r * 0.3, 1, r, [0, '#fff3b0'], [0.5, '#f4c53a'], [1, '#d99a1c']); ell(g, x, y, r * 0.92, r * 0.92); g.fill(); }
@@ -148,12 +152,12 @@
   function counter(g) { g.fillStyle = lg(g, 0, 1500, 0, 1920, [0, '#9a6a3c'], [1, '#6a4423']); g.fillRect(-300, 1500, 1700, 500); g.fillStyle = 'rgba(255,236,200,0.22)'; g.fillRect(-300, 1500, 1700, 10); g.fillStyle = 'rgba(0,0,0,0.12)'; for (let i = 0; i < 6; i++) g.fillRect(-300 + i * 290, 1500, 5, 500); }
   function hookTitles(g, t) { const a = 1 - sstep(T.gone + 0.2, T.gone + 0.6, t); if (a > 0) { title(g, 'ONLY YOU SAW', 372, 118, CREAM, t, -1, { a }); title(g, 'HIS FACE', 490, 138, YEL, t, -1, { a }); } title(g, 'ONE SECOND', 470, 170, CREAM, t, T.one, { a: 1 - sstep(T.st0 - 0.8, T.st0 - 0.4, t) }); }
   function shotHook(g, t, o = {}) {
-    const th = hookPose(t), d = th.d, tw = t, sh = Q.shakeAt(t, [[T.snap, 16]]), pan = -520 * sstep(T.snap + 0.3, T.gone + 0.5, t);
+    const th = hookPose(t), d = th.d, tw = t, sh = Q.shakeAt(t, [[T.snap, 16]]), pan = -70 * sstep(T.snap + 0.3, T.gone + 0.5, t);
     lane(g, tw, sh[0] * 0.4 + pan * 0.6, sh[1] * 0.4, lerp(6, 3, sstep(T.gone, T.gone + 0.6, t)));
     g.save(); g.translate(sh[0] + pan * 0.25, sh[1]); stallTop(g, tw); g.restore();
     g.save(); g.translate(sh[0], sh[1]);
     if (o.cap !== undefined) th.o.cap = o.cap;
-    figure(g, THIEF0, th.x, th.y, th.s, th.o);
+    if (th.a > 0) { g.save(); g.globalAlpha *= th.a; if (th.k < 0.5) g.filter = `blur(${(1.6 * (1 - th.k)).toFixed(2)}px)`; figure(g, THIEF0, th.x, th.y, th.s, th.o); g.restore(); }
     g.save(); g.translate(-sh[0] * 0.4, -sh[1] * 0.4); counter(g); g.restore();
     // the chain: taut from your neck to his fist, side-on; it snaps, the long end falls back to you, the short end goes with him
     const w = wristOf(th.o, 1), dir = [-Math.sin(w.ang), Math.cos(w.ang)], fist = [th.x + (w.x + dir[0] * 50) * th.s, th.y + (w.y + dir[1] * 50) * th.s];
@@ -161,7 +165,7 @@
     else {
       const brk = [lerp(NECK[0], fist[0], 0.62), lerp(NECK[1], fist[1], 0.62)], fall = sstep(0, 0.22, d);
       if (fall < 1) chain(g, NECK, [lerp(brk[0], NECK[0], fall), lerp(brk[1], NECK[1] - 60, fall)], 40 * fall);
-      const sw = 0.9 * Math.exp(-d * 3) * Math.sin(d * 14) + 0.5 * th.run; chain(g, fist, [fist[0] + 150 * Math.sin(sw + 0.5), fist[1] + 150 * Math.cos(sw + 0.5)], 0, 6);
+      const sw = 0.9 * Math.exp(-d * 3) * Math.sin(d * 14) + 0.5 * th.run; if (th.k > 0.6) chain(g, fist, [fist[0] + 150 * th.k * Math.sin(sw + 0.5), fist[1] + 150 * th.k * Math.cos(sw + 0.5)], 0, 6);
       for (const b of BEADS) {                                 // loose beads: up, over, down onto the counter, a bounce or two, a roll
         const tf = (-b.vy + Math.sqrt(b.vy * b.vy + 2 * 2600 * Math.max(1, b.fl - brk[1]))) / 2600;
         let x = brk[0] + b.vx * Math.min(d, tf + 0.5) * (d > tf ? 0.7 : 1), y;
@@ -215,7 +219,9 @@
     const sx = ax + 250 * 0.9, sy = 590 + 350 * 0.9, tp = [150 - 60 * turn, 210 + 30 * turn, 6 + 26 * tap], gp = c.P(tp[0] + DIR[0] * 215, tp[1] + DIR[1] * 215, tp[2] + DIR[2] * 215) || [700, 1300], elb = [lerp(sx, gp[0], 0.34) + 40, lerp(sy, gp[1], 0.34) + 230];
     paper(g, c, t);
     const arm = sstep(0.55, 0.95, u);
-    g.save(); g.globalAlpha = arm; g.strokeStyle = lg(g, sx, sy, elb[0], elb[1], [0, KHAKI.a], [1, KHAKI.b]); g.lineCap = 'round'; g.lineWidth = 128; g.beginPath(); g.moveTo(sx, sy); g.lineTo(elb[0], elb[1]); g.stroke();
+    g.save(); g.globalAlpha = arm; g.lineCap = 'round';
+    g.strokeStyle = lg(g, sx, sy, elb[0], elb[1], [0, ART.L.skin], [1, ART.L.skinD]); g.lineWidth = 100; g.beginPath(); g.moveTo(sx, sy); g.lineTo(elb[0], elb[1]); g.stroke();
+    g.strokeStyle = lg(g, sx, sy, elb[0], elb[1], [0, KHAKI.a], [1, KHAKI.b]); g.lineWidth = 128; g.beginPath(); g.moveTo(sx, sy); g.lineTo(lerp(sx, elb[0], 0.36), lerp(sy, elb[1], 0.36)); g.stroke();
     penNow(g, c, t, { tip: tp, elbow: elb, k: 1.5, cuff: false }); g.restore();
   }
   // 5.9–7.6: low over the sheet. Two faint ovals, a round one and a long one; the tip goes round each
@@ -300,10 +306,10 @@
     desk(g); paper(g, c, t);
     const dk = sstep(T.dot + 0.05, T.dot + 0.35, t); if (dk > 0) PEN.specks(g, c, DUST.map((d) => [lerp(M4.mole[0], d[0], dk), lerp(M4.mole[1], d[1], dk), d[2], 0.75 * dk]), (a) => `rgba(40,40,46,${a})`);
     // your finger: in from below, between the two cheeks, then onto the one at our left
-    const fk = sstep(T.fing0, T.fing0 + 0.3, t) * (1 - sstep(T.dot + 0.25, T.dot + 0.6, t));
+    const fk = sstep(T.fing0, T.fing0 + 0.3, t) * (1 - sstep(T.tap + 0.45, T.dot - 0.02, t));
     if (fk > 0) {
       const wav = key(t, [[T.fing0, 0.2], [T.fing0 + 0.42, 0.85], [T.fing0 + 0.78, -0.5], [T.fing0 + 1.02, 0.25], [T.tap, -1], [T.tap + 9, -1]])[0], press = winK(t, T.tap - 0.04, T.tap + 0.05, T.tap + 0.12, T.tap + 0.3);
-      const p = c.P(84 * wav, 62 + 74), y = lerp(H + 40, p[1] - 10 * press, fk);
+      const p = c.P(84 * wav, 62 + 44), y = lerp(H + 40, p[1] - 10 * press, fk);
       g.fillStyle = 'rgba(60,40,24,0.16)'; ell(g, p[0] + 22, y + 46, 52, 30); g.fill(); finger(g, p[0], y, press);
     }
     if (t < T.tear - 0.05) penNow(g, c, t, { ghosts: t < T.fl1 || (t > T.shade0 && t < T.cap1), k: 1.42 });
@@ -374,10 +380,12 @@
     if (t < T.line0) { shotHeld(g, T.wipe - 0.01); const sc = lerp(HELD.sc * 1.035, 2.2, w0); sheetAt(g, lerp(HELD.x, 540, w0), lerp(HELD.y, 960, w0), sc, 0.05 * w0, {}); return; }
     const p = { x: lerp(540, INHAND.x, w1), y: lerp(960, INHAND.y, w1), sc: lerp(2.2, INHAND.sc, w1), rot: lerp(0.05, INHAND.rot, w1) + 0.012 * Math.sin(t * 1.1) };
     if (w1 > 0.6) inHand(g, p); else sheetAt(g, p.x, p.y, p.sc, p.rot, {});
-    for (const [n, a, b] of [['3', T.c3, T.c2], ['2', T.c2, T.c1], ['1', T.c1, T.tw0]]) {
-      if (t < a || t >= b) continue;
-      const q = Q.pop(t, a), k = clamp((t - a) / (b - a));
-      g.save(); g.translate(742, 1362); g.scale(lerp(0.7, 1, q), lerp(0.7, 1, q)); ring(g, 0, 0, 132, 1 - k, 12, n === '1' ? RED : YEL); txt(g, n, 0, 76, 224, CREAM, { align: 'center', stroke: INK, sw: 0.1 }); g.restore();
+    title(g, 'PICK HIM', 1346, 132, YEL, t, T.pick, { x: 706, fit: 450 });
+    if (t >= T.c3) {
+      const k = clamp((t - T.c3) / (T.tw0 - T.c3)), q = Q.pop(t, T.c3), beat = 1 + 0.12 * Math.max(Q.kick(t, T.c2, 1, 30, 9), Q.kick(t, T.c1, 1, 30, 9), 0);
+      g.save(); g.translate(706, 1450); g.scale(lerp(0.7, 1, q) * beat, lerp(0.7, 1, q) * beat);
+      g.strokeStyle = 'rgba(255,246,226,0.16)'; g.lineWidth = 16; g.beginPath(); g.arc(0, 0, 58, 0, TAU); g.stroke();
+      ring(g, 0, 0, 58, 1 - k, 16, k > 0.66 ? RED : YEL); g.restore();
     }
   }
   // 26.8–34.2: your hand lifts the drawing to the glass, over number four. Every line lands on him
@@ -419,10 +427,10 @@
   // 38.0–43.2: you hold the drawing up beside him. The constable looks from one to the other, shakes her head, and thumbs him out
   const COPS = 0.72;
   function shotCop(g, t) {
-    const inn = sstep(T.cop0, T.cop0 + 0.5, t), v = mixV(closeOn(1, -150), closeOn(1, 55), inn), go = sstep(T.out, T.cuff0 - 0.1, t), sh = winK(t, T.shake, T.shake + 0.1, T.thumb - 0.2, T.thumb), th = sstep(T.thumb, T.thumb + 0.25, t);
+    const inn = sstep(T.cop0, T.cop0 + 0.5, t), v = mixV(closeOn(1, -150), closeOn(1, 55), inn), go = sstep(T.out, T.out + 1.3, t), sh = winK(t, T.shake, T.shake + 0.1, T.thumb - 0.2, T.thumb), th = sstep(T.thumb, T.thumb + 0.25, t);
     const lookS = sstep(T.cop0 + 0.6, T.cop0 + 0.9, t) * (1 - sstep(T.cop0 + 1.5, T.cop0 + 1.8, t));
     lineRoom(g, t, v, {
-      pose: (i, b) => (i === 1 ? { ...b, dx: -700 * go * go, yaw: -0.85 * sstep(0, 0.3, go), walk: 1.1 * sstep(0.1, 0.4, go), phase: go * 9, smirk: 0.35, smile: 0.08, look: [lerp(0, -8, th), 0] } : b),
+      pose: (i, b) => (i === 1 ? { ...b, dx: -150 * go * go, yaw: -0.85 * sstep(0, 0.3, go), walk: 1.1 * sstep(0.1, 0.4, go), phase: go * 9, smirk: 0.35, smile: 0.08, look: [lerp(0, -8, th), 0] } : b),
       after: (gg) => {
         const o = { legs: false, rim: 1, yaw: 0.55, headYaw: lerp(0.5, 0.1, lookS) + 0.22 * sh * Math.sin((t - T.shake) * 13), look: [lerp(6, 16, lookS), 2], frown: 0.18 + 0.2 * sh, close: blinkAt(t, 9, 3.3), browY: 4 * sh, breath: 2 * Math.sin(t * 1.5) };
         o.arms = { r: { ...armIK(o, 1, lerp(250, 150, th) - 40 * Math.sin((t - T.thumb) * 11) * th * Math.exp(-(t - T.thumb) * 2.2), lerp(560, 110, th), 60, 'out'), hand: 'point', w: th } };
@@ -440,10 +448,10 @@
     let wr = null;
     lineRoom(g, t, v, {
       pose: (i, b) => {
-        if (i === 1) return null;
+        if (i === 1) { const go = sstep(T.out, T.out + 1.3, t); return t > T.cuff0 + 0.8 ? null : { ...b, dx: -150 * go * go, yaw: -0.85 * sstep(0, 0.3, go), walk: 1.1 * sstep(0.1, 0.4, go), phase: go * 9, smirk: 0.35, smile: 0.08 }; }
         if (i !== 3) return b;
         const o = { ...b, look: [lerp(0, -12, toDraw), lerp(lerp(0, 9, ck * (1 - toDraw) * (1 - toUs)), 7, toDraw)], worry: 9 * ck, browY: -5 * ck, op: 0.07 * ck + 0.05 * toUs, tilt: 0.03 * toUs, close: (b.close || 0) * (1 - ck) };
-        o.arms = { l: { ...armIK(o, -1, -58, 400, 50), hand: 'fist', w: up }, r: { ...armIK(o, 1, 58, 400, 50), hand: 'fist', w: up } };
+        o.arms = { l: { ...armIK(o, -1, -92, 400, 50), hand: 'fist', w: up }, r: { ...armIK(o, 1, 92, 400, 50), hand: 'fist', w: up } };
         wr = [-1, 1].map((k) => { const w = wristOf(o, k); return [POS[3].x + w.x * POS[3].s, POS[3].y + (w.y + (o.breath || 0)) * POS[3].s]; });
         return o;
       },
@@ -451,10 +459,15 @@
         const o = { legs: false, rim: 1, yaw: 0.6, headYaw: 0.35, look: [10, 8], frown: 0.25, close: blinkAt(t, 9, 3.3) };
         o.arms = { l: { ...armIK(o, -1, 380, 470, 50, 'down'), hand: 'grip', w: up * (1 - sstep(T.click + 0.3, T.click + 0.8, t)) } };
         figure(gg, COP, lerp(POS[1].x - 318, POS[3].x - 388, pan), POS[3].y + 40, COPS, o);
-        if (wr && ck > 0) { gg.save(); gg.globalAlpha = ck; gg.strokeStyle = '#8f96a0'; gg.lineWidth = 6; gg.beginPath(); gg.moveTo(wr[0][0], wr[0][1]); gg.lineTo(wr[1][0], wr[1][1]); gg.stroke(); for (const w of wr) { gg.strokeStyle = '#59606b'; gg.lineWidth = 16; gg.beginPath(); gg.ellipse(w[0], w[1], 38, 19, 0, 0, TAU); gg.stroke(); gg.strokeStyle = '#dfe4ea'; gg.lineWidth = 7; gg.beginPath(); gg.ellipse(w[0], w[1] - 3, 38, 19, 0, PI * 1.05, PI * 1.8); gg.stroke(); } gg.restore(); }
+        if (wr && ck > 0) {
+          gg.save(); gg.globalAlpha = ck; const yb = 16, a = [wr[0][0] + 30, wr[0][1] + yb + 4], b2 = [wr[1][0] - 30, wr[1][1] + yb + 4];
+          for (let i = 0; i <= 5; i++) { const u = i / 5, x = lerp(a[0], b2[0], u), y = lerp(a[1], b2[1], u) + 20 * Math.sin(PI * u); gg.strokeStyle = '#3d434c'; gg.lineWidth = 7; gg.beginPath(); gg.ellipse(x, y, i % 2 ? 5 : 10, i % 2 ? 9 : 6, 0, 0, TAU); gg.stroke(); gg.strokeStyle = '#c9d0d8'; gg.lineWidth = 3; gg.stroke(); }
+          for (const w of wr) { gg.fillStyle = lg(gg, w[0] - 34, 0, w[0] + 34, 0, [0, '#6b727d'], [0.45, '#e3e8ee'], [1, '#565d68']); R(gg, w[0] - 34, w[1] + yb - 13, 68, 28, 11); gg.fill(); gg.strokeStyle = '#30353d'; gg.lineWidth = 4; gg.stroke(); gg.fillStyle = '#272b31'; ell(gg, w[0], w[1] + yb + 1, 4.5, 4.5); gg.fill(); }
+          gg.restore();
+        }
       },
     });
-    const p = { x: lerp(806, INHAND.x, pan), y: lerp(880, INHAND.y, pan), sc: lerp(0.52, INHAND.sc, pan), rot: lerp(0.05, INHAND.rot, pan) };
+    const p = { x: lerp(806, INHAND.x - 44, pan), y: lerp(880, INHAND.y + 70, pan), sc: lerp(0.52, INHAND.sc, pan), rot: lerp(0.05, INHAND.rot, pan) };
     // "for two of your guesses": the drawing comes up out of your hand, and a red pencil marks the two things you guessed
     const gz = sstep(T.g2, T.g2 + 0.55, t);
     if (gz < 0.02) inHand(g, p); else {
@@ -471,23 +484,23 @@
         }
       });
       const th = [q.x - 390 * q.sc + 36, q.y + 430 * q.sc]; if (th[1] < H) myHand(g, th[0], Math.min(th[1], 1560), 0.5, 'front');
-      title(g, 'TWO GUESSES', 1470, 150, YEL, t, T.gj - 0.05);
+      title(g, 'TWO GUESSES', 1470, 150, YEL, t, T.gj - 0.05, { a: 1 - sstep(T.ns - 0.14, T.ns - 0.02, t) });
+      title(g, '“NOT SURE”', 1470, 150, CREAM, t, T.ns);
     }
     const f = Q.flashAt(t, T.click, 14) * 0.25; if (f > 0.01) { g.fillStyle = `rgba(255,255,255,${f})`; g.fillRect(0, 0, W, H); }
   }
   // 49.6–56.8: a cell. It has happened: one name, two years
   function shotCell(g, t) {
-    const d = t - T.cell0, inn = sstep(0, 0.35, d);
+    const d = t - T.cell0, inn = sstep(0, 0.35, d), open = Math.pow(sstep(T.n13e - 0.05, T.n13e + 0.7, t), 1.4);
     g.fillStyle = lg(g, 0, 0, 0, H, [0, '#1d2633'], [1, '#0e131b']); g.fillRect(0, 0, W, H);
     g.fillStyle = '#f1e2b8'; R(g, 640, 330, 190, 150, 8); g.fill(); g.fillStyle = '#1d2633'; for (let i = 1; i < 4; i++) g.fillRect(640 + i * 47.5 - 5, 330, 10, 150);
     g.save(); g.globalAlpha = 0.16; g.fillStyle = '#f6e7bc'; g.beginPath(); g.moveTo(640, 480); g.lineTo(830, 480); g.lineTo(620, 1560); g.lineTo(140, 1560); g.closePath(); g.fill(); g.restore();
     g.fillStyle = '#28303d'; g.fillRect(0, 1290, W, 630); g.fillStyle = '#3a4352'; R(g, 250, 1180, 560, 46, 8); g.fill(); g.fillStyle = '#2c3441'; g.fillRect(290, 1226, 26, 130); g.fillRect(744, 1226, 26, 130);
-    figure(g, FIVE[3], 520, 850 + 6 * Math.sin(t * 0.9), 0.5, { legs: true, back: true, yaw: 0.25, tilt: 0.09, lean: 0.03, rim: 0.6 });
-    g.fillStyle = 'rgba(14,19,27,0.45)'; g.fillRect(0, 0, W, H);
-    for (let i = 0; i < 7; i++) { const x = 70 + i * 157 - (1 - inn) * (1300 - i * 60), k = Q.kick(t, T.cell0 + 0.33, 5, 40, 12); g.fillStyle = lg(g, x - 24, 0, x + 24, 0, [0, '#59626f'], [0.35, '#aab3bf'], [1, '#3b434f']); g.fillRect(x - 22 + k, 0, 44, H); }
-    g.fillStyle = lg(g, 0, 596, 0, 660, [0, '#aab3bf'], [1, '#48505c']); g.fillRect(-10 - (1 - inn) * 1300, 600, W + 20, 56); g.fillRect(-10 - (1 - inn) * 1300, 1560, W + 20, 60);
-    title(g, 'KIRK BLOODSWORTH', 420, 128, CREAM, t, T.kirk - 0.08, { fit: 840 });
-    const yk = sstep(T.freed + 0.25, T.n13e - 0.1, t);
+    g.fillStyle = `rgba(14,19,27,${(0.42 * (1 - 0.45 * open)).toFixed(3)})`; g.fillRect(0, 0, W, H);
+    for (let i = 0; i < 7; i++) { const x = 70 + i * 157 - (1 - inn) * (1300 - i * 60) + open * (1250 + i * 30), k = Q.kick(t, T.cell0 + 0.33, 5, 40, 12); g.fillStyle = lg(g, x - 24, 0, x + 24, 0, [0, '#59626f'], [0.35, '#aab3bf'], [1, '#3b434f']); g.fillRect(x - 22 + k, 0, 44, H); }
+    g.fillStyle = lg(g, 0, 596, 0, 660, [0, '#aab3bf'], [1, '#48505c']); g.fillRect(-10 - (1 - inn) * 1300 + open * 1300, 600, W + 20, 56); g.fillRect(-10 - (1 - inn) * 1300 + open * 1300, 1560, W + 20, 60);
+    title(g, 'KIRK BLOODSWORTH', 578, 118, CREAM, t, T.kirk - 0.08, { fit: 840 });      // under the cell's window, above the crossbar
+    const yk = sstep(T.n13 - 0.3, T.n13e - 0.25, t);
     if (t > T.n12) { const a = clamp((t - T.n12) * 6), x0 = 196, x1 = 830, y = 1430; txt(g, '1984', x0, y - 40, 110, CREAM, { align: 'center', stroke: INK, sw: 0.12, a }); for (let i = 0; i <= 9; i++) { const on = yk * 9 >= i; g.fillStyle = on ? YEL : 'rgba(255,246,226,0.25)'; ell(g, lerp(x0 + 130, x1 - 130, i / 9), y - 76, on ? 13 : 8, on ? 13 : 8); g.fill(); } txt(g, '1993', x1, y - 40, 110, yk >= 1 ? YEL : 'rgba(255,246,226,0.3)', { align: 'center', stroke: INK, sw: 0.12, a }); title(g, 'FREED BY DNA', y + 80, 86, YEL, t, T.n13, { fit: 700 }); }
   }
   // 56.8–60.2: the corridor. The artist pins the poster up; number two takes his cap, walks past it, and they nod
