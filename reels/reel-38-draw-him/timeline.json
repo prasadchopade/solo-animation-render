@@ -1,0 +1,554 @@
+{
+  "note": "Single source of truth for picture + sound, in BEATS (120 bpm: beat = 0.5 s). film.js reads marks via film/data.js; sync.mjs turns sfx into cues.json; score.py reads marks for the music; vo.json places the narration. Every reel ends with the Root Cause end card: 'end' → 'done' = 3.0 s (6 beats), engine/endcard.",
+  "title": "Draw Him",
+  "duration": 74.5,
+  "fps": 30,
+  "bpm": 120,
+  "formats": [
+    "9x16"
+  ],
+  "music": {
+    "source": "synth (score.py → scripts/synth.py)"
+  },
+  "voiceover": {
+    "provider": "voice lab",
+    "voice": "af_heart (narrator), k-onyx (the artist)",
+    "file": "vo.json"
+  },
+  "mix": {
+    "music": -7,
+    "sfx": -5,
+    "vo": 3.2,
+    "duck": true,
+    "spectral": true
+  },
+  "marks": {
+    "hook": 0,
+    "end": 143.0,
+    "done": 149.0
+  },
+  "sfx": [
+    {
+      "at": 0.0,
+      "type": "chain",
+      "gain": 0.55,
+      "what": "the gold chain pulled taut at your neck (above 4.5 kHz): the first sound, before the first word",
+      "len": 0.5,
+      "pan": -0.2
+    },
+    {
+      "at": 1.0,
+      "type": "wav",
+      "file": "audio/fx/ping_f6e930b5.wav",
+      "gain": 1.0,
+      "what": "the chain snaps: metal above 5 kHz and a low jerk, nothing in the voice's band (it lands under \"only\")"
+    },
+    {
+      "at": 1.24,
+      "type": "coin",
+      "gain": 0.34,
+      "what": "a gold bead hitting the counter (above 4.6 kHz)",
+      "pan": -0.3,
+      "pitch": 1.22
+    },
+    {
+      "at": 1.5,
+      "type": "coin",
+      "gain": 0.3,
+      "what": "a gold bead hitting the counter (above 4.6 kHz)",
+      "pan": 0.25,
+      "pitch": 1.28
+    },
+    {
+      "at": 1.72,
+      "type": "coin",
+      "gain": 0.26,
+      "what": "a gold bead hitting the counter (above 4.6 kHz)",
+      "pan": -0.1,
+      "pitch": 1.3399999999999999
+    },
+    {
+      "at": 2.0,
+      "type": "coin",
+      "gain": 0.2,
+      "what": "a gold bead hitting the counter (above 4.6 kHz)",
+      "pan": 0.45,
+      "pitch": 1.4
+    },
+    {
+      "at": 2.34,
+      "type": "coin",
+      "gain": 0.15,
+      "what": "a gold bead hitting the counter (above 4.6 kHz)",
+      "pan": 0.1,
+      "pitch": 1.46
+    },
+    {
+      "at": 2.72,
+      "type": "coin",
+      "gain": 0.11,
+      "what": "a gold bead hitting the counter (above 4.6 kHz)",
+      "pan": -0.4,
+      "pitch": 1.52
+    },
+    {
+      "at": 4.6,
+      "type": "coin",
+      "gain": 0.18,
+      "what": "the last bead settling, in the gap before \"for about one second\"",
+      "pan": 0.3,
+      "pitch": 1.5
+    },
+    {
+      "at": 4.86,
+      "type": "coin",
+      "gain": 0.13,
+      "what": "the last bead settling, in the gap before \"for about one second\"",
+      "pan": 0.3,
+      "pitch": 1.5
+    },
+    {
+      "at": 5.04,
+      "type": "coin",
+      "gain": 0.09,
+      "what": "the last bead settling, in the gap before \"for about one second\"",
+      "pan": 0.3,
+      "pitch": 1.5
+    },
+    {
+      "at": 5.8,
+      "type": "vboom",
+      "gain": 0.3,
+      "what": "the street draining away: a sub drop, below the voice"
+    },
+    {
+      "at": 8.54,
+      "type": "tick",
+      "gain": 0.26,
+      "what": "the station's wall clock: tick",
+      "pitch": 1.0,
+      "pan": 0.4
+    },
+    {
+      "at": 10.54,
+      "type": "tick",
+      "gain": 0.26,
+      "what": "the station's wall clock: tock",
+      "pitch": 0.84,
+      "pan": 0.4
+    },
+    {
+      "at": 12.54,
+      "type": "tick",
+      "gain": 0.26,
+      "what": "the station's wall clock: tick",
+      "pitch": 1.0,
+      "pan": 0.4
+    },
+    {
+      "at": 14.54,
+      "type": "tick",
+      "gain": 0.26,
+      "what": "the station's wall clock: tock",
+      "pitch": 0.84,
+      "pan": 0.4
+    },
+    {
+      "at": 16.54,
+      "type": "tick",
+      "gain": 0.26,
+      "what": "the station's wall clock: tick",
+      "pitch": 1.0,
+      "pan": 0.4
+    },
+    {
+      "at": 18.54,
+      "type": "tick",
+      "gain": 0.26,
+      "what": "the station's wall clock: tock",
+      "pitch": 0.84,
+      "pan": 0.4
+    },
+    {
+      "at": 20.54,
+      "type": "tick",
+      "gain": 0.26,
+      "what": "the station's wall clock: tick",
+      "pitch": 1.0,
+      "pan": 0.4
+    },
+    {
+      "at": 22.54,
+      "type": "tick",
+      "gain": 0.26,
+      "what": "the station's wall clock: tock",
+      "pitch": 0.84,
+      "pan": 0.4
+    },
+    {
+      "at": 24.54,
+      "type": "tick",
+      "gain": 0.26,
+      "what": "the station's wall clock: tick",
+      "pitch": 1.0,
+      "pan": 0.4
+    },
+    {
+      "at": 26.54,
+      "type": "tick",
+      "gain": 0.26,
+      "what": "the station's wall clock: tock",
+      "pitch": 0.84,
+      "pan": 0.4
+    },
+    {
+      "at": 28.54,
+      "type": "tick",
+      "gain": 0.26,
+      "what": "the station's wall clock: tick",
+      "pitch": 1.0,
+      "pan": 0.4
+    },
+    {
+      "at": 30.54,
+      "type": "tick",
+      "gain": 0.26,
+      "what": "the station's wall clock: tock",
+      "pitch": 0.84,
+      "pan": 0.4
+    },
+    {
+      "at": 32.54,
+      "type": "tick",
+      "gain": 0.26,
+      "what": "the station's wall clock: tick",
+      "pitch": 1.0,
+      "pan": 0.4
+    },
+    {
+      "at": 34.54,
+      "type": "tick",
+      "gain": 0.26,
+      "what": "the station's wall clock: tock",
+      "pitch": 0.84,
+      "pan": 0.4
+    },
+    {
+      "at": 36.54,
+      "type": "tick",
+      "gain": 0.26,
+      "what": "the station's wall clock: tick",
+      "pitch": 1.0,
+      "pan": 0.4
+    },
+    {
+      "at": 12.82,
+      "type": "wav",
+      "file": "audio/fx/pencil_26bceb9a.wav",
+      "gain": 1.0,
+      "what": "the first faint oval, under \"Round face\" (above 4.6 kHz only)"
+    },
+    {
+      "at": 14.154,
+      "type": "wav",
+      "file": "audio/fx/pencil_c3ed85e0.wav",
+      "gain": 1.0,
+      "what": "the second oval, under \"or long?\" (above 4.6 kHz only)"
+    },
+    {
+      "at": 21.97,
+      "type": "wav",
+      "file": "audio/fx/pencil_4b9d89b8.wav",
+      "gain": 1.0,
+      "what": "THE line: one dark stroke round the jaw, in the clear after \"Round.\""
+    },
+    {
+      "at": 23.57,
+      "type": "wav",
+      "file": "audio/fx/rub_b5efc974.wav",
+      "gain": 1.0,
+      "what": "the long oval rubbed out"
+    },
+    {
+      "at": 24.45,
+      "type": "exhale",
+      "gain": 0.6,
+      "what": "he blows the crumbs at us",
+      "len": 0.28
+    },
+    {
+      "at": 24.99,
+      "type": "wav",
+      "file": "audio/fx/under_43af3b59.wav",
+      "gain": 1.0,
+      "what": "the flurry heard from under the sheet: dull knocks on the board"
+    },
+    {
+      "at": 25.93,
+      "type": "wav",
+      "file": "audio/fx/hatch_f74334b8.wav",
+      "gain": 1.0,
+      "what": "the flurry from above: his hand in three places (left)"
+    },
+    {
+      "at": 26.4196,
+      "type": "wav",
+      "file": "audio/fx/hatch_8dc15352.wav",
+      "gain": 1.0,
+      "what": "the flurry from above: his hand in three places (right)"
+    },
+    {
+      "at": 26.8804,
+      "type": "wav",
+      "file": "audio/fx/hatch_86cc5218.wav",
+      "gain": 1.0,
+      "what": "the flurry from above: his hand in three places (centre)"
+    },
+    {
+      "at": 34.21,
+      "type": "wav",
+      "file": "audio/fx/dot_21c3bc0e.wav",
+      "gain": 1.0,
+      "what": "the mole: the tip pressed and twisted, just after \"This one.\""
+    },
+    {
+      "at": 35.01,
+      "type": "wav",
+      "file": "audio/fx/hatch_7ae8866d.wav",
+      "gain": 1.0,
+      "what": "shading the cheek"
+    },
+    {
+      "at": 35.81,
+      "type": "wav",
+      "file": "audio/fx/hatch_0e7d5798.wav",
+      "gain": 1.0,
+      "what": "the cap, in a maroon wax pencil: a duller, rounder scratch"
+    },
+    {
+      "at": 37.41,
+      "type": "wav",
+      "file": "audio/fx/tear_772ec200.wav",
+      "gain": 1.0,
+      "what": "the sheet torn off the pad (the clock has stopped)"
+    },
+    {
+      "at": 38.09,
+      "type": "page",
+      "gain": 0.45,
+      "what": "the sheet flapped upright in front of you"
+    },
+    {
+      "at": 42.29,
+      "type": "page",
+      "gain": 0.5,
+      "what": "the drawing dropping into your hand"
+    },
+    {
+      "at": 42.79,
+      "type": "switch",
+      "gain": 0.75,
+      "what": "the lights of the line-up room snapping on"
+    },
+    {
+      "at": 50.79,
+      "type": "tick",
+      "gain": 0.9,
+      "what": "the count: 3",
+      "pitch": 0.8
+    },
+    {
+      "at": 52.39,
+      "type": "tick",
+      "gain": 0.9,
+      "what": "the count: 2",
+      "pitch": 0.8
+    },
+    {
+      "at": 53.99,
+      "type": "tick",
+      "gain": 0.9,
+      "what": "the count: 1",
+      "pitch": 0.8
+    },
+    {
+      "at": 55.99,
+      "type": "page",
+      "gain": 0.4,
+      "what": "your hand lifting the drawing"
+    },
+    {
+      "at": 57.15,
+      "type": "thunk",
+      "gain": 0.6,
+      "what": "the drawing set against the glass, over number four: a low knock and a high click, then the line"
+    },
+    {
+      "at": 72.18,
+      "type": "rewind",
+      "gain": 1.0,
+      "what": "the film running backwards to frame 0, in the pause after \"But the man you saw\"",
+      "len": 1.25
+    },
+    {
+      "at": 74.98,
+      "type": "wav",
+      "file": "audio/fx/pencil_6472b873.wav",
+      "gain": 1.0,
+      "what": "a red pencil ringing the mole"
+    },
+    {
+      "at": 76.02,
+      "type": "page",
+      "gain": 0.3,
+      "what": "the frame becomes a card"
+    },
+    {
+      "at": 79.6,
+      "type": "page",
+      "gain": 0.3,
+      "what": "the constable holding the drawing up beside number two, just before \"Chose him?\"",
+      "pan": 0.3
+    },
+    {
+      "at": 86.89,
+      "type": "wav",
+      "file": "audio/fx/walk_401d3ad5.wav",
+      "gain": 1.0,
+      "what": "number two walking out, unhurried (low heels: almost nothing in the voice's band)"
+    },
+    {
+      "at": 89.61,
+      "type": "wav",
+      "file": "audio/fx/cuffs_68d891be.wav",
+      "gain": 1.0,
+      "what": "the handcuffs on number four: the ratchet, then the lock, before \"So number four goes to jail\""
+    },
+    {
+      "at": 94.836,
+      "type": "wav",
+      "file": "audio/fx/pencil_5cb414c1.wav",
+      "gain": 1.0,
+      "what": "the red pencil tracing the jaw you guessed, under \"two\" (above 4.6 kHz only)"
+    },
+    {
+      "at": 95.61,
+      "type": "wav",
+      "file": "audio/fx/pencil_6b50e5c3.wav",
+      "gain": 1.0,
+      "what": "the red pencil ringing the mole you guessed, under \"guesses\" (above 4.6 kHz only)"
+    },
+    {
+      "at": 103.71,
+      "type": "clang",
+      "gain": 0.36,
+      "what": "the cell door (the one from The Only Witness), in the clear before the year"
+    },
+    {
+      "at": 117.8297,
+      "type": "gclick",
+      "gain": 0.45,
+      "what": "a year going by: 1985",
+      "pan": -0.31000000000000005
+    },
+    {
+      "at": 118.0933,
+      "type": "gclick",
+      "gain": 0.45,
+      "what": "a year going by: 1986",
+      "pan": -0.22000000000000003
+    },
+    {
+      "at": 118.3148,
+      "type": "gclick",
+      "gain": 0.45,
+      "what": "a year going by: 1987",
+      "pan": -0.13
+    },
+    {
+      "at": 118.5198,
+      "type": "gclick",
+      "gain": 0.45,
+      "what": "a year going by: 1988",
+      "pan": -0.040000000000000036
+    },
+    {
+      "at": 118.7202,
+      "type": "gclick",
+      "gain": 0.45,
+      "what": "a year going by: 1989",
+      "pan": 0.04999999999999993
+    },
+    {
+      "at": 118.9252,
+      "type": "gclick",
+      "gain": 0.45,
+      "what": "a year going by: 1990",
+      "pan": 0.14
+    },
+    {
+      "at": 119.1467,
+      "type": "gclick",
+      "gain": 0.45,
+      "what": "a year going by: 1991",
+      "pan": 0.22999999999999998
+    },
+    {
+      "at": 119.4103,
+      "type": "gclick",
+      "gain": 0.45,
+      "what": "a year going by: 1992",
+      "pan": 0.31999999999999995
+    },
+    {
+      "at": 119.97,
+      "type": "gclick",
+      "gain": 0.45,
+      "what": "a year going by: 1993",
+      "pan": 0.4099999999999999
+    },
+    {
+      "at": 122.03,
+      "type": "thunk",
+      "gain": 0.4,
+      "what": "the last pin pressed into the notice board",
+      "pan": -0.3
+    },
+    {
+      "at": 122.47,
+      "type": "wav",
+      "file": "audio/fx/walk_d89fa9f1.wav",
+      "gain": 1.0,
+      "what": "his steps down the corridor, past his own poster"
+    },
+    {
+      "at": 127.57,
+      "type": "bicyclebell",
+      "gain": 0.26,
+      "what": "the street again: a bicycle bell, before \"And number two?\"",
+      "pan": 0.5
+    },
+    {
+      "at": 137.87,
+      "type": "wav",
+      "file": "audio/fx/sip_fef27931.wav",
+      "gain": 1.0,
+      "what": "he sips his chai, after the last word"
+    },
+    {
+      "at": 139.41,
+      "type": "exhale",
+      "gain": 0.35,
+      "what": "and breathes out",
+      "len": 0.42,
+      "pan": 0.2
+    },
+    {
+      "at": "end",
+      "type": "wav",
+      "file": "../../engine/endcard/endcard.wav",
+      "gain": 1.0,
+      "what": "end card sound"
+    }
+  ]
+}
