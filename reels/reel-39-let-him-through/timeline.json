@@ -1,0 +1,353 @@
+{
+  "note": "Single source of truth for picture + sound, in BEATS (120 bpm: beat = 0.5 s). film.js reads marks via film/data.js; sync.mjs turns sfx into cues.json; score.py reads marks for the music; vo.json places the narration. Every reel ends with the Root Cause end card: 'end' → 'done' = 3.0 s (6 beats), engine/endcard.",
+  "title": "Let Him Through?",
+  "duration": 58.5,
+  "fps": 30,
+  "bpm": 120,
+  "formats": [
+    "9x16"
+  ],
+  "music": {
+    "source": "score.py: VSCO 2 CE recordings (CC0) + scripts/synth.py"
+  },
+  "voiceover": {
+    "provider": "voice lab",
+    "voice": "k-heart",
+    "man": "michael",
+    "file": "vo.json"
+  },
+  "mix": {
+    "music": -7,
+    "sfx": -5,
+    "vo": 3.2,
+    "duck": true,
+    "spectral": true
+  },
+  "marks": {
+    "hook": 0.0,
+    "q2": 2.8,
+    "q3": 5.6,
+    "q4": 8.4,
+    "q5": 11.2,
+    "deal": 14.0,
+    "stop": 16.3,
+    "pick": 18.95,
+    "sure": 27.95,
+    "seven": 30.51,
+    "one7": 38.23,
+    "nine": 41.31,
+    "room": 53.51,
+    "old": 62.83,
+    "tap": 64.94,
+    "old2": 65.48,
+    "who": 68.92,
+    "bro": 72.72,
+    "curtain": 78.4,
+    "brother": 81.27,
+    "gate": 84.87,
+    "rewind": 92.04,
+    "final": 93.64,
+    "q": 97.44,
+    "look": 100.68,
+    "end": 111.0,
+    "done": 117.0
+  },
+  "sfx": [
+    {
+      "at": 0.0,
+      "type": "thunk",
+      "gain": 0.55,
+      "what": "frame 0: his open passport pressed to your glass (a low knock and a click, before the first word)"
+    },
+    {
+      "at": 2.76,
+      "type": "stamplow",
+      "gain": 0.6,
+      "what": "you stamp number 1's passport as number 2 steps up (low and high only: under the voice)",
+      "pitch": 0.97
+    },
+    {
+      "at": 5.56,
+      "type": "stamplow",
+      "gain": 0.6,
+      "what": "you stamp number 2's passport as number 3 steps up (low and high only: under the voice)",
+      "pitch": 1.0
+    },
+    {
+      "at": 8.36,
+      "type": "stamplow",
+      "gain": 0.6,
+      "what": "you stamp number 3's passport as number 4 steps up (low and high only: under the voice)",
+      "pitch": 1.03
+    },
+    {
+      "at": 11.16,
+      "type": "stamplow",
+      "gain": 0.6,
+      "what": "you stamp number 4's passport as number 5 steps up (low and high only: under the voice)",
+      "pitch": 0.97
+    },
+    {
+      "at": 14.6,
+      "type": "cardlow",
+      "gain": 0.5,
+      "what": "pair 1 dealt onto your desk (under the voice)",
+      "pitch": 0.92
+    },
+    {
+      "at": 14.92,
+      "type": "cardlow",
+      "gain": 0.5,
+      "what": "pair 2 dealt onto your desk (under the voice)",
+      "pitch": 0.96
+    },
+    {
+      "at": 15.24,
+      "type": "cardlow",
+      "gain": 0.5,
+      "what": "pair 3 dealt onto your desk (under the voice)",
+      "pitch": 1.0
+    },
+    {
+      "at": 15.56,
+      "type": "cardlow",
+      "gain": 0.5,
+      "what": "pair 4 dealt onto your desk (under the voice)",
+      "pitch": 1.04
+    },
+    {
+      "at": 15.88,
+      "type": "cardlow",
+      "gain": 0.5,
+      "what": "pair 5 dealt onto your desk (under the voice)",
+      "pitch": 1.08
+    },
+    {
+      "at": 18.95,
+      "type": "tick",
+      "gain": 0.95,
+      "what": "the clock: 5",
+      "pitch": 0.9
+    },
+    {
+      "at": 20.75,
+      "type": "tick",
+      "gain": 0.95,
+      "what": "the clock: 4",
+      "pitch": 0.82
+    },
+    {
+      "at": 22.55,
+      "type": "tick",
+      "gain": 0.95,
+      "what": "the clock: 3",
+      "pitch": 0.9
+    },
+    {
+      "at": 24.35,
+      "type": "tick",
+      "gain": 0.95,
+      "what": "the clock: 2",
+      "pitch": 0.82
+    },
+    {
+      "at": 26.15,
+      "type": "tick",
+      "gain": 0.95,
+      "what": "the clock: 1",
+      "pitch": 0.9
+    },
+    {
+      "at": 31.23,
+      "type": "stamp",
+      "gain": 1.0,
+      "what": "the first stamp comes down hard (in the gap before the line)"
+    },
+    {
+      "at": 32.23,
+      "type": "stamplow",
+      "gain": 0.62,
+      "what": "stamp 2 of 7",
+      "pitch": 1.0
+    },
+    {
+      "at": 33.23,
+      "type": "stamplow",
+      "gain": 0.62,
+      "what": "stamp 3 of 7",
+      "pitch": 1.06
+    },
+    {
+      "at": 34.23,
+      "type": "stamplow",
+      "gain": 0.62,
+      "what": "stamp 4 of 7",
+      "pitch": 0.97
+    },
+    {
+      "at": 35.23,
+      "type": "stamplow",
+      "gain": 0.62,
+      "what": "stamp 5 of 7",
+      "pitch": 1.03
+    },
+    {
+      "at": 36.23,
+      "type": "stamplow",
+      "gain": 0.62,
+      "what": "stamp 6 of 7",
+      "pitch": 0.94
+    },
+    {
+      "at": 37.23,
+      "type": "stamplow",
+      "gain": 0.74,
+      "what": "stamp 7 of 7: the lookalike, cleared",
+      "pitch": 1.0
+    },
+    {
+      "at": 42.31,
+      "type": "ticker",
+      "gain": 0.22,
+      "what": "the years counting up, 0 to 9 (above 4.5 kHz)",
+      "len": 4.1
+    },
+    {
+      "at": 53.91,
+      "type": "idle",
+      "gain": 0.55,
+      "what": "his plane outside the window, taxiing away (below 250 Hz)",
+      "len": 8.005000000000003
+    },
+    {
+      "at": 53.91,
+      "type": "jetwhine",
+      "gain": 0.2,
+      "what": "its turbines through the glass (above 4.6 kHz)",
+      "len": 8.005000000000003
+    },
+    {
+      "at": 64.94,
+      "type": "tap",
+      "gain": 0.55,
+      "what": "he taps his own photo (\"That's me.\" tap \"I just got old.\")"
+    },
+    {
+      "at": 70.72,
+      "type": "airwhoosh",
+      "gain": 0.3,
+      "what": "the camera sweeps across the cards to number four (air only)"
+    },
+    {
+      "at": 79.5,
+      "type": "airwhoosh",
+      "gain": 0.26,
+      "what": "his photo opens out into the family picture (air only)"
+    },
+    {
+      "at": 84.87,
+      "type": "heel",
+      "gain": 0.42,
+      "what": "a footstep up the jet bridge (under the voice)",
+      "pitch": 0.97
+    },
+    {
+      "at": 85.9226,
+      "type": "heel",
+      "gain": 0.42,
+      "what": "a footstep up the jet bridge (under the voice)",
+      "pitch": 1.03
+    },
+    {
+      "at": 86.9753,
+      "type": "heel",
+      "gain": 0.42,
+      "what": "a footstep up the jet bridge (under the voice)",
+      "pitch": 1.0
+    },
+    {
+      "at": 88.0279,
+      "type": "heel",
+      "gain": 0.42,
+      "what": "a footstep up the jet bridge (under the voice)",
+      "pitch": 0.97
+    },
+    {
+      "at": 89.0805,
+      "type": "heel",
+      "gain": 0.42,
+      "what": "a footstep up the jet bridge (under the voice)",
+      "pitch": 1.03
+    },
+    {
+      "at": 90.1332,
+      "type": "heel",
+      "gain": 0.42,
+      "what": "a footstep up the jet bridge (under the voice)",
+      "pitch": 1.0
+    },
+    {
+      "at": 91.1858,
+      "type": "heel",
+      "gain": 0.42,
+      "what": "a footstep up the jet bridge (under the voice)",
+      "pitch": 0.97
+    },
+    {
+      "at": 84.87,
+      "type": "tyres",
+      "gain": 0.4,
+      "what": "his roller case on the bridge floor (60-250 Hz)",
+      "len": 3.585000000000001
+    },
+    {
+      "at": 92.04,
+      "type": "rewind",
+      "gain": 0.85,
+      "what": "the tape rewinds, a clunk on the white flash",
+      "len": 0.7999999999999972
+    },
+    {
+      "at": 100.68,
+      "type": "tick",
+      "gain": 0.5,
+      "what": "the clock again: 5, time to look",
+      "pitch": 0.9
+    },
+    {
+      "at": 102.48,
+      "type": "tick",
+      "gain": 0.5,
+      "what": "the clock again: 4, time to look",
+      "pitch": 0.82
+    },
+    {
+      "at": 104.28,
+      "type": "tick",
+      "gain": 0.5,
+      "what": "the clock again: 3, time to look",
+      "pitch": 0.9
+    },
+    {
+      "at": 106.08,
+      "type": "tick",
+      "gain": 0.5,
+      "what": "the clock again: 2, time to look",
+      "pitch": 0.82
+    },
+    {
+      "at": 107.88,
+      "type": "tick",
+      "gain": 0.5,
+      "what": "the clock again: 1, time to look",
+      "pitch": 0.9
+    },
+    {
+      "at": "end",
+      "type": "wav",
+      "file": "../../engine/endcard/endcard.wav",
+      "gain": 1.0,
+      "what": "end card sound (its chord; the dot rings at +0.82 s)"
+    }
+  ]
+}

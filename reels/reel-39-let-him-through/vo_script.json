@@ -1,0 +1,113 @@
+{
+ "voice": "af_heart",
+ "speed": 1.0,
+ "lang": "en",
+ "note": "n.. = the narrator (af_heart, the 'take' voice). m08a/m08b = number two's own line, split so the tap on his photo gets a real pause between the two sentences; auditioned in male voices with task=cast (cast_lines). The narrator's reads of m08a/m08b are not used. Run 1 (one line, m08) read clean in onyx, adam, michael, fable; hm_omega and hm_psi creaked (10.8 %, 14.0 %). n05 dropped \"trained\" (15 Nov): in the mix's noisy-room check, Whisper large-v3 heard \"trained passport\" as \"train passport\" (the d before the p is barely released).",
+ "ref_text": "I've been away a long time. It's good to be going home.",
+ "cast_lines": [
+  "m08a",
+  "m08b"
+ ],
+ "cast": [
+  {
+   "id": "onyx",
+   "engine": "kokoro",
+   "voice": "am_onyx",
+   "speed": 1.0
+  },
+  {
+   "id": "onyx-96",
+   "engine": "kokoro",
+   "voice": "am_onyx",
+   "speed": 0.96
+  },
+  {
+   "id": "michael",
+   "engine": "kokoro",
+   "voice": "am_michael",
+   "speed": 1.0
+  },
+  {
+   "id": "adam",
+   "engine": "kokoro",
+   "voice": "am_adam",
+   "speed": 1.0
+  },
+  {
+   "id": "fable",
+   "engine": "kokoro",
+   "voice": "bm_fable",
+   "speed": 1.0
+  }
+ ],
+ "take": {
+  "id": "k-heart",
+  "engine": "kokoro",
+  "voice": "af_heart",
+  "speed": 1.0
+ },
+ "lines": [
+  {
+   "id": "n01",
+   "text": "You're the passport officer, and one of these five men is flying on someone else's passport."
+  },
+  {
+   "id": "n02",
+   "text": "Whoever you stop will miss his flight."
+  },
+  {
+   "id": "n03",
+   "text": "So who do you stop?"
+  },
+  {
+   "id": "n04",
+   "text": "Were you that sure?"
+  },
+  {
+   "id": "n05",
+   "text": "Because in a real test, passport officers waved through one lookalike in seven."
+  },
+  {
+   "id": "n06",
+   "text": "Number two is going home for the first time in nine years, and his photo's from the year he left.",
+   "text_kokoro": "Number two is going home for the first time in nine years, and his [photo's](/fˈOtOz/) from the year he left."
+  },
+  {
+   "id": "n07",
+   "text": "If you stopped him, he's in a back room now, holding his own passport."
+  },
+  {
+   "id": "m08a",
+   "text": "That's me."
+  },
+  {
+   "id": "m08b",
+   "text": "I just got old."
+  },
+  {
+   "id": "n09",
+   "text": "So who was it?"
+  },
+  {
+   "id": "n10",
+   "text": "Number four matched his photo almost perfectly, but it isn't his.",
+   "text_kokoro": "Number four matched his [photo](/fˈOtO/) almost perfectly, but it isn't his."
+  },
+  {
+   "id": "n11",
+   "text": "It's his brother's."
+  },
+  {
+   "id": "n12",
+   "text": "Unless you stopped him, he's boarding now, as his brother."
+  },
+  {
+   "id": "n13",
+   "text": "Now look again."
+  },
+  {
+   "id": "n14",
+   "text": "What gave him away?"
+  }
+ ]
+}
