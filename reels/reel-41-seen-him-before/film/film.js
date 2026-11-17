@@ -293,7 +293,7 @@
         const bagX = v.x - 150 * s, bagY = v.y - 1594 * s + 880 * s, open = win(tau, S.lift0 + 0.1, S.lift0 + 0.3, S.lift1, S.lift1 + 0.25), bulge = sstep(S.lift1 - 0.1, S.lift1 + 0.1, tau);
         drawPerson(q, c, FOUR, AT4.X, 0, AT4.Z, AT4.a, po);
         clothBag(q, bagX, bagY, s, open, bulge); strap(q, bagX + 120 * s, bagY + 10 * s, v.x + 60 * s, v.y - 1594 * s + 330 * s, s);
-        if (F4.reach >= 0.5 && F4.done < 0.98) {                  // the tin in his hand, then into the bag
+        if (F4.reach >= 0.5 && F4.drop < 0.97) {                  // the tin in his hand, then into the bag (and it stays there)
           const w = wristOf(po, -1), dir = [-Math.sin(w.ang), Math.cos(w.ang)];
           const fx = v.x + (w.x + dir[0] * 60) * s, fy = v.y - 1594 * s + (w.y + dir[1] * 60) * s, inBag = sstep(0.55, 1, F4.drop);
           q.save(); if (inBag > 0) { q.beginPath(); q.rect(-100, -100, W + 200, bagY + 6 * s + 100); q.clip(); }
