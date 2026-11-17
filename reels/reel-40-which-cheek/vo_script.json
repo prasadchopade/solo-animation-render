@@ -1,0 +1,32 @@
+{
+ "voice": "af_heart",
+ "speed": 1.0,
+ "take": { "id": "k-heart", "engine": "kokoro", "voice": "af_heart", "speed": 1.0 },
+ "lines": [
+  { "id": "n01", "text": "You know the man with the mole." },
+  { "id": "n02", "text": "Last night, police picked up four of him." },
+  { "id": "n03", "text": "Only one is really him, and you've seen all his crimes." },
+  { "id": "n04", "text": "Whoever you pick goes on every screen in the city tonight." },
+  { "id": "n05", "text": "So which one is him?" },
+  { "id": "n06", "text": "Be sure." },
+  { "id": "n07", "text": "Because if it's the wrong man, that's an innocent man's face, everywhere he goes." },
+  { "id": "n08", "text": "And the real one walks right past it." },
+  { "id": "n09", "text": "And if you were right?" },
+  { "id": "t01", "text": "Have you seen this man?" },
+  { "id": "n10", "text": "Everyone's looking at his face." },
+  { "id": "n11", "text": "Nobody's looking at him." },
+  { "id": "n12", "text": "It was in every photo you saw.", "text_kokoro": "It was in every [photo](/fˈOtO/) you saw." },
+  { "id": "n13", "text": "Memory keeps the mole, and drops the side." },
+  { "id": "n14", "text": "So be honest." },
+  { "id": "n15", "text": "Did you know it, or did you guess?" },
+  { "id": "n15b", "text": "Did you know it, or did you guess it?" }
+ ],
+ "ref_text": "Have you seen this man? Police say he was last seen near the market, and they are asking anyone who knows him to call.",
+ "cast_lines": ["t01"],
+ "cast": [
+  { "id": "k-daniel", "engine": "kokoro", "voice": "bm_daniel", "speed": 1.0 },
+  { "id": "k-onyx", "engine": "kokoro", "voice": "am_onyx", "speed": 1.0 },
+  { "id": "k-omega", "engine": "kokoro", "voice": "hm_omega", "speed": 1.0 },
+  { "id": "k-alpha", "engine": "kokoro", "voice": "hf_alpha", "speed": 1.0 }
+ ]
+}
