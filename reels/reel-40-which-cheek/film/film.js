@@ -786,9 +786,10 @@
       herArm(g, 900, -1900, lerp(900, 540 - tap, sqIn), lerp(-1900, -230, sqIn), 'open', 1);
     }
     for (let i = 0; i < 3; i++) {
-      const tl = [T.c1, T.c2, T.c3][i], a = sstep(tl - 0.4, tl, t), b = 1 - sstep(tl + 0.08, tl + 0.42, t);
+      // her fingers on the print's top edge as it comes down, never over his face; gone a beat after it lands
+      const tl = [T.c1, T.c2, T.c3][i], a = sstep(tl - 0.4, tl, t), b = 1 - sstep(tl + 0.02, tl + 0.26, t);
       const k = Math.min(a, b); if (k <= 0.001 || t > T.sweep) continue;
-      const L = LAND[i]; herArm(g, -500, -2100, lerp(-300, L[0] - 140, k), lerp(-2000, L[1] - 150, k), 'open', -1);
+      const L = LAND[i]; herArm(g, -500, -2300, lerp(-300, L[0] - 200, k), lerp(-2200, L[1] - 300, k), 'open', -1);
     }
     const sw = winK(t, T.sweep - 0.2, T.sweep + 0.05, T.sweep + 0.45, T.sweep + 0.7);
     if (sw > 0.001) { const u = sstep(T.sweep + 0.02, T.sweep + 0.45, t); herArm(g, 900, -2100, lerp(lerp(900, 640, sw), -1300, u), lerp(-2000, -60, sw), 'open', 1); }
