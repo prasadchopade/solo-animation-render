@@ -1,0 +1,132 @@
+{
+ "note": "Reel 41: Seen Him Before. Draft 4 (the user's notes on motion test 1, 18 Nov): the explanation is back (e1-e4: what memory did, no statistics, the desk's step 5), n10 is cut, n11 names 'the real thief' (after e1-e4 'he' would mean number three). The narrator is the series voice (af_heart, 1.0); takes 2-3 run at 0.96 and 1.04. The chaiwala's shout, louder and longer ('like choorr choorr'): ch5-ch7 hold the vowel (and ch7 tries a trilled r) in the two male voices that read cleanly in reel 25; ch8 is the Hindi word itself, for Kokoro's Hindi voices (they read [word](/phonemes/) markup letter by letter, the desk's note 27). Facts: docs/research.md.",
+ "voice": "af_heart",
+ "speed": 1.0,
+ "ref_text": "The night was cold and very quiet. Most of the street was asleep, and the lamps hummed over the empty road. Somewhere far away, a train rolled past, and then the silence came back.",
+ "cast_lines": [
+  "ch5",
+  "ch6",
+  "ch7",
+  "ch8"
+ ],
+ "cast": [
+  {
+   "id": "k-michael",
+   "engine": "kokoro",
+   "voice": "am_michael",
+   "speed": 1.0
+  },
+  {
+   "id": "k-onyx",
+   "engine": "kokoro",
+   "voice": "am_onyx",
+   "speed": 1.0
+  },
+  {
+   "id": "h-omega",
+   "engine": "kokoro",
+   "voice": "hm_omega",
+   "speed": 1.0
+  },
+  {
+   "id": "h-psi",
+   "engine": "kokoro",
+   "voice": "hm_psi",
+   "speed": 1.0
+  }
+ ],
+ "take": {
+  "id": "k-heart",
+  "engine": "kokoro",
+  "voice": "af_heart",
+  "speed": 1.0
+ },
+ "say": {
+  "chor": "tʃ oː r"
+ },
+ "lines": [
+  {
+   "id": "n01",
+   "text": "You've got five seconds before this stall gets robbed."
+  },
+  {
+   "id": "n02",
+   "text": "Five men were at the stall."
+  },
+  {
+   "id": "n03",
+   "text": "Who took it?"
+  },
+  {
+   "id": "n04",
+   "text": "Whoever you pick goes to jail."
+  },
+  {
+   "id": "n05",
+   "text": "Did you actually see him take it?"
+  },
+  {
+   "id": "n06",
+   "text": "Number three never left his seat."
+  },
+  {
+   "id": "n07",
+   "text": "For once, the man with the mole did nothing."
+  },
+  {
+   "id": "n08",
+   "text": "Number four took it, in plain view."
+  },
+  {
+   "id": "n09",
+   "text": "So if you chose number three, he spent the night in a cell."
+  },
+  {
+   "id": "e1",
+   "text": "Why him?"
+  },
+  {
+   "id": "e2",
+   "text": "You saw his face first."
+  },
+  {
+   "id": "e3",
+   "text": "Memory can paste a face you know into a crime you saw."
+  },
+  {
+   "id": "e4",
+   "text": "Psychologists call it unconscious transference."
+  },
+  {
+   "id": "n11",
+   "text": "And unless you chose number four, the real thief walked off with the cash box."
+  },
+  {
+   "id": "n12",
+   "text": "Watch it again."
+  },
+  {
+   "id": "n13",
+   "text": "This time, watch his eyes."
+  },
+  {
+   "id": "ch5",
+   "text": "Chor! Chor!",
+   "text_kokoro": "[Chor](/ʧˈoːːɹ/)! [Chor](/ʧˈoːːɹ/)!"
+  },
+  {
+   "id": "ch6",
+   "text": "Chor! Chor!",
+   "text_kokoro": "[Chor](/ʧˈOːːɹ/)! [Chor](/ʧˈOːːɹ/)!"
+  },
+  {
+   "id": "ch7",
+   "text": "Chor! Chor!",
+   "text_kokoro": "[Chor](/ʧˈoːːr/)! [Chor](/ʧˈoːːr/)!"
+  },
+  {
+   "id": "ch8",
+   "text": "चोर! चोर!"
+  }
+ ]
+}
