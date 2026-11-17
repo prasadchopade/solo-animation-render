@@ -1,0 +1,22 @@
+{
+  "note": "Single source of truth for picture + sound, in BEATS (120 bpm: beat = 0.5 s). film.js reads marks via film/data.js; sync.mjs turns sfx into cues.json; score.py reads marks for the music. Reel 42 is a seamless loop with no end card and no voice (the user's calls, 17 Nov): the film runs from 'hook' to 'end' = duration (22 s since 18 Nov: the user asked for longer, and a side to him other than stealing), and its last frame runs into its first. finish_mix.py pads the mix so the cloud stitch keeps the last frame.",
+  "title": "What Did He Take?",
+  "duration": 22.0,
+  "fps": 30,
+  "bpm": 120,
+  "formats": [
+    "9x16"
+  ],
+  "music": {
+    "source": "score.py (recorded VSCO 2 CE strings, harp, glock, piano + the synth tabla); sfx.py; loopmix.py mixes them as a loop"
+  },
+  "mix": {
+    "music": -10,
+    "sfx": 0
+  },
+  "marks": {
+    "hook": 0,
+    "end": 44
+  },
+  "sfx": []
+}
