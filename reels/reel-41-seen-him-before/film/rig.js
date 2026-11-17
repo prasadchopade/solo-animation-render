@@ -1,8 +1,3 @@
-// Reel 42 · What Did He Take?: the rig, copied from reel 37 (tag source/reel-37-youre-the-thief, film/rig.js) and extended here:
-// long sleeves, a watch on a wrist that can go, things held in either hand (o.hold), one arm drawn on its own (o.onlyArm /
-// o.skipArm, for a hug), a fuller build (look.girth), an open mouth and wide eyes, and a sun that a reel can set (RIG.setSun);
-// a crouch (pose.sink drops the hips, pose.sit moves them back; the knees solve themselves) and the lips' place on screen (F.mouth).
-// Reel 37's notes follow.
 // Reel 37 · You're the Thief: the rig (this reel's own; nothing here is shared with other reels).
 // A camera that can look anywhere, a body that walks and can be drawn from any side, and a head that turns all the way round.
 // The walk is built, not keyed: each foot is planted and stays put while the pelvis rides over it, the swing foot is carried
@@ -99,12 +94,12 @@
     const p = S.cad * tg + S.ph0, qL = frac(p), qR = frac(p + 0.5);
     const FL = footAt(S, qL), FR = footAt(S, qR);
     const yawP = S.pelYaw * Math.cos(TAU * (qL - 0.03)), rollP = S.pelRoll * Math.cos(TAU * (qL - 0.30)), sway = S.sway * Math.cos(TAU * (qL - 0.30));
-    const hw = BODY.hipW, pf = S.surge * Math.sin(2 * TAU * qL) - (o.sit || 0);          // reel 42: o.sit moves the hips back (a crouch)
+    const hw = BODY.hipW, pf = S.surge * Math.sin(2 * TAU * qL);
     const hL = [pf + hw * Math.sin(yawP), hw * Math.sin(rollP), sway + hw * Math.cos(yawP)], hR = [pf - hw * Math.sin(yawP), -hw * Math.sin(rollP), sway - hw * Math.cos(yawP)];
     const anL = [FL[0], FL[1], S.stepW], anR = [FR[0], FR[1], -S.stepW];
     const Lmax = (BODY.thigh + BODY.shin) * S.legExt;
     const reach = (h, a) => a[1] - h[1] + Math.sqrt(Math.max(0.02, Lmax * Lmax - (a[0] - h[0]) ** 2 - (a[2] - h[2]) ** 2));
-    const hipY = smin(smin(reach(hL, anL), reach(hR, anR)), S.hipMax) - S.sink - (o.sink || 0) - S.dip * (0.5 + 0.5 * Math.cos(2 * TAU * (qL - S.dipPh)));   // reel 42: o.sink drops them
+    const hipY = smin(smin(reach(hL, anL), reach(hR, anR)), S.hipMax) - S.sink - S.dip * (0.5 + 0.5 * Math.cos(2 * TAU * (qL - S.dipPh)));
     hL[1] += hipY; hR[1] += hipY;
     const knee = (h, a, side) => {                    // the knee, bent forwards (and a touch outwards)
       const d = [a[0] - h[0], a[1] - h[1], a[2] - h[2]], L = Math.hypot(d[0], d[1], d[2]) || 1e-6, l = Math.min(L, BODY.thigh + BODY.shin - 1e-4);
@@ -168,12 +163,11 @@
 
   // ------------------------------------------------------------------ drawing the body
   const SUN = (() => { const v = [-0.2, 0.27, 1], l = Math.hypot(...v); return v.map((x) => x / l); })();   // towards the low sun, at the far (+Z) end of the lane
-  function setSun(v) { const l = Math.hypot(...v); for (let i = 0; i < 3; i++) SUN[i] = v[i] / l; }          // reel 42: the reel sets it once, before frame 0
   function lightOf(cam) { const d = cam.dirCam(SUN[0], SUN[1], SUN[2]); return { x: d[0], back: clamp(d[2]), front: clamp(-d[2]) }; }
   const LIT = '#fff0d2', SHD = '#3a2440';
   function figure(g, cam, W, t, o = {}) {
     const F = placed(cam, W, t, o); if (!F) return null;
-    const { P, J, psi, s } = F, Lk = W.look, lt = o.light || lightOf(cam), gk = Lk.girth || 1;
+    const { P, J, psi, s } = F, Lk = W.look, lt = o.light || lightOf(cam);
     const psiP = psi - J.yawP, psiC = psi - J.yawC, rimK = o.rim ?? 1;
     // tones: the side towards the sun is lit; with the sun behind him he's in shade with a bright rim
     const bl = lt.back, k0 = 0.10 + 0.34 * bl, lx = lt.x >= 0 ? 1 : -1;
@@ -207,7 +201,7 @@
       g.strokeStyle = 'rgba(0,0,0,0.22)'; g.lineWidth = Math.max(1, 0.012 * s); const hm = mid(kn, an, 0.93), r = 0.056 * hm[2]; g.beginPath(); g.moveTo(hm[0] - r, hm[1]); g.lineTo(hm[0] + r, hm[1]); g.stroke();
     };
     const hand = (el, wr, c) => {
-      const ang = Math.atan2(wr[1] - el[1], wr[0] - el[0]), r = (Lk.handK || 0.047) * wr[2], x = wr[0] + Math.cos(ang) * r * 0.9, y = wr[1] + Math.sin(ang) * r * 0.9;
+      const ang = Math.atan2(wr[1] - el[1], wr[0] - el[0]), r = 0.047 * wr[2], x = wr[0] + Math.cos(ang) * r * 0.9, y = wr[1] + Math.sin(ang) * r * 0.9;
       const sd = psi > 0 ? 1 : -1, [c0, c1] = tone(c);
       g.save(); g.translate(x, y); g.rotate(ang);
       g.fillStyle = c0; g.beginPath(); g.ellipse(0, 0, r * 1.25, r * 0.86, 0, 0, TAU); g.fill();
@@ -235,32 +229,10 @@
       g.globalAlpha *= 1 - to; g.fillStyle = tone(Lk.skin)[0]; g.beginPath(); g.ellipse(0.008 * u * k, 0.05 * u, 0.036 * u, 0.017 * u, -0.45, 0, TAU); g.fill();
       g.restore();
     };
-    // reel 42: a watch round the wrist (Lk.watch.side; o.watchA is how much of it is still on), drawn across the forearm
-    const watchOn = (el, wr, a) => {
-      const p = mid(el, wr, 0.84), ang = Math.atan2(wr[1] - el[1], wr[0] - el[0]), u = p[2];
-      g.save(); g.globalAlpha *= a; g.translate(p[0], p[1]); g.rotate(ang);
-      const band = g.createLinearGradient(0, -0.05 * u, 0, 0.05 * u); band.addColorStop(0, '#fff1b0'); band.addColorStop(0.45, '#e8b632'); band.addColorStop(1, '#8a5a12');
-      g.fillStyle = band; g.beginPath(); g.roundRect(-0.016 * u, -0.05 * u, 0.032 * u, 0.1 * u, 0.008 * u); g.fill();
-      const fy = (o.watchFace ?? (psi > 0 ? 1 : -1)) * 0.034 * u;                   // the face sits on the back of the wrist
-      g.fillStyle = '#6b4310'; g.beginPath(); g.arc(0, fy, 0.026 * u, 0, TAU); g.fill();
-      g.fillStyle = '#f3d36a'; g.beginPath(); g.arc(0, fy, 0.021 * u, 0, TAU); g.fill();
-      g.fillStyle = '#fffbe8'; g.beginPath(); g.arc(0, fy, 0.015 * u, 0, TAU); g.fill();
-      g.fillStyle = 'rgba(255,255,255,0.95)'; g.beginPath(); g.arc(-0.008 * u, fy - 0.008 * u, 0.006 * u, 0, TAU); g.fill();
-      g.restore();
-    };
     const arm = (sh, el, wr, sd) => {
-      const m = mid(sh, el, 0.5), long = Lk.sleeve === 'long', side = sd > 0 ? 'l' : 'r';
-      if (long) { limb(m, el, 0.056, 0.052, Lk.shirt); limb(el, mid(el, wr, 0.78), 0.052, 0.047, Lk.shirt); limb(mid(el, wr, 0.74), wr, 0.042, 0.040, Lk.skin); }
-      else { limb(m, el, 0.052, 0.048, Lk.skin); limb(el, wr, 0.048, 0.040, Lk.skin); }
-      rim(el, wr, 0.048, 0.040);
-      if (long) { const c = mid(el, wr, 0.76), ang = Math.atan2(wr[1] - el[1], wr[0] - el[0]), r = 0.05 * c[2]; g.strokeStyle = 'rgba(0,0,0,0.18)'; g.lineWidth = Math.max(1, 0.01 * s); g.beginPath(); g.moveTo(c[0] - Math.sin(ang) * r, c[1] + Math.cos(ang) * r); g.lineTo(c[0] + Math.sin(ang) * r, c[1] - Math.cos(ang) * r); g.stroke(); }
-      const wa = Lk.watch && Lk.watch.side === sd ? (o.watchA ?? 1) : 0;
-      if (wa > 0.003) watchOn(el, wr, wa);
-      if (o.hold && o.hold[side] && o.holdBehind && o.holdBehind[side]) o.hold[side](g, el, wr, F, tone);     // held behind the fingers
-      hand(el, wr, Lk.skin);
+      const m = mid(sh, el, 0.5);
+      limb(m, el, 0.052, 0.048, Lk.skin); limb(el, wr, 0.048, 0.040, Lk.skin); rim(el, wr, 0.048, 0.040); hand(el, wr, Lk.skin);
       if (o.held && o.held.side === sd && o.held.a > 0.003) heldPhone(el, wr);
-      if (o.hold && o.hold[side] && !(o.holdBehind && o.holdBehind[side])) o.hold[side](g, el, wr, F, tone);
-      if (Lk.sleeve === 'none') { limb(sh, el, 0.058, 0.05, Lk.skin); rim(sh, el, 0.058, 0.05); limb(sh, mid(sh, el, 0.1), 0.06, 0.059, Lk.shirt); return; }   // reel 42: a vest
       limb(sh, mid(sh, el, 0.62), 0.058, 0.057, Lk.shirt);
       g.strokeStyle = 'rgba(0,0,0,0.16)'; g.lineWidth = Math.max(1, 0.014 * s); const q = mid(sh, el, 0.62), ang = Math.atan2(el[1] - sh[1], el[0] - sh[0]), r = 0.062 * q[2];
       g.beginPath(); g.moveTo(q[0] - Math.sin(ang) * r, q[1] + Math.cos(ang) * r); g.lineTo(q[0] + Math.sin(ang) * r, q[1] - Math.cos(ang) * r); g.stroke();
@@ -276,7 +248,7 @@
     };
     const front = Math.cos(psiC), side = Math.sin(psiC);
     const torso = () => {
-      const w0 = ellW(0.170, 0.130, psiP) * s * gk, w1 = ellW(0.150 * gk * gk, 0.118 * gk * gk, (psiP + psiC) / 2) * s, w2 = ellW(0.206, 0.132, psiC) * s * (1 + (gk - 1) * 0.6), w3 = ellW(0.208, 0.112, psiC) * s * (1 + (gk - 1) * 0.3), wn = 0.075 * s;
+      const w0 = ellW(0.170, 0.130, psiP) * s, w1 = ellW(0.150, 0.118, (psiP + psiC) / 2) * s, w2 = ellW(0.206, 0.132, psiC) * s, w3 = ellW(0.208, 0.112, psiC) * s, wn = 0.075 * s;
       const hem = Lk.kurta ? -0.92 : -0.14, hw = Lk.kurta ? w0 * 1.1 : w0;
       const pts = [at(hem, -hw), at(0.16, -w0 * 0.98), at(0.44, -w1), at(0.80, -w2), at(0.98, -w3), at(1.085, -wn), at(1.085, wn), at(0.98, w3), at(0.80, w2), at(0.44, w1), at(0.16, w0 * 0.98), at(hem, hw)];
       smooth(pts);
@@ -298,7 +270,7 @@
       g.restore();
     };
     const pelvis = () => {
-      const w = ellW(0.158, 0.122, psiP) * s * gk; g.save(); g.translate(A[0], A[1]); g.rotate(Math.atan2(ny, nx));
+      const w = ellW(0.158, 0.122, psiP) * s; g.save(); g.translate(A[0], A[1]); g.rotate(Math.atan2(ny, nx));
       const q = g.createLinearGradient(lx * w, 0, -lx * w, 0), [c0, c1] = tone(Lk.leg); q.addColorStop(0, c0); q.addColorStop(1, c1);
       g.fillStyle = q; g.beginPath(); g.ellipse(0, 0.012 * s, w, 0.115 * s, 0, 0, TAU); g.fill(); g.restore();
     };
@@ -349,9 +321,7 @@
     const arms = [[P.shL, P.elL, P.wrL, 1], [P.shR, P.elR, P.wrR, -1]];
     const behind = arms.filter((a) => dz(a[1], a[2]) > tz + 0.02), infront = arms.filter((a) => !(dz(a[1], a[2]) > tz + 0.02));
     g.save(); g.lineJoin = 'round';
-    if (o.onlyArm) { for (const a of arms) if (a[3] === o.onlyArm) arm(...a); g.restore(); return F; }
-    const keep = (a) => a[3] !== o.skipArm;
-    for (const a of behind.filter(keep).sort((a, b) => dz(b[1], b[2]) - dz(a[1], a[2]))) arm(...a);
+    for (const a of behind.sort((a, b) => dz(b[1], b[2]) - dz(a[1], a[2]))) arm(...a);
     if (front > 0) bag();
     pelvis();
     for (const l of legs) leg(...l);
@@ -362,9 +332,9 @@
     // the neck, then the head
     const hb = [P.head[0] - 0.02 * P.head[2] * Math.sin(psi), P.head[1] + 0.13 * P.head[2], P.head[2], P.head[3]];
     limb(P.neck, hb, 0.060, 0.058, mix(Lk.skin, Lk.skinD, 0.4));
-    for (const a of infront.filter(keep).sort((a, b) => dz(b[1], b[2]) - dz(a[1], a[2]))) arm(...a);
+    for (const a of infront.sort((a, b) => dz(b[1], b[2]) - dz(a[1], a[2]))) arm(...a);
     const psiH = wrap(psi - J.yawH);
-    F.psiH = psiH; F.headR = (Lk.headK || 0.135) * P.head[2];               // reel 42: a look can carry a bigger cartoon head
+    F.psiH = psiH; F.headR = 0.135 * P.head[2];
     if (!o.noHead) head3(g, P.head[0], P.head[1], F.headR, psiH, Lk, { pitch: J.pitchH, tilt: J.tiltH, light: lt, ...(o.face || {}), out: F });
     g.restore();
     return F;
@@ -467,27 +437,16 @@
     const ex = o.look || [0, 0], close = Math.max(o.close || 0, 0), lid = o.lid || 0;
     // the mouth, wrapped round the face
     if (cs > -0.35) {
-      const op = o.op || 0;
-      if (op > 0.02) {                                   // reel 42: an open mouth (talking, a gasp, a bite), on the face's surface
-        const mc = fpt(0, -0.76 - 0.05 * op), ml = fpt(-0.17, -0.74), mr = fpt(0.17, -0.74);
-        if (mc[2] > 0.06) {
-          const rx = Math.max(0.03, Math.abs(mr[0] - ml[0]) / 2) * (0.75 + 0.25 * op), ry = 0.025 + 0.12 * op;
-          g.fillStyle = '#3a1218'; g.beginPath(); g.ellipse(mc[0], mc[1], rx, ry, 0, 0, TAU); g.fill();
-          g.fillStyle = '#b8505a'; g.beginPath(); g.ellipse(mc[0], mc[1] - ry * 0.45, rx * 0.62, ry * 0.42, 0, 0, TAU); g.fill();
-          if (op > 0.25) { g.fillStyle = '#f4efe2'; g.beginPath(); g.ellipse(mc[0], mc[1] + ry * 0.72, rx * 0.72, ry * 0.2, 0, 0, TAU); g.fill(); }
-        }
-      }
       const sm = o.smile || 0, my = -0.74, N = 7; g.strokeStyle = '#3c1d18'; g.lineWidth = 0.034; g.beginPath(); let on = false;
       for (let i = 0; i < N; i++) { const fx = -0.25 + 0.5 * i / (N - 1), p = fpt(fx, my + sm * 0.09 * (fx / 0.25) ** 2 - sm * 0.03 + (o.smirk || 0) * 0.07 * Math.max(0, fx * Math.sign(sn || 1) / 0.25)); if (p[2] < 0.06) { on = false; continue; } if (on) g.lineTo(p[0], p[1]); else g.moveTo(p[0], p[1]); on = true; }
-      if (op <= 0.02) g.stroke();
-      if (o.out) { const a = (o.tilt || 0) - pitch * sn * 0.85, ca = Math.cos(a), sa = Math.sin(a), p = fpt(0, my); o.out.mouth = { x: x + R * (p[0] * ca + p[1] * sa), y: y + R * (p[0] * sa - p[1] * ca), vis: p[2] }; }   // reel 42: where the lips are on screen
+      g.stroke();
       if (L.must) { const upp = [], low = []; for (let i = 0; i < 13; i++) { const uu = -1 + i / 6, fx = uu * 0.3, p = fpt(fx, -0.575 - 0.065 * uu * uu); if (p[2] < 0.06) continue; const th = L.must * (1 - 0.72 * Math.pow(Math.abs(uu), 1.4)); upp.push([p[0], p[1] + th * 0.55]); low.push([p[0], p[1] - th * 0.45]); } if (upp.length > 2) { g.fillStyle = L.hair; g.beginPath(); upp.forEach((p, j) => (j ? g.lineTo(p[0], p[1]) : g.moveTo(p[0], p[1]))); for (let j = low.length - 1; j >= 0; j--) g.lineTo(low[j][0], low[j][1]); g.closePath(); g.fill(); } }
     }
     // the eyes and the brows
     for (const k of [-1, 1]) {
       const e = fpt(k * 0.43, 0.06); if (e[2] < 0.13) continue;
       if (o.out) { const a = (o.tilt || 0) - pitch * sn * 0.85, ca = Math.cos(a), sa = Math.sin(a), wf0 = clamp(e[2] * 1.12, 0.22, 1), px = e[0] + wf0 * ((o.look || [0, 0])[0] + sn * 0.05), py = e[1] + 0.016 + (o.look || [0, 0])[1]; (o.out.eyes = o.out.eyes || []).push({ k, x: x + R * (px * ca + py * sa), y: y + R * (px * sa - py * ca), r: 0.098 * R, wf: wf0, nz: e[2] }); }
-      const wf = clamp(e[2] * 1.12, 0.22, 1), ew = L.ew ?? 0.235, eh = (L.eh ?? 0.13) * (1 + 0.45 * (o.wide || 0)), cl = Math.max(close, lid * 0.55, k === 1 ? (o.wink || 0) : 0), up = eh * 1.75 * (1 - cl), dn = eh * 1.05 * (1 - cl * 0.72);
+      const wf = clamp(e[2] * 1.12, 0.22, 1), ew = L.ew ?? 0.235, eh = L.eh ?? 0.13, cl = Math.max(close, lid * 0.55), up = eh * 1.75 * (1 - cl), dn = eh * 1.05 * (1 - cl * 0.72);
       g.save(); g.translate(e[0], e[1]); g.scale(wf, 1);
       if (cl < 0.92) {
         const shape = () => { g.beginPath(); g.moveTo(-ew, -0.016); g.quadraticCurveTo(-k * 0.03, up, ew, -0.016); g.quadraticCurveTo(k * 0.03, -dn, -ew, -0.016); g.closePath(); };
@@ -567,5 +526,5 @@
     g.restore();
   }
 
-  window.RIG = { camera, poly3, line3, clipNear, style, skel, placed, figure, shadow, dots, head3, lightOf, setSun, mix, rgba, sstep, wrap, frac, ellW, SUN, BODY, TAU, PI };
+  window.RIG = { camera, poly3, line3, clipNear, style, skel, placed, figure, shadow, dots, head3, lightOf, mix, rgba, sstep, wrap, frac, ellW, SUN, BODY, TAU, PI };
 })();

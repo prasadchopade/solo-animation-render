@@ -1,0 +1,40 @@
+{
+ "note": "TEMPORARY (18 Nov): e3 alone, re-voiced ('a familiar face'). Restored to the full script in the next commit.",
+ "voice": "af_heart",
+ "speed": 1.0,
+ "ref_text": "The night was cold and very quiet. Most of the street was asleep, and the lamps hummed over the empty road. Somewhere far away, a train rolled past, and then the silence came back.",
+ "cast_lines": [
+  "ch5",
+  "ch6",
+  "ch7"
+ ],
+ "cast": [
+  {
+   "id": "k-michael",
+   "engine": "kokoro",
+   "voice": "am_michael",
+   "speed": 1.0
+  },
+  {
+   "id": "k-onyx",
+   "engine": "kokoro",
+   "voice": "am_onyx",
+   "speed": 1.0
+  }
+ ],
+ "take": {
+  "id": "k-heart",
+  "engine": "kokoro",
+  "voice": "af_heart",
+  "speed": 1.0
+ },
+ "say": {
+  "chor": "tʃ oː r"
+ },
+ "lines": [
+  {
+   "id": "e3",
+   "text": "Memory can paste a familiar face into a crime you saw."
+  }
+ ]
+}
