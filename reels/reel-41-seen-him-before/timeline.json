@@ -1,7 +1,7 @@
 {
   "note": "Single source of truth for picture + sound, in BEATS (120 bpm: beat = 0.5 s). Reel 41 has NO end card (the user's loop trial, 17 Nov 2026): the film runs from 'hook' to 'end' = the whole duration, and its last frame runs into frame 0. The motion test carries the placed voice only (no music, no effects).",
   "title": "Seen Him Before",
-  "duration": 46.9,
+  "duration": 53.866667,
   "fps": 30,
   "bpm": 120,
   "formats": [
@@ -23,7 +23,7 @@
   },
   "marks": {
     "hook": 0,
-    "end": 93.8
+    "end": 107.733334
   },
   "sfx": []
 }
