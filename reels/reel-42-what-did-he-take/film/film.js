@@ -41,7 +41,7 @@
   const mod = (x, m) => ((x % m) + m) % m;
   const lerp3 = (a, b, u) => [lerp(a[0], b[0], u), lerp(a[1], b[1], u), lerp(a[2], b[2], u)];
   const lg = WD.lg;
-  const probe = (name, F) => { const Q = window.PROBE; if (Q && F) Q[name] = { head: F.P.head.slice(0, 2), wrL: F.P.wrL.slice(0, 2), wrR: F.P.wrR.slice(0, 2), elL: F.P.elL.slice(0, 2), elR: F.P.elR.slice(0, 2), pel: F.P.pel.slice(0, 2) }; };   // for measuring motion; off unless a script sets window.PROBE
+  const probe = (name, F) => { const Q = window.PROBE; if (Q && F) Q[name] = { head: F.P.head.slice(0, 2), headR: F.headR, wrL: F.P.wrL.slice(0, 2), wrR: F.P.wrR.slice(0, 2), elL: F.P.elL.slice(0, 2), elR: F.P.elR.slice(0, 2), pel: F.P.pel.slice(0, 2) }; };   // for measuring motion; off unless a script sets window.PROBE
   // A person standing is never quite still: breath (about 15 a minute: the shoulders rise, the chest leans), a slow shift of
   // weight, a look that drifts. k scales it; per (the thief's loop, 22 s) rounds each rhythm to a whole number of cycles in the
   // loop, so he's the same at T as at 0. The stall's people run on their own clocks and need no rounding.
@@ -93,9 +93,11 @@
   function camAt(t) {
     let z = 0; const n = 12; for (let i = 0; i < n; i++) z += thiefZ(t + (i / (n - 1) - 0.5) * 1.4); z /= n;
     const tt = mod(t, T);
-    const off = k1(tt, [[0, -0.17], [1.0, -0.24], [2.3, -0.22], [3.0, 0.02], [4.1, 0.02], [4.6, -0.2], [5.4, -0.2], [5.9, -0.08], [6.3, -0.2], [6.7, -0.28], [7.0, -0.34], [7.6, -0.34], [8.4, -0.12], [9.3, 0.3], [11.3, 0.32], [12.2, 0.3], [13.3, -0.48], [18.6, -0.48], [19.8, -0.12], [T, -0.17]]);
-    const f = k1(tt, [[0, 2050], [2.3, 2050], [3.0, 1560], [4.2, 1560], [4.7, 1700], [5.5, 1700], [6.2, 2000], [8.4, 2000], [9.3, 1850], [11.4, 1850], [12.4, 1900], [13.4, 1300], [18.6, 1300], [19.8, 2050], [T, 2050]]);
-    const low = k1(tt, [[0, 0], [12.4, 0], [13.4, 1], [18.6, 1], [19.8, 0], [T, 0]]);
+    // his head inside the safe zones (x ≤ 950, y ≥ 269) at every frame (measured, 18 Nov): the camera eases him left as he walks off
+    // after the bump (7.5–8.4), stays a little wider and further left by the stray, and rises with him as he stands for the shh (17.4)
+    const off = k1(tt, [[0, -0.17], [1.0, -0.24], [2.3, -0.16], [3.0, 0.02], [4.1, 0.02], [4.6, -0.2], [5.4, -0.2], [5.9, -0.08], [6.3, -0.2], [6.7, -0.27], [7.0, -0.285], [7.45, -0.258], [7.8, -0.135], [8.15, 0.0], [8.5, 0.075], [9.0, 0.21], [9.3, 0.3], [11.3, 0.32], [12.2, 0.3], [13.3, -0.44], [17.4, -0.44], [18.2, -0.30], [19.8, -0.12], [T, -0.17]]);
+    const f = k1(tt, [[0, 2050], [2.3, 2050], [3.0, 1560], [4.2, 1560], [4.7, 1700], [5.5, 1700], [6.2, 2000], [8.4, 2000], [9.3, 1850], [11.4, 1850], [12.4, 1900], [13.4, 1220], [18.4, 1220], [19.8, 2050], [T, 2050]]);
+    const low = k1(tt, [[0, 0], [12.4, 0], [13.4, 1], [17.4, 1], [18.3, 0.72], [19.8, 0], [T, 0]]);
     return R.camera({ x: lerp(1.15, 0.62, low), y: lerp(1.5, 0.98, low), z: z + off, yaw: -PI / 2, pitch: lerp(-0.05, -0.12, low), f, cx: 540, cy: 960 });
   }
 
