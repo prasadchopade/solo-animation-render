@@ -1,3 +1,4 @@
+// Reel 44 · One Word: reel 42's film/rig.js, copied unchanged (HQ's brief, point 8). Reel 42's notes follow.
 // Reel 42 · What Did He Take?: the rig, copied from reel 37 (tag source/reel-37-youre-the-thief, film/rig.js) and extended here:
 // long sleeves, a watch on a wrist that can go, things held in either hand (o.hold), one arm drawn on its own (o.onlyArm /
 // o.skipArm, for a hug), a fuller build (look.girth), an open mouth and wide eyes, and a sun that a reel can set (RIG.setSun);
