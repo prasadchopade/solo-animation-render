@@ -1,7 +1,7 @@
 {
-  "note": "Single source of truth for picture + sound, in BEATS (120 bpm: beat = 0.5 s). Reel 41 has NO end card (the user's loop trial, 17 Nov 2026): the film runs from 'hook' to 'end' = the whole duration, and its last frame runs into frame 0. The motion test carries the placed voice only (no music, no effects). [THE CARDED FINAL: this timeline adds the end card after the last frame, 'end' → 'done', 3.0 s (the brief's second final).]",
+  "note": "Single source of truth for picture + sound, in BEATS (120 bpm: beat = 0.5 s). Reel 41 has NO end card (the user's loop trial, 17 Nov 2026): the film runs from 'hook' to 'end' = the whole duration, and its last frame runs into frame 0. The motion test carries the placed voice only (no music, no effects).",
   "title": "Seen Him Before",
-  "duration": 57.166667,
+  "duration": 54.166667,
   "fps": 30,
   "bpm": 120,
   "formats": [
@@ -20,12 +20,11 @@
     "sfx": -6,
     "vo": 0,
     "duck": true,
-    "loop": false
+    "loop": true
   },
   "marks": {
     "hook": 0,
-    "end": 108.333334,
-    "done": 114.333334
+    "end": 108.333334
   },
   "sfx": [
     {
@@ -417,13 +416,6 @@
       "type": "tray",
       "gain": 0.32,
       "what": "his glass, lifted off the table (just before \"Watch it again\")"
-    },
-    {
-      "at": "end",
-      "type": "wav",
-      "file": "../../engine/endcard/endcard.wav",
-      "gain": 1.0,
-      "what": "end card sound"
     }
   ]
 }
