@@ -1,0 +1,133 @@
+{
+ "note": "Reel 44: One Word. Draft 3 of the script, approved by the user on 18 Nov ('Yes, approve'). One narrator, the series voice (af_heart, speed 1.0); takes 2-3 run at 0.96 and 1.04. A line that needs a real pause is its own line, so n09/n10, n12/n13 and n21/n22 are split where the script has a full stop and a beat. Numbers are spelled as spoken. The lines ending in b are spare wordings, voiced in the same run in case a contraction that carries the meaning flips (the checklists' lessons from 35, 37 and 38): n03b for 'doesn't stop', n12b for 'doesn't replay', n16b for 'wasn't any', n19b for 'picked a side' (35: 'picked' lost its t), n21b for 'wasn't any'. The approved wording is placed unless the checks mishear it. Facts: docs/research.md.",
+ "voice": "af_heart",
+ "speed": 1.0,
+ "ref_text": "The morning was bright and the street was busy. A cart of fruit stood by the kerb, and the traffic moved past it, slowly at first, then faster.",
+ "cast_lines": [
+  "n01"
+ ],
+ "cast": [
+  {
+   "id": "k-heart",
+   "engine": "kokoro",
+   "voice": "af_heart",
+   "speed": 1.0
+  }
+ ],
+ "take": {
+  "id": "k-heart",
+  "engine": "kokoro",
+  "voice": "af_heart",
+  "speed": 1.0
+ },
+ "lines": [
+  {
+   "id": "n01",
+   "text": "You're the only witness to this crash."
+  },
+  {
+   "id": "n02",
+   "text": "Watch closely."
+  },
+  {
+   "id": "n03",
+   "text": "The driver doesn't stop."
+  },
+  {
+   "id": "n04",
+   "text": "So you're all this man has."
+  },
+  {
+   "id": "n05",
+   "text": "How fast was the rickshaw going when it smashed into the cart?"
+  },
+  {
+   "id": "n06",
+   "text": "And the broken glass: left of the cart, or right?"
+  },
+  {
+   "id": "n07",
+   "text": "There was no broken glass."
+  },
+  {
+   "id": "n08",
+   "text": "Go back and look."
+  },
+  {
+   "id": "n09",
+   "text": "He never asked if there was any."
+  },
+  {
+   "id": "n10",
+   "text": "He asked where it was."
+  },
+  {
+   "id": "n11",
+   "text": "And some of you could almost see it."
+  },
+  {
+   "id": "n12",
+   "text": "Because your brain doesn't replay a memory."
+  },
+  {
+   "id": "n13",
+   "text": "It rebuilds it, every time, with whatever it's just heard."
+  },
+  {
+   "id": "n14",
+   "text": "Even one word can do it."
+  },
+  {
+   "id": "n15",
+   "text": "In nineteen seventy-four, students whose question said smashed, not hit, were twice as likely, a week later, to remember broken glass."
+  },
+  {
+   "id": "n16",
+   "text": "There wasn't any."
+  },
+  {
+   "id": "n17",
+   "text": "That's why judges usually stop questions like his."
+  },
+  {
+   "id": "n18",
+   "text": "Out here, nobody did."
+  },
+  {
+   "id": "n19",
+   "text": "So if you picked a side, the police are now looking for broken glass."
+  },
+  {
+   "id": "n20",
+   "text": "His glass is fine."
+  },
+  {
+   "id": "n21",
+   "text": "Said there wasn't any? Good."
+  },
+  {
+   "id": "n22",
+   "text": "What hit his windscreen?"
+  },
+  {
+   "id": "n03b",
+   "text": "The driver keeps going."
+  },
+  {
+   "id": "n12b",
+   "text": "Because your brain never replays a memory."
+  },
+  {
+   "id": "n16b",
+   "text": "There was none."
+  },
+  {
+   "id": "n19b",
+   "text": "So if you chose a side, the police are now looking for broken glass."
+  },
+  {
+   "id": "n21b",
+   "text": "Said there was no glass? Good."
+  }
+ ]
+}
