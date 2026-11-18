@@ -817,10 +817,10 @@
     deskHands(g, t);
     deskLight(g, t);
     g.restore();
-    if (t < T.l1e + 0.25) title(g, 'WHICH ONE IS HIM?', 352, 112, YEL, t, -1, { a: 1 - sstep(T.l1e, T.l1e + 0.25, t), sw: 0.13 });
-    if (t > T.l4 && t < T.l4e + 0.3) title(g, 'ON EVERY SCREEN IN THE CITY', 352, 76, CREAM, t, T.l4 + 0.9, { a: 1 - sstep(T.l4e, T.l4e + 0.3, t) });
-    if (t > T.l5 && t < T.l6) title(g, 'WHICH ONE?', 352, 108, YEL, t, T.l5 + 0.1, { a: 1 });
-    if (t >= T.l6) title(g, 'BE SURE.', 352, 108, CREAM, t, T.l6, { a: 1 });
+    if (t < T.l1e + 0.25) title(g, 'WHICH ONE IS HIM?', 358, 112, YEL, t, -1, { a: 1 - sstep(T.l1e, T.l1e + 0.25, t), sw: 0.13 });
+    if (t > T.l4 && t < T.l4e + 0.3) title(g, 'ON EVERY SCREEN IN THE CITY', 358, 76, CREAM, t, T.l4 + 0.9, { a: 1 - sstep(T.l4e, T.l4e + 0.3, t) });
+    if (t > T.l5 && t < T.l6) title(g, 'WHICH ONE?', 358, 108, YEL, t, T.l5 + 0.1, { a: 1 });
+    if (t >= T.l6) title(g, 'BE SURE.', 358, 108, CREAM, t, T.l6, { a: 1 });
     // the ring: it runs out at the grid's centre (a 3-2-1 beside numbered men reads as an answer: the checklist, 38)
     if (t > T.ring0 - 0.2) {
       const a = sstep(T.ring0 - 0.2, T.ring0 + 0.1, t), k = 1 - clamp((t - T.ring0) / (T.ring1 - T.ring0)), x = DESK_AX, y = DESK_AY;
@@ -1056,8 +1056,8 @@
     g.restore();
     g.fillStyle = rg(g, 540, 1000, 420, 1250, [0, 'rgba(0,0,0,0)'], [1, 'rgba(3,3,8,0.5)']); g.fillRect(0, 0, W, H);
     if (t > T.tv && t < T.l10) title(g, '"HAVE YOU SEEN THIS MAN?"', 520, 66, CREAM, t, T.tv + 0.05, { a: 1 - sstep(T.l10 - 0.3, T.l10, t) });
-    if (t > T.dk - 0.05) title(g, 'DID YOU KNOW IT?', 352, 104, YEL, t, T.dk, { a: 1 });
-    if (t > T.og - 0.05) title(g, 'OR DID YOU GUESS?', 470, 84, CREAM, t, T.og, { a: 1 });
+    if (t > T.dk - 0.05) title(g, 'DID YOU KNOW IT?', 358, 104, YEL, t, T.dk, { a: 1 });
+    if (t > T.og - 0.05) title(g, 'OR DID YOU GUESS?', 476, 84, CREAM, t, T.og, { a: 1 });
     return 0;
   }
 
