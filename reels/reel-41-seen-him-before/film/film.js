@@ -14,7 +14,7 @@
   const RG = window.RIG, A = window.R36, K = window.KIT;
   const { sstep, txt, R, ell, lg, rg, mix, ring, title, blinkAt, figure, glass, armIK, wristOf, chaiStall, steam, poly, PJ, personView, drawPerson, THIEF0, INK, CREAM } = A;
   C.fonts = ['700 condensed 100px Bahn', '700 semi-condensed 46px Bahn', '600 semi-condensed 64px Bahn', '400 30px Mono', '700 30px Mono'];
-  const TAU = Math.PI * 2, PI = Math.PI, DUR = C.DUR;
+  const TAU = Math.PI * 2, PI = Math.PI, DUR = C.TL.marks && C.TL.marks.done !== undefined ? C.bt('end') : C.DUR;   // the film's own end (with the card, 3 s before the timeline's)
   const ease = (u) => { u = clamp(u); return u * u * u * (u * (u * 6 - 15) + 10); };
   const seg = (a, b, t) => ease((t - a) / (b - a));
   const win = (t, a, b, c, d) => sstep(a, b, t) * (1 - sstep(c, d, t));
