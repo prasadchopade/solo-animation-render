@@ -1,11 +1,3 @@
-// Reel 43 · Guard His Shoes: the rig, copied from reel 42 (its folder, 18 Nov, as the brief names it) and extended here for a
-// wedding: a lehenga (Lk.skirt: a flared skirt from the waist to the floor, its hem on a spring, spread on the floor when she
-// kneels), a dupatta (Lk.dupatta: over one shoulder, knotted round the waist, or the groom's stole), a blouse's neckline instead
-// of a shirt's placket (Lk.fem), a sherwani's band collar and gold buttons (Lk.sherwani), glass bangles (Lk.bangles), hennaed
-// hands (Lk.henna), a hand drawn by the film itself (o.bigHand: the palms in close-up), fingers that wiggle (o.wiggle); and on
-// the head: long hair with a middle parting, a plait over the shoulder, a ponytail, two plaits, waves, a rose, kajal, lipstick,
-// a bindi, a maang tikka, jhumkas that swing, a safa (the groom's turban) and the bride's veil.
-// Reel 42's notes follow.
 // Reel 42 · What Did He Take?: the rig, copied from reel 37 (tag source/reel-37-youre-the-thief, film/rig.js) and extended here:
 // long sleeves, a watch on a wrist that can go, things held in either hand (o.hold), one arm drawn on its own (o.onlyArm /
 // o.skipArm, for a hug), a fuller build (look.girth), an open mouth and wide eyes, and a sun that a reel can set (RIG.setSun);
@@ -219,11 +211,7 @@
       limb(hp, kn, 0.088, 0.070, Lk.leg); limb(kn, an, 0.068, 0.054, Lk.leg); rim(hp, kn, 0.088, 0.07); rim(kn, an, 0.068, 0.054);
       // the shoe: heel to toe, with a pale sole under it
       const ang = Math.atan2(to[1] - he[1], to[0] - he[0]), sx = Math.sin(ang), cxx = Math.cos(ang);
-      if (Lk.bare) {                                    // reel 43: a bare foot (the groom's): slimmer, toes at the end
-        limb(he, to, 0.036, 0.03, Lk.shoe);
-        const tx = to[0] + Math.cos(ang) * 0.02 * to[2], ty = to[1] + Math.sin(ang) * 0.02 * to[2]; g.fillStyle = tone(Lk.shoe)[0];
-        for (let i = -1; i <= 1; i++) { g.beginPath(); g.arc(tx - sx * i * 0.012 * to[2], ty + cxx * i * 0.004 * to[2], Math.max(0.6, 0.012 * to[2]), 0, TAU); g.fill(); }
-      } else limb(he, to, 0.047, 0.040, Lk.shoe);
+      limb(he, to, 0.047, 0.040, Lk.shoe);
       g.globalAlpha = clamp(Math.abs(Math.sin(psi)) * 1.6 - 0.2); g.strokeStyle = Lk.sole; g.lineWidth = Math.max(1, 0.02 * s); g.lineCap = 'round';
       const dn = (p, r) => [p[0] - sx * r * p[2] * (cxx >= 0 ? 1 : -1), p[1] + Math.abs(cxx) * r * p[2]];
       const h1 = dn(he, 0.040), t1 = dn(to, 0.033); g.beginPath(); g.moveTo(h1[0], h1[1]); g.lineTo(t1[0], t1[1]); g.stroke(); g.globalAlpha = 1;
@@ -233,15 +221,12 @@
     // the fingers curled a little; grip, round something held: the palm and thumb go behind it (layer 'back') and the fingers
     // wrap across it in front (layer 'front'); open, palm out, the fingers straight and spread; point, the forefinger up and the
     // rest curled. x runs from the wrist to the fingertips; sd puts the thumb on the same side as the old mitten's.
-    const HP = { relax: { sp: 0.35, cu: 0.5 }, open: { sp: 1.0, cu: 0.08 }, grip: { sp: 0.3, cu: 0 }, point: { sp: 0.3, cu: 0 }, clap: { sp: 0.15, cu: 0.12 } };
-    const HENNA = '#9a3f14';
-    const hand = (el, wr, c, pose = 'relax', layer = 'all', sdKey = 'l') => {
+    const HP = { relax: { sp: 0.35, cu: 0.5 }, open: { sp: 1.0, cu: 0.08 }, grip: { sp: 0.3, cu: 0 }, point: { sp: 0.3, cu: 0 } };
+    const hand = (el, wr, c, pose = 'relax', layer = 'all') => {
       let ang = Math.atan2(wr[1] - el[1], wr[0] - el[0]); const r = (Lk.handK || 0.047) * wr[2]; if (r < 1.2) return;
       if (pose === 'point') { let dA = -PI / 2 - ang; while (dA > PI) dA -= TAU; while (dA < -PI) dA += TAU; ang += 0.8 * dA; }   // the forefinger up
-      if (o.handUp && o.handUp[sdKey] != null) { let dA = o.handUp[sdKey] - ang; while (dA > PI) dA -= TAU; while (dA < -PI) dA += TAU; ang += dA * (o.handUpK ?? 0.85); }   // reel 43: the hand bent back at the wrist (a palm held up)
-      const sd = (o.thumb && o.thumb[sdKey]) || (psi > 0 ? 1 : -1), Q = HP[pose] || HP.relax, [c0, c1] = tone(c), ew = Math.max(0.8, r * 0.07), edge = rgba(mix(c1, '#2a140c', 0.5), 0.75);
+      const sd = psi > 0 ? 1 : -1, Q = HP[pose] || HP.relax, [c0, c1] = tone(c), ew = Math.max(0.8, r * 0.07), edge = rgba(mix(c1, '#2a140c', 0.5), 0.75);
       const shade = (k) => mix(c0, c1, k);
-      const wig = o.wiggle && o.wiggle[sdKey] != null ? o.wiggle[sdKey] : null;    // reel 43: a phase; each finger curls in turn
       g.save(); g.translate(wr[0], wr[1]); g.rotate(ang); g.lineCap = 'round'; g.lineJoin = 'round';
       const seg = (pts, w, col) => {                  // a finger: a round-ended stroke through its joints, outlined
         g.beginPath(); g.moveTo(pts[0][0], pts[0][1]); for (let i = 1; i < pts.length; i++) g.lineTo(pts[i][0], pts[i][1]);
@@ -256,15 +241,9 @@
       if (back) {
         g.beginPath(); g.moveTo(-0.12 * r, -0.56 * r); g.quadraticCurveTo(0.85 * r, -0.86 * r, 1.6 * r, -0.72 * r); g.quadraticCurveTo(1.84 * r, 0, 1.6 * r, 0.72 * r); g.quadraticCurveTo(0.85 * r, 0.86 * r, -0.12 * r, 0.56 * r); g.closePath();
         g.fillStyle = c0; g.fill(); g.strokeStyle = edge; g.lineWidth = ew; g.stroke();
-        if (pose === 'relax' || pose === 'open' || pose === 'clap') {       // the fingers out from the knuckles, little finger first
+        if (pose === 'relax' || pose === 'open') {       // the fingers out from the knuckles, little finger first
           const Y = [-0.55, -0.19, 0.17, 0.52], Lf = [1.02, 1.3, 1.42, 1.3], Wf = [0.3, 0.34, 0.36, 0.35];
-          for (let i = 0; i < 4; i++) {
-            const y = -sd * Y[i] * r, a0 = -sd * (0.16 - 0.1 * i) * Q.sp;
-            const cu = Q.cu * (1 + 0.15 * (3 - i)) + (wig != null ? 0.9 * Math.max(0, Math.sin(wig * TAU - i * 0.9)) ** 2 : 0);
-            const pts = bent(1.5 * r, y, a0, Lf[i] * r, cu);
-            seg(pts, Wf[i] * r, shade(0.08 * (3 - i)));
-            if (Lk.henna) { g.lineWidth = Wf[i] * r * 0.92; g.strokeStyle = HENNA; g.beginPath(); g.moveTo(pts[2][0], pts[2][1]); g.lineTo(pts[3][0], pts[3][1]); g.stroke(); }   // the fingertips, dyed
-          }
+          for (let i = 0; i < 4; i++) { const y = -sd * Y[i] * r, a0 = -sd * (0.16 - 0.1 * i) * Q.sp; seg(bent(1.5 * r, y, a0, Lf[i] * r, Q.cu * (1 + 0.15 * (3 - i))), Wf[i] * r, shade(0.08 * (3 - i))); }
         }
         if (pose === 'point') seg(bent(1.5 * r, sd * 0.52 * r, -sd * 0.05, 1.45 * r, 0.04), 0.35 * r, c0);   // the forefinger, straight
         // the thumb, from the heel of the hand
@@ -317,19 +296,6 @@
       g.fillStyle = mix(Lk.skin, '#fff1dc', 0.42); g.beginPath(); g.roundRect(-0.014 * u, -0.042 * u, 0.028 * u, 0.084 * u, 0.008 * u); g.fill();
       g.restore();
     };
-    // reel 43: glass bangles and a gold kada at the wrist, across the forearm (Lk.bangles: their colours, wrist first)
-    const bangles = (el, wr) => {
-      const ang = Math.atan2(wr[1] - el[1], wr[0] - el[0]), n = Lk.bangles.length;
-      for (let i = 0; i < n; i++) {
-        const p = mid(el, wr, 0.93 - i * 0.045), u = p[2], c = Lk.bangles[i];
-        g.save(); g.translate(p[0], p[1]); g.rotate(ang);
-        const hh = 0.052 * u, ww = Math.max(1, 0.016 * u);
-        const q = g.createLinearGradient(0, -hh, 0, hh); q.addColorStop(0, mix(c, '#ffffff', 0.45)); q.addColorStop(0.5, c); q.addColorStop(1, mix(c, '#000000', 0.35));
-        g.fillStyle = q; g.beginPath(); g.roundRect(-ww / 2, -hh, ww, hh * 2, ww / 2); g.fill();
-        if (u > 300) { g.fillStyle = 'rgba(255,255,255,0.55)'; g.fillRect(-ww * 0.25, -hh * 0.8, ww * 0.18, hh * 0.5); }
-        g.restore();
-      }
-    };
     // part: 'all', or 'upper' (shoulder to elbow) and 'lower' (forearm, hand and what it holds) apart, so a hand at the face can
     // be drawn after the head (o.overHead[side]) while its upper arm stays behind it (reel 42, draft 6)
     const arm = (sh, el, wr, sd, part = 'all') => {
@@ -344,15 +310,11 @@
         const wa = Lk.watch && Lk.watch.side === sd ? (o.watchA ?? 1) : 0;
         if (Lk.watch && Lk.watch.side === sd && o.watchBare && wa < 0.997) bareOn(el, wr, o.watchBare * (1 - wa));
         if (wa > 0.003) watchOn(el, wr, wa);
-        if (Lk.bangles) bangles(el, wr);
-        if (o.bigHand && o.bigHand[side]) { if (hold && hb) hold(g, el, wr, F, tone); o.bigHand[side](g, el, wr, F, tone); if (hold && !hb) hold(g, el, wr, F, tone); }   // reel 43: the film draws this hand
-        else {
-          if (hold && hb) hold(g, el, wr, F, tone);                         // held behind the hand altogether
-          hand(el, wr, Lk.skin, pose, 'back', side);
-          if (o.held && o.held.side === sd && o.held.a > 0.003) heldPhone(el, wr);
-          if (hold && !hb) hold(g, el, wr, F, tone);                        // held in it: the fingers close over it
-          hand(el, wr, Lk.skin, pose, 'front', side);
-        }
+        if (hold && hb) hold(g, el, wr, F, tone);                         // held behind the hand altogether
+        hand(el, wr, Lk.skin, pose, 'back');
+        if (o.held && o.held.side === sd && o.held.a > 0.003) heldPhone(el, wr);
+        if (hold && !hb) hold(g, el, wr, F, tone);                        // held in it: the fingers close over it
+        hand(el, wr, Lk.skin, pose, 'front');
       }
       if (!up) return;
       if (Lk.sleeve === 'none') { limb(sh, el, 0.058, 0.05, Lk.skin); rim(sh, el, 0.058, 0.05); limb(sh, mid(sh, el, 0.1), 0.06, 0.059, Lk.shirt); return; }   // reel 42: a vest
@@ -370,33 +332,16 @@
       g.closePath();
     };
     const front = Math.cos(psiC), side = Math.sin(psiC);
-    const FK = Lk.fem ? [0.84, 0.74, 0.88, 0.84] : [1, 1, 1, 1];          // reel 43: a narrower waist and shoulders under a blouse
     const torso = () => {
-      const w0 = ellW(0.170, 0.130, psiP) * s * gk * FK[0], w1 = ellW(0.150 * gk * gk, 0.118 * gk * gk, (psiP + psiC) / 2) * s * FK[1], w2 = ellW(0.206, 0.132, psiC) * s * (1 + (gk - 1) * 0.6) * FK[2], w3 = ellW(0.208, 0.112, psiC) * s * (1 + (gk - 1) * 0.3) * FK[3], wn = 0.075 * s * (Lk.fem ? 0.85 : 1);
-      F.torsoW = { w0, w1, w2, w3, wn };
-      const hem = Lk.kurta ? -0.92 : Lk.fem ? 0.1 : -0.14, hw = Lk.kurta ? w0 * 1.1 : w0;
+      const w0 = ellW(0.170, 0.130, psiP) * s * gk, w1 = ellW(0.150 * gk * gk, 0.118 * gk * gk, (psiP + psiC) / 2) * s, w2 = ellW(0.206, 0.132, psiC) * s * (1 + (gk - 1) * 0.6), w3 = ellW(0.208, 0.112, psiC) * s * (1 + (gk - 1) * 0.3), wn = 0.075 * s;
+      const hem = Lk.kurta ? -0.92 : -0.14, hw = Lk.kurta ? w0 * 1.1 : w0;
       const pts = [at(hem, -hw), at(0.16, -w0 * 0.98), at(0.44, -w1), at(0.80, -w2), at(0.98, -w3), at(1.085, -wn), at(1.085, wn), at(0.98, w3), at(0.80, w2), at(0.44, w1), at(0.16, w0 * 0.98), at(hem, hw)];
       smooth(pts);
       const q = g.createLinearGradient(...at(0.5, lx * w2), ...at(0.5, -lx * w2)), [c0, c1] = tone(Lk.shirt);
       q.addColorStop(0, c0); q.addColorStop(0.5, mix(c0, c1, 0.5)); q.addColorStop(1, c1); g.fillStyle = q; g.fill();
       g.save(); smooth(pts); g.clip();
       g.fillStyle = 'rgba(30,18,40,0.10)'; const wf = at(0.06, 0); g.beginPath(); g.ellipse(wf[0], wf[1], w0 * 1.2, 0.03 * s, Math.atan2(ny, nx), 0, TAU); g.fill();   // a fold at the waist
-      if (front > 0.12 && Lk.fem) {                    // reel 43: a blouse: a round neckline edged in gold, no buttons
-        const a = clamp((front - 0.12) * 4), cx0 = side * 0.12 * s, nw = wn * 1.75;
-        g.globalAlpha = a; g.fillStyle = tone(Lk.skin)[0];
-        g.beginPath(); g.moveTo(...at(1.12, cx0 - nw)); g.quadraticCurveTo(...at(0.78, cx0), ...at(1.12, cx0 + nw)); g.closePath(); g.fill();
-        g.strokeStyle = Lk.trim || '#e8b632'; g.lineWidth = Math.max(1, 0.016 * s); g.beginPath(); g.moveTo(...at(1.12, cx0 - nw)); g.quadraticCurveTo(...at(0.78, cx0), ...at(1.12, cx0 + nw)); g.stroke();
-        g.globalAlpha = 1;
-      } else if (front > 0.12 && Lk.sherwani) {        // reel 43: a sherwani: a band collar, gold buttons, a little embroidery
-        const a = clamp((front - 0.12) * 4), off = (tau) => side * 0.131 * s;
-        g.globalAlpha = a; g.strokeStyle = 'rgba(120,80,20,0.35)'; g.lineWidth = Math.max(1, 0.012 * s); g.beginPath(); g.moveTo(...at(-0.9, off(0))); g.lineTo(...at(1.0, off(1))); g.stroke();
-        for (let i = 0; i < 7; i++) { const p = at(-0.05 + i * 0.16, off(0.5)); g.fillStyle = '#7a5410'; g.beginPath(); g.arc(p[0], p[1] + 0.004 * s, Math.max(0.9, 0.013 * s), 0, TAU); g.fill(); g.fillStyle = '#f1c54a'; g.beginPath(); g.arc(p[0], p[1], Math.max(0.8, 0.012 * s), 0, TAU); g.fill(); }
-        g.strokeStyle = 'rgba(214,160,52,0.55)'; g.lineWidth = Math.max(1, 0.008 * s);
-        for (let i = 0; i < 9; i++) { const k = i % 2 ? 1 : -1, p = at(0.86 - i * 0.05, off(0.5) + k * (0.05 + 0.006 * i) * s); g.beginPath(); g.arc(p[0], p[1], Math.max(0.7, 0.014 * s), 0, TAU); g.stroke(); }
-        const c0 = at(1.0, off(1) - wn * 1.15), c1 = at(1.0, off(1) + wn * 1.15), c2 = at(1.1, off(1) + wn * 1.05), c3 = at(1.1, off(1) - wn * 1.05);
-        g.fillStyle = mix(Lk.shirt, '#d8a640', 0.55); g.beginPath(); g.moveTo(...c0); g.lineTo(...c1); g.lineTo(...c2); g.lineTo(...c3); g.closePath(); g.fill();
-        g.globalAlpha = 1;
-      } else if (front > 0.12) {                       // the front: a placket, buttons, the collar's points
+      if (front > 0.12) {                              // the front: a placket, buttons, the collar's points
         const a = clamp((front - 0.12) * 4), off = (tau) => side * lerp(0.130, 0.132, tau) * s;
         g.globalAlpha = a; g.strokeStyle = 'rgba(0,0,0,0.16)'; g.lineWidth = Math.max(1, 0.012 * s); g.beginPath(); g.moveTo(...at(-0.14, off(0))); g.lineTo(...at(1.0, off(1))); g.stroke();
         g.fillStyle = 'rgba(255,255,255,0.5)'; for (let i = 0; i < 5; i++) { const p = at(0.08 + i * 0.19, off(0.5)); g.beginPath(); g.arc(p[0], p[1], Math.max(0.8, 0.011 * s), 0, TAU); g.fill(); }
@@ -408,96 +353,6 @@
       }
       if ((bl > 0.05 || Math.abs(lt.x) > 0.25) && rimK > 0.01) { g.strokeStyle = `rgba(255,226,168,${((0.2 + 0.36 * bl) * rimK).toFixed(3)})`; g.lineWidth = Math.max(2, Math.min(14, 0.022 * s)); g.beginPath(); g.moveTo(...at(-0.14, lx * w0)); g.lineTo(...at(0.44, lx * w1)); g.lineTo(...at(0.8, lx * w2)); g.lineTo(...at(0.98, lx * w3)); g.stroke(); }
       g.restore();
-    };
-    // reel 43: a lehenga (or a long skirt, or a dhoti): two rings in the walker's frame, the waist and the hem, joined by their
-    // outline on screen; pleats on the side towards you, a heavy border at the hem. The hem lags the body on a spring (o.hemLag:
-    // [forward, left] metres, the film's physics) and spreads over the floor as she kneels (o.kneel 0–1).
-    let skirtFront = null;
-    const skirtDraw = () => {
-      const SKt = Lk.skirt, kn = o.kneel || 0, lag = o.hemLag || [0, 0];
-      const wy = J.pel[1] + 0.07, wr = 0.15 * gk * (SKt.waist ?? 1), hr = (SKt.hem ?? 0.40) * (1 + 0.5 * kn + (o.flare || 0)), hy = (SKt.hemY ?? 0.015) + 0.22 * (o.flare || 0);   // o.flare: a twirl swings the hem out and up
-      const hc = [J.pel[0] + lag[0] + 0.2 * kn, hy, J.pel[2] + lag[1]], N = 40, Wp = [], Hp = [], Hb = [];
-      for (let i = 0; i < N; i++) {
-        const a = i / N * TAU, ca = Math.cos(a), sa = Math.sin(a), fl = 1 + 0.05 * Math.sin(a * 5 + (o.hemPh || 0)) + 0.03 * Math.sin(a * 9 + 1.3);
-        const qw = cam.P(...F.w3([J.pel[0] + wr * ca, wy, J.pel[2] + wr * sa * 0.82]));
-        const qh = cam.P(...F.w3([hc[0] + hr * ca * fl, hy, hc[2] + hr * sa * fl]));
-        const qb = cam.P(...F.w3([lerp(hc[0], J.pel[0], 0.1) + hr * ca * fl * 0.975, hy + (SKt.band ?? 0.1), lerp(hc[2], J.pel[2], 0.1) + hr * sa * fl * 0.975]));
-        if (!qw || !qh || !qb) return;
-        Wp.push(qw); Hp.push(qh); Hb.push(qb);
-      }
-      const cW = cam.P(...F.w3([J.pel[0], wy, J.pel[2]])), cH = cam.P(...F.w3(hc)); if (!cW || !cH) return;
-      const shape = hull(Wp.concat(Hp).map((p) => [p[0], p[1]]));
-      const path = () => { g.beginPath(); shape.forEach((p, i) => (i ? g.lineTo(p[0], p[1]) : g.moveTo(p[0], p[1]))); g.closePath(); };
-      const xs = shape.map((p) => p[0]), x0 = Math.min(...xs), x1 = Math.max(...xs), [c0, c1] = tone(SKt.col);
-      const q = g.createLinearGradient(lx > 0 ? x1 : x0, 0, lx > 0 ? x0 : x1, 0); q.addColorStop(0, mix(c0, LIT, 0.12)); q.addColorStop(0.45, c0); q.addColorStop(1, c1);
-      path(); g.fillStyle = q; g.fill();
-      g.save(); path(); g.clip();
-      const fr = (i, R) => R[i][3] < (R === Wp ? cW : cH)[3];          // the side towards you
-      g.lineCap = 'round';
-      for (let i = 0; i < N; i++) {                    // pleats: a shadow and a light edge, from the waist down
-        if (!fr(i, Hp)) continue;
-        const a = Wp[i], b = Hp[i];
-        g.strokeStyle = i % 2 ? 'rgba(20,8,30,0.16)' : 'rgba(255,240,220,0.10)'; g.lineWidth = Math.max(1, 0.016 * b[2]);
-        g.beginPath(); g.moveTo(a[0], a[1]); g.quadraticCurveTo(lerp(a[0], b[0], 0.55) + (i % 2 ? 1 : -1) * 0.01 * b[2], lerp(a[1], b[1], 0.6), b[0], b[1]); g.stroke();
-      }
-      const dk = g.createLinearGradient(0, cW[1], 0, cH[1]); dk.addColorStop(0, 'rgba(0,0,0,0)'); dk.addColorStop(0.7, 'rgba(0,0,0,0)'); dk.addColorStop(1, 'rgba(30,10,30,0.18)');
-      g.fillStyle = dk; g.fillRect(x0 - 5, cW[1], x1 - x0 + 10, cH[1] - cW[1] + 200);
-      // the border: a band of gold between the hem and a ring a little above it, on the side towards you
-      const fi = []; for (let i = 0; i < N; i++) if (fr(i, Hp)) fi.push(i);
-      if (fi.length > 2) {
-        let st0 = 0; for (let j = 1; j < fi.length; j++) if (fi[j] !== fi[j - 1] + 1) { st0 = j; break; }
-        const ord = fi.slice(st0).concat(fi.slice(0, st0));
-        g.beginPath(); ord.forEach((i, j) => (j ? g.lineTo(Hp[i][0], Hp[i][1]) : g.moveTo(Hp[i][0], Hp[i][1]))); for (let j = ord.length - 1; j >= 0; j--) g.lineTo(Hb[ord[j]][0], Hb[ord[j]][1]); g.closePath();
-        const bq = g.createLinearGradient(0, Hb[ord[0]][1], 0, Hp[ord[0]][1] + 30); bq.addColorStop(0, '#fff0a8'); bq.addColorStop(0.5, SKt.border || '#e2ad35'); bq.addColorStop(1, '#8a5a12');
-        g.fillStyle = bq; g.fill();
-        g.strokeStyle = SKt.inner || mix(SKt.col, '#000000', 0.35); g.lineWidth = Math.max(1, 0.012 * cH[2]);
-        g.beginPath(); ord.forEach((i, j) => { const p = [lerp(Hb[i][0], Hp[i][0], 0.45), lerp(Hb[i][1], Hp[i][1], 0.45)]; if (j) g.lineTo(p[0], p[1]); else g.moveTo(p[0], p[1]); }); g.stroke();
-        if (cH[2] > 120) { g.fillStyle = 'rgba(255,250,220,0.85)'; for (let j = 1; j < ord.length - 1; j += 2) { const i = ord[j], p = [lerp(Hb[i][0], Hp[i][0], 0.2), lerp(Hb[i][1], Hp[i][1], 0.2)]; g.beginPath(); g.arc(p[0], p[1], Math.max(0.8, 0.007 * cH[2]), 0, TAU); g.fill(); } }
-      }
-      g.restore();
-      skirtFront = Wp.filter((p, i) => fr(i, Wp));
-      F.skirt = { Wp, Hp, cW, cH };
-    };
-    const waistband = () => {                          // the lehenga's gold waistband, over the blouse's hem
-      if (!skirtFront || skirtFront.length < 2) return;
-      const pts = skirtFront.slice().sort((a, b) => a[0] - b[0]);
-      g.strokeStyle = Lk.skirt.border || '#e2ad35'; g.lineCap = 'round'; g.lineWidth = Math.max(1.2, 0.03 * s);
-      g.beginPath(); pts.forEach((p, i) => (i ? g.lineTo(p[0], p[1]) : g.moveTo(p[0], p[1]))); g.stroke();
-    };
-    // reel 43: the dupatta, on the torso's own lines (at(tau, across)): 'sash' over her left shoulder and across to the right
-    // hip, its end down her back; 'waist' knotted round the waist, the knot on her left, its two ends hanging (o.dupSwing swings
-    // them); 'stole' round the back of the neck, both ends down the front (the groom's)
-    const dupattaDraw = () => {
-      const D = Lk.dupatta; if (!D || !F.torsoW) return;
-      const { w0, w1, w2, w3, wn } = F.torsoW, fs = front >= 0 ? 1 : -1, sw = o.dupSwing || 0;
-      const strip = (pts, w, col, a = 1) => {           // a band through screen points, w px wide, with gold edges
-        const L = [], R = [];
-        for (let i = 0; i < pts.length; i++) {
-          const p = pts[i], pa = pts[Math.max(0, i - 1)], pb = pts[Math.min(pts.length - 1, i + 1)], dx = pb[0] - pa[0], dy = pb[1] - pa[1], l = Math.hypot(dx, dy) || 1;
-          const ww = (Array.isArray(w) ? w[i] : w) / 2; L.push([p[0] - dy / l * ww, p[1] + dx / l * ww]); R.push([p[0] + dy / l * ww, p[1] - dx / l * ww]);
-        }
-        g.globalAlpha = a; g.beginPath(); L.forEach((p, i) => (i ? g.lineTo(p[0], p[1]) : g.moveTo(p[0], p[1]))); for (let i = R.length - 1; i >= 0; i--) g.lineTo(R[i][0], R[i][1]); g.closePath();
-        const [d0, d1] = tone(col); g.fillStyle = mix(d0, d1, 0.3); g.fill();
-        g.strokeStyle = D.border || '#e8b632'; g.lineWidth = Math.max(1, 0.012 * s); g.lineJoin = 'round';
-        for (const E of [L, R]) { g.beginPath(); E.forEach((p, i) => (i ? g.lineTo(p[0], p[1]) : g.moveTo(p[0], p[1]))); g.stroke(); }
-        if (s > 250) { g.fillStyle = 'rgba(255,236,170,0.8)'; for (let i = 1; i < pts.length - 1; i++) { const p = pts[i]; g.beginPath(); g.arc(p[0], p[1], Math.max(0.8, 0.006 * s), 0, TAU); g.fill(); } }
-        g.globalAlpha = 1;
-      };
-      const curve = (a, b, c, n = 7) => { const out = []; for (let i = 0; i <= n; i++) { const u = i / n; out.push([(1 - u) * (1 - u) * a[0] + 2 * u * (1 - u) * b[0] + u * u * c[0], (1 - u) * (1 - u) * a[1] + 2 * u * (1 - u) * b[1] + u * u * c[1]]); } return out; };
-      if (D.style === 'sash') {
-        if (fs > 0) strip(curve(at(1.02, side * 0.1 * s + w3 * 0.5), at(0.6, side * 0.1 * s + w1 * 0.15), at(0.14, side * 0.1 * s - w0 * 0.95)), 0.1 * s, D.col, D.a ?? 0.92);
-        else strip(curve(at(1.02, -w3 * 0.5), at(0.3, -w3 * 0.62 + sw * 0.05 * s), at(-0.75, -w3 * 0.55 + sw * 0.12 * s)), 0.11 * s, D.col, D.a ?? 0.92);
-      } else if (D.style === 'waist') {
-        const yk = 0.13, kx = (fs > 0 ? 1 : -1) * w0 * 0.86;
-        strip([at(yk, -w0 * 1.04), at(yk + 0.02, 0), at(yk, w0 * 1.04)], 0.075 * s, D.col, 1);
-        const kp = at(yk, kx);
-        strip(curve(kp, at(-0.2, kx + (0.03 + 0.05 * sw) * s), at(-0.55, kx + (0.01 + 0.12 * sw) * s), 5), 0.055 * s, D.col, 1);
-        strip(curve(kp, at(-0.15, kx + (0.08 + 0.04 * sw) * s), at(-0.42, kx + (0.1 + 0.1 * sw) * s), 5), 0.05 * s, D.col, 1);
-        const [d0] = tone(D.col); g.fillStyle = mix(d0, '#000000', 0.12); g.beginPath(); g.ellipse(kp[0], kp[1], 0.045 * s, 0.035 * s, 0, 0, TAU); g.fill();
-        g.strokeStyle = D.border || '#e8b632'; g.lineWidth = Math.max(1, 0.01 * s); g.stroke();
-      } else if (D.style === 'stole') {
-        for (const k of [-1, 1]) strip(curve(at(1.06, side * 0.1 * s + k * wn * 1.5), at(0.5, side * 0.1 * s + k * w2 * 0.55), at(-0.35 + 0.08 * k, side * 0.1 * s + k * w2 * 0.5 + sw * 0.05 * s)), 0.075 * s, D.col, 1);
-      }
     };
     const pelvis = () => {
       const w = ellW(0.158, 0.122, psiP) * s * gk; g.save(); g.translate(A[0], A[1]); g.rotate(Math.atan2(ny, nx));
@@ -555,10 +410,9 @@
     const keep = (a) => a[3] !== o.skipArm, oh = o.overHead || {}, over = (a) => !!(a[3] > 0 ? oh.l : oh.r);
     for (const a of behind.filter(keep).sort((a, b) => dz(b[1], b[2]) - dz(a[1], a[2]))) arm(...a, over(a) ? 'upper' : 'all');
     if (front > 0) bag();
-    if (Lk.skirt) skirtDraw(); else { pelvis(); for (const l of legs) leg(...l); }
+    pelvis();
+    for (const l of legs) leg(...l);
     torso();
-    if (Lk.skirt && !Lk.kurta) waistband();
-    dupattaDraw();
     phone();
     if (front <= 0) bag();
     straps();
@@ -621,41 +475,7 @@
     part: { line: [46, 20, -6, -22, -60], vol: 0.10, part: 1 },
     curly: { line: [42, 18, -4, -20, -58], vol: 0.17, curl: 1 },
     buzz: { line: [47, 22, -6, -22, -58], vol: 0.03, thin: 0.3 },
-    fem: { line: [40, 22, -14, -42, -74], vol: 0.12, mid: 1 },   // reel 43: long hair, a middle parting, over the tops of the ears
-    kid: { line: [42, 24, -10, -36, -68], vol: 0.1, mid: 1 },
   };
-  // reel 43: a plait, a ponytail or a lock of hair, as a chain of points in head units (before the head's turn), drawn as
-  // lobes that alternate side to side and taper; sw swings the hanging end (a spring in the film)
-  function plait(g, rot, pts, w0, col, o = {}) {
-    const P = pts.map((p) => rot(p)), n = 26, Q = [];
-    const at = (u) => { const f = u * (P.length - 1), i = Math.min(P.length - 2, Math.floor(f)), k = f - i, a = P[Math.max(0, i - 1)], b = P[i], c = P[i + 1], d = P[Math.min(P.length - 1, i + 2)];
-      const h = (j) => 0.5 * ((2 * b[j]) + (-a[j] + c[j]) * k + (2 * a[j] - 5 * b[j] + 4 * c[j] - d[j]) * k * k + (-a[j] + 3 * b[j] - 3 * c[j] + d[j]) * k * k * k); return [h(0), h(1)]; };
-    for (let i = 0; i <= n; i++) Q.push(at(i / n));
-    const dark = mix(col, '#000000', 0.45), lite = mix(col, '#ffffff', 0.22);
-    if (o.smooth) {                                     // a loose lock: one tapering stroke
-      g.lineCap = 'round'; for (let i = 0; i < n; i++) { const u = i / n, w = w0 * (1 - 0.55 * u); g.strokeStyle = col; g.lineWidth = w; g.beginPath(); g.moveTo(Q[i][0], Q[i][1]); g.lineTo(Q[i + 1][0], Q[i + 1][1]); g.stroke(); }
-      g.strokeStyle = lite; g.lineWidth = w0 * 0.12; g.beginPath(); Q.forEach((p, i) => (i ? g.lineTo(p[0] + w0 * 0.15, p[1]) : g.moveTo(p[0] + w0 * 0.15, p[1]))); g.stroke();
-      return Q;
-    }
-    for (let i = 0; i < n; i++) {                       // the plait's lobes
-      const a = Q[i], b = Q[i + 1], u = i / n, w = w0 * (1 - 0.5 * u), ang = Math.atan2(b[1] - a[1], b[0] - a[0]), s = i % 2 ? 1 : -1;
-      g.save(); g.translate((a[0] + b[0]) / 2, (a[1] + b[1]) / 2); g.rotate(ang + s * 0.5);
-      g.fillStyle = col; g.beginPath(); g.ellipse(0, s * w * 0.12, Math.hypot(b[0] - a[0], b[1] - a[1]) * 0.95, w * 0.5, 0, 0, TAU); g.fill();
-      g.strokeStyle = dark; g.lineWidth = w * 0.1; g.stroke();
-      g.strokeStyle = lite; g.lineWidth = w * 0.08; g.beginPath(); g.ellipse(0, s * w * 0.12 - w * 0.18, Math.hypot(b[0] - a[0], b[1] - a[1]) * 0.5, w * 0.16, 0, PI * 1.1, PI * 1.9); g.stroke();
-      g.restore();
-    }
-    return Q;
-  }
-  // a plait from behind the ear on side k, forward over the shoulder and down the front, ending in a tassel (a paranda)
-  function F_braid(g, rot, k, sw, col, L) {
-    if (rot([k, 0, 0.35])[2] < -0.45) return;          // over the far shoulder: behind her
-    const Q = plait(g, rot, [[k * 0.62, 0.2, -0.75], [k * 1.0, -0.6, -0.45], [k * 1.14, -1.4, 0.05], [k * 1.04 + sw * 0.1, -2.2, 0.4], [k * 0.92 + sw * 0.22, -2.95, 0.45]], 0.46, col);
-    const e = Q[Q.length - 1];
-    g.strokeStyle = L.tassel || '#d8263c'; g.lineWidth = 0.06; g.lineCap = 'round';
-    for (let i = -2; i <= 2; i++) { g.beginPath(); g.moveTo(e[0], e[1]); g.lineTo(e[0] + i * 0.055 + sw * 0.08, e[1] - 0.5); g.stroke(); }
-    g.fillStyle = '#e8b632'; g.beginPath(); g.arc(e[0], e[1], 0.09, 0, TAU); g.fill();
-  }
   function hull(pts) {                                // convex hull (monotone chain), counter-clockwise
     const p = pts.slice().sort((a, b) => a[0] - b[0] || a[1] - b[1]), cr = (o, a, b) => (a[0] - o[0]) * (b[1] - o[1]) - (a[1] - o[1]) * (b[0] - o[0]);
     const lo = []; for (const q of p) { while (lo.length >= 2 && cr(lo[lo.length - 2], lo[lo.length - 1], q) <= 0) lo.pop(); lo.push(q); }
@@ -667,7 +487,6 @@
     const rot = (p) => [p[0] * cs + p[2] * sn, p[1], -p[0] * sn + p[2] * cs];
     const sil = (E) => { const c = rot([E[0], E[1], E[2]]); return { x: c[0], y: c[1], rx: Math.hypot(E[3] * cs, E[5] * sn), ry: E[4] }; };
     const sk = sil(SK), jw = sil(JW), dyF = -0.34 * pitch * cs, back = clamp(-cs * 1.25 - 0.1);
-    jw.rx *= L.jawW ?? 1; jw.ry *= L.jawH ?? 1; jw.y -= (1 - (L.jawH ?? 1)) * 0.25;   // reel 43: a look can carry a narrower or longer jaw
     jw.y += 0.3 * back; jw.ry *= 1 - 0.3 * back; jw.rx *= 1 - 0.16 * back;      // from behind there's no chin: the head ends at the nape
     const pts = [];
     for (let i = 0; i < 26; i++) { const a = i / 26 * TAU; pts.push([sk.x + sk.rx * Math.cos(a), sk.y + sk.ry * Math.sin(a)]); pts.push([jw.x + jw.rx * Math.cos(a), jw.y + jw.ry * Math.sin(a) + dyF * 0.4]); }
@@ -697,15 +516,6 @@
     const ear = (k, a = 1) => { const c = rot([k * 0.97, 0.0, -0.16]), w = 0.11 + 0.19 * Math.abs(sn); g.globalAlpha *= a; g.fillStyle = skin; g.beginPath(); g.ellipse(c[0], c[1] + dyF * 0.5, w, 0.3, 0, 0, TAU); g.fill(); g.fillStyle = skinD; g.beginPath(); g.ellipse(c[0] - sn * 0.03, c[1] + dyF * 0.5 + 0.01, w * 0.5, 0.17, 0, 0, TAU); g.fill(); g.globalAlpha /= a; return c; };
     if (L.long) { g.fillStyle = L.hair; g.beginPath(); g.ellipse(sk.x - sn * 0.22, -0.75, 0.98, 1.55, 0, 0, TAU); g.fill(); }
     if (L.bun) { const b = rot([0, 0.42, -1.3]); if (b[2] < 0.2) { g.fillStyle = L.hair; g.beginPath(); g.arc(b[0], b[1], 0.44, 0, TAU); g.fill(); } }
-    // reel 43: hair that hangs, drawn behind the head (what falls below the jaw shows over the body)
-    const hsw = o.hairSwing || 0, HCOL = L.hair;
-    if (L.veil) {                                      // the bride's dupatta over her head falls behind her, to the shoulders
-      g.fillStyle = mix(L.veil.col, '#000000', 0.18); g.beginPath(); g.ellipse(sk.x - sn * 0.25, -0.45, 1.12, 1.4, 0, 0, TAU); g.fill();
-    }
-    if (L.waves) for (const k of [-1, 1]) plait(g, rot, [[k * 0.92, 0.45, -0.25], [k * 1.08, -0.35, -0.28], [k * 1.12 + hsw * 0.1, -1.05, -0.2], [k * 1.0 + hsw * 0.2, -1.6, -0.1]], 0.5, HCOL, { smooth: 1 });
-    if (L.pony) { const pp = [[0.1, 1.05, -0.7], [0.45 + hsw * 0.2, 0.95, -1.25], [0.75 + hsw * 0.45, 0.4, -1.35], [0.82 + hsw * 0.6, -0.3, -1.25], [0.72 + hsw * 0.7, -0.85, -1.05]]; plait(g, rot, pp, 0.42, HCOL, { smooth: 1 }); const sc = rot([0.12, 1.0, -0.78]); g.fillStyle = L.pony; g.beginPath(); g.arc(sc[0], sc[1], 0.13, 0, TAU); g.fill(); }
-    if (L.braid) { const k = L.braid; F_braid(g, rot, k, hsw, HCOL, L); }
-    if (L.plaits) for (const k of [-1, 1]) { const Q = plait(g, rot, [[k * 0.88, -0.25, -0.25], [k * 1.05, -0.8, 0.0], [k * 1.06 + hsw * 0.12, -1.35, 0.2], [k * 0.98 + hsw * 0.2, -1.75, 0.25]], 0.34, HCOL); const e = Q[Q.length - 1]; g.fillStyle = L.ribbon || '#d8263c'; for (const s of [-1, 1]) { g.beginPath(); g.moveTo(e[0], e[1]); g.lineTo(e[0] + s * 0.22, e[1] + 0.12); g.lineTo(e[0] + s * 0.2, e[1] - 0.12); g.closePath(); g.fill(); } g.beginPath(); g.arc(e[0], e[1], 0.06, 0, TAU); g.fill(); }
     for (const k of [-1, 1]) ear(k);
     outline(); const q0 = g.createLinearGradient(lx * 1.0, 1.1, -lx * 0.9, -1.1); q0.addColorStop(0, skinH); q0.addColorStop(0.45, skin); q0.addColorStop(1, skinD); g.fillStyle = q0; g.fill();
     g.save(); outline(); g.clip();
@@ -717,20 +527,7 @@
     const ex = o.look || [0, 0], close = Math.max(o.close || 0, 0), lid = o.lid || 0;
     // the mouth, wrapped round the face
     if (cs > -0.35) {
-      const op = o.op || 0, gr = o.grin || 0;
-      if (gr > 0.02) {                                   // reel 43: a grin, on the face's surface: the upper lip a wide curve, the lower a deep one
-        const N2 = 9, up2 = [], lo2 = [];
-        for (let i = 0; i < N2; i++) { const fx = -0.3 + 0.6 * i / (N2 - 1), c = (fx / 0.3) ** 2; const a1 = fpt(fx, -0.7 + 0.07 * c * gr), b1 = fpt(fx * 0.92, -0.7 - (0.2 * gr + 0.08 * op) * (1 - c * 0.85)); if (a1[2] > 0.05) up2.push(a1); if (b1[2] > 0.05) lo2.push(b1); }
-        if (up2.length > 2 && lo2.length > 2) {
-          const path2 = () => { g.beginPath(); up2.forEach((p, j) => (j ? g.lineTo(p[0], p[1]) : g.moveTo(p[0], p[1]))); for (let j = lo2.length - 1; j >= 0; j--) g.lineTo(lo2[j][0], lo2[j][1]); g.closePath(); };
-          path2(); g.fillStyle = '#4a1418'; g.fill();
-          g.save(); path2(); g.clip();
-          g.fillStyle = '#fbf6ec'; g.beginPath(); up2.forEach((p, j) => (j ? g.lineTo(p[0], p[1] - 0.075 * gr) : g.moveTo(p[0], p[1] - 0.075 * gr))); for (let j = up2.length - 1; j >= 0; j--) g.lineTo(up2[j][0], up2[j][1] + 0.02); g.closePath(); g.fill();
-          const mb = lo2[Math.floor(lo2.length / 2)]; g.fillStyle = '#c95a64'; g.beginPath(); g.ellipse(mb[0], mb[1] + 0.03, 0.13, 0.07 * gr + 0.02, 0, 0, TAU); g.fill();
-          g.restore();
-          g.strokeStyle = L.lip || '#5a2a22'; g.lineWidth = L.lip ? 0.045 : 0.03; path2(); g.stroke();
-        }
-      }
+      const op = o.op || 0;
       if (op > 0.02) {                                   // reel 42: an open mouth (talking, a gasp, a bite), on the face's surface
         const mc = fpt(0, -0.76 - 0.05 * op), ml = fpt(-0.17, -0.74), mr = fpt(0.17, -0.74);
         if (mc[2] > 0.06) {
@@ -740,9 +537,9 @@
           if (op > 0.25) { g.fillStyle = '#f4efe2'; g.beginPath(); g.ellipse(mc[0], mc[1] + ry * 0.72, rx * 0.72, ry * 0.2, 0, 0, TAU); g.fill(); }
         }
       }
-      const sm = o.smile || 0, my = -0.74, N = 7; g.strokeStyle = L.lip || '#3c1d18'; g.lineWidth = L.lip ? 0.05 : 0.034; g.beginPath(); let on = false;
+      const sm = o.smile || 0, my = -0.74, N = 7; g.strokeStyle = '#3c1d18'; g.lineWidth = 0.034; g.beginPath(); let on = false;
       for (let i = 0; i < N; i++) { const fx = -0.25 + 0.5 * i / (N - 1), p = fpt(fx, my + sm * 0.09 * (fx / 0.25) ** 2 - sm * 0.03 + (o.smirk || 0) * 0.07 * Math.max(0, fx * Math.sign(sn || 1) / 0.25)); if (p[2] < 0.06) { on = false; continue; } if (on) g.lineTo(p[0], p[1]); else g.moveTo(p[0], p[1]); on = true; }
-      if (op <= 0.02 && gr <= 0.02) g.stroke();
+      if (op <= 0.02) g.stroke();
       if (o.out) { const a = (o.tilt || 0) - pitch * sn * 0.85, ca = Math.cos(a), sa = Math.sin(a), p = fpt(0, my); o.out.mouth = { x: x + R * (p[0] * ca + p[1] * sa), y: y + R * (p[0] * sa - p[1] * ca), vis: p[2] }; }   // reel 42: where the lips are on screen
       if (L.must) { const upp = [], low = []; for (let i = 0; i < 13; i++) { const uu = -1 + i / 6, fx = uu * 0.3, p = fpt(fx, -0.575 - 0.065 * uu * uu); if (p[2] < 0.06) continue; const th = L.must * (1 - 0.72 * Math.pow(Math.abs(uu), 1.4)); upp.push([p[0], p[1] + th * 0.55]); low.push([p[0], p[1] - th * 0.45]); } if (upp.length > 2) { g.fillStyle = L.hair; g.beginPath(); upp.forEach((p, j) => (j ? g.lineTo(p[0], p[1]) : g.moveTo(p[0], p[1]))); for (let j = low.length - 1; j >= 0; j--) g.lineTo(low[j][0], low[j][1]); g.closePath(); g.fill(); } }
     }
@@ -761,9 +558,7 @@
         g.fillStyle = 'rgba(255,255,255,0.92)'; g.beginPath(); g.arc(ix - 0.032, iy + 0.038, 0.025, 0, TAU); g.fill();
         g.fillStyle = 'rgba(40,20,10,0.16)'; g.fillRect(-ew, up * 0.45, ew * 2, up);
         g.restore();
-        g.strokeStyle = '#231510'; g.lineWidth = L.kajal ? 0.058 : 0.036; g.beginPath(); g.moveTo(-ew, -0.016); g.quadraticCurveTo(-k * 0.03, up, ew, -0.016); g.stroke();
-        if (L.lash) { g.lineWidth = 0.022; for (let j = 0; j < 3; j++) { const u = 0.55 + j * 0.17, px = lerp(-ew, ew, u) * (k > 0 ? 1 : -1), py = 2 * u * (1 - u) * up - 0.016; g.beginPath(); g.moveTo(px, py); g.lineTo(px + (k > 0 ? 1 : -1) * 0.05, py + 0.07 + 0.02 * j); g.stroke(); } }
-        if (L.kajal) { g.lineWidth = 0.04; g.beginPath(); g.moveTo(k * ew * 0.92, 0.0); g.quadraticCurveTo(k * (ew + 0.05), 0.03, k * (ew + 0.1), 0.085); g.stroke(); }   // reel 43: kajal, with a flick
+        g.strokeStyle = '#231510'; g.lineWidth = 0.036; g.beginPath(); g.moveTo(-ew, -0.016); g.quadraticCurveTo(-k * 0.03, up, ew, -0.016); g.stroke();
         g.strokeStyle = 'rgba(40,20,10,0.3)'; g.lineWidth = 0.014; g.beginPath(); g.moveTo(-ew * 0.82, -0.022); g.quadraticCurveTo(k * 0.03, -dn, ew * 0.82, -0.022); g.stroke();
       } else { g.strokeStyle = '#231510'; g.lineWidth = 0.04; g.beginPath(); g.moveTo(-ew * 0.92, -0.005); g.quadraticCurveTo(0, -0.07, ew * 0.92, -0.005); g.stroke(); }
       g.restore();
@@ -775,10 +570,8 @@
       g.stroke();
     }
     if (L.mole) { const m = fpt(L.mole[0], L.mole[1]); if (m[2] > 0.12) { g.fillStyle = '#2a1710'; g.beginPath(); g.ellipse(m[0], m[1], 0.055 * (0.4 + 0.6 * m[2]), 0.052, 0, 0, TAU); g.fill(); } }
-    if (L.bindi) { const m = fpt(0, 0.44); if (m[2] > 0.15) { g.fillStyle = L.bindi; g.beginPath(); g.ellipse(m[0], m[1], 0.05 * (0.4 + 0.6 * m[2]), 0.05, 0, 0, TAU); g.fill(); g.fillStyle = 'rgba(255,255,255,0.5)'; g.beginPath(); g.arc(m[0] - 0.012, m[1] + 0.015, 0.012, 0, TAU); g.fill(); } }   // reel 43
-    if (L.blush && cs > 0) { for (const k of [-1, 1]) { const m = fpt(k * 0.55, -0.32); if (m[2] < 0.2) continue; const q = g.createRadialGradient(m[0], m[1], 0, m[0], m[1], 0.22); q.addColorStop(0, `rgba(235,90,90,${(0.22 * m[2]).toFixed(3)})`); q.addColorStop(1, 'rgba(235,90,90,0)'); g.fillStyle = q; g.beginPath(); g.arc(m[0], m[1], 0.22, 0, TAU); g.fill(); } }
     // the nose in front: a shadow and nostrils (they fade as he turns; side-on the nose is its own shape, below)
-    if (cs > 0.25) { const a = clamp((cs - 0.25) * 2.2) * (L.noseK ?? 1), nb = fpt(0, -0.36); g.fillStyle = `rgba(90,45,25,${(0.2 * a).toFixed(3)})`; g.beginPath(); g.ellipse(nb[0] + sn * 0.22, nb[1] + 0.03, 0.19, 0.05, 0, 0, TAU); g.fill(); g.fillStyle = `rgba(74,36,22,${(0.8 * a).toFixed(3)})`; for (const k of [-1, 1]) { const p = fpt(k * 0.07, -0.335); g.beginPath(); g.ellipse(p[0] + sn * 0.2, p[1], 0.043 * Math.max(0.4, cs), 0.025, 0, 0, TAU); g.fill(); } }
+    if (cs > 0.25) { const a = clamp((cs - 0.25) * 2.2), nb = fpt(0, -0.36); g.fillStyle = `rgba(90,45,25,${(0.2 * a).toFixed(3)})`; g.beginPath(); g.ellipse(nb[0] + sn * 0.22, nb[1] + 0.03, 0.19, 0.05, 0, 0, TAU); g.fill(); g.fillStyle = `rgba(74,36,22,${(0.8 * a).toFixed(3)})`; for (const k of [-1, 1]) { const p = fpt(k * 0.07, -0.335); g.beginPath(); g.ellipse(p[0] + sn * 0.2, p[1], 0.043 * Math.max(0.4, cs), 0.025, 0, 0, TAU); g.fill(); } }
     g.restore();
     // the nose from the side: it stands proud of the face
     if (cs > -0.25 && Math.abs(sn) > 0.12) {
@@ -808,52 +601,7 @@
     const hs = HAIR[L.style] || HAIR.short, hc = hs.thin ? mix(L.hair, L.skin, hs.thin) : L.hair;
     const hp0 = patch(hs.line, hs.vol, hc, hs);
     if (hp0 && hs.part && cs > -0.2) { const pp = fpt(0.34, 0.99), pq = rot([0.42, SK[1] + SK[4] * 0.93, SK[2] + 0.2]); g.strokeStyle = mix(L.hair, L.skin, 0.45); g.lineWidth = 0.03; g.globalAlpha = clamp((cs + 0.2) * 3); g.beginPath(); g.moveTo(pp[0], pp[1] + 0.02); g.lineTo(pq[0], pq[1]); g.stroke(); g.globalAlpha = 1; }
-    // reel 43: a middle parting with a sheen either side of it, and the maang tikka hanging from it onto the forehead
-    if (hp0 && hs.mid && cs > -0.15 && !L.safa) {
-      const a = clamp((cs + 0.15) * 3), p0 = fpt(0, 0.93), p1 = rot([0, SK[1] + SK[4] * 0.985, SK[2] + SK[5] * 0.16]);
-      g.globalAlpha = a; g.strokeStyle = mix(L.hair, L.skin, 0.55); g.lineWidth = 0.035; g.beginPath(); g.moveTo(p0[0], p0[1] + 0.03); g.lineTo(p1[0], p1[1]); g.stroke();
-      g.strokeStyle = 'rgba(255,240,225,0.22)'; g.lineWidth = 0.06;
-      for (const k of [-1, 1]) { const q0 = fpt(k * 0.35, 0.98), q1 = rot([k * 0.62, SK[1] + SK[4] * 0.84, SK[2] + SK[5] * 0.25]); g.beginPath(); g.moveTo(q0[0], q0[1] + 0.06); g.quadraticCurveTo((q0[0] + q1[0]) / 2 + k * 0.08, (q0[1] + q1[1]) / 2 + 0.12, q1[0], q1[1]); g.stroke(); }
-      g.globalAlpha = 1;
-    }
-    if (L.tikka && cs > 0.05) {
-      const a = clamp((cs - 0.05) * 3), c0 = rot([0, SK[1] + SK[4] * 0.97, SK[2] + SK[5] * 0.22]), pd = fpt(0, 0.74);
-      g.globalAlpha = a; g.strokeStyle = '#e8b632'; g.lineWidth = 0.022; g.beginPath(); g.moveTo(c0[0], c0[1]); g.lineTo(pd[0], pd[1] + 0.09); g.stroke();
-      g.fillStyle = '#a8740f'; g.beginPath(); g.arc(pd[0], pd[1] - 0.005, 0.085, 0, TAU); g.fill();
-      g.fillStyle = '#f2c84b'; g.beginPath(); g.arc(pd[0], pd[1], 0.075, 0, TAU); g.fill();
-      g.fillStyle = L.tikka; g.beginPath(); g.arc(pd[0], pd[1], 0.04, 0, TAU); g.fill();
-      g.fillStyle = '#fff8ec'; g.beginPath(); g.arc(pd[0], pd[1] - 0.11, 0.028, 0, TAU); g.fill();
-      g.globalAlpha = 1;
-    }
-    if (L.rose) {                                      // a rose tucked behind one ear
-      const k = L.rose.side || 1, c = rot([k * 0.98, 0.38, -0.22]);
-      if (c[2] > -0.3) { g.fillStyle = mix(L.rose.col, '#000000', 0.25); g.beginPath(); g.arc(c[0], c[1], 0.2, 0, TAU); g.fill(); g.fillStyle = L.rose.col; for (let i = 0; i < 5; i++) { const an = i / 5 * TAU; g.beginPath(); g.arc(c[0] + Math.cos(an) * 0.08, c[1] + Math.sin(an) * 0.08, 0.11, 0, TAU); g.fill(); } g.strokeStyle = mix(L.rose.col, '#000000', 0.4); g.lineWidth = 0.025; g.beginPath(); g.arc(c[0], c[1], 0.07, 0.4, 4.4); g.stroke(); }
-    }
     let top = hp0;
-    if (L.safa) {                                      // the groom's safa: a tall wrapped dome over the hair, bands of gold, a brooch and a plume at the front
-      const Sf = L.safa, q = g.createLinearGradient(-1, 1.6, 1, 0.2); q.addColorStop(0, mix(Sf.col, '#ffffff', 0.25)); q.addColorStop(1, mix(Sf.col, '#000000', 0.22));
-      const sp = patch(Sf.line || [24, 14, 4, -6, -16], 0.3, q);
-      if (sp) {
-        top = sp;
-        g.save(); g.beginPath(); sp.run.forEach((p, j) => (j ? g.lineTo(p[0], p[1]) : g.moveTo(p[0], p[1]))); sp.arc.forEach((p) => g.lineTo(p[0], p[1])); g.closePath(); g.clip();
-        for (let i = 0; i < 6; i++) {                  // the wraps, diagonal across the dome
-          const yy = 0.55 + i * 0.22; g.strokeStyle = i % 2 ? mix(Sf.col, '#000000', 0.25) : (Sf.band || '#e8b632'); g.lineWidth = i % 2 ? 0.035 : 0.07;
-          g.beginPath(); g.moveTo(-1.5, yy - 0.35 + sn * 0.2); g.quadraticCurveTo(0 - sn * 0.5, yy + 0.18, 1.5, yy + 0.25 - sn * 0.2); g.stroke();
-        }
-        g.restore();
-        if (cs > -0.1) {
-          const b = rot([0, SK[1] + SK[4] * 0.62, SK[2] + SK[5] * 0.9 + 0.22]), a = clamp((cs + 0.1) * 3);
-          g.globalAlpha = a; g.fillStyle = '#a8740f'; g.beginPath(); g.ellipse(b[0], b[1], 0.15, 0.17, 0, 0, TAU); g.fill(); g.fillStyle = '#f5d063'; g.beginPath(); g.ellipse(b[0], b[1] + 0.01, 0.12, 0.14, 0, 0, TAU); g.fill();
-          g.fillStyle = Sf.stone || '#d8263c'; g.beginPath(); g.arc(b[0], b[1] + 0.01, 0.06, 0, TAU); g.fill();
-          g.strokeStyle = '#fff6e0'; g.lineWidth = 0.05; g.lineCap = 'round'; g.beginPath(); g.moveTo(b[0], b[1] + 0.12); g.quadraticCurveTo(b[0] + 0.12, b[1] + 0.55, b[0] + 0.36, b[1] + 0.72); g.stroke();
-          g.globalAlpha = 1;
-        }
-      }
-    }
-    if (L.veil) {                                      // the bride's dupatta over her head: red, edged in gold round her face
-      const V = L.veil, vp = patch(V.line || [58, 34, -6, -60, -90], 0.2, V.col);
-      if (vp) { g.strokeStyle = V.border || '#e8b632'; g.lineWidth = 0.09; g.lineJoin = 'round'; g.beginPath(); vp.run.forEach((p, j) => (j ? g.lineTo(p[0], p[1]) : g.moveTo(p[0], p[1]))); g.stroke(); top = vp; }
-    }
     if (L.cap) {
       const q = g.createLinearGradient(-1, 1.4, 1, 0.3); q.addColorStop(0, mix('#a32b3d', SHD, 0.12 * bl)); q.addColorStop(1, mix('#5c1520', SHD, 0.2 * bl));
       top = patch(L.capLine || [7, 7, 3, -5, -9], 0.07, q) || top;
@@ -876,18 +624,6 @@
     if (L.bun) { const b = rot([0, 0.42, -1.3]); if (b[2] >= 0.2) { g.fillStyle = L.hair; g.beginPath(); g.arc(b[0], b[1], 0.44, 0, TAU); g.fill(); } }
     // the ear on your side, once it has come round
     for (const k of [-1, 1]) { const c = rot([k * 0.97, 0, -0.16]); if (c[2] > 0.2) ear(k, sstep(0.2, 0.55, c[2])); }
-    // reel 43: jhumkas, a gold bell under each lobe that swings (o.earSwing, radians, from the film's spring)
-    if (L.jhumka) for (const k of [-1, 1]) {
-      const c = rot([k * 0.99, -0.3, -0.1]); if (c[2] < -0.35) continue;
-      const sw = (o.earSwing || 0) + k * 0.04, L2 = 0.3, bx = c[0] + Math.sin(sw) * L2, by = c[1] - Math.cos(sw) * L2 + dyF * 0.5, J = L.jhumka;
-      g.strokeStyle = '#c9952a'; g.lineWidth = 0.02; g.beginPath(); g.moveTo(c[0], c[1] + dyF * 0.5); g.lineTo(bx, by + 0.1); g.stroke();
-      g.fillStyle = '#f2c84b'; g.beginPath(); g.arc(c[0], c[1] + dyF * 0.5, 0.05, 0, TAU); g.fill();
-      g.save(); g.translate(bx, by); g.rotate(-sw);
-      g.fillStyle = '#a8740f'; g.beginPath(); g.moveTo(-0.13, -0.02); g.quadraticCurveTo(-0.12, 0.17, 0, 0.17); g.quadraticCurveTo(0.12, 0.17, 0.13, -0.02); g.closePath(); g.fill();
-      g.fillStyle = '#f5d063'; g.beginPath(); g.moveTo(-0.11, -0.01); g.quadraticCurveTo(-0.1, 0.14, 0, 0.15); g.quadraticCurveTo(0.08, 0.14, 0.1, -0.01); g.closePath(); g.fill();
-      g.fillStyle = J === true ? '#fff6e0' : J; for (let i = -2; i <= 2; i++) { g.beginPath(); g.arc(i * 0.055, -0.06, 0.028, 0, TAU); g.fill(); }
-      g.restore();
-    }
     g.restore();
   }
 
