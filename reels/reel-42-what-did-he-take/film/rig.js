@@ -1,3 +1,10 @@
+// Reel 42 · What Did He Take?: the rig, copied from reel 37 (tag source/reel-37-youre-the-thief, film/rig.js) and extended here:
+// long sleeves, a watch on a wrist that can go, things held in either hand (o.hold), one arm drawn on its own (o.onlyArm /
+// o.skipArm, for a hug), a fuller build (look.girth), an open mouth and wide eyes, and a sun that a reel can set (RIG.setSun);
+// a crouch (pose.sink drops the hips, pose.sit moves them back; the knees solve themselves) and the lips' place on screen (F.mouth);
+// draft 6: real hands (a palm, four fingers and a thumb, posed by o.handPose: relax, grip, open, point; a held thing between the
+// palm and the fingers), a hand at the face drawn over it (o.overHead), and a cap brim with some thickness.
+// Reel 37's notes follow.
 // Reel 37 · You're the Thief: the rig (this reel's own; nothing here is shared with other reels).
 // A camera that can look anywhere, a body that walks and can be drawn from any side, and a head that turns all the way round.
 // The walk is built, not keyed: each foot is planted and stays put while the pelvis rides over it, the swing foot is carried
@@ -90,16 +97,18 @@
   // o.walk (0–1) scales the gait down to standing; o.arms: { l|r: { wrist: [f,u,l] from the chest, pole: [f,u,l], w } } overrides an arm.
   function skel(S0, tg, o = {}) {
     const wk = o.walk ?? 1;
-    const S = wk >= 0.999 ? S0 : { ...S0, stride: S0.stride * wk, stepH: S0.stepH * wk, roll: S0.roll * wk, pelYaw: S0.pelYaw * wk, pelRoll: S0.pelRoll * wk, sway: S0.sway * wk, chestYaw: S0.chestYaw * wk, arm: S0.arm * wk, dip: S0.dip * wk, surge: S0.surge * wk, leanOsc: S0.leanOsc * wk, nod: S0.nod * wk, lean: lerp(S0.lean * 0.4, S0.lean, wk) };
+    let S = wk >= 0.999 ? S0 : { ...S0, stride: S0.stride * wk, stepH: S0.stepH * wk, roll: S0.roll * wk, pelYaw: S0.pelYaw * wk, pelRoll: S0.pelRoll * wk, sway: S0.sway * wk, chestYaw: S0.chestYaw * wk, arm: S0.arm * wk, dip: S0.dip * wk, surge: S0.surge * wk, leanOsc: S0.leanOsc * wk, nod: S0.nod * wk, lean: lerp(S0.lean * 0.4, S0.lean, wk) };
+    const dk = o.dyn ?? 1;                            // reel 42: how much of the walk's motion is in the body (0: at rest in its stance)
+    if (dk < 0.999) S = { ...S, pelRoll: S.pelRoll * dk, sway: S.sway * dk, chestYaw: S.chestYaw * dk, surge: S.surge * dk, nod: S.nod * dk, leanOsc: S.leanOsc * dk, dip: S.dip * dk, arm: S.arm * dk, elbowDyn: S.elbowDyn * dk };
     const p = S.cad * tg + S.ph0, qL = frac(p), qR = frac(p + 0.5);
     const FL = footAt(S, qL), FR = footAt(S, qR);
     const yawP = S.pelYaw * Math.cos(TAU * (qL - 0.03)), rollP = S.pelRoll * Math.cos(TAU * (qL - 0.30)), sway = S.sway * Math.cos(TAU * (qL - 0.30));
-    const hw = BODY.hipW, pf = S.surge * Math.sin(2 * TAU * qL);
+    const hw = BODY.hipW, pf = S.surge * Math.sin(2 * TAU * qL) - (o.sit || 0);          // reel 42: o.sit moves the hips back (a crouch)
     const hL = [pf + hw * Math.sin(yawP), hw * Math.sin(rollP), sway + hw * Math.cos(yawP)], hR = [pf - hw * Math.sin(yawP), -hw * Math.sin(rollP), sway - hw * Math.cos(yawP)];
     const anL = [FL[0], FL[1], S.stepW], anR = [FR[0], FR[1], -S.stepW];
     const Lmax = (BODY.thigh + BODY.shin) * S.legExt;
     const reach = (h, a) => a[1] - h[1] + Math.sqrt(Math.max(0.02, Lmax * Lmax - (a[0] - h[0]) ** 2 - (a[2] - h[2]) ** 2));
-    const hipY = smin(smin(reach(hL, anL), reach(hR, anR)), S.hipMax) - S.sink - S.dip * (0.5 + 0.5 * Math.cos(2 * TAU * (qL - S.dipPh)));
+    const hipY = smin(smin(reach(hL, anL), reach(hR, anR)), S.hipMax) - S.sink - (o.sink || 0) - S.dip * (0.5 + 0.5 * Math.cos(2 * TAU * (qL - S.dipPh)));   // reel 42: o.sink drops them
     hL[1] += hipY; hR[1] += hipY;
     const knee = (h, a, side) => {                    // the knee, bent forwards (and a touch outwards)
       const d = [a[0] - h[0], a[1] - h[1], a[2] - h[2]], L = Math.hypot(d[0], d[1], d[2]) || 1e-6, l = Math.min(L, BODY.thigh + BODY.shin - 1e-4);
@@ -138,17 +147,24 @@
       return [el, wr];
     };
     const ov = o.arms || {};
-    const [elL, wrL] = arm(shL, 1, -ca, ov.l), [elR, wrR] = arm(shR, -1, ca, ov.r);
+    const reachSh = (sh, a) => {                     // reel 42: a shoulder goes a little way with an arm that reaches far
+      if (!a || !(a.w > 0.001)) return sh;
+      const d = [chest[0] + a.wrist[0] - sh[0], chest[1] + a.wrist[1] - sh[1], chest[2] + a.wrist[2] - sh[2]], L = Math.hypot(d[0], d[1], d[2]) || 1;
+      const k = Math.min(0.045, Math.max(0, L - 0.3) * 0.16) * Math.min(1, a.w) / L;
+      return [sh[0] + d[0] * k, sh[1] + d[1] * k * 0.5, sh[2] + d[2] * k];
+    };
+    const shL1 = reachSh(shL, ov.l), shR1 = reachSh(shR, ov.r);
+    const [elL, wrL] = arm(shL1, 1, -ca, ov.l), [elR, wrR] = arm(shR1, -1, ca, ov.r);
     const neck = [chest[0] + Math.sin(lean) * BODY.neck + S.headFwd * 0.6, chest[1] + BODY.neck + shUp * 0.3, chest[2]];
     const head = [neck[0] + S.headFwd + (o.headFwd || 0), neck[1] + 0.185, neck[2] * 0.9];
-    return { pel, chest, neck, head, shL, shR, elL, elR, wrL, wrR, hL, hR, knL, knR, anL, anR, heL, heR, toL, toR,
+    return { pel, chest, neck, head, shL: shL1, shR: shR1, elL, elR, wrL, wrR, hL, hR, knL, knR, anL, anR, heL, heR, toL, toR,
       yawP, yawC, yawH: yawC * (1 - S.headStab) + (o.headYaw || 0), pitchH: S.headPitch + S.nod * Math.sin(2 * TAU * (qL - 0.12)) + (o.headPitch || 0), tiltH: (o.headTilt || 0) - rollP * 0.25, qL, hipY };
   }
   const JOINTS = ['pel', 'chest', 'neck', 'head', 'shL', 'shR', 'elL', 'elR', 'wrL', 'wrR', 'hL', 'hR', 'knL', 'knR', 'anL', 'anR', 'heL', 'heR', 'toL', 'toR'];
   // A walker: { S (style), look, track(t) → { x, z, h (heading, 0 = +Z), tg (the gait's own clock), y?, pose? } }.
   // placed(): its joints on screen. Returns null when any of him is behind you.
   function placed(cam, W, t, o = {}) {
-    const tr = o.tr || W.track(t), J = skel(W.S, tr.tg, { ...(tr.pose || {}), ...(o.pose || {}) });
+    const tr = o.tr || W.track(t), J = o.J || skel(W.S, tr.tg, { ...(tr.pose || {}), ...(o.pose || {}) });   // reel 42: o.J, joints from elsewhere (motion capture)
     const sh = Math.sin(tr.h), ch = Math.cos(tr.h), y0 = tr.y || 0, sc = tr.scale || 1;
     const w3 = (p) => [tr.x + (sh * p[0] - ch * p[2]) * sc, p[1] * sc + y0, tr.z + (ch * p[0] + sh * p[2]) * sc];
     const P = {};
@@ -163,11 +179,12 @@
 
   // ------------------------------------------------------------------ drawing the body
   const SUN = (() => { const v = [-0.2, 0.27, 1], l = Math.hypot(...v); return v.map((x) => x / l); })();   // towards the low sun, at the far (+Z) end of the lane
+  function setSun(v) { const l = Math.hypot(...v); for (let i = 0; i < 3; i++) SUN[i] = v[i] / l; }          // reel 42: the reel sets it once, before frame 0
   function lightOf(cam) { const d = cam.dirCam(SUN[0], SUN[1], SUN[2]); return { x: d[0], back: clamp(d[2]), front: clamp(-d[2]) }; }
   const LIT = '#fff0d2', SHD = '#3a2440';
   function figure(g, cam, W, t, o = {}) {
     const F = placed(cam, W, t, o); if (!F) return null;
-    const { P, J, psi, s } = F, Lk = W.look, lt = o.light || lightOf(cam);
+    const { P, J, psi, s } = F, Lk = W.look, lt = o.light || lightOf(cam), gk = Lk.girth || 1;
     const psiP = psi - J.yawP, psiC = psi - J.yawC, rimK = o.rim ?? 1;
     // tones: the side towards the sun is lit; with the sun behind him he's in shade with a bright rim
     const bl = lt.back, k0 = 0.10 + 0.34 * bl, lx = lt.x >= 0 ? 1 : -1;
@@ -200,16 +217,46 @@
       const h1 = dn(he, 0.040), t1 = dn(to, 0.033); g.beginPath(); g.moveTo(h1[0], h1[1]); g.lineTo(t1[0], t1[1]); g.stroke(); g.globalAlpha = 1;
       g.strokeStyle = 'rgba(0,0,0,0.22)'; g.lineWidth = Math.max(1, 0.012 * s); const hm = mid(kn, an, 0.93), r = 0.056 * hm[2]; g.beginPath(); g.moveTo(hm[0] - r, hm[1]); g.lineTo(hm[0] + r, hm[1]); g.stroke();
     };
-    const hand = (el, wr, c) => {
-      const ang = Math.atan2(wr[1] - el[1], wr[0] - el[0]), r = 0.047 * wr[2], x = wr[0] + Math.cos(ang) * r * 0.9, y = wr[1] + Math.sin(ang) * r * 0.9;
-      const sd = psi > 0 ? 1 : -1, [c0, c1] = tone(c);
-      g.save(); g.translate(x, y); g.rotate(ang);
-      g.fillStyle = c0; g.beginPath(); g.ellipse(0, 0, r * 1.25, r * 0.86, 0, 0, TAU); g.fill();
-      g.beginPath(); g.ellipse(-r * 0.25, -sd * r * 0.72, r * 0.62, r * 0.3, -sd * 0.5, 0, TAU); g.fill();                    // the thumb
-      if (r > 9) {                                     // close enough to see: the fingers, as three short lines, and the edge of the thumb
-        g.strokeStyle = rgba(mix(c1, '#3a1d12', 0.35), 0.55); g.lineWidth = Math.max(1, r * 0.07); g.lineCap = 'round';
-        for (const k of [-0.34, 0.02, 0.38]) { g.beginPath(); g.moveTo(r * 0.5, sd * r * k); g.lineTo(r * 1.16, sd * r * k * 0.9); g.stroke(); }
-        g.beginPath(); g.moveTo(-r * 0.72, -sd * r * 0.5); g.quadraticCurveTo(-r * 0.2, -sd * r * 0.46, r * 0.22, -sd * r * 0.62); g.stroke();
+    // reel 42 (draft 6): a hand, not a mitten. A palm, four fingers and a thumb, in a pose (o.handPose[side]): relax, hanging,
+    // the fingers curled a little; grip, round something held: the palm and thumb go behind it (layer 'back') and the fingers
+    // wrap across it in front (layer 'front'); open, palm out, the fingers straight and spread; point, the forefinger up and the
+    // rest curled. x runs from the wrist to the fingertips; sd puts the thumb on the same side as the old mitten's.
+    const HP = { relax: { sp: 0.35, cu: 0.5 }, open: { sp: 1.0, cu: 0.08 }, grip: { sp: 0.3, cu: 0 }, point: { sp: 0.3, cu: 0 } };
+    const hand = (el, wr, c, pose = 'relax', layer = 'all') => {
+      let ang = Math.atan2(wr[1] - el[1], wr[0] - el[0]); const r = (Lk.handK || 0.047) * wr[2]; if (r < 1.2) return;
+      if (pose === 'point') { let dA = -PI / 2 - ang; while (dA > PI) dA -= TAU; while (dA < -PI) dA += TAU; ang += 0.8 * dA; }   // the forefinger up
+      const sd = psi > 0 ? 1 : -1, Q = HP[pose] || HP.relax, [c0, c1] = tone(c), ew = Math.max(0.8, r * 0.07), edge = rgba(mix(c1, '#2a140c', 0.5), 0.75);
+      const shade = (k) => mix(c0, c1, k);
+      g.save(); g.translate(wr[0], wr[1]); g.rotate(ang); g.lineCap = 'round'; g.lineJoin = 'round';
+      const seg = (pts, w, col) => {                  // a finger: a round-ended stroke through its joints, outlined
+        g.beginPath(); g.moveTo(pts[0][0], pts[0][1]); for (let i = 1; i < pts.length; i++) g.lineTo(pts[i][0], pts[i][1]);
+        g.lineWidth = w + 2 * ew; g.strokeStyle = edge; g.stroke(); g.lineWidth = w; g.strokeStyle = col; g.stroke();
+      };
+      const bent = (x0, y0, a0, L, curl) => {         // three joints, each bending towards the palm's side (the thumb's) by curl
+        const out = [[x0, y0]]; let a = a0, x = x0, y = y0;
+        for (const [f, k] of [[0.45, 0.35], [0.32, 0.45], [0.23, 0.55]]) { a += sd * curl * k; x += Math.cos(a) * L * f; y += Math.sin(a) * L * f; out.push([x, y]); }
+        return out;
+      };
+      const back = layer !== 'front', front = layer !== 'back';
+      if (back) {
+        g.beginPath(); g.moveTo(-0.12 * r, -0.56 * r); g.quadraticCurveTo(0.85 * r, -0.86 * r, 1.6 * r, -0.72 * r); g.quadraticCurveTo(1.84 * r, 0, 1.6 * r, 0.72 * r); g.quadraticCurveTo(0.85 * r, 0.86 * r, -0.12 * r, 0.56 * r); g.closePath();
+        g.fillStyle = c0; g.fill(); g.strokeStyle = edge; g.lineWidth = ew; g.stroke();
+        if (pose === 'relax' || pose === 'open') {       // the fingers out from the knuckles, little finger first
+          const Y = [-0.55, -0.19, 0.17, 0.52], Lf = [1.02, 1.3, 1.42, 1.3], Wf = [0.3, 0.34, 0.36, 0.35];
+          for (let i = 0; i < 4; i++) { const y = -sd * Y[i] * r, a0 = -sd * (0.16 - 0.1 * i) * Q.sp; seg(bent(1.5 * r, y, a0, Lf[i] * r, Q.cu * (1 + 0.15 * (3 - i))), Wf[i] * r, shade(0.08 * (3 - i))); }
+        }
+        if (pose === 'point') seg(bent(1.5 * r, sd * 0.52 * r, -sd * 0.05, 1.45 * r, 0.04), 0.35 * r, c0);   // the forefinger, straight
+        // the thumb, from the heel of the hand
+        const ta = sd * (pose === 'open' ? 0.95 : pose === 'grip' || pose === 'point' ? 0.42 : 0.5);
+        seg(bent(0.42 * r, sd * 0.5 * r, ta, 1.15 * r, pose === 'grip' || pose === 'point' ? 0.55 : 0.2), 0.4 * r, shade(0.12));
+      }
+      if (front && (pose === 'grip' || pose === 'point')) {   // curled fingers across the palm (and across what it holds)
+        const n = pose === 'point' ? 3 : 4, x0 = pose === 'point' ? 0.95 : 0.5;
+        for (let i = 0; i < n; i++) {
+          const x = (x0 + i * 0.36) * r, w = (0.36 - 0.02 * i) * r;
+          seg([[x + 0.05 * r, -sd * 0.66 * r], [x, -sd * 0.1 * r], [x - 0.06 * r, sd * 0.62 * r]], w, shade(0.05 + 0.06 * i));
+          g.fillStyle = rgba(mix(c0, '#fff2e0', 0.5), 0.5); g.beginPath(); g.arc(x - 0.07 * r, sd * 0.64 * r, w * 0.22, 0, TAU); g.fill();   // a nail
+        }
       }
       g.restore();
     };
@@ -229,10 +276,40 @@
       g.globalAlpha *= 1 - to; g.fillStyle = tone(Lk.skin)[0]; g.beginPath(); g.ellipse(0.008 * u * k, 0.05 * u, 0.036 * u, 0.017 * u, -0.45, 0, TAU); g.fill();
       g.restore();
     };
-    const arm = (sh, el, wr, sd) => {
-      const m = mid(sh, el, 0.5);
-      limb(m, el, 0.052, 0.048, Lk.skin); limb(el, wr, 0.048, 0.040, Lk.skin); rim(el, wr, 0.048, 0.040); hand(el, wr, Lk.skin);
-      if (o.held && o.held.side === sd && o.held.a > 0.003) heldPhone(el, wr);
+    // reel 42: a watch round the wrist (Lk.watch.side; o.watchA is how much of it is still on), drawn across the forearm
+    const watchOn = (el, wr, a) => {
+      const p = mid(el, wr, 0.84), ang = Math.atan2(wr[1] - el[1], wr[0] - el[0]), u = p[2];
+      g.save(); g.globalAlpha *= a; g.translate(p[0], p[1]); g.rotate(ang);
+      const band = g.createLinearGradient(0, -0.05 * u, 0, 0.05 * u); band.addColorStop(0, '#fff1b0'); band.addColorStop(0.45, '#e8b632'); band.addColorStop(1, '#8a5a12');
+      g.fillStyle = band; g.beginPath(); g.roundRect(-0.016 * u, -0.05 * u, 0.032 * u, 0.1 * u, 0.008 * u); g.fill();
+      const fy = (o.watchFace ?? (psi > 0 ? 1 : -1)) * 0.034 * u;                   // the face sits on the back of the wrist
+      g.fillStyle = '#6b4310'; g.beginPath(); g.arc(0, fy, 0.026 * u, 0, TAU); g.fill();
+      g.fillStyle = '#f3d36a'; g.beginPath(); g.arc(0, fy, 0.021 * u, 0, TAU); g.fill();
+      g.fillStyle = '#fffbe8'; g.beginPath(); g.arc(0, fy, 0.015 * u, 0, TAU); g.fill();
+      g.fillStyle = 'rgba(255,255,255,0.95)'; g.beginPath(); g.arc(-0.008 * u, fy - 0.008 * u, 0.006 * u, 0, TAU); g.fill();
+      g.restore();
+    };
+    // part: 'all', or 'upper' (shoulder to elbow) and 'lower' (forearm, hand and what it holds) apart, so a hand at the face can
+    // be drawn after the head (o.overHead[side]) while its upper arm stays behind it (reel 42, draft 6)
+    const arm = (sh, el, wr, sd, part = 'all') => {
+      const m = mid(sh, el, 0.5), long = Lk.sleeve === 'long', side = sd > 0 ? 'l' : 'r', up = part !== 'lower', lo = part !== 'upper';
+      const pose = (o.handPose && o.handPose[side]) || 'relax', hold = o.hold && o.hold[side], hb = !!(o.holdBehind && o.holdBehind[side]);
+      if (up && Lk.sleeve !== 'none') { if (long) limb(m, el, 0.056, 0.052, Lk.shirt); else limb(m, el, 0.052, 0.048, Lk.skin); }
+      if (lo) {
+        if (long) { limb(el, mid(el, wr, 0.78), 0.052, 0.047, Lk.shirt); limb(mid(el, wr, 0.74), wr, 0.042, 0.040, Lk.skin); }
+        else limb(el, wr, 0.048, 0.040, Lk.skin);
+        rim(el, wr, 0.048, 0.040);
+        if (long) { const c = mid(el, wr, 0.76), ang = Math.atan2(wr[1] - el[1], wr[0] - el[0]), r = 0.05 * c[2]; g.strokeStyle = 'rgba(0,0,0,0.18)'; g.lineWidth = Math.max(1, 0.01 * s); g.beginPath(); g.moveTo(c[0] - Math.sin(ang) * r, c[1] + Math.cos(ang) * r); g.lineTo(c[0] + Math.sin(ang) * r, c[1] - Math.cos(ang) * r); g.stroke(); }
+        const wa = Lk.watch && Lk.watch.side === sd ? (o.watchA ?? 1) : 0;
+        if (wa > 0.003) watchOn(el, wr, wa);
+        if (hold && hb) hold(g, el, wr, F, tone);                         // held behind the hand altogether
+        hand(el, wr, Lk.skin, pose, 'back');
+        if (o.held && o.held.side === sd && o.held.a > 0.003) heldPhone(el, wr);
+        if (hold && !hb) hold(g, el, wr, F, tone);                        // held in it: the fingers close over it
+        hand(el, wr, Lk.skin, pose, 'front');
+      }
+      if (!up) return;
+      if (Lk.sleeve === 'none') { limb(sh, el, 0.058, 0.05, Lk.skin); rim(sh, el, 0.058, 0.05); limb(sh, mid(sh, el, 0.1), 0.06, 0.059, Lk.shirt); return; }   // reel 42: a vest
       limb(sh, mid(sh, el, 0.62), 0.058, 0.057, Lk.shirt);
       g.strokeStyle = 'rgba(0,0,0,0.16)'; g.lineWidth = Math.max(1, 0.014 * s); const q = mid(sh, el, 0.62), ang = Math.atan2(el[1] - sh[1], el[0] - sh[0]), r = 0.062 * q[2];
       g.beginPath(); g.moveTo(q[0] - Math.sin(ang) * r, q[1] + Math.cos(ang) * r); g.lineTo(q[0] + Math.sin(ang) * r, q[1] - Math.cos(ang) * r); g.stroke();
@@ -248,7 +325,7 @@
     };
     const front = Math.cos(psiC), side = Math.sin(psiC);
     const torso = () => {
-      const w0 = ellW(0.170, 0.130, psiP) * s, w1 = ellW(0.150, 0.118, (psiP + psiC) / 2) * s, w2 = ellW(0.206, 0.132, psiC) * s, w3 = ellW(0.208, 0.112, psiC) * s, wn = 0.075 * s;
+      const w0 = ellW(0.170, 0.130, psiP) * s * gk, w1 = ellW(0.150 * gk * gk, 0.118 * gk * gk, (psiP + psiC) / 2) * s, w2 = ellW(0.206, 0.132, psiC) * s * (1 + (gk - 1) * 0.6), w3 = ellW(0.208, 0.112, psiC) * s * (1 + (gk - 1) * 0.3), wn = 0.075 * s;
       const hem = Lk.kurta ? -0.92 : -0.14, hw = Lk.kurta ? w0 * 1.1 : w0;
       const pts = [at(hem, -hw), at(0.16, -w0 * 0.98), at(0.44, -w1), at(0.80, -w2), at(0.98, -w3), at(1.085, -wn), at(1.085, wn), at(0.98, w3), at(0.80, w2), at(0.44, w1), at(0.16, w0 * 0.98), at(hem, hw)];
       smooth(pts);
@@ -270,7 +347,7 @@
       g.restore();
     };
     const pelvis = () => {
-      const w = ellW(0.158, 0.122, psiP) * s; g.save(); g.translate(A[0], A[1]); g.rotate(Math.atan2(ny, nx));
+      const w = ellW(0.158, 0.122, psiP) * s * gk; g.save(); g.translate(A[0], A[1]); g.rotate(Math.atan2(ny, nx));
       const q = g.createLinearGradient(lx * w, 0, -lx * w, 0), [c0, c1] = tone(Lk.leg); q.addColorStop(0, c0); q.addColorStop(1, c1);
       g.fillStyle = q; g.beginPath(); g.ellipse(0, 0.012 * s, w, 0.115 * s, 0, 0, TAU); g.fill(); g.restore();
     };
@@ -321,7 +398,9 @@
     const arms = [[P.shL, P.elL, P.wrL, 1], [P.shR, P.elR, P.wrR, -1]];
     const behind = arms.filter((a) => dz(a[1], a[2]) > tz + 0.02), infront = arms.filter((a) => !(dz(a[1], a[2]) > tz + 0.02));
     g.save(); g.lineJoin = 'round';
-    for (const a of behind.sort((a, b) => dz(b[1], b[2]) - dz(a[1], a[2]))) arm(...a);
+    if (o.onlyArm) { for (const a of arms) if (a[3] === o.onlyArm) arm(...a); g.restore(); return F; }
+    const keep = (a) => a[3] !== o.skipArm, oh = o.overHead || {}, over = (a) => !!(a[3] > 0 ? oh.l : oh.r);
+    for (const a of behind.filter(keep).sort((a, b) => dz(b[1], b[2]) - dz(a[1], a[2]))) arm(...a, over(a) ? 'upper' : 'all');
     if (front > 0) bag();
     pelvis();
     for (const l of legs) leg(...l);
@@ -332,10 +411,11 @@
     // the neck, then the head
     const hb = [P.head[0] - 0.02 * P.head[2] * Math.sin(psi), P.head[1] + 0.13 * P.head[2], P.head[2], P.head[3]];
     limb(P.neck, hb, 0.060, 0.058, mix(Lk.skin, Lk.skinD, 0.4));
-    for (const a of infront.sort((a, b) => dz(b[1], b[2]) - dz(a[1], a[2]))) arm(...a);
+    for (const a of infront.filter(keep).sort((a, b) => dz(b[1], b[2]) - dz(a[1], a[2]))) arm(...a, over(a) ? 'upper' : 'all');
     const psiH = wrap(psi - J.yawH);
-    F.psiH = psiH; F.headR = 0.135 * P.head[2];
+    F.psiH = psiH; F.headR = (Lk.headK || 0.135) * P.head[2];               // reel 42: a look can carry a bigger cartoon head
     if (!o.noHead) head3(g, P.head[0], P.head[1], F.headR, psiH, Lk, { pitch: J.pitchH, tilt: J.tiltH, light: lt, ...(o.face || {}), out: F });
+    for (const a of arms) if (over(a) && keep(a)) arm(...a, 'lower');         // a hand at the face: over it
     g.restore();
     return F;
   }
@@ -409,13 +489,15 @@
       const lb = 7 * PI / 180, c = Math.cos(lb), f0 = L.capTurn ?? 0, inn = [], out2 = [];
       for (let i = 0; i <= 14; i++) {
         const u = -1 + i / 7, phi = f0 + u * 1.12, base = [SK[3] * c * Math.sin(phi), SK[1] + SK[4] * Math.sin(lb) - 0.02, SK[2] + SK[5] * c * Math.cos(phi)], len = 0.14 + 0.62 * Math.pow(Math.cos(u * PI / 2), 0.7);
-        const pi = rot(base), po = rot([base[0] + Math.sin(f0) * len, base[1] - 0.02 - 0.36 * len, base[2] + Math.cos(f0) * len]);
+        const pi = rot([base[0], base[1] + 0.03, base[2]]), po = rot([base[0] + Math.sin(f0) * len, base[1] + 0.02 - 0.17 * len, base[2] + Math.cos(f0) * len]);
         inn.push([pi[0], pi[1] + dyF * 0.5]); out2.push([po[0], po[1] + dyF * 0.5]);
       }
       return { inn, out2, zc: rot([Math.sin(f0), 0, Math.cos(f0)])[2] };
     };
     const brim = (B) => {
-      g.fillStyle = mix('#7d2130', '#4a111b', clamp(cs)); g.beginPath(); B.inn.forEach((p, j) => (j ? g.lineTo(p[0], p[1]) : g.moveTo(p[0], p[1]))); for (let j = B.out2.length - 1; j >= 0; j--) g.lineTo(B.out2[j][0], B.out2[j][1]); g.closePath(); g.fill();
+      const shape = (dy) => { g.beginPath(); B.inn.forEach((p, j) => (j ? g.lineTo(p[0], p[1] + dy) : g.moveTo(p[0], p[1] + dy))); for (let j = B.out2.length - 1; j >= 0; j--) g.lineTo(B.out2[j][0], B.out2[j][1] + dy); g.closePath(); };
+      g.fillStyle = '#3a0a12'; shape(-0.085); g.fill();                     // its thickness and dark underside (reel 42, draft 6)
+      g.fillStyle = mix('#7d2130', '#4a111b', clamp(cs)); shape(0); g.fill();
       g.strokeStyle = '#a32b3d'; g.lineWidth = 0.05; g.beginPath(); B.out2.forEach((p, j) => (j ? g.lineTo(p[0], p[1]) : g.moveTo(p[0], p[1]))); g.stroke();
     };
     const BR = L.cap ? brimPts() : null;
@@ -437,16 +519,27 @@
     const ex = o.look || [0, 0], close = Math.max(o.close || 0, 0), lid = o.lid || 0;
     // the mouth, wrapped round the face
     if (cs > -0.35) {
+      const op = o.op || 0;
+      if (op > 0.02) {                                   // reel 42: an open mouth (talking, a gasp, a bite), on the face's surface
+        const mc = fpt(0, -0.76 - 0.05 * op), ml = fpt(-0.17, -0.74), mr = fpt(0.17, -0.74);
+        if (mc[2] > 0.06) {
+          const rx = Math.max(0.03, Math.abs(mr[0] - ml[0]) / 2) * (0.75 + 0.25 * op), ry = 0.025 + 0.12 * op;
+          g.fillStyle = '#3a1218'; g.beginPath(); g.ellipse(mc[0], mc[1], rx, ry, 0, 0, TAU); g.fill();
+          g.fillStyle = '#b8505a'; g.beginPath(); g.ellipse(mc[0], mc[1] - ry * 0.45, rx * 0.62, ry * 0.42, 0, 0, TAU); g.fill();
+          if (op > 0.25) { g.fillStyle = '#f4efe2'; g.beginPath(); g.ellipse(mc[0], mc[1] + ry * 0.72, rx * 0.72, ry * 0.2, 0, 0, TAU); g.fill(); }
+        }
+      }
       const sm = o.smile || 0, my = -0.74, N = 7; g.strokeStyle = '#3c1d18'; g.lineWidth = 0.034; g.beginPath(); let on = false;
       for (let i = 0; i < N; i++) { const fx = -0.25 + 0.5 * i / (N - 1), p = fpt(fx, my + sm * 0.09 * (fx / 0.25) ** 2 - sm * 0.03 + (o.smirk || 0) * 0.07 * Math.max(0, fx * Math.sign(sn || 1) / 0.25)); if (p[2] < 0.06) { on = false; continue; } if (on) g.lineTo(p[0], p[1]); else g.moveTo(p[0], p[1]); on = true; }
-      g.stroke();
+      if (op <= 0.02) g.stroke();
+      if (o.out) { const a = (o.tilt || 0) - pitch * sn * 0.85, ca = Math.cos(a), sa = Math.sin(a), p = fpt(0, my); o.out.mouth = { x: x + R * (p[0] * ca + p[1] * sa), y: y + R * (p[0] * sa - p[1] * ca), vis: p[2] }; }   // reel 42: where the lips are on screen
       if (L.must) { const upp = [], low = []; for (let i = 0; i < 13; i++) { const uu = -1 + i / 6, fx = uu * 0.3, p = fpt(fx, -0.575 - 0.065 * uu * uu); if (p[2] < 0.06) continue; const th = L.must * (1 - 0.72 * Math.pow(Math.abs(uu), 1.4)); upp.push([p[0], p[1] + th * 0.55]); low.push([p[0], p[1] - th * 0.45]); } if (upp.length > 2) { g.fillStyle = L.hair; g.beginPath(); upp.forEach((p, j) => (j ? g.lineTo(p[0], p[1]) : g.moveTo(p[0], p[1]))); for (let j = low.length - 1; j >= 0; j--) g.lineTo(low[j][0], low[j][1]); g.closePath(); g.fill(); } }
     }
     // the eyes and the brows
     for (const k of [-1, 1]) {
       const e = fpt(k * 0.43, 0.06); if (e[2] < 0.13) continue;
       if (o.out) { const a = (o.tilt || 0) - pitch * sn * 0.85, ca = Math.cos(a), sa = Math.sin(a), wf0 = clamp(e[2] * 1.12, 0.22, 1), px = e[0] + wf0 * ((o.look || [0, 0])[0] + sn * 0.05), py = e[1] + 0.016 + (o.look || [0, 0])[1]; (o.out.eyes = o.out.eyes || []).push({ k, x: x + R * (px * ca + py * sa), y: y + R * (px * sa - py * ca), r: 0.098 * R, wf: wf0, nz: e[2] }); }
-      const wf = clamp(e[2] * 1.12, 0.22, 1), ew = L.ew ?? 0.235, eh = L.eh ?? 0.13, cl = Math.max(close, lid * 0.55), up = eh * 1.75 * (1 - cl), dn = eh * 1.05 * (1 - cl * 0.72);
+      const wf = clamp(e[2] * 1.12, 0.22, 1), ew = L.ew ?? 0.235, eh = (L.eh ?? 0.13) * (1 + 0.45 * (o.wide || 0)), cl = Math.max(close, lid * 0.55, k === 1 ? (o.wink || 0) : 0), up = eh * 1.75 * (1 - cl), dn = eh * 1.05 * (1 - cl * 0.72);
       g.save(); g.translate(e[0], e[1]); g.scale(wf, 1);
       if (cl < 0.92) {
         const shape = () => { g.beginPath(); g.moveTo(-ew, -0.016); g.quadraticCurveTo(-k * 0.03, up, ew, -0.016); g.quadraticCurveTo(k * 0.03, -dn, -ew, -0.016); g.closePath(); };
@@ -526,5 +619,5 @@
     g.restore();
   }
 
-  window.RIG = { camera, poly3, line3, clipNear, style, skel, placed, figure, shadow, dots, head3, lightOf, mix, rgba, sstep, wrap, frac, ellW, SUN, BODY, TAU, PI };
+  window.RIG = { camera, poly3, line3, clipNear, style, skel, placed, figure, shadow, dots, head3, lightOf, setSun, mix, rgba, sstep, wrap, frac, ellW, SUN, BODY, TAU, PI };
 })();
