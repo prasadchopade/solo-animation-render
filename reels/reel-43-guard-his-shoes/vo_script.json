@@ -1,0 +1,48 @@
+{
+ "note": "Draft 1.1, 'The Lakh' (the user's yes at the story gate, 18 Nov). One voice, af_heart at pace 1.0 (takes 2 and 3 at 0.96 and 1.04): Meta's dub handles one speaker. Worded for the ear before the first run: 'can't leave barefoot' is 'And no groom leaves barefoot' (a weak nt is one sound from its opposite, 38); 'Five of them' is 'five sisters' (the cold reader could take 'five of them' for five of the rounds); 'You didn't save him a rupee' has an alternative with no contraction (n21b) for the checks to judge. Indian words planned by hand (memory indian-word-pronunciation), three plans each for joota chupai and mehendi, two for lakh (n08b, n20b): the phoneme ear and the user's ear pick. The t's of thirty, twenty and seventy are planned as real t's (the voice flaps them otherwise).",
+ "take": {
+  "id": "k-heart",
+  "engine": "kokoro",
+  "voice": "af_heart",
+  "speed": 1.0
+ },
+ "cast": [],
+ "say": {
+  "joota": "dʒ uː t ɑː",
+  "chupai": "tʃ ʊ p ɑː iː",
+  "lakh": "l ɑː k",
+  "mehendi": "m ɛ h ə n d iː",
+  "rupee": "ɹ uː p iː"
+ },
+ "lines": [
+  { "id": "n01", "text": "You're guarding the groom's shoes." },
+  { "id": "n02", "text": "Because at many North Indian weddings, the bride's sisters steal them, and he pays to get them back." },
+  { "id": "n03", "text": "It's called joota chupai.", "text_kokoro": "It's called [joota](/ʤˈuːtɑː/) [chupai](/ʧʊpˈɑːi/)." },
+  { "id": "n03b", "text": "It's called joota chupai.", "text_kokoro": "It's called [joota](/ʤˈuːtˌɑː/) [chupai](/ʧʊpˈɑːˌi/)." },
+  { "id": "n03c", "text": "It's called joota chupai.", "text_kokoro": "It's called [joota](/ʤˈuːtˌɑː/) [chupai](/ʧʊpˈɑːji/)." },
+  { "id": "n04", "text": "Seven rounds of the fire, five sisters, and a trick every round." },
+  { "id": "n05", "text": "So which one gets his shoes? Pick a number." },
+  { "id": "n06", "text": "Then number five hands you a baby, and nobody says no to a baby." },
+  { "id": "n07", "text": "When you look up, number four's gone, and so are his shoes." },
+  { "id": "n08", "text": "And now they want one lakh.", "text_kokoro": "And now they want one [lakh](/lˈɑːk/)." },
+  { "id": "n08b", "text": "And now they want one lakh.", "text_kokoro": "And now they want one [lakh](/lˈɑːkʰ/)." },
+  { "id": "n09", "text": "You laugh." },
+  { "id": "n10", "text": "They walk off." },
+  { "id": "n11", "text": "And no groom leaves barefoot." },
+  { "id": "n12", "text": "So they come down. Fifty-one thousand." },
+  { "id": "n13", "text": "Thirty-one.", "text_kokoro": "[Thirty-one](/θˈɜɹtiwˌʌn/)." },
+  { "id": "n14", "text": "Twenty-one.", "text_kokoro": "[Twenty-one](/twˈɛntiwˌʌn/)." },
+  { "id": "n15", "text": "That's seventy-nine thousand off.", "text_kokoro": "That's [seventy-nine](/sˈɛvəntinˌIn/) thousand off." },
+  { "id": "n16", "text": "You'd take that, wouldn't you?" },
+  { "id": "n17", "text": "He does." },
+  { "id": "n18", "text": "Then they show you their hands." },
+  { "id": "n19", "text": "It's in their mehendi, from last night: twenty-one thousand.", "text_kokoro": "It's in their [mehendi](/mˈɛhəndi/), from last night: [twenty-one](/twˈɛntiwˌʌn/) thousand." },
+  { "id": "n19b", "text": "It's in their mehendi, from last night: twenty-one thousand.", "text_kokoro": "It's in their [mehendi](/mˈɛhndiː/), from last night: [twenty-one](/twˈɛntiwˌʌn/) thousand." },
+  { "id": "n19c", "text": "It's in their mehendi, from last night: twenty-one thousand.", "text_kokoro": "It's in their [mehendi](/mˈɛhɛndi/), from last night: [twenty-one](/twˈɛntiwˌʌn/) thousand." },
+  { "id": "n20", "text": "The lakh was only there to make it look small.", "text_kokoro": "The [lakh](/lˈɑːk/) was only there to make it look small." },
+  { "id": "n20b", "text": "The lakh was only there to make it look small.", "text_kokoro": "The [lakh](/lˈɑːkʰ/) was only there to make it look small." },
+  { "id": "n21", "text": "You didn't save him a rupee.", "text_kokoro": "You didn't save him a [rupee](/ɹuːpˈiː/)." },
+  { "id": "n21b", "text": "You saved him nothing." },
+  { "id": "n22", "text": "And it was on their hands from the start." }
+ ]
+}
