@@ -12,6 +12,10 @@
   @font-face { font-family: 'Bahn'; src: url(../../../assets/fonts/Barlow-Regular.ttf) format('truetype'); font-weight: 400; font-stretch: 100%; }
   @font-face { font-family: 'Bahn'; src: url(../../../assets/fonts/Barlow-SemiBold.ttf) format('truetype'); font-weight: 600; font-stretch: 100%; }
   @font-face { font-family: 'Mono'; src: url(../../../assets/fonts/Inconsolata.ttf) format('truetype'); font-weight: 200 900; font-stretch: 50% 200%; }
+  /* reel 43: the amounts need the rupee sign, which Barlow doesn't have. Bricolage Grotesque (SIL OFL) for the cards, Fraunces
+     (SIL OFL) for the price written in mehendi. */
+  @font-face { font-family: 'Brico'; src: url(../../../assets/fonts/BricolageGrotesque-Variable.ttf) format('truetype'); font-weight: 200 800; }
+  @font-face { font-family: 'Fraun'; src: url(../../../assets/fonts/Fraunces-Variable.ttf) format('truetype'); font-weight: 100 900; }
   :root {
     /* one accent (signal red) + its tonal ramp; everything else is warm neutral on blue-black */
     --bg: #07090c; --bg-2: #0e1217; --ink: #ece8e1; --ink-2: #8d949c; --ink-3: #3b434c; --line: #1c232b;
@@ -51,6 +55,9 @@
 <script src="../../../engine/kit.js"></script>
 <script src="../../../engine/ui.js"></script>
 <script src="../../../engine/endcard/endcard.js"></script>
+<script src="timing.js"></script>
+<script src="rig.js"></script>
+<script src="world.js"></script>
 <script src="film.js"></script>
 </body>
 </html>
