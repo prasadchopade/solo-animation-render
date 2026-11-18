@@ -766,7 +766,7 @@
       g.save(); g.globalAlpha = a;
       g.fillStyle = lg(g, 0, 160, 0, 620, [0, 'rgba(24,12,10,0.55)'], [0.6, 'rgba(24,12,10,0.3)'], [1, 'rgba(24,12,10,0)']); g.fillRect(0, 160, W, 460);
       const line = (s, y, size, col) => { g.font = `700 condensed ${size}px Bahn`; g.textAlign = 'center'; g.lineJoin = 'round'; g.strokeStyle = '#1a0f0b'; g.lineWidth = size * 0.16; g.strokeText(s, 510, y); g.fillStyle = col; g.fillText(s, 510, y); };
-      line('WHAT DID HE TAKE?', 412, 128, '#ffd34a');
+      line('WHAT DID HE TAKE?', 412, 120, '#ffd34a');   // 120 px: at 128 its outline reached x 966, past the safe line at 950 (measured, 18 Nov)
       line('5 THINGS', 505, 74, '#fff6e2');
       g.restore();
     },
