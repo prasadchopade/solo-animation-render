@@ -1,0 +1,39 @@
+{
+ "note": "Reel 45 The Wallet: the narrator only (af_heart); nobody on screen speaks. Lines n01-n20 are draft 2's sixteen lines (docs/script.md, approved 19 Nov). Three of them are also voiced split in two, word for word the same, so a real pause can be set between the halves by hand (CLAUDE.md: a line that needs a real pause is its own line): n10 'Why?' + n11 + n12 (or n10f whole), n17 + n18 (or n17f whole), n19 + n20 (or n19f whole). n20b is a second plan for 'chai' (reel 38 placed /ʧˈI/).",
+ "take": {
+  "id": "k-heart",
+  "engine": "kokoro",
+  "voice": "af_heart",
+  "speed": 1.0
+ },
+ "ref_text": "The bench outside the stall is warm from the afternoon. A kettle hisses, a cyclist rings his bell, and somebody laughs at the next table.",
+ "cast": [],
+ "cast_lines": [],
+ "lines": [
+  { "id": "n01", "text": "You just left your wallet next to a pickpocket." },
+  { "id": "n02", "text": "And there's cash in it." },
+  { "id": "n03", "text": "Would anyone give that back?" },
+  { "id": "n04", "text": "Which wallets do strangers try to return more often?" },
+  { "id": "n05", "text": "With cash, or empty?" },
+  { "id": "n06", "text": "Scientists once handed in seventeen thousand \"lost\" wallets, at hotels, banks and police stations.",
+    "text_kokoro": "Scientists once handed in seventeen thousand lost wallets, at hotels, banks and police stations." },
+  { "id": "n07", "text": "With no cash, four in ten got in touch with the owner." },
+  { "id": "n08", "text": "With cash, half did." },
+  { "id": "n09", "text": "Most people they asked said empty." },
+  { "id": "n10", "text": "Why?" },
+  { "id": "n11", "text": "Because keeping someone's cash feels more like stealing," },
+  { "id": "n12", "text": "and almost nobody wants to see themselves as a thief." },
+  { "id": "n10f", "text": "Why? Because keeping someone's cash feels more like stealing, and almost nobody wants to see themselves as a thief." },
+  { "id": "n13", "text": "He already is one." },
+  { "id": "n14", "text": "And nobody would ever know." },
+  { "id": "n15", "text": "You come back." },
+  { "id": "n16", "text": "Because to him, picking pockets is work." },
+  { "id": "n17", "text": "But keeping what you lost?" },
+  { "id": "n18", "text": "That's stealing." },
+  { "id": "n17f", "text": "But keeping what you lost? That's stealing." },
+  { "id": "n19", "text": "It's all there." },
+  { "id": "n20", "text": "Plus a chai.", "text_kokoro": "Plus a [chai](/ʧˈI/)." },
+  { "id": "n20b", "text": "Plus a chai.", "text_kokoro": "Plus a [chai](/ʧˈɑːj/)." },
+  { "id": "n19f", "text": "It's all there. Plus a chai.", "text_kokoro": "It's all there. Plus a [chai](/ʧˈI/)." }
+ ]
+}
