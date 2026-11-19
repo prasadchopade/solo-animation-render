@@ -123,7 +123,7 @@
   const onKnee = (Kp, tip, rot) => { const A = norm(turnY(mul(FWD, -1), rot)), N = norm(add(UP, mul(FWD, -tip))); const f = mkFN(madd(Kp, N, PR.WT + 0.003), A, N); return { ...f, O: madd(f.O, f.B, -PR.WW * 0.5) }; };
   const W_RKNEE = onKnee(KNEE_R, -0.55, 0.2);
   const W_LKNEE_OLD = (() => { const N = norm(add(UP, mul(FWD, 0.62))), f = mkFN(madd(madd(KNEE_L, UP, PR.WT + 0.03), FWD, -0.05), FWD, N); return f; })();   // (before test 8) on his left knee, the spine across it at the back, the back leaf towards you
-  const W_LKNEE = onKnee(madd(KNEE_L, UP, 0.01), -0.55, -0.2);   // after test 7: on his left knee as it lay on his right, the inside up and tipped to you (it now lies here from 2.5 s, cash and all)
+  const W_LKNEE = onKnee(madd(madd(KNEE_L, UP, 0.01), LEFT, 0.09), -0.55, -0.2);   // (after test 8: 9 cm further out, clear of the cash he counts; at the twist '40%' sat on the cash)   // after test 7: on his left knee as it lay on his right, the inside up and tipped to you (it now lies here from 2.5 s, cash and all)
   // in his left hand over his lap, open, tipped to him
   const W_LHAND = (() => { const c = madd(madd(LAP, UP, 0.11), FWD, 0.13), N = norm(add(mul(FWD, 0.1), UP)), A = norm(add(mul(FWD, 1), mul(UP, -0.1))); const f = mkF(c, A, N); return { ...f, O: madd(f.O, LEFT, -0.0) }; })();
   // after test 6: the open wallet over the middle of his lap, tipped up towards you as it lay on his knee, so the cash shows
@@ -237,8 +237,8 @@
     // after test 7: onto his left knee, and left there through the draw (no handoff: carried across his lap it went through his
     // palms, and at the draw it turned upright and jumped)
     if (t >= K.open - 1.0) f = lerpFrame(f, W_LKNEE, ease(K.open - 1.0, K.open - 0.05, t));
-    if (t >= K.slide - 0.55) f = lerpFrame(W_LKNEE, W_LHAND, ease(K.slide - 0.55, K.slide - 0.05, t));
-    if (t >= K.slap + 0.12) f = lerpFrame(W_LHAND, W_RLOW, ease(K.slap + 0.12, K.slap + 0.6, t));
+    // after test 8: it stays on his knee while the notes go back in and he slaps it shut (lifted into his hand it tumbled)
+    if (t >= K.slap + 0.12) f = lerpFrame(W_LKNEE, W_RLOW, ease(K.slap + 0.12, K.slap + 0.75, t));
     if (t >= K.pocket - 0.4) {                          // up to the pocket, and down into it
       const WP = pocketAt(t), above = { ...WP, O: madd(WP.O, WP.A, 0.05) };
       f = lerpFrame(lerpFrame(W_RLOW, above, ease(K.pocket - 0.75, K.pocket + 0.1, t)), WP, ease(K.pocket + 0.05, K.pocket + 0.38, t));
@@ -371,7 +371,7 @@
     if (t >= K.lean) [p] = leg(G_BENCH, madd(G_THIGH, FWD, 0.05), K.lean, 0.6);
     const S2 = K.E_n16 + 0.05;                          // a sip between his lines
     if (t >= S2 && t < S2 + 1.5) { const up = ease(S2, S2 + 0.45, t) * (1 - ease(S2 + 0.95, S2 + 1.45, t)); p = lerp3(madd(G_THIGH, FWD, 0.05), lips, up); ax = towards(UP, norm(add(mul(FWD, -0.6), UP)), ease(S2 + 0.35, S2 + 0.55, t) * (1 - ease(S2 + 0.85, S2 + 1.05, t))); }
-    if (t >= K.back) { const up = ease(K.back, K.back + 0.6, t) * (1 - ease(K.back + 0.85, K.back + 1.3, t)); p = lerp3(madd(G_THIGH, FWD, 0.05), lips, up); ax = towards(UP, norm(add(mul(FWD, -0.6), UP)), ease(K.back + 0.4, K.back + 0.6, t) * (1 - ease(K.back + 0.85, K.back + 1.05, t))); }   // (after test 7: a short sip, down again before the end)
+    // (after test 8: no last sip; he settles after the cap touch, looking at you, for the last second)
     return { p, ax };
   }
 
@@ -421,7 +421,7 @@
   // a hand round the glass
   function gripGlass(g, side) {
     const c = madd(g.p, g.ax, 0.035), out = norm(ortho(add(mul(FWD, -1), mul(LEFT, side * 0.5)), g.ax)), u = norm(add(mul(out, -0.3), mul(LEFT, -side), mul(g.ax, 0.1))), n = norm(add(out, mul(g.ax, 0.2)));
-    return { W: madd(madd(c, out, -0.055), u, -0.045), u: norm(add(u, mul(out, 0.3))), n: ortho(n, u), pose: 'grip', pole: [-0.6, -0.35, 0.75 * side] };
+    return { W: madd(madd(c, out, -0.055), u, -0.045), u: norm(add(u, mul(out, 0.3))), n: ortho(n, u), pose: 'grip', pole: [-0.3, -0.9, 0.5 * side] };
   }
   // fingertips on the token (a pinch)
   function gripPinch(p, side) { const u = norm(add(FWD, mul(UP, -0.8), mul(LEFT, -0.2 * side))), n = norm(add(UP, mul(FWD, 0.3))); return { W: madd(madd(p, u, -0.115), n, 0.02), u, n, pose: 'pinch', pole: [-0.75, -0.15, 0.65 * side] }; }
@@ -436,7 +436,7 @@
   function gripOffer(f, open = 0) {
     const C0 = madd(madd(f.O, f.B, 0.028), f.N, -PR.WT * 0.5), u = norm(add(f.B, mul(f.N, -0.15))), n0 = norm(mul(f.A, 1));
     const n = dot(n0, LEFT) > 0 ? mul(n0, -1) : n0;
-    return { W: madd(madd(C0, u, -0.085), f.N, -0.012), u, n: ortho(n, u), pose: blendP(blendP('wrap', 'pinch', 0.4), 'open', open), pole: [0.5, -0.8, -0.6] };
+    return { W: madd(madd(C0, u, -0.085), f.N, -0.012), u, n: ortho(n, u), pose: blendP(blendP('wrap', 'pinch', 0.4), 'relax', open), pole: [0.5, -0.8, -0.6] };   // (after test 8: relaxed, not spread, as he lets go)
   }
   // your right hand on the far end of it: from below, the thumb on top
   function gripYours(f, cam, close) {
@@ -473,9 +473,9 @@
       [K.reach + 0.2, 0.1, (t, c) => gripTop(c.w, 1)],
       [K.reach + 0.45, 0.4, (t, c) => gripOffer(c.w, 0)],
       [K.letGo - 0.05, 0.22, (t) => { const g = gripOffer(walletAt(K.letGo - 0.06), 1); return { ...g, W: madd(madd(g.W, toYouH, -0.05 * ease(K.letGo, K.letGo + 0.3, t)), UP, -0.02 * ease(K.letGo, K.letGo + 0.3, t)) }; }],
-      [K.letGo + 0.45, 0.55, () => restKnee(KNEE_R, -1)],
+      [K.letGo + 0.2, 0.55, () => restKnee(KNEE_R, -1)],
       [word('work') - 0.35, 0.4, () => ({ W: madd(madd(madd(THIGH_R, UP, 0.12), FWD, 0.12), LEFT, -0.06), u: norm(add(FWD, mul(LEFT, -0.4))), n: mul(UP, -1), pose: blendP('open', 'relax', 0.4), pole: POLE_R }), 'g'],   // palm up: what can I say
-      [word('work') + 0.55, 0.6, () => ({ W: madd(madd(madd(w3(J0.pel), FWD, -0.12), LEFT, -0.2), UP, 0.0), u: norm(add(mul(FWD, -0.2), mul(UP, -1))), n: norm(add(mul(FWD, -1), mul(LEFT, -0.3))), pose: 'flat', pole: [-0.6, -0.4, -0.8] })],
+      [word('work') + 0.55, 0.6, () => ({ W: madd(madd(madd(w3(J0.pel), FWD, 0.04), LEFT, -0.2), UP, 0.1), u: norm(add(mul(FWD, -0.2), mul(UP, -1))), n: norm(add(mul(FWD, -1), mul(LEFT, -0.3))), pose: 'flat', pole: [-0.6, -0.4, -0.8] })],
       [K.brim - 0.2, 0.55, (t, c) => gripBrim(c.J), 'g', 0.0],    // (after test 7: once his face is in view; straight up, not swung out)
       [K.brim + 0.85, 0.5, () => restKnee(KNEE_R, -1)],
     ];
@@ -488,8 +488,7 @@
       [K.tok0 + 0.35, 0.05, (t, c) => gripPinch(c.tk.O || TOK_BENCH, 1)],
       [K.tok2 + 0.05, 0.18, (t, c) => lifted(gripPinch(c.tk.O, 1), c.w.N, 0.07)],   // after test 6: off the wallet first
       [K.tok2 + 0.23, 0.4, () => restKnee(madd(KNEE_L, LEFT, 0.06), 1)],
-      [K.slide - 0.6, 0.4, (t, c) => gripLeaf(c.w, 'back', 1)],
-      [K.slap + 0.15, 0.4, () => restKnee(KNEE_L, 1)],
+      // (after test 8: his left hand stays resting while the notes go back in; it had reached across his belly)
       [K.sip - 0.3, 0.3, (t, c) => gripGlass(c.g, 1)],
       [K.glassDown2 + 0.5, 0.35, () => restKnee(KNEE_L, 1)],
       [K.lean - 0.3, 0.3, (t, c) => gripGlass(c.g, 1)],
@@ -552,7 +551,8 @@
       [K.rack2 + 0.5, 0.0], [K.lookL - 0.15, 0.0], [K.lookL + 0.2, -0.26], [K.lookL + 0.4, -0.26], [K.lookR + 0.15, 0.22], [K.pocket - 0.2, 0.12], [K.pocket + 0.3, 0.0], [K.end, 0.0]]) + lf.twist;
     const tokLean = win(t, K.tok0 - 0.2, K.tok0 + 0.2, K.tok1, K.tok1 + 0.4);   // he leans to his left for the token on the bench
     const shrug = 0.03 * win(t, K.smile, K.smile + 0.3, K.smile + 0.6, K.smile + 1.0) + 0.045 * win(t, K.L_n18 - 0.05, K.L_n18 + 0.2, K.L_n18 + 0.45, K.L_n18 + 0.8) + lf.shrug;
-    return { ...SEAT, lean: lean + 0.1 * tokLean, twist: twist - 0.16 * tokLean, shrug, headTilt: lf.headTilt + 0.05 * win(t, K.lookUp, K.lookUp + 0.4, K.glassDown2, K.glassDown2 + 0.4), lf };
+    const cnt = win(t, K.count0, K.count0 + 0.6, K.stop - 0.4, K.stop + 0.2), sway = cnt * (0.03 * Math.sin(TAU * 0.33 * (t - K.count0)) + 0.012 * Math.sin(TAU * 0.71 * (t - K.count0) + 1.3));   // after test 8: alive through the count
+    return { ...SEAT, lean: lean + 0.1 * tokLean + sway, twist: twist - 0.16 * tokLean + cnt * 0.04 * Math.sin(TAU * 0.21 * (t - K.count0) + 0.7), shrug, headTilt: lf.headTilt + 0.05 * win(t, K.lookUp, K.lookUp + 0.4, K.glassDown2, K.glassDown2 + 0.4), lf };
   }
   // what he looks at, second by second (world points), and his face
   function gazeAt(t) {
@@ -582,7 +582,7 @@
     const ks = gazeAt(t).map((k) => [k[0], ...aimAt([k[1], k[2], k[3]], J, bodyP.twist)]);
     const [yaw, pitch] = sprung(t, (tt) => key(tt, ks));
     const { ph, gather } = countPhase(t), counting = t > K.count0 && t < K.stop ? 1 - gather : 0;   // a small nod with each note he counts
-    const cnt = 0.035 * Math.sin(PI * clamp(ph * 1.35)) * counting;
+    const cnt = 0.06 * Math.sin(PI * clamp(ph * 1.35)) * counting;   // (after test 8: a nod you can see)
     const nod = 0.16 * Math.sin(PI * clamp((t - word('work') + 0.05) / 0.45)) * (t > word('work') - 0.05 && t < word('work') + 0.4 ? 1 : 0);
     const shake = 0.11 * Math.sin(TAU * 2.2 * (t - K.L_n18)) * win(t, K.L_n18 - 0.05, K.L_n18 + 0.12, K.L_n18 + 0.75, K.L_n18 + 0.95);   // no: that's stealing
     return [yaw + bodyP.lf.headYaw + shake, pitch + bodyP.lf.headPitch + nod + cnt];

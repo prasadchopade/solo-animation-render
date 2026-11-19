@@ -121,7 +121,7 @@
   }
 
   // ------------------------------------------------------------------ the notes: a fold of seven, as the wallet holds them
-  const NOTES = ['n200', 'n100', 'n500b', 'n500', 'n500b', 'n100', 'n200'];   // both outside notes alike: a turning stack never swaps its face (gold outside since test 6: the cash reads as cash, and the same colour all along)
+  const NOTES = ['n200', 'n200', 'n200', 'n200', 'n200', 'n200', 'n200'];   // after test 8: all one note, so no turn of the stack ever changes the cash's colour (it was mixed).   // both outside notes alike: a turning stack never swaps its face (gold outside since test 6: the cash reads as cash, and the same colour all along)
   const SK = 1.3;                                     // the props drawn a third over life size, so they read at phone size against his hands
   const NL = 0.150 * SK, NW = 0.066 * SK, NT = 0.00045;
   // a stack of notes. frame: { O (the middle of the bottom note), L (along the length), S (across), N (up) }; each note i may have
@@ -219,7 +219,7 @@
       // the token, slipped in behind the card (o.token: 0 above the slot ... 1 in, its top edge still showing a little)
       if (o.token != null && front.inVis) {
         const tk = o.token, Ot = madd(madd(madd(fr.o, fr.b, WW * 0.66), A, h * 0.28 + 0.03 * (1 - tk)), fr.n, 0.0011 + 0.004 * (1 - tk));
-        P.push(...token(cam, Ot, fr.n, A, lt, { dz: tk < 0.6 ? -0.0012 : -0.0002, r: 0.0135 * SK }).map((q) => ({ ...q, slot: 1, tok: 1 })));   // once it's been pushed up, in front of the card
+        P.push(...token(cam, Ot, fr.n, A, lt, { dz: tk < 0.6 ? -0.0012 : -0.0002, r: 0.0135 * SK, a: inA }).map((q) => ({ ...q, slot: 1, tok: 1 })));   // (after test 8: faded with the inside, so a shut wallet never shows it)   // once it's been pushed up, in front of the card
       }
       if (front.inVis) P.push({ ...cardP, slot: 1, card: 1, z: cardP.z - 0.002, draw: (g) => { g.save(); g.globalAlpha *= inA; cardP.draw(g); g.restore(); } });   // (after test 6: only with its inside to you)
       // the steel key's head and the slip of paper, in the lower slot
