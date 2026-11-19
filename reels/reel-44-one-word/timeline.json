@@ -1,18 +1,18 @@
 {
   "note": "Single source of truth for picture + sound, in BEATS (120 bpm: beat = 0.5 s). film.js reads marks via film/data.js; sync.mjs turns sfx into cues.json; score.py reads marks for the music; vo.json places the narration. Every reel ends with the Root Cause end card: 'end' → 'done' = 3.0 s (6 beats), engine/endcard.",
-  "title": "The Wallet",
-  "duration": 61.0,
+  "title": "One Word",
+  "duration": 70.0,
   "fps": 30,
   "bpm": 120,
   "formats": [
     "9x16"
   ],
   "music": {
-    "source": "score.py (to come, after the motion test)"
+    "source": "synth (score.py → scripts/synth.py)"
   },
   "voiceover": {
     "provider": "voice lab",
-    "voice": "af_heart",
+    "voice": "k-heart",
     "file": "vo.json"
   },
   "mix": {
@@ -24,10 +24,17 @@
   },
   "marks": {
     "hook": 0,
-    "end": 116.0,
-    "done": 122.0
+    "end": 134.0,
+    "done": 140.0
   },
   "sfx": [
+    {
+      "at": 0,
+      "type": "wav",
+      "file": "audio/fx/sfx_stem.wav",
+      "gain": 1.0,
+      "what": "the film's own sounds (sfx.py): the crash, the street, the constable, the form, the memory, 1974, the court, the checkpoint"
+    },
     {
       "at": "end",
       "type": "wav",
