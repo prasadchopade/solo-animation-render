@@ -247,7 +247,7 @@
     const near = lerp(0.40, 0.36, look), down = lerp(-0.34, -0.06, look) - 0.42 * away - 0.5 * gone;
     const O = madd(madd(madd(C0, fw, near), upc, down), right, lerp(0.07, 0.0, look));
     const N = norm(add(mul(fw, -1), mul(upc, lerp(0.15, 0.55, look)))), A = norm(add(upc, mul(fw, 0.3)));
-    const closer = ease(K.token - 0.3, K.token + 0.9, t) * (1 - gone);
+    const closer = ease(K.token - 0.3, K.up, t) * (1 - gone);
     let f = mkF(madd(O, fw, -0.025 * closer), A, N); f = turnFrame(f, right, -0.14 * closer);
     return { ...f, O: madd(f.O, f.B, -PR.WW * 0.5 * (1 - look)) };
   }
@@ -389,10 +389,10 @@
   // a hand round the glass
   function gripGlass(g, side) {
     const c = madd(g.p, g.ax, 0.035), out = norm(ortho(add(mul(FWD, -1), mul(LEFT, side * 0.5)), g.ax)), u = norm(add(mul(out, -0.3), mul(LEFT, -side), mul(g.ax, 0.1))), n = norm(add(out, mul(g.ax, 0.2)));
-    return { W: madd(madd(c, out, -0.055), u, -0.045), u: norm(add(u, mul(out, 0.3))), n: ortho(n, u), pose: 'grip', pole: side > 0 ? POLE_L : POLE_R };
+    return { W: madd(madd(c, out, -0.055), u, -0.045), u: norm(add(u, mul(out, 0.3))), n: ortho(n, u), pose: 'grip', pole: [-0.6, -0.35, 0.75 * side] };
   }
   // fingertips on the token (a pinch)
-  function gripPinch(p, side) { const u = norm(add(FWD, mul(UP, -0.8), mul(LEFT, -0.2 * side))), n = norm(add(UP, mul(FWD, 0.3))); return { W: madd(madd(p, u, -0.115), n, 0.02), u, n, pose: 'pinch', pole: side > 0 ? POLE_L : POLE_R }; }
+  function gripPinch(p, side) { const u = norm(add(FWD, mul(UP, -0.8), mul(LEFT, -0.2 * side))), n = norm(add(UP, mul(FWD, 0.3))); return { W: madd(madd(p, u, -0.115), n, 0.02), u, n, pose: 'pinch', pole: [-0.75, -0.15, 0.65 * side] }; }
   // a flat hand on his chest (the pats), or slapping the wallet shut
   const flatOn = (p, nrm, fu, side) => { const n = norm(nrm), u = ortho(fu, n); return { W: madd(madd(p, u, -0.06), n, 0.016), u, n, pose: 'flat', pole: side > 0 ? POLE_L : POLE_R }; };
   // the right hand's forefinger at the brim of his cap (from the thumb's side, the thumb tucked)
@@ -517,7 +517,7 @@
     // leaning back at the end
     const lean = k1(t, [[0, 0.40], [K.close + 0.2, 0.42], [K.lift + 0.6, 0.30], [K.open, 0.24], [K.handoff, 0.2], [K.scales, 0.18], [K.pickup + 0.4, 0.24], [K.stop, 0.22],
       [K.square + 0.8, 0.14], [K.turnK, 0.08], [K.rack2 + 0.5, 0.06], [K.slide, 0.18], [K.slap + 0.3, 0.12], [K.pocket, 0.08], [K.sip, 0.04], [K.lookUp, 0.02],
-      [K.reach, 0.06], [K.holdOut, 0.14], [K.letGo + 0.4, 0.03], [K.lean + 0.8, -0.24], [K.L_n18, -0.22], [K.brim, -0.16], [K.end, -0.17]]) + lf.lean;
+      [K.reach, 0.06], [K.holdOut, 0.14], [K.letGo + 0.4, 0.03], [K.lean + 1.5, -0.24], [K.L_n18, -0.22], [K.brim, -0.16], [K.end, -0.17]]) + lf.lean;
     const twist = k1(t, [[0, 0.34], [K.close + 0.2, 0.36], [K.lift + 0.7, 0.12], [K.open, 0.05], [K.handoff, 0.0], [K.turnK - 0.2, 0.0], [K.turnK + 0.35, -0.16], [K.rack2, -0.16],
       [K.rack2 + 0.5, 0.0], [K.lookL - 0.15, 0.0], [K.lookL + 0.2, -0.26], [K.lookL + 0.4, -0.26], [K.lookR + 0.15, 0.22], [K.pocket - 0.2, 0.12], [K.pocket + 0.3, 0.0], [K.end, 0.0]]) + lf.twist;
     const tokLean = win(t, K.tok0 - 0.2, K.tok0 + 0.2, K.tok1, K.tok1 + 0.4);   // he leans to his left for the token on the bench
