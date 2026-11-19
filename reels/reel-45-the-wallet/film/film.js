@@ -428,10 +428,15 @@
   // a flat hand on his chest (the pats), or slapping the wallet shut
   const flatOn = (p, nrm, fu, side) => { const n = norm(nrm), u = ortho(fu, n); return { W: madd(madd(p, u, -0.06), n, 0.016), u, n, pose: 'flat', pole: side > 0 ? POLE_L : POLE_R }; };
   // the right hand's forefinger at the brim of his cap (from the thumb's side, the thumb tucked)
+  // after test 8: his index and middle fingers along the front of the brim, the back of his hand to you (a raised forefinger beside
+  // the cap read as pointing up, with his pale palm over his eye)
+  const BRIM2 = { f: [[6, 8, 4, 3], [6, 8, 4, 0], [74, 92, 52, -4], [80, 96, 56, -8]], t: [8, 46, 36, 28] };
   function gripBrim(J) {
-    const hd = w3(J.head), tip = madd(madd(madd(hd, toYouH, 0.17), UP, 0.15), LEFT, -0.15), u = norm(add(mul(UP, 0.7), mul(toYouH, 0.4), mul(LEFT, -0.35))), n = norm(add(mul(LEFT, -0.8), mul(toYouH, 0.4)));
-    return { W: madd(tip, u, -0.175), u, n: ortho(n, u), pose: 'point', pole: [0.3, -0.7, -0.9] };
+    const hd = w3(J.head), tip = madd(madd(madd(hd, toYouH, 0.21), UP, 0.1), LEFT, 0.03);
+    const u = norm(add(mul(LEFT, 0.85), mul(UP, 0.25), mul(toYouH, 0.1))), n = norm(add(mul(toYouH, 0.9), mul(UP, 0.2)));
+    return { W: madd(tip, u, -0.17), u, n: ortho(n, u), pose: BRIM2, pole: [0.3, -0.7, -0.9] };
   }
+
   // his right hand holding the wallet out by its spine end: the thumb on top, the fingers under
   function gripOffer(f, open = 0) {
     const C0 = madd(madd(f.O, f.B, 0.028), f.N, -PR.WT * 0.5), u = norm(add(f.B, mul(f.N, -0.15))), n0 = norm(mul(f.A, 1));
