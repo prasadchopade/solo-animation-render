@@ -4,10 +4,14 @@
 // pose (each finger's three joints and its spread, the thumb's four numbers). Its bones are placed in the world and drawn as
 // tapered, shaded capsules under the reel's camera, returned as primitives that film.js sorts far to near with the props.
 // Units are metres; every function is a pure function of its arguments (nothing is kept between frames).
+// After motion test 5 (the user, 19 Nov: "too AI slop ... better 2d"): drawn in the film's 2D look, flat colour with one hard-edged
+// shadow and an ink line round the hand's outline, none across its joints (each bone's ink is drawn under it, and the bone next
+// to it is painted again over that ink round the joint they share). Fingers a touch thicker.
 (() => {
   const R = window.RIG, { mix, rgba } = R, D = Math.PI / 180, PI = Math.PI, TAU = Math.PI * 2;
   const clamp = (x, a = 0, b = 1) => Math.min(b, Math.max(a, x));
   const lerp = (a, b, u) => a + (b - a) * u;
+  const INK = '#24160f', inkW = (s) => clamp(0.0042 * s, 1.4, 5.5);   // the film's ink, as rig.js draws it
   // vectors
   const add = (a, b) => [a[0] + b[0], a[1] + b[1], a[2] + b[2]];
   const sub = (a, b) => [a[0] - b[0], a[1] - b[1], a[2] - b[2]];
@@ -29,12 +33,12 @@
   // ------------------------------------------------------------------ the hand's bones (metres, a man's hand drawn a little large)
   // u: from the wrist to the middle knuckle; s: towards the thumb; n: out of the back of the hand
   const FINGERS = [
-    { u: 0.094, s: 0.030, n: 0.000, L: [0.046, 0.027, 0.021], r: [0.0104, 0.0095, 0.0087] },   // index
-    { u: 0.098, s: 0.009, n: 0.002, L: [0.050, 0.031, 0.022], r: [0.0108, 0.0099, 0.0089] },   // middle
-    { u: 0.094, s: -0.012, n: 0.001, L: [0.047, 0.029, 0.021], r: [0.0101, 0.0093, 0.0085] },  // ring
-    { u: 0.085, s: -0.031, n: -0.002, L: [0.037, 0.022, 0.019], r: [0.0090, 0.0083, 0.0077] }, // little
+    { u: 0.094, s: 0.030, n: 0.000, L: [0.046, 0.027, 0.021], r: [0.0114, 0.0105, 0.0096] },   // index
+    { u: 0.098, s: 0.009, n: 0.002, L: [0.050, 0.031, 0.022], r: [0.0119, 0.0109, 0.0098] },   // middle
+    { u: 0.094, s: -0.012, n: 0.001, L: [0.047, 0.029, 0.021], r: [0.0111, 0.0102, 0.0094] },  // ring
+    { u: 0.085, s: -0.031, n: -0.002, L: [0.037, 0.022, 0.019], r: [0.0099, 0.0091, 0.0085] }, // little
   ];
-  const THUMB = { base: [0.017, 0.021, -0.011], L: [0.044, 0.034, 0.029], r: [0.0168, 0.0128, 0.0112] };   // its first bone is the ball of the thumb
+  const THUMB = { base: [0.017, 0.021, -0.011], L: [0.044, 0.034, 0.029], r: [0.0176, 0.0139, 0.0122] };   // its first bone is the ball of the thumb
   // poses, in degrees: f = each finger's [knuckle, middle joint, end joint, spread (+ towards the thumb)]; t = the thumb's
   // [out to the side in the palm's plane, out in front of the palm, its middle joint, its end joint]
   const POSE = {
@@ -111,14 +115,18 @@
 
   // ------------------------------------------------------------------ drawing
   // a tapered capsule between two screen points (radii in px), with a soft lit side and an outline
-  function capsule(g, a, b, ra, rb, c0, c1, edge, ew, lx) {
+  function capSub(g, a, b, ra, rb) {                                  // a tapered capsule's outline, as a new subpath
     const dx = b[0] - a[0], dy = b[1] - a[1], L = Math.hypot(dx, dy);
     const ang = Math.atan2(dy, dx), dr = L > 1e-3 ? clamp((ra - rb) / L, -0.95, 0.95) : 0, ph = Math.acos(dr);   // where the outer tangents touch
-    g.beginPath(); g.arc(a[0], a[1], ra, ang + ph, ang - ph); g.arc(b[0], b[1], rb, ang - ph, ang + ph); g.closePath();
+    g.moveTo(a[0] + ra * Math.cos(ang + ph), a[1] + ra * Math.sin(ang + ph)); g.arc(a[0], a[1], ra, ang + ph, ang - ph); g.arc(b[0], b[1], rb, ang - ph, ang + ph); g.closePath();
+  }
+  function capsule(g, a, b, ra, rb, c0, c1, edge, ew, lx) {
+    const dx = b[0] - a[0], dy = b[1] - a[1], L = Math.hypot(dx, dy);
+    g.beginPath(); capSub(g, a, b, ra, rb);
     let nx = -dy / (L || 1), ny = dx / (L || 1); if (nx * lx - ny * 0.6 < 0) { nx = -nx; ny = -ny; }
     const mx = (a[0] + b[0]) / 2, my = (a[1] + b[1]) / 2, r = Math.max(ra, rb);
     const q = g.createLinearGradient(mx + nx * r, my + ny * r, mx - nx * r, my - ny * r);
-    q.addColorStop(0, c0); q.addColorStop(0.5, mix(c0, c1, 0.45)); q.addColorStop(1, c1);
+    q.addColorStop(0, c0); q.addColorStop(0.56, c0); q.addColorStop(0.58, c1); q.addColorStop(1, c1);   // cel: one hard edge
     g.fillStyle = q; g.fill();
     if (ew > 0) { g.lineWidth = ew; g.strokeStyle = edge; g.stroke(); }
   }
@@ -140,7 +148,7 @@
   function prims(cam, H, look, lt, o = {}) {
     const out = [], P = (p) => cam.P(p[0], p[1], p[2]);
     const [c0, c1] = R.tone(look.skin, lt), lx = lt.x >= 0 ? 1 : -1;
-    const edge = rgba(mix(c1, '#1e0e08', 0.55), 0.8), alpha = o.a ?? 1;
+    const alpha = o.a ?? 1, P0 = P(H.palmC), w = P0 ? inkW(P0[2]) : 2;  // the ink's width, the same all over the hand
     const toCam = (v) => cam.dirCam(v[0], v[1], v[2]);
     const backVis = toCam(H.n)[2] < 0;                                // the back of the hand is towards you
     const palmCol = R.tone(look.palm || mix(look.skin, '#f3c9ae', 0.38), lt);
@@ -152,26 +160,29 @@
       const hz = cam.toCam(H.palmC[0], H.palmC[1], H.palmC[2])[2];
       out.push({ z: hz + (o.zBias || 0), draw: (g) => {
         g.save(); g.globalAlpha = alpha;
-        const hp = hull(pts.map((q) => [q[0], q[1]])); roundPath(g, hp);
+        const hp = hull(pts.map((q) => [q[0], q[1]]));
         const pc = P(H.palmC), sc = pc[2], r = 0.05 * sc;
         const [a0, a1] = backVis ? [c0, c1] : palmCol;
+        g.save();                                                     // the ink, half of it under the fill; none where the forearm comes in
+        if (o.wrist) { const ed = norm(sub(o.wrist, H.W)), wa = P(madd(H.W, ed, -0.012)), wb = P(madd(H.W, ed, 0.07)); if (wa && wb) { g.beginPath(); g.rect(-1e5, -1e5, 2e5, 2e5); capSub(g, wa, wb, 0.04 * wa[2], 0.043 * wb[2]); g.clip('evenodd'); } }
+        roundPath(g, hp); g.lineWidth = 2 * w; g.strokeStyle = INK; g.lineJoin = 'round'; g.stroke(); g.restore();
+        roundPath(g, hp);
         const q = g.createLinearGradient(pc[0] + lx * r, pc[1] - r * 0.6, pc[0] - lx * r, pc[1] + r * 0.6);
-        q.addColorStop(0, a0); q.addColorStop(1, a1); g.fillStyle = q; g.fill();
-        g.lineWidth = Math.max(0.8, 0.0016 * sc); g.strokeStyle = edge; g.stroke();
+        q.addColorStop(0, a0); q.addColorStop(0.56, a0); q.addColorStop(0.58, a1); q.addColorStop(1, a1); g.fillStyle = q; g.fill();
         g.save(); roundPath(g, hp); g.clip();
-        if (backVis) {                                                // knuckles and the tendons' faint lines
+        if (false && backVis) {                                       // (not in the 2D look: knuckles and the tendons' faint lines)
           g.strokeStyle = rgba(mix(c1, '#2a140c', 0.3), 0.28); g.lineWidth = Math.max(0.7, 0.0018 * sc); g.lineCap = 'round';
           for (let i = 0; i < 4; i++) { const F = FINGERS[i], a = P(add(H.W, add(mul(H.u, 0.03 * H.k), mul(H.s, F.s * 0.6 * H.k)))), b = P(H.fingers[i].J[0]); if (a && b) { g.beginPath(); g.moveTo(a[0], a[1]); g.lineTo(lerp(a[0], b[0], 0.85), lerp(a[1], b[1], 0.85)); g.stroke(); } }
           g.fillStyle = rgba(mix(c0, '#fff3e6', 0.5), 0.45);
           for (let i = 0; i < 4; i++) { const k = P(H.fingers[i].J[0]); if (k) { g.beginPath(); g.ellipse(k[0], k[1], H.fingers[i].r[0] * k[2] * 0.75, H.fingers[i].r[0] * k[2] * 0.5, 0, 0, TAU); g.fill(); } }
-        } else {                                                      // the palm's lines and the ball of the thumb
-          g.strokeStyle = rgba(mix(palmCol[1], '#3a1a10', 0.4), 0.35); g.lineWidth = Math.max(0.7, 0.0015 * sc); g.lineCap = 'round';
+        } else if (!backVis) {                                        // the palm's lines
+          g.strokeStyle = rgba(INK, 0.5); g.lineWidth = Math.max(0.8, 0.45 * w); g.lineCap = 'round';
           const crease = (a, b, c) => { const A = P(a), B = P(b), Cc = P(c); if (A && B && Cc) { g.beginPath(); g.moveTo(A[0], A[1]); g.quadraticCurveTo(B[0], B[1], Cc[0], Cc[1]); g.stroke(); } };
           const at = (a, b, c = -0.0075) => add(H.W, add(add(mul(H.u, a * H.k), mul(H.s, b * H.k)), mul(H.n, c * H.k)));
           crease(at(0.072, -0.03), at(0.07, -0.005), at(0.062, 0.022));
           crease(at(0.055, -0.03), at(0.05, -0.005), at(0.06, 0.02));
           crease(at(0.07, 0.025), at(0.035, 0.012), at(0.01, 0.012));
-          const tn = P(H.thenar); if (tn) { g.fillStyle = rgba(mix(palmCol[0], '#ffffff', 0.25), 0.25); g.beginPath(); g.ellipse(tn[0], tn[1], 0.016 * tn[2], 0.012 * tn[2], 0, 0, TAU); g.fill(); }
+          const tn = P(H.thenar); if (false && tn) { g.fillStyle = rgba(mix(palmCol[0], '#ffffff', 0.25), 0.25); g.beginPath(); g.ellipse(tn[0], tn[1], 0.016 * tn[2], 0.012 * tn[2], 0, 0, TAU); g.fill(); }
         }
         g.restore(); g.restore();
       } });
@@ -179,31 +190,41 @@
     // the fingers and the thumb, a capsule a bone
     const digits = [...H.fingers.map((F, i) => ({ F, i })), { F: H.thumb, i: 4 }];
     for (const { F, i } of digits) {
+      const shadeK = i === 4 ? 0.05 : 0.04 * i, f0 = mix(c0, c1, shadeK), f1 = mix(c1, '#2a1810', 0.08 + shadeK);
+      const bone = [0, 1, 2].map((b) => {
+        const A = F.J[b], B = F.J[b + 1], pa = P(A), pb = P(B); if (!pa || !pb) return null;
+        return { A, B, pa, pb, ra: F.r[b] * pa[2], rb: (b < 2 ? F.r[b + 1] : F.r[2] * 0.92) * pb[2], dorsV: toCam(F.dors[b])[2] < 0.05,
+          z: (cam.toCam(A[0], A[1], A[2])[2] + cam.toCam(B[0], B[1], B[2])[2]) / 2 - (b === 0 && i < 4 ? 0.002 : 0) + (i < 4 ? (o.zBias || 0) : 0) };   // o.zBias: the palm and fingers behind something held (the thumb stays)
+      });
+      const surf = (g, b) => {                                       // a bone's own colour (and, at the tip, its nail), no ink
+        const q = bone[b]; if (!q) return;
+        capsule(g, q.pa, q.pb, q.ra, q.rb, f0, f1, null, 0, lx);
+        if (b === 2 && q.dorsV) {                                    // the nail, on the back of the last bone
+          const { A, B, pa, pb } = q, dv = F.dors[2], nb = madd(lerp3(A, B, 0.6), dv, F.r[2] * 0.62), p1 = P(nb), e2 = P(madd(B, dv, F.r[2] * 0.5));
+          if (p1 && e2) {
+            const ang = Math.atan2(pb[1] - pa[1], pb[0] - pa[0]), facing = clamp(-toCam(dv)[2] * 1.3, 0.25, 1), nw = F.r[2] * p1[2] * 0.72 * facing, nh = F.r[2] * p1[2] * 0.95;
+            g.save(); g.translate((p1[0] + e2[0]) / 2, (p1[1] + e2[1]) / 2); g.rotate(ang);
+            g.fillStyle = nailCol; g.beginPath(); g.ellipse(0, 0, nh, nw, 0, 0, TAU); g.fill();
+            g.strokeStyle = rgba(INK, 0.55); g.lineWidth = Math.max(0.7, 0.4 * w); g.stroke();
+            g.restore();
+          }
+        }
+      };
       for (let b = 0; b < 3; b++) {
-        const A = F.J[b], B = F.J[b + 1], pa = P(A), pb = P(B); if (!pa || !pb) continue;
-        const z = (cam.toCam(A[0], A[1], A[2])[2] + cam.toCam(B[0], B[1], B[2])[2]) / 2 - (b === 0 && i < 4 ? 0.002 : 0) + (i < 4 ? (o.zBias || 0) : 0);   // o.zBias: the palm and fingers behind something held (the thumb stays)
-        const ra = F.r[b] * pa[2], rb = (b < 2 ? F.r[b + 1] : F.r[2] * 0.92) * pb[2];
-        const dorsV = toCam(F.dors[b])[2] < 0.05;
-        const tip = b === 2;
-        out.push({ z, draw: (g) => {
+        const q = bone[b]; if (!q) continue;
+        out.push({ z: q.z, draw: (g) => {
           g.save(); g.globalAlpha = alpha;
-          const shadeK = i === 4 ? 0.05 : 0.04 * i;
-          capsule(g, pa, pb, ra, rb, mix(c0, c1, shadeK), mix(c1, '#2a1810', 0.08 + shadeK), edge, Math.max(0.7, 0.07 * Math.min(ra, rb)), lx);
-          if (dorsV && b === 1) {                                     // a crease over the middle joint
-            g.strokeStyle = rgba(mix(c1, '#2a140c', 0.4), 0.3); g.lineWidth = Math.max(0.6, 0.08 * ra); g.lineCap = 'round';
-            const dx = pb[0] - pa[0], dy = pb[1] - pa[1], L = Math.hypot(dx, dy) || 1, nx = -dy / L, ny = dx / L, cx = pa[0] + dx * 0.12, cy = pa[1] + dy * 0.12;
-            g.beginPath(); g.moveTo(cx + nx * ra * 0.55, cy + ny * ra * 0.55); g.quadraticCurveTo(cx + dx / L * ra * 0.3, cy + dy / L * ra * 0.3, cx - nx * ra * 0.55, cy - ny * ra * 0.55); g.stroke();
+          let ia = q.pa, ira = q.ra;                                   // the ink: the bone grown by the line's width; at the knuckle
+          if (b === 0) {                                               // it starts a little way along, so no line crosses the palm
+            const dx = q.pb[0] - q.pa[0], dy = q.pb[1] - q.pa[1], L = Math.hypot(dx, dy) || 1, k = Math.min(q.ra, 0.6 * L) / L;
+            ia = [q.pa[0] + dx * k, q.pa[1] + dy * k]; ira = lerp(q.ra, q.rb, k);
           }
-          if (tip && dorsV) {                                          // the nail, on the back of the last bone
-            const dv = F.dors[2], nb = madd(lerp3(A, B, 0.6), dv, F.r[2] * 0.62), q = P(nb), e2 = P(madd(B, dv, F.r[2] * 0.5));
-            if (q && e2) {
-              const ang = Math.atan2(pb[1] - pa[1], pb[0] - pa[0]), facing = clamp(-toCam(dv)[2] * 1.3, 0.25, 1), w = F.r[2] * q[2] * 0.78 * facing, h = F.r[2] * q[2] * 1.05;
-              g.translate((q[0] + e2[0]) / 2, (q[1] + e2[1]) / 2); g.rotate(ang);
-              g.fillStyle = nailCol; g.beginPath(); g.ellipse(0, 0, h, w, 0, 0, TAU); g.fill();
-              g.strokeStyle = rgba(mix(c1, '#3a1a10', 0.3), 0.35); g.lineWidth = Math.max(0.5, 0.05 * h); g.stroke();
-              g.fillStyle = 'rgba(255,255,255,0.45)'; g.beginPath(); g.ellipse(-h * 0.2, -w * 0.25, h * 0.35, w * 0.22, 0, 0, TAU); g.fill();
-            }
+          g.beginPath(); capSub(g, ia, q.pb, ira + w, q.rb + w); g.fillStyle = INK; g.fill();
+          for (const [nb, jp, jr] of [[b - 1, q.pa, q.ra], [b + 1, q.pb, q.rb]]) {   // the bones on either side, again, round the joint
+            if (nb < 0 || nb > 2 || !bone[nb]) continue;
+            g.save(); g.beginPath(); g.arc(jp[0], jp[1], jr + w + 1.5, 0, TAU); g.clip(); surf(g, nb); g.restore();
           }
+          surf(g, b);
           g.restore();
         } });
       }
@@ -211,5 +232,5 @@
     return out;
   }
 
-  window.HAND3 = { POSE, blend, copyPose, bones, frame, prims, capsule, hull, roundPath, v: { add, sub, mul, madd, dot, cross, len, norm, lerp3, ortho, towards } };
+  window.HAND3 = { POSE, blend, copyPose, bones, frame, prims, capsule, capSub, hull, roundPath, INK, inkW, v: { add, sub, mul, madd, dot, cross, len, norm, lerp3, ortho, towards } };
 })();

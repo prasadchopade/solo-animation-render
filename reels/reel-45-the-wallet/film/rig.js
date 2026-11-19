@@ -1,7 +1,9 @@
 // Reel 45 · The Wallet: reel 42's rig, copied from tag source/reel-42-what-did-he-take (film/rig.js), as the brief allows. Added
 // here: o.noHands (the arm stops at the wrist; this reel draws its hands in 3D, film/hand3.js), RIG.tone (the figure's light on any
 // colour, for the props), RIG.setTones (the evening's lit and shade colours) and o.onTorso (a hook after the torso is drawn, for
-// his shirt pocket). One fix: head3 tipped a turned head's nose up when it should look down (the sign of pitch on the side-on
+// his shirt pocket). And, after the user's note on motion test 5 (19 Nov: "too AI slop ... better 2d"): a 2D look, cel-shaded
+// (one hard-edged shadow, no airbrushed gradients) with an ink line round each limb, the torso and the head (drawn under the
+// whole limb, so it shows at the silhouette and not at the joints). One fix: head3 tipped a turned head's nose up when it should look down (the sign of pitch on the side-on
 // turn; it only shows side-on, and 42 rarely turned him side-on). Nothing else is changed.
 // Reel 42 · What Did He Take?: the rig, copied from reel 37 (tag source/reel-37-youre-the-thief, film/rig.js) and extended here:
 // long sleeves, a watch on a wrist that can go, things held in either hand (o.hold), one arm drawn on its own (o.onlyArm /
@@ -190,6 +192,8 @@
   function setSun(v) { const l = Math.hypot(...v); for (let i = 0; i < 3; i++) SUN[i] = v[i] / l; }          // reel 42: the reel sets it once, before frame 0
   function lightOf(cam) { const d = cam.dirCam(SUN[0], SUN[1], SUN[2]); return { x: d[0], back: clamp(d[2]), front: clamp(-d[2]) }; }
   let LIT = '#fff0d2', SHD = '#3a2440';
+  const INK = '#24160f';
+  const inkW = (s) => Math.max(1.4, Math.min(5.5, 0.0042 * s));   // ink width (px) for a figure at s px per metre
   function setTones(lit, shd) { LIT = lit; SHD = shd; }                                                  // reel 45
   function tone(c, lt) { const bl = lt.back, k0 = 0.10 + 0.34 * bl; return [mix(mix(c, LIT, 0.16 * (1 - bl)), SHD, k0 * 0.5), mix(c, SHD, 0.2 + k0 * 0.8)]; }   // reel 45: the figure's tones, for anything
   function figure(g, cam, W, t, o = {}) {
@@ -203,21 +207,26 @@
       const dx = b[0] - a[0], dy = b[1] - a[1], L = Math.hypot(dx, dy) || 1e-3; let nx = -dy / L, ny = dx / L;
       if (nx * lx - ny * 0.4 < 0) { nx = -nx; ny = -ny; }
       const mx = (a[0] + b[0]) / 2, my = (a[1] + b[1]) / 2, q = g.createLinearGradient(mx + nx * r, my + ny * r, mx - nx * r, my - ny * r), [c0, c1] = tone(c);
-      q.addColorStop(0, c0); q.addColorStop(0.55, mix(c0, c1, 0.55)); q.addColorStop(1, c1); return q;
+      q.addColorStop(0, c0); q.addColorStop(0.58, c0); q.addColorStop(0.6, c1); q.addColorStop(1, c1); return q;   // cel: one hard edge
     };
     const cap = (a, b, ra, rb) => {                   // a tapered capsule between two screen points (radii in metres)
       const ang = Math.atan2(b[1] - a[1], b[0] - a[0]), r0 = ra * a[2], r1 = rb * b[2];
       g.beginPath(); g.arc(a[0], a[1], r0, ang + PI / 2, ang - PI / 2); g.arc(b[0], b[1], r1, ang - PI / 2, ang + PI / 2); g.closePath();
     };
     const limb = (a, b, ra, rb, c) => { cap(a, b, ra, rb); g.fillStyle = grad(a, b, Math.max(ra * a[2], rb * b[2]), c); g.fill(); };
+    const inkCap = (a, b, ra, rb) => {               // the ink under a limb: the same capsule, grown by the line's width
+      const ang = Math.atan2(b[1] - a[1], b[0] - a[0]), w = inkW(s), r0 = ra * a[2] + w, r1 = rb * b[2] + w;
+      g.beginPath(); g.arc(a[0], a[1], r0, ang + PI / 2, ang - PI / 2); g.arc(b[0], b[1], r1, ang - PI / 2, ang + PI / 2); g.closePath(); g.fillStyle = INK; g.fill();
+    };
     const mid = (a, b, u) => [lerp(a[0], b[0], u), lerp(a[1], b[1], u), lerp(a[2], b[2], u), lerp(a[3], b[3], u)];
     const rim = (a, b, ra, rb) => {                   // the low sun on one edge
       if ((bl < 0.05 && Math.abs(lt.x) < 0.25) || rimK <= 0.01) return;
       const dx = b[0] - a[0], dy = b[1] - a[1], L = Math.hypot(dx, dy) || 1e-3; let nx = -dy / L, ny = dx / L; if (nx * lx - ny * 0.4 < 0) { nx = -nx; ny = -ny; }
-      g.strokeStyle = `rgba(255,226,168,${((0.2 + 0.36 * bl) * rimK).toFixed(3)})`; g.lineWidth = Math.max(1.2, Math.min(7, 0.011 * s)); g.lineCap = 'round';
+      g.strokeStyle = `rgba(255,226,168,${((0.25 + 0.4 * bl) * rimK).toFixed(3)})`; g.lineWidth = Math.max(1.2, Math.min(5, 0.008 * s)); g.lineCap = 'round';
       g.beginPath(); g.moveTo(a[0] + nx * ra * a[2] * 0.92, a[1] + ny * ra * a[2] * 0.92); g.lineTo(b[0] + nx * rb * b[2] * 0.92, b[1] + ny * rb * b[2] * 0.92); g.stroke();
     };
     const leg = (hp, kn, an, he, to) => {
+      inkCap(hp, kn, 0.088, 0.070); inkCap(kn, an, 0.068, 0.054); inkCap(he, to, 0.047, 0.040);
       limb(hp, kn, 0.088, 0.070, Lk.leg); limb(kn, an, 0.068, 0.054, Lk.leg); rim(hp, kn, 0.088, 0.07); rim(kn, an, 0.068, 0.054);
       // the shoe: heel to toe, with a pale sole under it
       const ang = Math.atan2(to[1] - he[1], to[0] - he[0]), sx = Math.sin(ang), cxx = Math.cos(ang);
@@ -311,6 +320,8 @@
     const arm = (sh, el, wr, sd, part = 'all') => {
       const m = mid(sh, el, 0.5), long = Lk.sleeve === 'long', side = sd > 0 ? 'l' : 'r', up = part !== 'lower', lo = part !== 'upper';
       const pose = (o.handPose && o.handPose[side]) || 'relax', hold = o.hold && o.hold[side], hb = !!(o.holdBehind && o.holdBehind[side]);
+      if (up) inkCap(sh, el, 0.06, 0.054);
+      if (lo) inkCap(el, wr, 0.05, 0.042);
       if (up && Lk.sleeve !== 'none') { if (long) limb(m, el, 0.056, 0.052, Lk.shirt); else limb(m, el, 0.052, 0.048, Lk.skin); }
       if (lo) {
         if (long) { limb(el, mid(el, wr, 0.78), 0.052, 0.047, Lk.shirt); limb(mid(el, wr, 0.74), wr, 0.042, 0.040, Lk.skin); }
@@ -332,7 +343,7 @@
       if (!up) return;
       if (Lk.sleeve === 'none') { limb(sh, el, 0.058, 0.05, Lk.skin); rim(sh, el, 0.058, 0.05); limb(sh, mid(sh, el, 0.1), 0.06, 0.059, Lk.shirt); return; }   // reel 42: a vest
       limb(sh, mid(sh, el, 0.62), 0.058, 0.057, Lk.shirt);
-      g.strokeStyle = 'rgba(0,0,0,0.16)'; g.lineWidth = Math.max(1, 0.014 * s); const q = mid(sh, el, 0.62), ang = Math.atan2(el[1] - sh[1], el[0] - sh[0]), r = 0.062 * q[2];
+      g.strokeStyle = INK; g.lineWidth = inkW(s) * 0.7; const q = mid(sh, el, 0.62), ang = Math.atan2(el[1] - sh[1], el[0] - sh[0]), r = 0.058 * q[2];
       g.beginPath(); g.moveTo(q[0] - Math.sin(ang) * r, q[1] + Math.cos(ang) * r); g.lineTo(q[0] + Math.sin(ang) * r, q[1] - Math.cos(ang) * r); g.stroke();
       rim(sh, mid(sh, el, 0.62), 0.058, 0.057);
     };
@@ -351,7 +362,8 @@
       const pts = [at(hem, -hw), at(0.16, -w0 * 0.98), at(0.44, -w1), at(0.80, -w2), at(0.98, -w3), at(1.085, -wn), at(1.085, wn), at(0.98, w3), at(0.80, w2), at(0.44, w1), at(0.16, w0 * 0.98), at(hem, hw)];
       smooth(pts);
       const q = g.createLinearGradient(...at(0.5, lx * w2), ...at(0.5, -lx * w2)), [c0, c1] = tone(Lk.shirt);
-      q.addColorStop(0, c0); q.addColorStop(0.5, mix(c0, c1, 0.5)); q.addColorStop(1, c1); g.fillStyle = q; g.fill();
+      q.addColorStop(0, c0); q.addColorStop(0.6, c0); q.addColorStop(0.62, c1); q.addColorStop(1, c1); g.fillStyle = q; g.fill();
+      g.strokeStyle = INK; g.lineWidth = inkW(s) * 1.6; g.lineJoin = 'round'; g.stroke(); g.fill();   // the ink, half of it under the fill
       g.save(); smooth(pts); g.clip();
       g.fillStyle = 'rgba(30,18,40,0.10)'; const wf = at(0.06, 0); g.beginPath(); g.ellipse(wf[0], wf[1], w0 * 1.2, 0.03 * s, Math.atan2(ny, nx), 0, TAU); g.fill();   // a fold at the waist
       if (front > 0.12) {                              // the front: a placket, buttons, the collar's points
@@ -369,7 +381,7 @@
     };
     const pelvis = () => {
       const w = ellW(0.158, 0.122, psiP) * s * gk; g.save(); g.translate(A[0], A[1]); g.rotate(Math.atan2(ny, nx));
-      const q = g.createLinearGradient(lx * w, 0, -lx * w, 0), [c0, c1] = tone(Lk.leg); q.addColorStop(0, c0); q.addColorStop(1, c1);
+      const q = g.createLinearGradient(lx * w, 0, -lx * w, 0), [c0, c1] = tone(Lk.leg); q.addColorStop(0, c0); q.addColorStop(0.58, c0); q.addColorStop(0.6, c1); q.addColorStop(1, c1);
       g.fillStyle = q; g.beginPath(); g.ellipse(0, 0.012 * s, w, 0.115 * s, 0, 0, TAU); g.fill(); g.restore();
     };
     const bag = () => {                               // the grey backpack: the same on all four
@@ -378,7 +390,7 @@
       const c = at(0.62, off), ang = Math.atan2(uy, ux) + PI / 2, h = 0.40 * s;
       F.bagC = [c[0], c[1] + lag, w, h * 0.5];
       g.save(); g.translate(c[0], c[1] + lag); g.rotate(ang);
-      const q = g.createLinearGradient(lx * w, 0, -lx * w, 0), [c0, c1] = tone(Lk.bag); q.addColorStop(0, c0); q.addColorStop(1, c1); g.fillStyle = q;
+      const q = g.createLinearGradient(lx * w, 0, -lx * w, 0), [c0, c1] = tone(Lk.bag); q.addColorStop(0, c0); q.addColorStop(0.58, c0); q.addColorStop(0.6, c1); q.addColorStop(1, c1); g.fillStyle = q;
       g.beginPath(); g.roundRect(-w, -h * 0.5, w * 2, h, Math.min(w, 0.07 * s)); g.fill();
       if (front < 0.1) {                               // seen from behind: a pocket, a zip, the grab handle
         const a = clamp((0.1 - front) * 3), pw = w * 0.74 * Math.abs(front < 0 ? 1 : 0.6);
@@ -507,6 +519,7 @@
     const H = hull(pts), outline = () => { g.beginPath(); H.forEach((p, i) => (i ? g.lineTo(p[0], p[1]) : g.moveTo(p[0], p[1]))); g.closePath(); };
     const bl = lt.back || 0, skin = mix(L.skin, SHD, 0.16 * bl), skinD = mix(L.skinD, SHD, 0.2 * bl), skinH = mix(L.skinH, L.skin, 0.6 * bl);
     g.save(); g.translate(x, y); g.rotate((o.tilt || 0) + pitch * sn * 0.85); g.scale(R, -R); g.lineJoin = 'round'; g.lineCap = 'round';
+    const inkH = inkW(R / 0.15) / R;                  // reel 45: the ink line's width, in head units
     const brimPts = () => {                            // the cap's brim: a curved tongue out from the forehead, worn a little to one side
       const lb = 7 * PI / 180, c = Math.cos(lb), f0 = L.capTurn ?? 0, inn = [], out2 = [];
       for (let i = 0; i <= 14; i++) {
@@ -521,23 +534,30 @@
       g.fillStyle = '#3a0a12'; shape(-0.085); g.fill();                     // its thickness and dark underside (reel 42, draft 6)
       g.fillStyle = mix('#7d2130', '#4a111b', clamp(cs)); shape(0); g.fill();
       g.strokeStyle = '#a32b3d'; g.lineWidth = 0.05; g.beginPath(); B.out2.forEach((p, j) => (j ? g.lineTo(p[0], p[1]) : g.moveTo(p[0], p[1]))); g.stroke();
+      shape(0); g.strokeStyle = INK; g.lineWidth = inkH * 1.2; g.stroke();
     };
     const BR = L.cap ? brimPts() : null;
     if (BR && BR.zc <= 0.05) brim(BR);                 // from behind it's under the head: only what sticks out past it shows
     const zs = (fx, fy) => FC[2] + FC[5] * Math.sqrt(Math.max(0, 1 - (fx / FC[3]) ** 2 - ((fy - FC[1]) / FC[4]) ** 2));
     const fpt = (fx, fy) => { const z = zs(fx, fy), n = [fx / FC[3] ** 2, (fy - FC[1]) / FC[4] ** 2, (z - FC[2]) / FC[5] ** 2], nl = Math.hypot(n[0], n[1], n[2]) || 1, p = rot([fx, fy, z]); return [p[0], p[1] + dyF, (-n[0] * sn + n[2] * cs) / nl]; };
     // the ears: both peep out from behind the skull; the one on your side comes round onto the head (drawn again, later)
-    const ear = (k, a = 1) => { const c = rot([k * 0.97, 0.0, -0.16]), w = 0.11 + 0.19 * Math.abs(sn); g.globalAlpha *= a; g.fillStyle = skin; g.beginPath(); g.ellipse(c[0], c[1] + dyF * 0.5, w, 0.3, 0, 0, TAU); g.fill(); g.fillStyle = skinD; g.beginPath(); g.ellipse(c[0] - sn * 0.03, c[1] + dyF * 0.5 + 0.01, w * 0.5, 0.17, 0, 0, TAU); g.fill(); g.globalAlpha /= a; return c; };
+    const ear = (k, a = 1) => { const c = rot([k * 0.97, 0.0, -0.16]), w = 0.11 + 0.19 * Math.abs(sn); g.globalAlpha *= a; g.fillStyle = skin; g.beginPath(); g.ellipse(c[0], c[1] + dyF * 0.5, w, 0.3, 0, 0, TAU); g.strokeStyle = INK; g.lineWidth = inkH * 1.4; g.stroke(); g.fill(); g.fillStyle = skinD; g.beginPath(); g.ellipse(c[0] - sn * 0.03, c[1] + dyF * 0.5 + 0.01, w * 0.5, 0.17, 0, 0, TAU); g.fill(); g.globalAlpha /= a; return c; };
     if (L.long) { g.fillStyle = L.hair; g.beginPath(); g.ellipse(sk.x - sn * 0.22, -0.75, 0.98, 1.55, 0, 0, TAU); g.fill(); }
     if (L.bun) { const b = rot([0, 0.42, -1.3]); if (b[2] < 0.2) { g.fillStyle = L.hair; g.beginPath(); g.arc(b[0], b[1], 0.44, 0, TAU); g.fill(); } }
     for (const k of [-1, 1]) ear(k);
-    outline(); const q0 = g.createLinearGradient(lx * 1.0, 1.1, -lx * 0.9, -1.1); q0.addColorStop(0, skinH); q0.addColorStop(0.45, skin); q0.addColorStop(1, skinD); g.fillStyle = q0; g.fill();
+    outline(); g.strokeStyle = INK; g.lineWidth = inkH * 2; g.stroke();
+    g.fillStyle = skin; g.fill();
     g.save(); outline(); g.clip();
-    if (Math.abs(sn) > 0.02 && cs > -0.3) {            // the cheek that has turned away from you falls into shade
+    {                                                  // the crescent: on the far side and under the jaw
+      const ox = lx * (0.2 + 0.1 * (1 - Math.abs(cs))), oy = 0.06;
+      g.beginPath(); g.rect(-4, -4, 8, 8); H.slice().reverse().forEach((p, i) => (i ? g.lineTo(p[0] + ox, p[1] + oy) : g.moveTo(p[0] + ox, p[1] + oy))); g.closePath();
+      g.fillStyle = skinD; g.fill('evenodd');
+    }
+    if (false && Math.abs(sn) > 0.02 && cs > -0.3) {   // (reel 45: not in the 2D look; the cel shadow does it)
       const e = Math.sign(sn) * 1.05, q = g.createLinearGradient(e, 0, e - Math.sign(sn) * 1.05, 0); q.addColorStop(0, `rgba(70,32,18,${(0.3 * Math.abs(sn)).toFixed(3)})`); q.addColorStop(1, 'rgba(70,32,18,0)'); g.fillStyle = q; g.fillRect(-2, -2, 4, 4);
     }
-    if (L.stub && cs > -0.3) { const q = g.createLinearGradient(0, -0.3, 0, -1.2); q.addColorStop(0, 'rgba(30,22,18,0)'); q.addColorStop(1, `rgba(30,22,18,${(0.36 * L.stub).toFixed(3)})`); g.fillStyle = q; g.fillRect(-2, -1.5, 4, 1.2); }
-    if (L.cap && cs > 0.1) { g.fillStyle = `rgba(40,10,6,${(0.3 * clamp((cs - 0.1) * 2)).toFixed(3)})`; const b = fpt(0, 0.62); g.beginPath(); g.ellipse(b[0], b[1] + 0.05, 1.0, 0.2, 0, 0, TAU); g.fill(); }
+    if (L.stub && cs > -0.3) { g.fillStyle = `rgba(30,22,18,${(0.2 * L.stub).toFixed(3)})`; g.beginPath(); g.ellipse(jw.x, jw.y - 0.12 + dyF * 0.4, jw.rx * 1.02, jw.ry * 0.62, 0, PI, TAU); g.fill(); }
+    if (L.cap && cs > 0.1) { g.fillStyle = `rgba(40,10,6,${(0.34 * clamp((cs - 0.1) * 2)).toFixed(3)})`; const b = fpt(0, 0.62); g.beginPath(); g.ellipse(b[0], b[1] + 0.05, 1.0, 0.2, 0, 0, TAU); g.fill(); }
     const ex = o.look || [0, 0], close = Math.max(o.close || 0, 0), lid = o.lid || 0;
     // the mouth, wrapped round the face
     if (cs > -0.35) {
@@ -567,7 +587,7 @@
         const shape = () => { g.beginPath(); g.moveTo(-ew, -0.016); g.quadraticCurveTo(-k * 0.03, up, ew, -0.016); g.quadraticCurveTo(k * 0.03, -dn, -ew, -0.016); g.closePath(); };
         g.save(); shape(); g.fillStyle = '#fbf7ee'; g.fill(); shape(); g.clip();
         const ix = ex[0] + sn * 0.05, iy = 0.016 + ex[1], ir = 0.098;
-        const qi = g.createRadialGradient(ix, iy, 0.01, ix, iy, ir); qi.addColorStop(0, '#4f3421'); qi.addColorStop(1, '#26170d'); g.fillStyle = qi; g.beginPath(); g.arc(ix, iy, ir, 0, TAU); g.fill();
+        g.fillStyle = '#3e2818'; g.beginPath(); g.arc(ix, iy, ir, 0, TAU); g.fill();
         g.fillStyle = '#060404'; g.beginPath(); g.arc(ix, iy, ir * 0.52, 0, TAU); g.fill();
         g.fillStyle = 'rgba(255,255,255,0.92)'; g.beginPath(); g.arc(ix - 0.032, iy + 0.038, 0.025, 0, TAU); g.fill();
         g.fillStyle = 'rgba(40,20,10,0.16)'; g.fillRect(-ew, up * 0.45, ew * 2, up);
@@ -608,7 +628,8 @@
       const Aa = run[0], Bb = run[run.length - 1], tau = (p) => Math.atan2((p[1] - sk.y - dyF * 0.5) / sk.ry, (p[0] - sk.x) / sk.rx);
       const t0 = tau(Bb), t1 = tau(Aa), dpos = ((t1 - t0) % TAU + TAU) % TAU, top = ((PI / 2 - t0) % TAU + TAU) % TAU, d = top <= dpos ? dpos : dpos - TAU;
       const v = 1 + vol, arc = []; for (let j = 0; j <= 28; j++) { const a = t0 + d * j / 28, bump = hs2.curl ? 0.05 * Math.sin(j * 1.9 + 0.6) : 0; arc.push([sk.x + sk.rx * (v + bump) * Math.cos(a), sk.y + dyF * 0.5 + sk.ry * (v + bump) * Math.sin(a)]); }
-      g.fillStyle = fill; g.beginPath(); run.forEach((p, j) => (j ? g.lineTo(p[0], p[1]) : g.moveTo(p[0], p[1]))); arc.forEach((p) => g.lineTo(p[0], p[1])); g.closePath(); g.fill();
+      g.fillStyle = fill; g.beginPath(); run.forEach((p, j) => (j ? g.lineTo(p[0], p[1]) : g.moveTo(p[0], p[1]))); arc.forEach((p) => g.lineTo(p[0], p[1])); g.closePath();
+      if (hs2.ink) { g.strokeStyle = INK; g.lineWidth = hs2.ink; g.stroke(); } g.fill();
       if (hs2.curl) { for (let j = 2; j <= 26; j += 3) { const p = arc[j]; g.beginPath(); g.arc(lerp(p[0], sk.x, 0.1), lerp(p[1], sk.y, 0.1), 0.2, 0, TAU); g.fill(); } }
       return { arc, d, run };
     };
@@ -617,8 +638,8 @@
     if (hp0 && hs.part && cs > -0.2) { const pp = fpt(0.34, 0.99), pq = rot([0.42, SK[1] + SK[4] * 0.93, SK[2] + 0.2]); g.strokeStyle = mix(L.hair, L.skin, 0.45); g.lineWidth = 0.03; g.globalAlpha = clamp((cs + 0.2) * 3); g.beginPath(); g.moveTo(pp[0], pp[1] + 0.02); g.lineTo(pq[0], pq[1]); g.stroke(); g.globalAlpha = 1; }
     let top = hp0;
     if (L.cap) {
-      const q = g.createLinearGradient(-1, 1.4, 1, 0.3); q.addColorStop(0, mix('#a32b3d', SHD, 0.12 * bl)); q.addColorStop(1, mix('#5c1520', SHD, 0.2 * bl));
-      top = patch(L.capLine || [7, 7, 3, -5, -9], 0.07, q) || top;
+      const q = g.createLinearGradient(-lx, 1.4, lx, 0.3); q.addColorStop(0, mix('#a32b3d', SHD, 0.12 * bl)); q.addColorStop(0.6, mix('#a32b3d', SHD, 0.12 * bl)); q.addColorStop(0.62, mix('#6e1a27', SHD, 0.2 * bl)); q.addColorStop(1, mix('#6e1a27', SHD, 0.2 * bl));
+      top = patch(L.capLine || [7, 7, 3, -5, -9], 0.07, q, { ink: inkH * 1.4 }) || top;
       if (top) {
         const mer = (phi, la0) => { g.beginPath(); let on = false; for (let j = 0; j <= 8; j++) { const th = lerp(86, la0, j / 8) * PI / 180, c = Math.cos(th), p3 = [SK[3] * 1.07 * c * Math.sin(phi), SK[1] + SK[4] * 1.07 * Math.sin(th), SK[2] + SK[5] * 1.07 * c * Math.cos(phi)], p = rot(p3); if (p[2] < SK[2] * cs - 0.05) { on = false; continue; } if (on) g.lineTo(p[0], p[1] + dyF * 0.5); else g.moveTo(p[0], p[1] + dyF * 0.5); on = true; } g.stroke(); };
         g.strokeStyle = 'rgba(40,8,14,0.35)'; g.lineWidth = 0.022; for (const ph of [0.55, 1.6, 2.65, -0.55, -1.6, -2.65]) mer(ph + (L.capTurn ?? 0), Math.abs(ph) > 2 ? -6 : Math.abs(ph) > 1 ? 4 : 16);

@@ -4,6 +4,9 @@
 // Every function draws with the reel's camera and is a pure function of its arguments.
 (() => {
   const R = window.RIG, { mix, rgba } = R, P3 = R.poly3, TAU = Math.PI * 2, PI = Math.PI;
+  // after motion test 5 ("too AI slop ... better 2d"): flat colour, no soft glows; the bench and the kettle, which he and the story
+  // touch, get the figures' ink line; the stall and the street stay unlined, a painted background behind them
+  const INK = '#24160f', inkW = (s) => Math.max(1.4, Math.min(5.5, 0.0042 * s));
   const clamp = (x, a = 0, b = 1) => Math.min(b, Math.max(a, x));
   const lerp = (a, b, u) => a + (b - a) * u;
   const hash = (n) => { const s = Math.sin(n * 127.1 + 311.7) * 43758.5453; return s - Math.floor(s); };
@@ -27,9 +30,13 @@
     if (cam.x > x1) F.push([[[x1, y0, z0], [x1, y1, z0], [x1, y1, z1], [x1, y0, z1]], sx]);
     if (cam.z < z0) F.push([[[x0, y0, z0], [x1, y0, z0], [x1, y1, z0], [x0, y1, z0]], sz]);
     if (cam.z > z1) F.push([[[x0, y0, z1], [x1, y0, z1], [x1, y1, z1], [x0, y1, z1]], sz]);
-    for (const [pts, c] of F) if (c) P3(g, cam, pts, c);
+    for (const [pts, c] of F) if (c && P3(g, cam, pts, c) && o.ink) { g.strokeStyle = INK; g.lineWidth = o.ink; g.lineJoin = 'round'; g.stroke(); }
   }
-  const glowAt = (g, cam, p, r, col, a) => { const q = cam.P(p[0], p[1], p[2]); if (!q) return; const rr = Math.max(2, r * q[2]); const gr = g.createRadialGradient(q[0], q[1], 0, q[0], q[1], rr); gr.addColorStop(0, rgba(col, a)); gr.addColorStop(1, rgba(col, 0)); g.fillStyle = gr; g.beginPath(); g.arc(q[0], q[1], rr, 0, TAU); g.fill(); };
+  const glowAt = (g, cam, p, r, col, a) => {                       // a light's glow, as flat discs (no airbrush)
+    const q = cam.P(p[0], p[1], p[2]); if (!q) return; const rr = Math.max(2, r * q[2]);
+    if (r < 0.3) { g.fillStyle = rgba(col, a); g.beginPath(); g.arc(q[0], q[1], rr * 0.7, 0, TAU); g.fill(); return; }
+    g.fillStyle = rgba(col, a * 0.4); g.beginPath(); g.arc(q[0], q[1], rr * 0.13, 0, TAU); g.fill();   // a small ring of light, not a big halo
+  };
 
   // ------------------------------------------------------------------ the sky and the far street (the back layer)
   function sky(g, cam, W, H) {
@@ -73,7 +80,7 @@
     P3(g, cam, [[L.x, 4.55, L.z - 0.04], [L.x - 0.9, 4.6, L.z - 0.04], [L.x - 0.9, 4.66, L.z - 0.04], [L.x, 4.62, L.z - 0.04]], '#2a2a32');
     glowAt(g, cam, [L.x - 0.85, 4.5, L.z], 1.6, '#ffc274', 0.55); glowAt(g, cam, [L.x - 0.85, 4.5, L.z], 0.28, '#fff3d8', 0.95);
     // a pool of its light on the pavement
-    const q = cam.P(L.x - 0.5, 0.01, L.z); if (q) { const gr = g.createRadialGradient(q[0], q[1], 0, q[0], q[1], 2.2 * q[2]); gr.addColorStop(0, 'rgba(255,190,110,0.32)'); gr.addColorStop(1, 'rgba(255,190,110,0)'); g.fillStyle = gr; g.save(); g.translate(q[0], q[1]); g.scale(1, 0.32); g.translate(-q[0], -q[1]); g.beginPath(); g.arc(q[0], q[1], 2.2 * q[2], 0, TAU); g.fill(); g.restore(); }
+    const q = cam.P(L.x - 0.5, 0.01, L.z); if (q) { g.fillStyle = 'rgba(255,190,110,0.13)'; g.save(); g.translate(q[0], q[1]); g.scale(1, 0.32); g.translate(-q[0], -q[1]); g.beginPath(); g.arc(q[0], q[1], 2.2 * q[2], 0, TAU); g.fill(); g.restore(); }
     // an auto-rickshaw parked on the far side (black and yellow), and a few lit stalls' glows down the street
     autoRick(g, cam, -6.6, 17.5);
     for (const [x, z, c] of [[-8.9, 9, '#ffd28a'], [-8.9, 24, '#ffbf7a'], [-2.2, 30, '#ffd9a0'], [-8.9, 41, '#ffc78a']]) glowAt(g, cam, [x, 2.0, z], 2.2, c, 0.35);
@@ -93,7 +100,7 @@
     for (let x = -1.8; x < 4; x += 0.6) { g.beginPath(); if (R.line3(g, cam, [x, KERB + 0.001, -6], [x, KERB + 0.001, BACKWALL])) g.stroke(); }
     for (let z = -6; z < BACKWALL; z += 0.6) { g.beginPath(); if (R.line3(g, cam, [ROAD.x1, KERB + 0.001, z], [4, KERB + 0.001, z])) g.stroke(); }
     // the stall's warm light on the ground in front of it
-    const q = cam.P(0.9, KERB + 0.01, 0.6); if (q) { const gr = g.createRadialGradient(q[0], q[1], 0, q[0], q[1], 2.4 * q[2]); gr.addColorStop(0, 'rgba(255,196,120,0.30)'); gr.addColorStop(1, 'rgba(255,196,120,0)'); g.fillStyle = gr; g.save(); g.translate(q[0], q[1]); g.scale(1, 0.4); g.translate(-q[0], -q[1]); g.beginPath(); g.arc(q[0], q[1], 2.4 * q[2], 0, TAU); g.fill(); g.restore(); }
+    const q = cam.P(0.9, KERB + 0.01, 0.6); if (q) { g.fillStyle = 'rgba(255,196,120,0.12)'; g.save(); g.translate(q[0], q[1]); g.scale(1, 0.4); g.translate(-q[0], -q[1]); g.beginPath(); g.arc(q[0], q[1], 2.4 * q[2], 0, TAU); g.fill(); g.restore(); }
   }
 
   // ------------------------------------------------------------------ the stall (the mid layer)
@@ -150,7 +157,9 @@
     const st = cam.P(K.x, KERB + 0.83, K.z); if (st) { g.fillStyle = '#2c2c30'; g.fillRect(x - rw * 0.85, y0, rw * 1.7, Math.max(2, 0.06 * s)); }
     // the spout, round the left and up (behind or in front, by where you are)
     const sp = (u) => { const cx = K.x - K.r * 0.92, cz = K.z; return [cx - 0.15 * u, K.y + 0.1 + 0.2 * u * u + 0.05 * u, cz - 0.02 * u]; };   // out of its side, up and away
-    const spout = () => { g.strokeStyle = '#6f777f'; g.lineCap = 'round'; g.lineWidth = Math.max(3, 0.05 * s); g.beginPath(); for (let i = 0; i <= 12; i++) { const q = cam.P(...sp(i / 12)); if (q) i ? g.lineTo(q[0], q[1]) : g.moveTo(q[0], q[1]); } g.stroke(); g.strokeStyle = 'rgba(255,255,255,0.55)'; g.lineWidth = Math.max(1, 0.01 * s); g.stroke(); };
+    const iw = inkW(s);
+    const spout = () => { g.lineCap = 'round'; g.beginPath(); for (let i = 0; i <= 12; i++) { const q = cam.P(...sp(i / 12)); if (q) i ? g.lineTo(q[0], q[1]) : g.moveTo(q[0], q[1]); } g.strokeStyle = INK; g.lineWidth = Math.max(3, 0.05 * s) + 2 * iw; g.stroke();
+      g.strokeStyle = '#8a929a'; g.lineWidth = Math.max(3, 0.05 * s); g.beginPath(); for (let i = 0; i <= 12; i++) { const q = cam.P(...sp(i / 12)); if (q) i ? g.lineTo(q[0], q[1]) : g.moveTo(q[0], q[1]); } g.stroke(); g.strokeStyle = 'rgba(255,255,255,0.7)'; g.lineWidth = Math.max(1, 0.01 * s); g.stroke(); };
     spout();
     // the body: a cylinder, its picture warped onto it
     const W = Math.max(4, Math.round(rw * 2)), H = Math.max(4, Math.round(y0 - y1));
@@ -162,8 +171,13 @@
     g.ellipse(x, y0, rr(1), rr(1) * tilt, 0, 0, PI);
     for (let i = 16; i >= 0; i--) { const v = i / 16; g.lineTo(x - rr(v), lerp(y1, y0, v)); }
     g.closePath();
+    const bodyPath = new Path2D(); { const P2 = bodyPath; P2.ellipse(x, y1, rr(0), rr(0) * tilt, 0, PI, TAU); for (let i = 0; i <= 16; i++) { const v = i / 16; P2.lineTo(x + rr(v), lerp(y1, y0, v)); } P2.ellipse(x, y0, rr(1), rr(1) * tilt, 0, 0, PI); for (let i = 16; i >= 0; i--) { const v = i / 16; P2.lineTo(x - rr(v), lerp(y1, y0, v)); } P2.closePath(); }
+    g.save(); g.strokeStyle = INK; g.lineWidth = 2 * iw; g.lineJoin = 'round'; g.stroke(bodyPath); g.restore();
     const body = g.createLinearGradient(x - rw, 0, x + rw, 0);
+    for (const [a, b, c] of [[0, 0.12, '#3e434a'], [0.12, 0.22, '#9aa2aa'], [0.22, 0.33, '#eef2f5'], [0.33, 0.8, '#7c848c'], [0.8, 0.88, '#b8c0c6'], [0.88, 1, '#454a52']]) { body.addColorStop(a, c); body.addColorStop(b, c); }
+    if (false) {
     body.addColorStop(0, '#3e434a'); body.addColorStop(0.18, '#c9d0d6'); body.addColorStop(0.32, '#f4f7fa'); body.addColorStop(0.42, '#8a929a'); body.addColorStop(0.7, '#5a6068'); body.addColorStop(0.86, '#b8c0c6'); body.addColorStop(1, '#3a3f45');
+    }
     g.fillStyle = body; g.fill();
     g.clip();
     if (reflect && W > 8 && H > 8) {
@@ -172,7 +186,7 @@
       const kg = kc.getContext('2d'); kg.setTransform(1, 0, 0, 1, 0, 0); kg.clearRect(0, 0, 512, 512);
       reflect(kg, 512, 512);
       // a cylinder squeezes towards its edges: draw the picture in thin vertical strips, each placed by the curve
-      const N = 48; g.globalAlpha = 0.74; g.filter = 'saturate(0.55) contrast(0.96) brightness(0.92) blur(0.8px)';
+      const N = 48; g.globalAlpha = 0.74; g.filter = 'saturate(0.6) brightness(0.95)';   // (no blur: the user, on motion test 5)
       for (let i = 0; i < N; i++) {
         const u0 = i / N, u1 = (i + 1) / N, m0 = Math.sin((u0 - 0.5) * PI) * 0.5 + 0.5, m1 = Math.sin((u1 - 0.5) * PI) * 0.5 + 0.5;   // where a strip of the picture lands across the body
         const sx = u0 * 512, sw = 512 / N, dx = x - rw + m0 * 2 * rw, dw = Math.max(0.5, (m1 - m0) * 2 * rw) + 0.6;
@@ -182,25 +196,25 @@
       }
       g.globalAlpha = 1; g.filter = 'none';
       // the steel's own shine over the picture
-      const sh = g.createLinearGradient(x - rw, 0, x + rw, 0);
-      sh.addColorStop(0, 'rgba(14,18,24,0.85)'); sh.addColorStop(0.1, 'rgba(40,46,56,0.35)'); sh.addColorStop(0.16, 'rgba(255,255,255,0.0)'); sh.addColorStop(0.22, 'rgba(255,255,255,0.55)'); sh.addColorStop(0.26, 'rgba(255,255,255,0.12)');
-      sh.addColorStop(0.7, 'rgba(160,176,196,0.0)'); sh.addColorStop(0.84, 'rgba(255,255,255,0.28)'); sh.addColorStop(0.88, 'rgba(255,255,255,0.05)'); sh.addColorStop(0.94, 'rgba(30,36,44,0.4)'); sh.addColorStop(1, 'rgba(14,18,24,0.9)');
+      const sh = g.createLinearGradient(x - rw, 0, x + rw, 0);         // the steel's shine over the picture, in hard bands
+      for (const [a, b, c] of [[0, 0.09, 'rgba(14,18,24,0.85)'], [0.09, 0.2, 'rgba(255,255,255,0)'], [0.2, 0.25, 'rgba(255,255,255,0.5)'], [0.25, 0.83, 'rgba(255,255,255,0)'], [0.83, 0.87, 'rgba(255,255,255,0.3)'], [0.87, 0.93, 'rgba(255,255,255,0)'], [0.93, 1, 'rgba(14,18,24,0.85)']]) { sh.addColorStop(a, c); sh.addColorStop(b, c); }
       g.fillStyle = sh; g.fillRect(x - rw, y1 - rw, rw * 2, y0 - y1 + rw * 2);
-      const vt = g.createLinearGradient(0, y1, 0, y0); vt.addColorStop(0, 'rgba(255,255,255,0.18)'); vt.addColorStop(0.12, 'rgba(255,255,255,0)'); vt.addColorStop(0.85, 'rgba(0,0,0,0)'); vt.addColorStop(1, 'rgba(10,12,16,0.45)');
+      const vt = g.createLinearGradient(0, y1, 0, y0);
+      for (const [a, b, c] of [[0, 0.08, 'rgba(255,255,255,0.16)'], [0.08, 0.9, 'rgba(0,0,0,0)'], [0.9, 1, 'rgba(10,12,16,0.35)']]) { vt.addColorStop(a, c); vt.addColorStop(b, c); }
       g.fillStyle = vt; g.fillRect(x - rw, y1 - rw, rw * 2, y0 - y1 + rw * 2);
       g.strokeStyle = 'rgba(30,34,40,0.22)'; g.lineWidth = Math.max(1, 0.004 * s);   // the body's pressed rings
       for (const f of [0.12, 0.88]) { const yy = lerp(y1, y0, f); g.beginPath(); g.ellipse(x, yy, rw, rw * tilt, 0, 0, PI); g.stroke(); }
     }
     g.restore();
     // the rims and the dome lid, the knob; the handle in an arch over the top
-    g.strokeStyle = 'rgba(40,44,50,0.8)'; g.lineWidth = Math.max(1, 0.006 * s);
+    g.strokeStyle = INK; g.lineWidth = iw;
     g.beginPath(); g.ellipse(x, y0, rw, rw * tilt, 0, 0, PI); g.stroke();
-    { const lq = g.createLinearGradient(x - rw, 0, x + rw, 0); lq.addColorStop(0, '#5a6068'); lq.addColorStop(0.3, '#e6ebef'); lq.addColorStop(0.55, '#9aa2aa'); lq.addColorStop(1, '#4a5058'); g.fillStyle = lq; }
+    { const lq = g.createLinearGradient(x - rw, 0, x + rw, 0); for (const [a, b, c] of [[0, 0.2, '#5a6068'], [0.2, 0.4, '#e6ebef'], [0.4, 1, '#8a929a']]) { lq.addColorStop(a, c); lq.addColorStop(b, c); } g.fillStyle = lq; }
     g.beginPath(); g.ellipse(x, y1, rw, rw * tilt, 0, 0, TAU); g.fill(); g.stroke();
-    { const dq = g.createLinearGradient(x - rw, y1 - rw * 0.6, x + rw, y1); dq.addColorStop(0, '#6a7078'); dq.addColorStop(0.35, '#f0f3f6'); dq.addColorStop(0.6, '#a8b0b8'); dq.addColorStop(1, '#565c64'); g.fillStyle = dq; }
-    g.beginPath(); g.ellipse(x, y1 - 0.01 * s, rw * 0.74, rw * 0.32, 0, PI, TAU); g.fill(); g.strokeStyle = 'rgba(40,44,50,0.6)'; g.stroke();
+    { const dq = g.createLinearGradient(x - rw, y1 - rw * 0.6, x + rw, y1); for (const [a, b, c] of [[0, 0.25, '#6a7078'], [0.25, 0.45, '#f0f3f6'], [0.45, 1, '#9aa2aa']]) { dq.addColorStop(a, c); dq.addColorStop(b, c); } g.fillStyle = dq; }
+    g.beginPath(); g.ellipse(x, y1 - 0.01 * s, rw * 0.74, rw * 0.32, 0, PI, TAU); g.fill(); g.strokeStyle = INK; g.stroke();
     g.fillStyle = '#2a2a2e'; g.beginPath(); g.ellipse(x, y1 - 0.045 * s, 0.024 * s, 0.014 * s, 0, 0, TAU); g.fill();
-    g.strokeStyle = '#30343a'; g.lineWidth = Math.max(2, 0.016 * s); g.beginPath(); g.ellipse(x, y1 - 0.04 * s, rw * 0.92, rw * 0.9, 0, PI * 1.08, PI * 1.92); g.stroke();
+    g.strokeStyle = INK; g.lineWidth = Math.max(2, 0.016 * s); g.beginPath(); g.ellipse(x, y1 - 0.04 * s, rw * 0.92, rw * 0.9, 0, PI * 1.08, PI * 1.92); g.stroke();
     // steam off its spout
     const tip = sp(1); window.PROPS && window.PROPS.steam(cam, tip, t, 0.8, { h: 0.18, seed: 4, n: 2 }).forEach((p) => p.draw(g));
   }
@@ -208,13 +222,14 @@
   // ------------------------------------------------------------------ the bench (with him, the near-middle layer)
   function bench(g, cam) {
     const B = BENCH, Y = KERB, wood = '#9a6a3e', woodD = '#6e4a2a', woodL = '#b88654';
+    const mq = cam.P((B.x0 + B.x1) / 2, B.y, (B.z0 + B.z1) / 2), ink = { ink: mq ? inkW(mq[2]) * 0.8 : 2 };
     // legs and the rail under the seat
-    for (const x of [B.x0 + 0.12, B.x1 - 0.12]) for (const z of [B.z0 + 0.05, B.z1 - 0.05]) box(g, cam, x - 0.03, x + 0.03, Y, B.y - 0.035, z - 0.03, z + 0.03, woodD, woodD, mix(woodD, '#000000', 0.15));
-    box(g, cam, B.x0 + 0.1, B.x1 - 0.1, 0.22, 0.26, B.z0 + 0.17, B.z0 + 0.23, woodD, woodD, woodD);
-    box(g, cam, B.x0 + 0.05, B.x1 - 0.05, B.y - 0.07, B.y - 0.035, B.z0 + 0.03, B.z1 - 0.03, woodD, woodD, woodD);
+    for (const x of [B.x0 + 0.12, B.x1 - 0.12]) for (const z of [B.z0 + 0.05, B.z1 - 0.05]) box(g, cam, x - 0.03, x + 0.03, Y, B.y - 0.035, z - 0.03, z + 0.03, woodD, woodD, mix(woodD, '#000000', 0.15), ink);
+    box(g, cam, B.x0 + 0.1, B.x1 - 0.1, 0.22, 0.26, B.z0 + 0.17, B.z0 + 0.23, woodD, woodD, woodD, ink);
+    box(g, cam, B.x0 + 0.05, B.x1 - 0.05, B.y - 0.07, B.y - 0.035, B.z0 + 0.03, B.z1 - 0.03, woodD, woodD, woodD, ink);
     // three slats, gaps between them
     for (const [a, b] of [[0, 0.118], [0.141, 0.259], [0.282, 0.40]]) {
-      box(g, cam, B.x0, B.x1, B.y - 0.035, B.y, B.z0 + a, B.z0 + b, woodL, wood, woodD);
+      box(g, cam, B.x0, B.x1, B.y - 0.035, B.y, B.z0 + a, B.z0 + b, woodL, wood, woodD, ink);
       g.strokeStyle = 'rgba(80,50,30,0.25)'; g.lineWidth = 1;                // the grain
       for (let k = 0; k < 3; k++) { g.beginPath(); if (R.line3(g, cam, [B.x0 + 0.05, B.y + 0.001, B.z0 + a + 0.03 + k * 0.03], [B.x1 - 0.05, B.y + 0.001, B.z0 + a + 0.03 + k * 0.03])) g.stroke(); }
     }

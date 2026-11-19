@@ -128,6 +128,13 @@
   // his shirt's left breast pocket: A up, N out of his chest
   const POCK = (() => { const c = w3(J0.chest); return mkF(madd(madd(madd(c, FWD, 0.118), LEFT, 0.082), UP, -0.07), UP, norm(add(FWD, mul(UP, -0.06)))); })();
   const W_POCKET = (() => { const f = mkF(POCK.O, POCK.A, POCK.N); return { ...f, O: madd(madd(madd(f.O, f.B, -PR.WW * 0.5), f.N, -0.012), f.A, 0.03) }; })();
+  // the pocket as it is at t: it moves with his chest as he leans and turns (W_POCKET is where it is when he sits up; motion test 5
+  // left the wallet there while he leant back to drink, so it hung on his shirt above the pocket)
+  function pocketAt(t) {
+    const Jl = R.skel(STY, 0, bodyAt(t)), ch = w3(Jl.chest), lat = norm(sub(w3(Jl.shL), w3(Jl.shR))), up = norm(sub(ch, w3(Jl.pel))), fw = norm(cross(up, lat));
+    const f = mkF(madd(madd(madd(ch, fw, 0.118), lat, 0.082), up, -0.07), up, norm(add(fw, mul(up, -0.06))));
+    return { ...f, O: madd(madd(madd(f.O, f.B, -PR.WW * 0.5), f.N, -0.012), f.A, 0.03) };
+  }
   // held low in his right hand, shut, as he looks round
   const W_RLOW = (() => { const c = madd(madd(THIGH_R, UP, 0.07), FWD, 0.05), N = norm(add(mul(FWD, -0.4), mul(UP, 0.9))), A = norm(add(mul(LEFT, -0.2), mul(FWD, 1))); return mkF(c, A, N); })();
   // the camera, as you, standing over him (the end of the arc): the hold-out is set from it
@@ -180,12 +187,32 @@
     k.push([K.end, ...mid(hk, lap, 0.32), 0.75, -0.04, 0.6, 1015, 540, 820]);
     return k;
   }
-  const CAMK = camKeys();
+  // after motion test 5 ("too AI slop"): the camera holds, then moves with purpose. A key that only drifts from the one before
+  // becomes a hold; a real move happens in the last 0.9 s before its key (eased in and out), with a hold before it. The swing
+  // round to your eyes (arc0 to arc1) keeps its own timing.
+  function holdsAndMoves(k) {
+    const out = [k[0].slice()];
+    for (let i = 1; i < k.length; i++) {
+      const a = out[out.length - 1], b = k[i].slice(), gap = b[0] - a[0], inArc = b[0] > K.arc0 + 0.01 && a[0] < K.arc1 - 0.01;
+      const small = Math.abs(b[4] - a[4]) < 0.07 && Math.abs(b[5] - a[5]) < 0.13 && Math.abs(b[6] - a[6]) < 0.05 && Math.abs(b[7] - a[7]) < 60 && Math.abs(b[8] - a[8]) < 40 && Math.abs(b[9] - a[9]) < 40 && Math.hypot(b[1] - a[1], b[2] - a[2], b[3] - a[3]) < 0.06;
+      if (!inArc && small) { for (let j = 1; j < 10; j++) b[j] = a[j]; out.push(b); continue; }
+      const mv = Math.min(0.9, gap * 0.6);
+      if (!inArc && gap > mv + 0.25) { const h = a.slice(); h[0] = b[0] - mv; out.push(h); }
+      out.push(b);
+    }
+    return out;
+  }
+  const CAMK = holdsAndMoves(camKeys()), LENS = 1.8, ZOOM = 1.2;
   const NX = C.noise1(11), NY = C.noise1(23), NZ = C.noise1(37);
   function camAt(t) {
-    const [tx, ty, tz, d, az, el, f, cx, cy] = window.CAMOVR || key(t, CAMK);
+    const [tx, ty, tz, d0, az, el, f0, cx, cy] = window.CAMOVR || key(t, CAMK);
+    const zf = window.CAMOVR ? 1 : lerp(LENS, 1, ease(K.arc0, K.arc1, t));   // the longer lens, from further back
+    // and closer in on him and his hands (his face and the wallet fill the frame, not his knees), but not at the start (you walking
+    // off down the street) or while the kettle is the picture; each change rides the camera move that's happening anyway
+    const zIn = window.CAMOVR ? 0 : ease(K.open - 0.9, K.open, t) * (1 - ease(K.weigh - 0.9, K.weigh, t)) + ease(K.smile - 0.65, K.smile + 0.25, t) * (1 - ease(K.arc0, K.arc1, t));
+    const d = d0 * zf, f = f0 * zf * (1 + (ZOOM - 1) * zIn);
     const a = H0 - az, dir = [Math.sin(a) * Math.cos(el), Math.sin(el), Math.cos(a) * Math.cos(el)];
-    const hand = 0.25 + 0.75 * ease(K.arc0, K.arc1, t);  // more hand-held once the camera is you
+    const hand = 0;                                       // (after motion test 5: no hand-held wobble)
     const X = tx + dir[0] * d + NX(t * 0.35) * 0.006 * hand, Y = ty + dir[1] * d + NY(t * 0.33 + 4) * 0.005 * hand, Z = tz + dir[2] * d + NZ(t * 0.3 + 9) * 0.004 * hand;
     const ddx = tx - X, ddy = ty - Y, ddz = tz - Z, tilt = window.CAMOVR ? 0 : -0.62 * (ease(K.down, K.openW + 0.1, t) * (1 - ease(K.up, K.up + 0.55, t)));
     return R.camera({ x: X, y: Y, z: Z, yaw: Math.atan2(ddx, ddz), pitch: Math.atan2(ddy, Math.hypot(ddx, ddz)) + tilt, roll: NX(t * 0.21 + 30) * 0.004 * hand, f, cx, cy: cy + 140 * (tilt / -0.62) });
@@ -213,12 +240,12 @@
     if (t >= K.slide - 0.55) f = lerpFrame(W_LKNEE, W_LHAND, ease(K.slide - 0.55, K.slide - 0.05, t));
     if (t >= K.slap + 0.12) f = lerpFrame(W_LHAND, W_RLOW, ease(K.slap + 0.12, K.slap + 0.6, t));
     if (t >= K.pocket - 0.4) {                          // up to the pocket, and down into it
-      const above = { ...W_POCKET, O: madd(W_POCKET.O, W_POCKET.A, 0.085) };
-      f = lerpFrame(lerpFrame(W_RLOW, above, ease(K.pocket - 0.4, K.pocket + 0.1, t)), W_POCKET, ease(K.pocket + 0.05, K.pocket + 0.38, t));
+      const WP = pocketAt(t), above = { ...WP, O: madd(WP.O, WP.A, 0.085) };
+      f = lerpFrame(lerpFrame(W_RLOW, above, ease(K.pocket - 0.4, K.pocket + 0.1, t)), WP, ease(K.pocket + 0.05, K.pocket + 0.38, t));
     }
     if (t >= K.reach + 0.22) {                          // out of it, and held out to you, to the lens
-      const above = { ...W_POCKET, O: madd(W_POCKET.O, W_POCKET.A, 0.09) };
-      f = lerpFrame(lerpFrame(W_POCKET, above, ease(K.reach + 0.22, K.reach + 0.5, t)), W_OUT, ease(K.reach + 0.45, K.holdOut, t));
+      const WP = pocketAt(t), above = { ...WP, O: madd(WP.O, WP.A, 0.09) };
+      f = lerpFrame(lerpFrame(WP, above, ease(K.reach + 0.22, K.reach + 0.5, t)), W_OUT, ease(K.reach + 0.45, K.holdOut, t));
       const tug = 0.016 * Math.sin(PI * clamp((t - K.take - 0.05) / 0.5)) - 0.006 * Math.sin(TAU * clamp((t - K.take - 0.1) / 0.4));
       f = { ...f, O: madd(f.O, toYou, tug) };
       if (t >= K.letGo) f = lerpFrame(f, yourWallet(t), ease(K.letGo, K.letGo + 0.5, t));
@@ -647,9 +674,13 @@
       S.g = canvas(root);
       S.L = {}; for (const k of ['bg', 'mid', 'fig', 'near']) { const c = document.createElement('canvas'); c.width = W; c.height = H; S.L[k] = c; }
     },
-    run(t, b, S) {
+    run(t0, b, S) {
       const g = S.g; g.setTransform(1, 0, 0, 1, 0, 0); g.clearRect(0, 0, W, H);
-      const cam = camAt(t), lt = R.lightOf(cam);
+      const cam = camAt(t0), lt = R.lightOf(cam);
+      // after motion test 5: the cast (him, you, the hands, the props, the passers-by) on twos, 15 drawings a second, as hand-drawn
+      // animation is; the camera and the words on ones. Everything placed in the world uses the drawing's time (camQ: where the
+      // camera was then, for what hangs off it, like your sleeve); only the projection uses the frame's own camera.
+      const t = Math.floor(t0 * 15 + 1e-6) / 15, camQ = camAt(t);
       const Lc = (k) => { const c = S.L[k].getContext('2d'); c.setTransform(1, 0, 0, 1, 0, 0); c.clearRect(0, 0, W, H); return c; };
       // ---- things first: where they are now
       const bodyP = bodyAt(t), Jb = R.skel(STY, 0, bodyP);
@@ -676,30 +707,33 @@
       const gn = Lc('near'); gn.save();
       const prims = [];
       const inW = nt.where === 'wallet';
-      prims.push(...PR.wallet(cam, w, lt, { notes: inW ? countlessNotes(t) : null, notesUp: inW ? nt.up : 0.03, token: tk.where === 'wallet' ? tk.k : null }));
+      const wp = PR.wallet(cam, w, lt, { notes: inW ? countlessNotes(t) : null, notesUp: inW ? nt.up : 0.03, token: tk.where === 'wallet' ? tk.k : null });
+      prims.push(...wp);
       if (!inW && nt.f) prims.push(...PR.notes(cam, nt.f, nt.count ? countState(t) : bendNotes(nt.bend || 0), { zBias: nt.zb || 0, fold: nt.fold || 0 }));
       if (tk.where !== 'wallet') prims.push(...PR.token(cam, tk.O, tk.n, FWD, lt, { r: 0.0135 }));
-      if (F && walletInPocket(t)) { const pq = pocketQuad(F, sag), z = cam.toCam(...pq.mid)[2] - 0.006; prims.push({ z, draw: (g2) => drawPocket(g2, cam, F, lt, sag, true) }); }   // the pocket's front over the wallet in it
+      // the pocket's front: in front of all of the wallet in it (the wallet's middle is higher up his chest, so nearer a camera above him)
+      if (F && walletInPocket(t)) { const pq = pocketQuad(F, sag), z = Math.min(cam.toCam(...pq.mid)[2] - 0.006, Math.min(...wp.map((q) => q.z)) - 0.001); prims.push({ z, draw: (g2) => drawPocket(g2, cam, F, lt, sag, true) }); }   // the pocket's front over the wallet in it
       const his = t > K.letGo + 0.45 ? [] : prims;          // after the hand-back his things (his hands, his glass) are drawn with him
       his.push(...PR.glass(cam, gl.p, gl.ax, lt));
       his.push(...PR.steam(cam, madd(gl.p, gl.ax, 0.08), t, 1 - 0.8 * win(t, K.sip, K.sip + 0.4, K.sip + 1.4, K.sip + 1.8), { h: 0.09, seed: 1 }));
       if (F) {
         const WR = F.w3(F.J.wrR), WL = F.w3(F.J.wrL);
-        his.push(...H3.prims(cam, H3.bones(WR, hr.u, hr.n, 1, hr.pose, 1.0), HANDLOOK.thief, lt));
-        his.push(...H3.prims(cam, H3.bones(WL, hl.u, hl.n, -1, hl.pose, 1.0), HANDLOOK.thief, lt));
+        his.push(...H3.prims(cam, H3.bones(WR, hr.u, hr.n, 1, hr.pose, 1.0), HANDLOOK.thief, lt, { wrist: F.w3(F.J.elR) }));
+        his.push(...H3.prims(cam, H3.bones(WL, hl.u, hl.n, -1, hl.pose, 1.0), HANDLOOK.thief, lt, { wrist: F.w3(F.J.elL) }));
       }
       if (t > K.arc1 - 0.3) {
         for (const [mv, side] of [[YRMOVES, 1], [YLMOVES, -1]]) {
           const hs = handAt(mv, t, ctxAt, side); if (hs.W[1] < -1) continue;
           const Hb = H3.bones(hs.W, hs.u, hs.n, side, hs.pose, 1.0);
           prims.push(...H3.prims(cam, Hb, HANDLOOK.you, lt, { zBias: 0.035 * win(t, K.down, K.down + 0.5, K.up + 0.6, K.up + 0.9) }));
-          prims.push(...yourSleeve(cam, hs, side, lt));
+          prims.push(...yourSleeve(cam, hs, side, lt, camQ));
         }
       }
       prims.sort((a, b) => b.z - a.z); for (const p of prims) p.draw(gn);
       if (his !== prims && his.length) { gf.save(); his.sort((a, b) => b.z - a.z); for (const p of his) p.draw(gf); gf.restore(); }
       gn.restore();
-      // ---- compose: each layer blurred by how far it is from what's in focus
+      // ---- compose: no blur (the user, on motion test 5); the far street and the stall pushed back with a flat haze, as a
+      // painted background is, so he and the hands stand out by their ink. The haze lifts off the stall while the kettle is the picture.
       const head = F ? F.w3(F.J.head) : HEADP, handsC = lerp3(hr.W, hl.W, 0.5);
       const { fd, kd } = focusAt(t, cam, head, w.O);
       const dist = (p) => Math.max(0.2, cam.toCam(p[0], p[1], p[2])[2]);
@@ -707,11 +741,13 @@
       const yours = ease(K.letGo, K.letGo + 0.5, t) * (1 - ease(K.letGo + 0.6, K.letGo + 1.1, t) * (1 - ease(K.down - 0.5, K.down, t))) * (1 - ease(K.up, K.up + 0.5, t));
       const layers = [['bg', 12], ['mid', dist([ST.KETTLE.x, ST.KETTLE.y + 0.18, ST.KETTLE.z])], ['fig', dist(head)], ['near', lerp(dist(lerp3(w.O, handsC, 0.5)), dist(w.O), yours)]];
       g.save();
-      for (const [k, d] of layers) { const bl = coc(d); g.filter = bl > 0.35 ? `blur(${bl.toFixed(2)}px)` : 'none'; g.drawImage(S.L[k], 0, 0); }
+      const ketK = ease(K.rack1 - 0.4, K.rack1 + 0.2, t) * (1 - ease(K.rack2, K.rack2 + 0.55, t));
+      const haze = { bg: 0.2, mid: 0.07 * (1 - ketK) };
+      for (const [k] of layers) { g.drawImage(S.L[k], 0, 0); if (haze[k] > 0.002) { g.fillStyle = `rgba(238,228,216,${haze[k].toFixed(3)})`; g.fillRect(0, 0, W, H); } }
       g.restore();
-      if (window.PROBE) window.PROBE.at = { t, fd, kd, blur: layers.map(([k, d]) => [k, +coc(d).toFixed(2)]) };
+      if (window.PROBE) window.PROBE.at = { t, fd, kd, blur: layers.map(([k]) => [k, 0]) };
       // ---- the words on screen: the question, the pick's two labels and their numbers, the study's size
-      texts(g, t, cam, w, nt);
+      texts(g, t0, cam, w, nt);
       if (F) { const q = (p) => { const r = cam.P(p[0], p[1], p[2]); return r ? [Math.round(r[0]), Math.round(r[1]), Math.round(r[2])] : null; }; const hd = F.w3(F.J.head);
         window.SCREEN = { t, psiH: +F.psiH.toFixed(2), yawH: +F.J.yawH.toFixed(2), hy: +hy.toFixed(2), head: q(hd), headR: Math.round(F.headR), capTop: q(madd(hd, UP, 0.2)), chin: q(madd(hd, UP, -0.17)), wallet: q(madd(madd(w.O, w.B, PR.WW * 0.5), w.N, 0.01)), walletW: (() => { const a = q(w.O), b2 = q(madd(w.O, w.B, PR.WW)); return a && b2 ? Math.round(Math.hypot(a[0] - b2[0], a[1] - b2[1])) : null; })(), hr: q(hr.W), hl: q(hl.W), kneeR: q(KNEE_R), kneeL: q(KNEE_L), kettle: q([ST.KETTLE.x, ST.KETTLE.y + 0.18, ST.KETTLE.z]), text: (window.TEXTBOX || []).map((b) => [b.text, b.box.map(Math.round)]) }; }
     },
@@ -777,16 +813,19 @@
     g.restore();
   }
   // your forearm: from below the frame to your wrist, a blue sleeve with its cuff (never his teal, never bare like his)
-  function yourSleeve(cam, hs, side, lt) {
-    const C0 = camPos(cam), fw = camFwd(cam), right = norm(cross(fw, UP)), upc = norm(cross(right, fw));
+  function yourSleeve(cam, hs, side, lt, camG = cam) {
+    const C0 = camPos(camG), fw = camFwd(camG), right = norm(cross(fw, UP)), upc = norm(cross(right, fw));
     const el = madd(madd(madd(C0, fw, 0.26), upc, -0.52), right, 0.2 * side), wr = madd(hs.W, hs.u, -0.012), cuff = lerp3(wr, el, 0.16);
     const z = cam.toCam(...lerp3(wr, el, 0.35))[2] + 0.02;
     return [{ z, draw: (g) => {
       const a = cam.P(...wr), b = cam.P(...el), c = cam.P(...cuff); if (!a || !b || !c) return;
       const [c0, c1] = R.tone(LOOK.you.shirt, lt), lx = lt.x >= 0 ? 1 : -1;
       g.save();
-      H3.capsule(g, b, c, 0.05 * b[2], 0.044 * c[2], c0, c1, 'rgba(10,20,50,0.6)', 1.5, lx);
-      H3.capsule(g, c, a, 0.046 * c[2], 0.043 * a[2], mix(c0, '#ffffff', 0.12), mix(c1, '#ffffff', 0.05), 'rgba(10,20,50,0.6)', 1.5, lx);   // the cuff
+      const iw = H3.inkW(a[2]);                     // the ink under the sleeve and the cuff, then their colour
+      g.beginPath(); H3.capSub(g, b, c, 0.05 * b[2] + iw, 0.044 * c[2] + iw); H3.capSub(g, c, a, 0.046 * c[2] + iw, 0.043 * a[2] + iw); g.fillStyle = H3.INK; g.fill('nonzero');
+      H3.capsule(g, b, c, 0.05 * b[2], 0.044 * c[2], c0, c1, null, 0, lx);
+      g.strokeStyle = H3.INK; g.lineWidth = iw * 0.8; g.beginPath(); H3.capSub(g, c, a, 0.046 * c[2], 0.043 * a[2]); g.stroke();   // the cuff's seam
+      H3.capsule(g, c, a, 0.046 * c[2], 0.043 * a[2], mix(c0, '#ffffff', 0.12), mix(c1, '#ffffff', 0.05), null, 0, lx);   // the cuff
       const m = lerp3(wr, cuff, 0.5), q = cam.P(...madd(m, upc, 0.035)); if (q) { g.fillStyle = '#f2f2f4'; g.beginPath(); g.arc(q[0], q[1], 0.006 * q[2], 0, TAU); g.fill(); }   // its button
       g.restore();
     } }];
@@ -812,7 +851,7 @@
   // his shirt's left breast pocket, from his chest as it is now: [the four corners (top left, top right, bottom right, bottom left), its middle]
   function pocketQuad(F, sag = 0) {
     const J = F.J, lat = norm(sub(J.shL, J.shR)), up = norm(sub(J.chest, J.pel)), fw = norm(cross(up, lat));
-    const c = add(J.chest, mul(fw, 0.112), mul(lat, 0.084), mul(up, -0.07)), w = 0.058, top = 0.05, bot = -0.085 - 0.012 * sag;
+    const c = add(J.chest, mul(fw, 0.112), mul(lat, 0.084), mul(up, -0.07)), w = 0.066, top = 0.05, bot = -0.085 - 0.012 * sag;
     const at = (a, b, d = 0) => F.w3(add(c, mul(lat, a), mul(up, b), mul(fw, d)));
     return { pts: [at(-w, top), at(w, top), at(w * (1 + 0.1 * sag), bot, 0.01 * sag), at(-w * (1 + 0.1 * sag), bot, 0.01 * sag)], mid: at(0, -0.02) };
   }
@@ -820,11 +859,10 @@
     const { pts } = pocketQuad(F, sag), q = pts.map((p) => cam.P(p[0], p[1], p[2])); if (q.some((x) => !x)) return;
     const [c0, c1] = R.tone(mix(LOOK.thief.shirt, '#1c3a34', 0.12), lt), sc = q[0][2];
     g.save(); g.beginPath(); q.forEach((p, i) => (i ? g.lineTo(p[0], p[1]) : g.moveTo(p[0], p[1]))); g.closePath();
-    const gr = g.createLinearGradient(q[0][0], q[0][1], q[2][0], q[2][1]); gr.addColorStop(0, c0); gr.addColorStop(1, mix(c0, c1, 0.6 + 0.3 * sag));
-    g.fillStyle = gr; g.fill(); g.strokeStyle = 'rgba(10,40,34,0.45)'; g.lineWidth = Math.max(1, 0.0016 * sc); g.stroke();
+    g.fillStyle = mix(c0, c1, 0.25 + 0.3 * sag); g.fill(); g.strokeStyle = H3.INK; g.lineWidth = H3.inkW(sc) * 0.6; g.lineJoin = 'round'; g.stroke();   // flat, inked (the 2D look)
     g.setLineDash([Math.max(2, 0.004 * sc), Math.max(1.5, 0.003 * sc)]); g.strokeStyle = 'rgba(230,255,245,0.35)'; g.lineWidth = Math.max(0.8, 0.0012 * sc);
     g.beginPath(); g.moveTo(lerp(q[0][0], q[1][0], 0.06), lerp(q[0][1], q[1][1], 0.06) + 0.006 * sc); g.lineTo(lerp(q[0][0], q[1][0], 0.94), lerp(q[0][1], q[1][1], 0.94) + 0.006 * sc); g.stroke(); g.setLineDash([]);
-    if (front) { g.strokeStyle = 'rgba(10,40,34,0.6)'; g.lineWidth = Math.max(1.2, 0.003 * sc); g.beginPath(); g.moveTo(q[0][0], q[0][1]); g.lineTo(q[1][0], q[1][1]); g.stroke(); }   // the pocket's lip, over the wallet
+    if (front) { g.strokeStyle = H3.INK; g.lineWidth = H3.inkW(sc) * 0.8; g.beginPath(); g.moveTo(q[0][0], q[0][1]); g.lineTo(q[1][0], q[1][1]); g.stroke(); }   // the pocket's lip, over the wallet
     g.restore();
   }
   const walletInPocket = (t) => t > K.pocket + 0.1 && t < K.reach + 0.45;

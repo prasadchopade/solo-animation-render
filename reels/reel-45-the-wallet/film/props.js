@@ -5,6 +5,7 @@
 // glass of chai with its steam. Every function is a pure function of its arguments. Units are metres.
 (() => {
   const R = window.RIG, H3 = window.HAND3, { mix, rgba } = R, { add, sub, mul, madd, dot, cross, norm, lerp3, ortho } = H3.v;
+  const INK = H3.INK, inkW = H3.inkW;                 // after motion test 5: the film's 2D look, flat colour and an ink line round each thing
   const TAU = Math.PI * 2, PI = Math.PI;
   const clamp = (x, a = 0, b = 1) => Math.min(b, Math.max(a, x));
   const lerp = (a, b, u) => a + (b - a) * u;
@@ -23,7 +24,7 @@
     return mk(600, 264, (g, w, h) => {
       const r = seeded(seed);
       g.fillStyle = base; g.fillRect(0, 0, w, h);
-      const q = g.createLinearGradient(0, 0, w, h); q.addColorStop(0, 'rgba(255,255,255,0.18)'); q.addColorStop(0.5, 'rgba(255,255,255,0)'); q.addColorStop(1, 'rgba(0,0,0,0.08)'); g.fillStyle = q; g.fillRect(0, 0, w, h);
+      // (flat: no gloss)
       g.fillStyle = band; g.fillRect(0, 0, 118, h);                                        // the panel at the left end
       g.strokeStyle = ink; g.globalAlpha = 0.28; g.lineWidth = 1.4;                         // fine wavy lines across
       for (let y = 18; y < h - 10; y += 9) { g.beginPath(); for (let x = 0; x <= w; x += 10) { const yy = y + 3.5 * Math.sin(x * 0.045 + y * 0.3); x ? g.lineTo(x, yy) : g.moveTo(x, yy); } g.stroke(); }
@@ -34,7 +35,7 @@
       g.strokeStyle = ink; g.globalAlpha = 0.35; g.lineWidth = 3; g.stroke();
       g.globalAlpha = 0.6; g.fillStyle = ink; g.fillRect(360, 0, 10, h);                    // a printed bar (not a thread)
       g.globalAlpha = 0.5; g.strokeStyle = ink; g.lineWidth = 6; g.strokeRect(8, 8, w - 16, h - 16);
-      g.globalAlpha = 0.25; for (let i = 0; i < 26; i++) { g.fillStyle = r() < 0.5 ? '#ffffff' : '#000000'; g.fillRect(r() * w, r() * h, 2 + r() * 3, 1 + r() * 2); }   // wear
+      // (flat: no speckled wear)
       g.globalAlpha = 1; g.strokeStyle = 'rgba(0,0,0,0.12)'; g.lineWidth = 2; g.beginPath(); g.moveTo(w / 2, 0); g.lineTo(w / 2, h); g.stroke();   // the fold it's carried in
     });
   }
@@ -45,8 +46,8 @@
     else if (name === 'n100') TEX[name] = noteTex('#b8a9d6', '#4c3f6e', '#a493c8', 13);
     else if (name === 'n200') TEX[name] = noteTex('#e9bf55', '#6b4a12', '#ddb04a', 17);
     else if (name === 'token') TEX[name] = mk(256, 256, (g) => {                           // the chai token: brass, a glass with steam stamped in it
-      const q = g.createRadialGradient(100, 90, 10, 128, 128, 128); q.addColorStop(0, '#fff2b8'); q.addColorStop(0.45, '#e2b54a'); q.addColorStop(0.85, '#a8761c'); q.addColorStop(1, '#6e4a0e');
-      g.fillStyle = q; g.beginPath(); g.arc(128, 128, 127, 0, TAU); g.fill();
+      g.fillStyle = '#e2b54a'; g.beginPath(); g.arc(128, 128, 127, 0, TAU); g.fill();
+      g.save(); g.beginPath(); g.arc(128, 128, 127, 0, TAU); g.clip(); g.fillStyle = '#b8862a'; g.beginPath(); g.rect(0, 0, 256, 256); g.arc(108, 104, 132, 0, TAU, true); g.fill(); g.restore();   // one hard shadow
       g.strokeStyle = '#7a5210'; g.lineWidth = 7; g.beginPath(); g.arc(128, 128, 108, 0, TAU); g.stroke();
       g.strokeStyle = 'rgba(255,240,190,0.7)'; g.lineWidth = 3; g.beginPath(); g.arc(128, 128, 102, PI * 1.05, PI * 1.75); g.stroke();
       g.fillStyle = '#8a5e12'; g.beginPath(); g.moveTo(92, 104); g.lineTo(164, 104); g.lineTo(154, 190); g.lineTo(102, 190); g.closePath(); g.fill();   // the glass
@@ -61,8 +62,7 @@
       g.fillStyle = '#9aa3ad'; for (let i = 0; i < 4; i++) g.fillRect(28 + i * 66, 150, 52, 10); g.fillRect(28, 178, 140, 8);
     });
     else if (name === 'leather') TEX[name] = mk(256, 256, (g, w, h) => {                    // the inside of the wallet
-      const r = seeded(31); g.fillStyle = '#8a5434'; g.fillRect(0, 0, w, h);
-      for (let i = 0; i < 900; i++) { g.fillStyle = r() < 0.5 ? 'rgba(255,220,180,0.05)' : 'rgba(40,16,4,0.07)'; g.fillRect(r() * w, r() * h, 2 + r() * 4, 1 + r() * 2); }
+      g.fillStyle = '#8a5434'; g.fillRect(0, 0, w, h);
     });
     return TEX[name];
   }
@@ -84,7 +84,8 @@
     const q = pts.map((p) => cam.P(p[0], p[1], p[2])); if (q.some((x) => !x)) return null;
     g.beginPath(); q.forEach((p, i) => (i ? g.lineTo(p[0], p[1]) : g.moveTo(p[0], p[1]))); g.closePath();
     if (fill) { g.fillStyle = fill; g.fill(); }
-    if (stroke) { g.lineWidth = lw || 1; g.strokeStyle = stroke; g.stroke(); }
+    if (stroke === 'ink') { g.lineWidth = inkW(q[0][2]) * (lw || 1); g.strokeStyle = INK; g.lineJoin = 'round'; g.stroke(); }
+    else if (stroke) { g.lineWidth = lw || 1; g.strokeStyle = stroke; g.stroke(); }
     return q;
   }
   const facing = (cam, p, n) => { const c = cam.toCam(p[0], p[1], p[2]), d = cam.dirCam(n[0], n[1], n[2]); return -(c[0] * d[0] + c[1] * d[1] + c[2] * d[2]) / (Math.hypot(c[0], c[1], c[2]) || 1); };   // > 0: the face looks at you
@@ -113,7 +114,7 @@
         g.beginPath(); ps.forEach((p, i) => (i ? g.lineTo(p[0], p[1]) : g.moveTo(p[0], p[1]))); for (let i = qs.length - 1; i >= 0; i--) g.lineTo(qs[i][0], qs[i][1]); g.closePath();
         g.fillStyle = `rgba(30,14,6,${o.shade})`; g.fill();
       }
-      g.lineWidth = Math.max(0.6, ps[0][2] * 0.0006); g.strokeStyle = o.edge || 'rgba(40,40,30,0.55)';
+      g.lineWidth = inkW(ps[0][2]) * 0.5; g.strokeStyle = INK; g.lineJoin = 'round';
       g.beginPath(); ps.forEach((p, i) => (i ? g.lineTo(p[0], p[1]) : g.moveTo(p[0], p[1]))); for (let i = qs.length - 1; i >= 0; i--) g.lineTo(qs[i][0], qs[i][1]); g.closePath(); g.stroke();
       g.restore();
     } };
@@ -170,18 +171,16 @@
     prims.push({ z: z + (o.dz || 0), draw: (g) => {
       // the edges (the slab's thickness), then the face you see
       const sides = [[0, 1], [1, 2], [2, 3], [3, 0]];
-      for (const [i, j] of sides) face(g, cam, [ins[i], ins[j], out[j], out[i]], mix(EDGE, LEATHER, 0.35));
+      for (const [i, j] of sides) face(g, cam, [ins[i], ins[j], out[j], out[i]], mix(EDGE, LEATHER, 0.35), 'ink', 0.8);
       const f = inVis ? ins : out, nn = inVis ? n : mul(n, -1);
-      const q = face(g, cam, f, shadeOf(cam, inVis ? LEATHER_IN : LEATHER, nn, lt, 0.8), rgba(EDGE, 0.8), 1.2);
+      const q = face(g, cam, f, shadeOf(cam, inVis ? LEATHER_IN : LEATHER, nn, lt, 0.8), 'ink', 0.8);
       if (!q) return;
       g.save(); g.beginPath(); q.forEach((p, i) => (i ? g.lineTo(p[0], p[1]) : g.moveTo(p[0], p[1]))); g.closePath(); g.clip();
       if (inVis) {                                                      // the leather's grain, then pockets
-        const tx = tex('leather'); texTri(g, tx, q[0], q[1], q[2], [0, 0], [256, 0], [256, 256]); texTri(g, tx, q[0], q[2], q[3], [0, 0], [256, 256], [0, 256]);
-        g.globalAlpha = 0.55; g.fillStyle = shadeOf(cam, LEATHER_IN, nn, lt, 0.8); g.beginPath(); q.forEach((p, i) => (i ? g.lineTo(p[0], p[1]) : g.moveTo(p[0], p[1]))); g.fill(); g.globalAlpha = 1;
-        g.strokeStyle = rgba('#2a1206', 0.5); g.lineWidth = Math.max(1, q[0][2] * 0.0012);
+        g.strokeStyle = rgba(INK, 0.7); g.lineWidth = inkW(q[0][2]) * 0.5;
         for (const y of (which === 'back' ? [] : [-0.012, 0.008])) { const a = cam.P(...c(0.004, y, 0.0005)), bb = cam.P(...c(WW - 0.006, y, 0.0005)); if (a && bb) { g.beginPath(); g.moveTo(a[0], a[1]); g.lineTo(bb[0], bb[1]); g.stroke(); } }
       } else {                                                          // a little wear on the outside
-        g.fillStyle = 'rgba(255,220,180,0.08)'; const m = cam.P(...c(WW * 0.6, h * 0.3, -WT)); if (m) { g.beginPath(); g.ellipse(m[0], m[1], 0.03 * m[2], 0.02 * m[2], 0.4, 0, TAU); g.fill(); }
+        // (flat: no sheen)
       }
       g.setLineDash([Math.max(2, q[0][2] * 0.003), Math.max(1.5, q[0][2] * 0.0022)]); g.strokeStyle = rgba('#d8a878', 0.55); g.lineWidth = Math.max(0.8, q[0][2] * 0.0009);   // the stitching
       const s0 = 0.005, z0 = inVis ? 0.0004 : -WT - 0.0004, st = [c(s0, -h + s0, z0), c(WW - s0, -h + s0, z0), c(WW - s0, h - s0, z0), c(s0, h - s0, z0)].map((p) => cam.P(p[0], p[1], p[2]));
@@ -198,8 +197,8 @@
     const vis = facing(cam, c(WW / 2, 0, 0), n) > 0;
     return { z: zOf(cam, c(WW / 2, -h / 2, 0.003)) - 0.0006, vis, draw: (g) => {
       if (!vis) return;
-      const q = face(g, cam, pts, shadeOf(cam, mix(LEATHER_IN, '#a86a44', 0.25), n, lt, 0.8), rgba(EDGE, 0.75), 1.2); if (!q) return;
-      g.strokeStyle = rgba('#2a1206', 0.35); g.lineWidth = Math.max(1, q[0][2] * 0.001); g.beginPath(); g.moveTo(q[3][0], q[3][1] + 2); g.lineTo(q[2][0], q[2][1] + 2); g.stroke();
+      const q = face(g, cam, pts, shadeOf(cam, mix(LEATHER_IN, '#a86a44', 0.25), n, lt, 0.8), 'ink', 0.6); if (!q) return;
+      g.strokeStyle = rgba(INK, 0.45); g.lineWidth = inkW(q[0][2]) * 0.4; g.beginPath(); g.moveTo(q[3][0], q[3][1] + 2); g.lineTo(q[2][0], q[2][1] + 2); g.stroke();
       g.setLineDash([Math.max(2, q[0][2] * 0.003), Math.max(1.5, q[0][2] * 0.0022)]); g.strokeStyle = rgba('#d8a878', 0.5); g.lineWidth = Math.max(0.8, q[0][2] * 0.0008);
       const a = cam.P(...c(0.005, y1 - 0.004, 0.003)), bb = cam.P(...c(WW - 0.005, y1 - 0.004, 0.003)); if (a && bb) { g.beginPath(); g.moveTo(a[0], a[1]); g.lineTo(bb[0], bb[1]); g.stroke(); }
       g.setLineDash([]);
@@ -220,23 +219,26 @@
       // the token, slipped in behind the card (o.token: 0 above the slot ... 1 in, its top edge still showing a little)
       if (o.token != null && front.inVis) {
         const tk = o.token, Ot = madd(madd(madd(fr.o, fr.b, WW * 0.66), A, h * 0.28 + 0.03 * (1 - tk)), fr.n, 0.0011 + 0.004 * (1 - tk));
-        P.push(...token(cam, Ot, fr.n, A, lt, { dz: tk < 0.6 ? -0.0012 : -0.0002, r: 0.0135 * SK }));   // once it's been pushed up, in front of the card
+        P.push(...token(cam, Ot, fr.n, A, lt, { dz: tk < 0.6 ? -0.0012 : -0.0002, r: 0.0135 * SK }).map((q) => ({ ...q, slot: 1 })));   // once it's been pushed up, in front of the card
       }
-      P.push({ ...cardP, z: cardP.z - 0.002, draw: (g) => { g.save(); g.globalAlpha *= inA; cardP.draw(g); g.restore(); } });
+      P.push({ ...cardP, slot: 1, z: cardP.z - 0.002, draw: (g) => { g.save(); g.globalAlpha *= inA; cardP.draw(g); g.restore(); } });
       // the steel key's head and the slip of paper, in the lower slot
       const kO = madd(madd(madd(fr.o, fr.b, WW * 0.24), A, -h * 0.28), fr.n, 0.002);
-      P.push({ z: zOf(cam, kO) - 0.0005, draw: (g) => { const p = cam.P(...kO); if (!p) return; const u = p[2], gr = g.createLinearGradient(p[0] - 0.01 * u, p[1] - 0.01 * u, p[0] + 0.01 * u, p[1] + 0.01 * u); gr.addColorStop(0, '#b8bec4'); gr.addColorStop(1, '#5c646c'); g.fillStyle = gr; g.beginPath(); g.arc(p[0], p[1] - 0.008 * u, 0.011 * u, 0, TAU); g.fill(); g.fillStyle = 'rgba(40,40,45,0.7)'; g.beginPath(); g.arc(p[0], p[1] - 0.01 * u, 0.003 * u, 0, TAU); g.fill(); } });
-      { const pf = pocketFront(cam, Wt, 'front', lt, 0.55); P.push({ ...pf, z: pf.z - 0.002, draw: (g) => { g.save(); g.globalAlpha *= inA; pf.draw(g); g.restore(); } }); }
+      P.push({ slot: 1, z: zOf(cam, kO) - 0.0005, draw: (g) => { const p = cam.P(...kO); if (!p) return; const u = p[2]; g.fillStyle = '#9aa2aa'; g.beginPath(); g.arc(p[0], p[1] - 0.008 * u, 0.011 * u, 0, TAU); g.strokeStyle = INK; g.lineWidth = inkW(u) * 0.6; g.stroke(); g.fill(); g.fillStyle = 'rgba(40,40,45,0.7)'; g.beginPath(); g.arc(p[0], p[1] - 0.01 * u, 0.003 * u, 0, TAU); g.fill(); } });
+      { const pf = pocketFront(cam, Wt, 'front', lt, 0.55); P.push({ ...pf, slot: 1, z: pf.z - 0.002, draw: (g) => { g.save(); g.globalAlpha *= inA; pf.draw(g); g.restore(); } }); }
       const slipO = madd(madd(fr.o, fr.b, WW * 0.62), A, -h * 0.18);
-      P.push(sheet(cam, mk2('slip'), (x) => madd(madd(slipO, fr.b, x * 0.06 * SK), fr.n, 0.0018), A, 0.03 * SK, 2, { dz: -0.0003, edge: 'rgba(80,80,70,0.5)' }));
+      P.push({ ...sheet(cam, mk2('slip'), (x) => madd(madd(slipO, fr.b, x * 0.06 * SK), fr.n, 0.0018), A, 0.03 * SK, 2, { dz: -0.0003, edge: 'rgba(80,80,70,0.5)' }), slot: 1 });
       // the bill pocket on the back leaf, and the notes standing in it
       if (o.notes) {
         const NB = { O: madd(madd(Wt.O, Wt.A, -h + NW / 2 + 0.006 + (o.notesUp || 0)), Wt.N, 0.0012), L: Wt.B, S: Wt.A, N: Wt.N };
         // when open flat the notes run across both leaves; as it shuts they fold about the spine
         NB.O = madd(NB.O, Wt.B, 0);
-        P.push(...notes(cam, NB, o.notes, { fold: PI - th, spread: 1, zBias: 0.002 }).map((q) => ({ ...q, draw: (g) => { g.save(); g.globalAlpha *= inA; q.draw(g); g.restore(); } })));
+        P.push(...notes(cam, NB, o.notes, { fold: PI - th, spread: 1, zBias: 0.002 }).map((q) => ({ ...q, note: 1, draw: (g) => { g.save(); g.globalAlpha *= inA; q.draw(g); g.restore(); } })));
       }
-      { const pb = pocketFront(cam, Wt, 'back', lt, 0.62); P.push({ ...pb, z: pb.z - 0.002, draw: (g) => { g.save(); g.globalAlpha *= inA; pb.draw(g); g.restore(); } }); }
+      { const pb = pocketFront(cam, Wt, 'back', lt, 0.62); P.push({ ...pb, slot: 1, z: pb.z - 0.002, draw: (g) => { g.save(); g.globalAlpha *= inA; pb.draw(g); g.restore(); } }); }
+      // with its inside to you, the card, the slots, the key, the slip and the token are always in front of the notes (a depth sort of
+      // their middles could flip as the camera moved)
+      if (front.inVis || back.inVis) { const zn = Math.min(...P.filter((q) => q.note).map((q) => q.z)); if (isFinite(zn)) for (const q of P) if (q.slot) q.z = Math.min(q.z, zn - 0.0005); }
     }
     if (th < 0.5 && o.notes && o.edgeShow !== false) {                  // shut (or nearly): the notes' edge shows along the top
       const fr = leafFrame(Wt, 'back'), A = Wt.A, h = WH / 2, e0 = madd(madd(fr.o, A, h + 0.003), fr.n, 0.003), e1 = madd(e0, fr.b, WW * 0.86);
@@ -259,7 +261,9 @@
       const c = cam.P(...C0), p1 = cam.P(...madd(C0, a1, r)), p2 = cam.P(...madd(C0, a2, r)); if (!c || !p1 || !p2) return;
       const e = cam.P(...madd(C0, nn, -0.0025));                       // its edge, the side away from you
       g.save(); if (o.a != null) g.globalAlpha *= o.a;
-      if (e) { g.fillStyle = '#6e4a0e'; g.beginPath(); g.ellipse(e[0], e[1], Math.hypot(p1[0] - c[0], p1[1] - c[1]), Math.hypot(p2[0] - c[0], p2[1] - c[1]), Math.atan2(p1[1] - c[1], p1[0] - c[0]), 0, TAU); g.fill(); }
+      const iw = inkW(c[2]) * 0.6;
+      if (e) { g.fillStyle = '#6e4a0e'; g.beginPath(); g.ellipse(e[0], e[1], Math.hypot(p1[0] - c[0], p1[1] - c[1]), Math.hypot(p2[0] - c[0], p2[1] - c[1]), Math.atan2(p1[1] - c[1], p1[0] - c[0]), 0, TAU); g.strokeStyle = INK; g.lineWidth = iw * 2; g.stroke(); g.fill(); }
+      g.save(); g.transform(p1[0] - c[0], p1[1] - c[1], p2[0] - c[0], p2[1] - c[1], c[0], c[1]); g.beginPath(); g.arc(0, 0, 1, 0, TAU); g.restore(); g.strokeStyle = INK; g.lineWidth = iw * 2; g.stroke();
       g.transform(p1[0] - c[0], p1[1] - c[1], p2[0] - c[0], p2[1] - c[1], c[0], c[1]);   // the unit disc onto the screen
       g.beginPath(); g.arc(0, 0, 1, 0, TAU); g.clip(); g.drawImage(tex('token'), -1, -1, 2, 2);
       const sh = facing(cam, C0, nn); g.fillStyle = `rgba(255,248,220,${(0.22 * clamp(sh)).toFixed(3)})`; g.fillRect(-1, -1, 2, 1);
@@ -285,7 +289,7 @@
       g.fillStyle = '#d9b48a'; g.beginPath(); g.ellipse(f[0], f[1], fx * 0.95, fy * 0.95, ang, 0, TAU); g.fill();               // the top of the tea
       g.fillStyle = 'rgba(245,225,195,0.65)'; g.beginPath(); g.ellipse(f[0], f[1], fx * 0.95, fy * 0.95, ang, 0, TAU); g.ellipse(f[0], f[1], fx * 0.72, fy * 0.7, ang, 0, TAU); g.fill('evenodd');   // the froth at its edge
       // the glass: clear, faceted, catching the light
-      outline(b[0], b[1], bx, t[0], t[1], tx); g.fillStyle = 'rgba(230,240,245,0.16)'; g.fill(); g.strokeStyle = 'rgba(245,250,255,0.55)'; g.lineWidth = Math.max(1, 0.0012 * t[2]); g.stroke();
+      outline(b[0], b[1], bx, t[0], t[1], tx); g.fillStyle = 'rgba(230,240,245,0.16)'; g.fill(); g.strokeStyle = rgba(INK, 0.85); g.lineWidth = inkW(t[2]) * 0.6; g.lineJoin = 'round'; g.stroke();
       g.strokeStyle = 'rgba(255,255,255,0.28)'; g.lineWidth = Math.max(1, 0.0016 * t[2]);
       for (let k = -3; k <= 3; k++) { const u = k / 4, dx = Math.cos(ang), dy = Math.sin(ang); g.beginPath(); g.moveTo(b[0] + dx * bx * u, b[1] + dy * bx * u); g.lineTo(t[0] + dx * tx * u, t[1] + dy * tx * u); g.stroke(); }
       g.strokeStyle = 'rgba(255,255,255,0.8)'; g.lineWidth = Math.max(1.2, 0.0022 * t[2]); g.beginPath(); g.ellipse(t[0], t[1], tx, ty, ang, 0, TAU); g.stroke();   // the rim
@@ -308,9 +312,8 @@
           const v = i / N, y = -v * h, x = Math.sin(v * 5.2 + t * 1.7 + ph) * 0.012 * (0.3 + v) + Math.sin(t * 0.9 + ph) * 0.006 * v + (w - 1) * 0.008;
           const q = cam.P(top[0] + x, top[1] - y, top[2]); if (!q) continue; i ? g.lineTo(q[0], q[1]) : g.moveTo(q[0], q[1]);
         }
-        const a = 0.2 * k * Math.sin(PI * life) * (o.a ?? 1);
+        const a = 0.3 * k * Math.sin(PI * life) * (o.a ?? 1);
         g.strokeStyle = `rgba(255,250,240,${a.toFixed(3)})`; g.lineWidth = Math.max(2, 0.009 * p0[2]); g.stroke();
-        g.strokeStyle = `rgba(255,250,240,${(a * 0.5).toFixed(3)})`; g.lineWidth = Math.max(4, 0.02 * p0[2]); g.stroke();
       }
       g.restore();
     } }];
