@@ -1,7 +1,8 @@
-// Reel 44 · One Word: reel 42's film/rig.js (HQ's brief, point 8), extended here for the traffic constable (the user on motion
-// test 1, 19 Nov: "make the police man proper, it looks sloopy"): a peaked cap built in the head's own frame (L.police), so it
-// sits on the head, turns and tips with it; and a uniform (Lk.uniform): a belt and buckle, breast pockets with flaps, a name
-// plate, shoulder straps and a whistle's cord. Nothing else in it is changed. Reel 42's notes follow.
+// Reel 45 · The Wallet: reel 42's rig, copied from tag source/reel-42-what-did-he-take (film/rig.js), as the brief allows. Added
+// here: o.noHands (the arm stops at the wrist; this reel draws its hands in 3D, film/hand3.js), RIG.tone (the figure's light on any
+// colour, for the props), RIG.setTones (the evening's lit and shade colours) and o.onTorso (a hook after the torso is drawn, for
+// his shirt pocket). One fix: head3 tipped a turned head's nose up when it should look down (the sign of pitch on the side-on
+// turn; it only shows side-on, and 42 rarely turned him side-on). Nothing else is changed.
 // Reel 42 · What Did He Take?: the rig, copied from reel 37 (tag source/reel-37-youre-the-thief, film/rig.js) and extended here:
 // long sleeves, a watch on a wrist that can go, things held in either hand (o.hold), one arm drawn on its own (o.onlyArm /
 // o.skipArm, for a hug), a fuller build (look.girth), an open mouth and wide eyes, and a sun that a reel can set (RIG.setSun);
@@ -188,7 +189,9 @@
   const SUN = (() => { const v = [-0.2, 0.27, 1], l = Math.hypot(...v); return v.map((x) => x / l); })();   // towards the low sun, at the far (+Z) end of the lane
   function setSun(v) { const l = Math.hypot(...v); for (let i = 0; i < 3; i++) SUN[i] = v[i] / l; }          // reel 42: the reel sets it once, before frame 0
   function lightOf(cam) { const d = cam.dirCam(SUN[0], SUN[1], SUN[2]); return { x: d[0], back: clamp(d[2]), front: clamp(-d[2]) }; }
-  const LIT = '#fff0d2', SHD = '#3a2440', LIGHT_ = '#fff3dc';
+  let LIT = '#fff0d2', SHD = '#3a2440';
+  function setTones(lit, shd) { LIT = lit; SHD = shd; }                                                  // reel 45
+  function tone(c, lt) { const bl = lt.back, k0 = 0.10 + 0.34 * bl; return [mix(mix(c, LIT, 0.16 * (1 - bl)), SHD, k0 * 0.5), mix(c, SHD, 0.2 + k0 * 0.8)]; }   // reel 45: the figure's tones, for anything
   function figure(g, cam, W, t, o = {}) {
     const F = placed(cam, W, t, o); if (!F) return null;
     const { P, J, psi, s } = F, Lk = W.look, lt = o.light || lightOf(cam), gk = Lk.girth || 1;
@@ -317,11 +320,14 @@
         const wa = Lk.watch && Lk.watch.side === sd ? (o.watchA ?? 1) : 0;
         if (Lk.watch && Lk.watch.side === sd && o.watchBare && wa < 0.997) bareOn(el, wr, o.watchBare * (1 - wa));
         if (wa > 0.003) watchOn(el, wr, wa);
+        if (o.noHands) { /* reel 45: the hand is drawn in 3D after the figure */ }
+        else {
         if (hold && hb) hold(g, el, wr, F, tone);                         // held behind the hand altogether
         hand(el, wr, Lk.skin, pose, 'back');
         if (o.held && o.held.side === sd && o.held.a > 0.003) heldPhone(el, wr);
         if (hold && !hb) hold(g, el, wr, F, tone);                        // held in it: the fingers close over it
         hand(el, wr, Lk.skin, pose, 'front');
+        }
       }
       if (!up) return;
       if (Lk.sleeve === 'none') { limb(sh, el, 0.058, 0.05, Lk.skin); rim(sh, el, 0.058, 0.05); limb(sh, mid(sh, el, 0.1), 0.06, 0.059, Lk.shirt); return; }   // reel 42: a vest
@@ -354,35 +360,11 @@
         g.fillStyle = 'rgba(255,255,255,0.5)'; for (let i = 0; i < 5; i++) { const p = at(0.08 + i * 0.19, off(0.5)); g.beginPath(); g.arc(p[0], p[1], Math.max(0.8, 0.011 * s), 0, TAU); g.fill(); }
         g.fillStyle = mix(Lk.shirt, LIT, 0.25); for (const k of [-1, 1]) { const c0 = at(1.06, off(1) + k * 0.012 * s), c1 = at(0.86, off(1) + k * 0.02 * s), c2 = at(0.93, off(1) + k * 0.085 * s * Math.max(0.3, front)), c3 = at(1.09, off(1) + k * 0.07 * s * Math.max(0.3, front)); g.beginPath(); g.moveTo(...c0); g.lineTo(...c1); g.lineTo(...c2); g.lineTo(...c3); g.closePath(); g.fill(); }
         g.globalAlpha = 1;
-        if (Lk.uniform && front > 0.12) {              // reel 44: breast pockets with flaps and buttons, a name plate, the whistle's cord
-          const U = Lk.uniform, a = clamp((front - 0.12) * 4), offP = (tau) => side * lerp(0.130, 0.132, tau) * s;
-          g.globalAlpha = a;
-          for (const k of [-1, 1]) {
-            const cx = offP(0.7) + k * 0.085 * s * Math.max(0.35, front), pc = at(0.66, cx), pw = 0.062 * s * Math.max(0.4, front), ph = 0.075 * s;
-            g.save(); g.translate(pc[0], pc[1]); g.rotate(Math.atan2(uy, ux) + PI / 2);
-            g.fillStyle = mix(Lk.shirt, '#000000', 0.07); g.beginPath(); g.roundRect(-pw, -ph * 0.55, pw * 2, ph * 1.25, 0.012 * s); g.fill();
-            g.fillStyle = mix(Lk.shirt, '#000000', 0.16); g.beginPath(); g.moveTo(-pw * 1.05, -ph * 0.6); g.lineTo(pw * 1.05, -ph * 0.6); g.lineTo(pw * 0.9, -ph * 0.12); g.lineTo(0, -ph * 0.02); g.lineTo(-pw * 0.9, -ph * 0.12); g.closePath(); g.fill();
-            g.fillStyle = mix(Lk.shirt, '#ffffff', 0.35); g.beginPath(); g.arc(0, -ph * 0.16, Math.max(0.8, 0.008 * s), 0, TAU); g.fill();
-            g.restore();
-          }
-          // a name plate over the right pocket (a dark bar, nothing written on it)
-          const np = at(0.81, offP(0.81) - 0.085 * s * Math.max(0.35, front)); g.save(); g.translate(np[0], np[1]); g.rotate(Math.atan2(uy, ux) + PI / 2);
-          g.fillStyle = '#1d1d22'; g.fillRect(-0.045 * s * Math.max(0.4, front), -0.009 * s, 0.09 * s * Math.max(0.4, front), 0.018 * s); g.restore();
-          // the whistle's cord: from the left shoulder down to the left pocket
-          const c0 = at(0.98, offP(1) + 0.12 * s * Math.max(0.4, front)), c1 = at(0.72, offP(0.7) + 0.06 * s * Math.max(0.4, front)), cm = at(0.84, offP(0.85) + 0.15 * s * Math.max(0.4, front));
-          g.strokeStyle = U.cord || '#f1ede2'; g.lineWidth = Math.max(1.2, 0.009 * s); g.lineCap = 'round'; g.beginPath(); g.moveTo(...c0); g.quadraticCurveTo(cm[0], cm[1], c1[0], c1[1]); g.stroke();
-          g.globalAlpha = 1;
-        }
       } else if (front < -0.12) {                      // the back: a yoke seam
         g.globalAlpha = clamp((-front - 0.12) * 4); g.strokeStyle = 'rgba(0,0,0,0.14)'; g.lineWidth = Math.max(1, 0.012 * s);
         const p0 = at(0.84, -w2 * 0.9), p1 = at(0.78, -side * 0.13 * s), p2 = at(0.84, w2 * 0.9); g.beginPath(); g.moveTo(...p0); g.quadraticCurveTo(p1[0], p1[1], p2[0], p2[1]); g.stroke(); g.globalAlpha = 1;
       }
       if ((bl > 0.05 || Math.abs(lt.x) > 0.25) && rimK > 0.01) { g.strokeStyle = `rgba(255,226,168,${((0.2 + 0.36 * bl) * rimK).toFixed(3)})`; g.lineWidth = Math.max(2, Math.min(14, 0.022 * s)); g.beginPath(); g.moveTo(...at(-0.14, lx * w0)); g.lineTo(...at(0.44, lx * w1)); g.lineTo(...at(0.8, lx * w2)); g.lineTo(...at(0.98, lx * w3)); g.stroke(); }
-      if (Lk.uniform) {                                // reel 44: the belt at the waist, the buckle at the front
-        const U = Lk.uniform, b0 = at(-0.05, -w0 * 1.02), b1 = at(-0.05, w0 * 1.02), b2 = at(0.04, w0 * 1.02), b3 = at(0.04, -w0 * 1.02);
-        g.fillStyle = U.belt || '#4a2e1a'; g.beginPath(); g.moveTo(...b0); g.lineTo(...b1); g.lineTo(...b2); g.lineTo(...b3); g.closePath(); g.fill();
-        if (front > 0.1) { const bk = at(-0.005, side * 0.131 * s), bw = 0.034 * s * Math.max(0.4, front); g.globalAlpha = clamp((front - 0.1) * 4); g.save(); g.translate(bk[0], bk[1]); g.rotate(Math.atan2(uy, ux) + PI / 2); g.fillStyle = U.buckle || '#c9a33a'; g.fillRect(-bw, -0.03 * s, bw * 2, 0.06 * s); g.fillStyle = U.belt || '#4a2e1a'; g.fillRect(-bw * 0.55, -0.016 * s, bw * 1.1, 0.032 * s); g.restore(); g.globalAlpha = 1; }
-      }
       g.restore();
     };
     const pelvis = () => {
@@ -445,19 +427,13 @@
     for (const l of legs) leg(...l);
     torso();
     phone();
+    if (o.onTorso) o.onTorso(g, F, lt);                                    // reel 45: a shirt pocket, under the arms that come in front
     if (front <= 0) bag();
     straps();
     // the neck, then the head
     const hb = [P.head[0] - 0.02 * P.head[2] * Math.sin(psi), P.head[1] + 0.13 * P.head[2], P.head[2], P.head[3]];
     limb(P.neck, hb, 0.060, 0.058, mix(Lk.skin, Lk.skinD, 0.4));
     for (const a of infront.filter(keep).sort((a, b) => dz(b[1], b[2]) - dz(a[1], a[2]))) arm(...a, over(a) ? 'upper' : 'all');
-    if (Lk.uniform) for (const sh_ of [P.shL, P.shR]) {     // reel 44: a shoulder strap on each shoulder, towards the collar, a button at its end
-      const nk = P.neck, dx = nk[0] - sh_[0], dy = nk[1] - sh_[1], L_ = Math.hypot(dx, dy) || 1, u = sh_[2];
-      g.save(); g.translate(sh_[0] + dx * 0.08, sh_[1] + dy * 0.08 - 0.03 * u); g.rotate(Math.atan2(dy, dx));
-      g.fillStyle = mix(Lk.shirt, '#000000', 0.18); g.beginPath(); g.roundRect(0, -0.022 * u, Math.min(L_ * 0.72, 0.12 * u), 0.044 * u, 0.012 * u); g.fill();
-      g.fillStyle = Lk.uniform.buckle || '#c9a33a'; g.beginPath(); g.arc(Math.min(L_ * 0.66, 0.105 * u), 0, Math.max(0.8, 0.011 * u), 0, TAU); g.fill();
-      g.restore();
-    }
     const psiH = wrap(psi - J.yawH);
     F.psiH = psiH; F.headR = (Lk.headK || 0.135) * P.head[2];               // reel 42: a look can carry a bigger cartoon head
     if (!o.noHead) head3(g, P.head[0], P.head[1], F.headR, psiH, Lk, { pitch: J.pitchH, tilt: J.tiltH, light: lt, ...(o.face || {}), out: F });
@@ -530,7 +506,7 @@
     for (let i = 0; i < 26; i++) { const a = i / 26 * TAU; pts.push([sk.x + sk.rx * Math.cos(a), sk.y + sk.ry * Math.sin(a)]); pts.push([jw.x + jw.rx * Math.cos(a), jw.y + jw.ry * Math.sin(a) + dyF * 0.4]); }
     const H = hull(pts), outline = () => { g.beginPath(); H.forEach((p, i) => (i ? g.lineTo(p[0], p[1]) : g.moveTo(p[0], p[1]))); g.closePath(); };
     const bl = lt.back || 0, skin = mix(L.skin, SHD, 0.16 * bl), skinD = mix(L.skinD, SHD, 0.2 * bl), skinH = mix(L.skinH, L.skin, 0.6 * bl);
-    g.save(); g.translate(x, y); g.rotate((o.tilt || 0) - pitch * sn * 0.85); g.scale(R, -R); g.lineJoin = 'round'; g.lineCap = 'round';
+    g.save(); g.translate(x, y); g.rotate((o.tilt || 0) + pitch * sn * 0.85); g.scale(R, -R); g.lineJoin = 'round'; g.lineCap = 'round';
     const brimPts = () => {                            // the cap's brim: a curved tongue out from the forehead, worn a little to one side
       const lb = 7 * PI / 180, c = Math.cos(lb), f0 = L.capTurn ?? 0, inn = [], out2 = [];
       for (let i = 0; i <= 14; i++) {
@@ -548,29 +524,6 @@
     };
     const BR = L.cap ? brimPts() : null;
     if (BR && BR.zc <= 0.05) brim(BR);                 // from behind it's under the head: only what sticks out past it shows
-    // reel 44: a police officer's peaked cap. A band low on the forehead (lower behind), a crown that flares out to a flat top
-    // (higher in front: the saddle), a stiff black visor over the eyes, a plain badge (no real emblem). Built in the head's frame,
-    // tipped with the head as it looks down, then turned with it.
-    const PC = L.police ? (() => {
-      const tp = 0.32 * pitch, ct = Math.cos(tp), st = Math.sin(tp);
-      const R3 = (x, y, z) => { const y1 = y * ct - z * st, z1 = y * st + z * ct; const q = rot([x, y1, z1]); return [q[0], q[1] + dyF * 0.35, q[2]]; };
-      const ring = (yF, yB, rx, rz, cz, n = 40) => { const out = []; for (let i = 0; i < n; i++) { const a = i / n * TAU, c = Math.cos(a), sn_ = Math.sin(a); out.push(R3(rx * sn_, lerp(yB, yF, (c + 1) / 2), cz + rz * c)); } return out; };   // a = 0 at the front
-      const lo = ring(0.76, 0.46, 1.06, 1.2, -0.08), hi = ring(1.03, 0.74, 1.07, 1.21, -0.08), top = ring(1.54, 1.12, 1.36, 1.46, -0.03);
-      const vIn = [], vOut = [];
-      for (let i = 0; i <= 16; i++) {
-        const a = lerp(-1.2, 1.2, i / 16), c = Math.cos(a), sn_ = Math.sin(a), taper = Math.pow(Math.cos(a / 1.2 * PI / 2), 0.6), len = 0.08 + 0.5 * taper;
-        const y0 = lerp(0.46, 0.76, (c + 1) / 2);
-        vIn.push(R3(1.06 * sn_, y0, -0.08 + 1.2 * c)); vOut.push(R3((1.06 + len) * sn_, y0 - 0.2 * len, -0.08 + (1.2 + len) * c));
-      }
-      const nTop = (() => { const a = R3(0, 1, 0), b = R3(0, 0, 0); return a[2] - b[2]; })();
-      return { lo, hi, top, vIn, vOut, front: R3(0, 0, 1)[2] - R3(0, 0, 0)[2], nTop, badge: R3(0, 1.16, 1.27), C: L.police };
-    })() : null;
-    const visor = (V) => {
-      g.beginPath(); V.vIn.forEach((p, i) => (i ? g.lineTo(p[0], p[1]) : g.moveTo(p[0], p[1]))); for (let i = V.vOut.length - 1; i >= 0; i--) g.lineTo(V.vOut[i][0], V.vOut[i][1]); g.closePath();
-      g.fillStyle = '#121216'; g.fill();
-      g.strokeStyle = 'rgba(255,255,255,0.22)'; g.lineWidth = 0.035; g.beginPath(); V.vOut.forEach((p, i) => (i ? g.lineTo(p[0], p[1]) : g.moveTo(p[0], p[1]))); g.stroke();
-    };
-    if (PC && PC.front <= 0.0) visor(PC);               // from behind, the visor is under the head
     const zs = (fx, fy) => FC[2] + FC[5] * Math.sqrt(Math.max(0, 1 - (fx / FC[3]) ** 2 - ((fy - FC[1]) / FC[4]) ** 2));
     const fpt = (fx, fy) => { const z = zs(fx, fy), n = [fx / FC[3] ** 2, (fy - FC[1]) / FC[4] ** 2, (z - FC[2]) / FC[5] ** 2], nl = Math.hypot(n[0], n[1], n[2]) || 1, p = rot([fx, fy, z]); return [p[0], p[1] + dyF, (-n[0] * sn + n[2] * cs) / nl]; };
     // the ears: both peep out from behind the skull; the one on your side comes round onto the head (drawn again, later)
@@ -601,13 +554,13 @@
       const sm = o.smile || 0, my = -0.74, N = 7; g.strokeStyle = '#3c1d18'; g.lineWidth = 0.034; g.beginPath(); let on = false;
       for (let i = 0; i < N; i++) { const fx = -0.25 + 0.5 * i / (N - 1), p = fpt(fx, my + sm * 0.09 * (fx / 0.25) ** 2 - sm * 0.03 + (o.smirk || 0) * 0.07 * Math.max(0, fx * Math.sign(sn || 1) / 0.25)); if (p[2] < 0.06) { on = false; continue; } if (on) g.lineTo(p[0], p[1]); else g.moveTo(p[0], p[1]); on = true; }
       if (op <= 0.02) g.stroke();
-      if (o.out) { const a = (o.tilt || 0) - pitch * sn * 0.85, ca = Math.cos(a), sa = Math.sin(a), p = fpt(0, my); o.out.mouth = { x: x + R * (p[0] * ca + p[1] * sa), y: y + R * (p[0] * sa - p[1] * ca), vis: p[2] }; }   // reel 42: where the lips are on screen
+      if (o.out) { const a = (o.tilt || 0) + pitch * sn * 0.85, ca = Math.cos(a), sa = Math.sin(a), p = fpt(0, my); o.out.mouth = { x: x + R * (p[0] * ca + p[1] * sa), y: y + R * (p[0] * sa - p[1] * ca), vis: p[2] }; }   // reel 42: where the lips are on screen
       if (L.must) { const upp = [], low = []; for (let i = 0; i < 13; i++) { const uu = -1 + i / 6, fx = uu * 0.3, p = fpt(fx, -0.575 - 0.065 * uu * uu); if (p[2] < 0.06) continue; const th = L.must * (1 - 0.72 * Math.pow(Math.abs(uu), 1.4)); upp.push([p[0], p[1] + th * 0.55]); low.push([p[0], p[1] - th * 0.45]); } if (upp.length > 2) { g.fillStyle = L.hair; g.beginPath(); upp.forEach((p, j) => (j ? g.lineTo(p[0], p[1]) : g.moveTo(p[0], p[1]))); for (let j = low.length - 1; j >= 0; j--) g.lineTo(low[j][0], low[j][1]); g.closePath(); g.fill(); } }
     }
     // the eyes and the brows
     for (const k of [-1, 1]) {
       const e = fpt(k * 0.43, 0.06); if (e[2] < 0.13) continue;
-      if (o.out) { const a = (o.tilt || 0) - pitch * sn * 0.85, ca = Math.cos(a), sa = Math.sin(a), wf0 = clamp(e[2] * 1.12, 0.22, 1), px = e[0] + wf0 * ((o.look || [0, 0])[0] + sn * 0.05), py = e[1] + 0.016 + (o.look || [0, 0])[1]; (o.out.eyes = o.out.eyes || []).push({ k, x: x + R * (px * ca + py * sa), y: y + R * (px * sa - py * ca), r: 0.098 * R, wf: wf0, nz: e[2] }); }
+      if (o.out) { const a = (o.tilt || 0) + pitch * sn * 0.85, ca = Math.cos(a), sa = Math.sin(a), wf0 = clamp(e[2] * 1.12, 0.22, 1), px = e[0] + wf0 * ((o.look || [0, 0])[0] + sn * 0.05), py = e[1] + 0.016 + (o.look || [0, 0])[1]; (o.out.eyes = o.out.eyes || []).push({ k, x: x + R * (px * ca + py * sa), y: y + R * (px * sa - py * ca), r: 0.098 * R, wf: wf0, nz: e[2] }); }
       const wf = clamp(e[2] * 1.12, 0.22, 1), ew = L.ew ?? 0.235, eh = (L.eh ?? 0.13) * (1 + 0.45 * (o.wide || 0)), cl = Math.max(close, lid * 0.55, k === 1 ? (o.wink || 0) : 0), up = eh * 1.75 * (1 - cl), dn = eh * 1.05 * (1 - cl * 0.72);
       g.save(); g.translate(e[0], e[1]); g.scale(wf, 1);
       if (cl < 0.92) {
@@ -678,18 +631,6 @@
       }
       if (BR.zc > 0.05) brim(BR);
     }
-    if (PC) {
-      const C = PC.C, poly = (pts) => { g.beginPath(); pts.forEach((p, i) => (i ? g.lineTo(p[0], p[1]) : g.moveTo(p[0], p[1]))); g.closePath(); };
-      // the band (dark), then the crown over it: what shows of the band is the strip under the crown
-      poly(hull([...PC.lo, ...PC.hi].map((p) => [p[0], p[1]]))); g.fillStyle = mix(C.band || '#3a2c20', SHD, 0.15 * bl); g.fill();
-      poly(hull([...PC.hi, ...PC.top].map((p) => [p[0], p[1]])));
-      const gq = g.createLinearGradient(lx * 1.3, 1.5, -lx * 1.3, 0.4); gq.addColorStop(0, mix(C.crown, LIGHT_, 0.18)); gq.addColorStop(0.55, C.crown); gq.addColorStop(1, mix(C.crown, SHD, 0.3 + 0.2 * bl)); g.fillStyle = gq; g.fill();
-      g.strokeStyle = mix(C.crown, '#000000', 0.35); g.lineWidth = 0.03; g.stroke();
-      if (PC.nTop > 0.04) { poly(PC.top); g.fillStyle = mix(C.crown, LIGHT_, 0.25); g.globalAlpha = clamp(PC.nTop * 4); g.fill(); g.globalAlpha = 1; }   // the flat top, when it tips towards you
-      // the badge on the crown's front, and the band's piping
-      if (PC.badge[2] > 0.25) { const k = clamp((PC.badge[2] - 0.25) * 2); g.globalAlpha = k; g.fillStyle = '#d6b04a'; g.beginPath(); g.ellipse(PC.badge[0], PC.badge[1], 0.17 * Math.max(0.35, cs), 0.2, 0, 0, TAU); g.fill(); g.fillStyle = '#8a6a1c'; g.beginPath(); g.ellipse(PC.badge[0], PC.badge[1], 0.08 * Math.max(0.35, cs), 0.1, 0, 0, TAU); g.fill(); g.globalAlpha = 1; }
-      if (PC.front > 0.0) visor(PC);                    // the visor over his eyes
-    }
     if (top && (bl > 0.05 || Math.abs(lt.x) > 0.25)) {  // the low sun on the crown
       const { arc, d } = top; g.strokeStyle = `rgba(255,226,168,${(0.28 + 0.45 * bl).toFixed(3)})`; g.lineWidth = 0.05; g.beginPath(); const j0 = lx > 0 ? (d > 0 ? 0 : 14) : (d > 0 ? 14 : 0);
       for (let j = j0; j <= j0 + 14; j++) { const p = arc[j]; if (j === j0) g.moveTo(p[0], p[1]); else g.lineTo(p[0], p[1]); } g.stroke();
@@ -700,5 +641,5 @@
     g.restore();
   }
 
-  window.RIG = { camera, poly3, line3, clipNear, style, skel, footAt, placed, figure, shadow, dots, head3, lightOf, setSun, mix, rgba, sstep, wrap, frac, ellW, SUN, BODY, TAU, PI };
+  window.RIG = { camera, poly3, line3, clipNear, style, skel, footAt, placed, figure, shadow, dots, head3, lightOf, setSun, setTones, tone, mix, rgba, sstep, wrap, frac, ellW, SUN, BODY, TAU, PI, NEAR };
 })();
