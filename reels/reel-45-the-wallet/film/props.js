@@ -129,7 +129,7 @@
     const out = [];
     NOTES.forEach((name, i) => {
       const p = per[i] || {}; if (p.hide) return;
-      const base = madd(madd(madd(F.O, F.N, i * NT * (o.spread ?? 1)), F.L, p.dx || 0), F.S, p.dy || 0);
+      const base = madd(madd(madd(F.O, F.N, p.nz ?? i * NT * (o.spread ?? 1)), F.L, p.dx || 0), F.S, p.dy || 0);
       const fold = (p.fold ?? o.fold) || 0, lift = p.lift || 0, e = p.e || 1, curl = p.curl ?? 0.6;
       const spine = (x) => {                                           // x from -0.5 to 0.5 of the note's length
         const s = x * NL;
@@ -143,7 +143,7 @@
         }
         return pt;
       };
-      out.push(sheet(cam, tex(name), spine, F.S, NW, lift ? 10 : 6, { dz: -i * 1e-4 * (o.order ?? 1), edge: 'rgba(50,50,40,0.6)', shade: p.shade }));
+      out.push(sheet(cam, tex(name), spine, F.S, NW, lift ? 10 : 6, { dz: -(p.rank ?? i) * 1e-4 * (o.order ?? 1) + (p.zb || 0) + (o.zBias || 0), edge: 'rgba(50,50,40,0.6)', shade: p.shade }));
     });
     return out;
   }
@@ -217,7 +217,7 @@
       // the card in the front leaf's top slot, its top third showing
       const cardO = madd(madd(fr.o, fr.b, WW * 0.5), A, h * 0.18), cardP = sheet(cam, tex('card'), (x) => madd(madd(cardO, fr.b, x * 0.084 * SK), fr.n, 0.0016), A, 0.053 * SK, 2, { dz: -0.0004, edge: 'rgba(60,70,80,0.5)' });
       // the token, slipped in behind the card (o.token: 0 above the slot ... 1 in, its top edge still showing a little)
-      if (o.token != null) {
+      if (o.token != null && front.inVis) {
         const tk = o.token, Ot = madd(madd(madd(fr.o, fr.b, WW * 0.66), A, h * 0.28 + 0.03 * (1 - tk)), fr.n, 0.0011 + 0.004 * (1 - tk));
         P.push(...token(cam, Ot, fr.n, A, lt, { dz: tk < 0.6 ? -0.0012 : -0.0002, r: 0.0135 * SK }));   // once it's been pushed up, in front of the card
       }

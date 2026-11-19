@@ -99,7 +99,23 @@
   const fixB = (f) => ({ ...f, B: norm(cross(f.N, f.A)) });           // keeps N = A x B
   const mkF = (O, A, N) => { A = norm(A); N = ortho(N, A); return fixB({ O, A, N }); };
   const mkFN = (O, A, N) => { N = norm(N); A = ortho(A, N); return fixB({ O, A, N }); };   // keeps N (the tilt), squares the spine to it
-  function lerpFrame(a, b, u) { const A = towards(a.A, b.A, clamp(u)), N = ortho(towards(a.N, b.N, clamp(u)), A); return fixB({ ...a, ...b, O: lerp3(a.O, b.O, u), A, N }); }
+  // a frame's turn as a quaternion (columns x, y, z right-handed), so turns ease the short way round and never flip
+  function m2q(x, y, z) {
+    const m00 = x[0], m01 = y[0], m02 = z[0], m10 = x[1], m11 = y[1], m12 = z[1], m20 = x[2], m21 = y[2], m22 = z[2], tr = m00 + m11 + m22;
+    if (tr > 0) { const S = Math.sqrt(tr + 1) * 2; return [0.25 * S, (m21 - m12) / S, (m02 - m20) / S, (m10 - m01) / S]; }
+    if (m00 > m11 && m00 > m22) { const S = Math.sqrt(1 + m00 - m11 - m22) * 2; return [(m21 - m12) / S, 0.25 * S, (m01 + m10) / S, (m02 + m20) / S]; }
+    if (m11 > m22) { const S = Math.sqrt(1 + m11 - m00 - m22) * 2; return [(m02 - m20) / S, (m01 + m10) / S, 0.25 * S, (m12 + m21) / S]; }
+    const S = Math.sqrt(1 + m22 - m00 - m11) * 2; return [(m10 - m01) / S, (m02 + m20) / S, (m12 + m21) / S, 0.25 * S];
+  }
+  function q2cols(q) { const [w, x, y, z] = q; return [[1 - 2 * (y * y + z * z), 2 * (x * y + w * z), 2 * (x * z - w * y)], [2 * (x * y - w * z), 1 - 2 * (x * x + z * z), 2 * (y * z + w * x)], [2 * (x * z + w * y), 2 * (y * z - w * x), 1 - 2 * (x * x + y * y)]]; }
+  function slerp(a, b, u) {
+    let d = a[0] * b[0] + a[1] * b[1] + a[2] * b[2] + a[3] * b[3]; if (d < 0) { b = b.map((v) => -v); d = -d; }
+    if (d > 0.9995) { const r = a.map((v, i) => v + (b[i] - v) * u), l = Math.hypot(...r); return r.map((v) => v / l); }
+    const th = Math.acos(d), s0 = Math.sin((1 - u) * th) / Math.sin(th), s1 = Math.sin(u * th) / Math.sin(th);
+    return a.map((v, i) => v * s0 + b[i] * s1);
+  }
+  function lerpFrame(a, b, u) { const q = slerp(m2q(a.A, a.B, a.N), m2q(b.A, b.B, b.N), clamp(u)), [A, B, N] = q2cols(q); return { ...a, ...b, O: lerp3(a.O, b.O, u), A, B, N }; }
+  const turnFrame = (f, axis, ang) => ({ ...f, A: PR.rot(f.A, axis, ang), B: PR.rot(f.B, axis, ang), N: PR.rot(f.N, axis, ang) });
   const turnY = (v, a) => [v[0] * Math.cos(a) + v[2] * Math.sin(a), v[1], -v[0] * Math.sin(a) + v[2] * Math.cos(a)];
   // the wallet on the bench where you sat (to his right): shut, the edge of the notes towards you
   const W_BENCH = (() => { const A = norm([-0.34, 0, -0.94]), f = mkF([0.0, ST.BENCH.y + PR.WT + 0.0005, 0.085], A, UP); return { ...f, O: madd(f.O, f.B, -PR.WW * 0.5) }; })();
@@ -111,7 +127,7 @@
   const W_LHAND = (() => { const c = madd(madd(LAP, UP, 0.11), FWD, 0.13), N = norm(add(mul(FWD, 0.1), UP)), A = norm(add(mul(FWD, 1), mul(UP, -0.1))); const f = mkF(c, A, N); return { ...f, O: madd(f.O, LEFT, -0.0) }; })();
   // his shirt's left breast pocket: A up, N out of his chest
   const POCK = (() => { const c = w3(J0.chest); return mkF(madd(madd(madd(c, FWD, 0.118), LEFT, 0.082), UP, -0.07), UP, norm(add(FWD, mul(UP, -0.06)))); })();
-  const W_POCKET = (() => { const f = mkF(POCK.O, POCK.A, POCK.N); return { ...f, O: madd(madd(f.O, f.B, -PR.WW * 0.5), f.N, -0.012) }; })();
+  const W_POCKET = (() => { const f = mkF(POCK.O, POCK.A, POCK.N); return { ...f, O: madd(madd(madd(f.O, f.B, -PR.WW * 0.5), f.N, -0.012), f.A, 0.03) }; })();
   // held low in his right hand, shut, as he looks round
   const W_RLOW = (() => { const c = madd(madd(THIGH_R, UP, 0.07), FWD, 0.05), N = norm(add(mul(FWD, -0.4), mul(UP, 0.9))), A = norm(add(mul(LEFT, -0.2), mul(FWD, 1))); return mkF(c, A, N); })();
   // the camera, as you, standing over him (the end of the arc): the hold-out is set from it
@@ -137,15 +153,15 @@
     k.push([K.cash, 0.25, 0.80, -0.05, 0.88, -0.05, 0.18, 960, 540, 880]);
     k.push([K.scales + 1.1, 0.25, 0.80, -0.05, 0.85, -0.04, 0.18, 970, 540, 880]);
     // 3 · the study: a slow push in on the count, the wallet still in frame
-    k.push([K.pickup + 0.6, 0.24, 0.80, -0.06, 0.92, -0.03, 0.22, 940, 540, 960]);
-    k.push([K.p40, 0.24, 0.80, -0.06, 0.88, 0.0, 0.24, 950, 540, 960]);
-    k.push([K.stop, 0.24, 0.80, -0.06, 0.86, 0.02, 0.24, 950, 540, 950]);
+    k.push([K.pickup + 0.6, 0.24, 0.80, -0.06, 0.94, -0.12, 0.22, 930, 540, 960]);
+    k.push([K.p40, 0.24, 0.80, -0.06, 0.88, 0.0, 0.24, 960, 540, 960]);
+    k.push([K.stop, 0.24, 0.80, -0.06, 0.84, 0.08, 0.24, 985, 540, 950]);
     // 4 · why: up to his face, round to his left, the kettle beside his head
     k.push([K.square + 0.9, 0.25, 0.86, -0.04, 0.86, 0.08, 0.2, 960, 540, 900]);
     k.push([K.weigh, 0.34, 1.0, 0.04, 0.86, -0.05, 0.12, 940, 540, 860]);
     k.push([K.rack1, 0.62, 1.22, 0.22, 0.92, -0.1, 0.06, 820, 520, 820]);
     k.push([word('see') + 0.4, 0.72, 1.22, 0.24, 0.9, -0.08, 0.06, 1000, 470, 820]);   // as the focus lands, the camera pushes in on the kettle
-    k.push([K.catch, 0.72, 1.22, 0.24, 0.88, -0.08, 0.06, 1020, 470, 820]);
+    k.push([K.catch, 0.74, 1.22, 0.25, 0.86, -0.07, 0.06, 1070, 455, 820]);
     // 5 · the turn: back to his real face
     k.push([K.smile + 0.25, ...mid(hk, lap, 0.2), 0.78, 0.36, 0.08, 1060, 540, 820]);
     // 6 · the temptation: his hands and the wallet, then the arc round to his front, rising to your eyes
@@ -187,8 +203,12 @@
     { const u = clamp(t / 0.85), e = mj(u), dip = 0.022 * Math.sin(PI * clamp((t - 0.62) / 0.42)) * (t > 0.62 ? 1 : 0);
       const bob = 0.006 * Math.sin(TAU * 0.6 * t);
       f = lerpFrame(W_HAND0, W_HAND1, e); f = { ...f, O: madd(f.O, UP, -dip + bob * clamp((t - 1) / 0.5)) }; }
-    if (t >= K.open - 0.55) f = lerpFrame(f, W_RKNEE, ease(K.open - 0.55, K.open - 0.05, t));
-    if (t >= K.handoff) f = lerpFrame(W_RKNEE, W_LHAND, springE((t - K.handoff) / 0.62));
+    if (t >= K.open - 1.0) f = lerpFrame(f, W_RKNEE, ease(K.open - 1.0, K.open - 0.05, t));
+    if (t >= K.handoff) {                               // into his left hand; he turns it a little as he looks into it
+      f = lerpFrame(W_RKNEE, W_LHAND, ease(K.handoff, K.handoff + 0.9, t));
+      const look = ease(K.handoff + 0.8, K.handoff + 1.3, t) * (1 - ease(K.draw - 0.5, K.draw - 0.1, t));
+      f = turnFrame(f, UP, 0.16 * look * Math.sin(TAU * 0.45 * (t - K.handoff - 0.8))); f = { ...f, O: madd(f.O, UP, 0.008 * look * Math.sin(TAU * 0.9 * t)) };
+    }
     if (t >= K.draw + 0.3) f = lerpFrame(W_LHAND, W_LKNEE, ease(K.draw + 0.3, K.draw + 0.95, t));
     if (t >= K.slide - 0.55) f = lerpFrame(W_LKNEE, W_LHAND, ease(K.slide - 0.55, K.slide - 0.05, t));
     if (t >= K.slap + 0.12) f = lerpFrame(W_LHAND, W_RLOW, ease(K.slap + 0.12, K.slap + 0.6, t));
@@ -205,7 +225,7 @@
     }
     let open = 1.35;                                    // how open: like a book towards him, then flopped open by his thumb; slapped shut; opened by you
     if (t >= K.open) open = lerp(1.35, PI * 0.92, springE((t - K.open) / 0.42));
-    if (t >= K.slap) open = Math.max(0, PI * 0.92 * (1 - mj((t - K.slap) / 0.11))) + 0.06 * Math.sin(PI * clamp((t - K.slap - 0.11) / 0.14));
+    if (t >= K.slap) { const u = clamp((t - K.slap) / 0.16); open = PI * 0.92 * (1 - u * u * (3 - 2 * u)) + 0.07 * Math.sin(PI * clamp((t - K.slap - 0.16) / 0.16)) * (t > K.slap + 0.16 ? 1 : 0); }
     if (t >= K.openW) open = PI * 0.78 * springE((t - K.openW) / 0.5);
     return { ...f, open, gap: 0.009 };
   }
@@ -237,7 +257,7 @@
   const N_RKNEE = nf(madd(madd(KNEE_R, UP, 0.012), FWD, -0.02), norm(add(mul(LEFT, -1), mul(FWD, 0.25))), norm(add(UP, mul(FWD, 0.6))));   // across his right knee, tipped up to you
   const N_COUNT = nf(madd(madd(madd(LAP, UP, 0.12), FWD, 0.10), LEFT, -0.07), norm(add(mul(LEFT, -0.8), mul(FWD, 0.3))), norm(add(mul(FWD, 0.6), mul(UP, 0.8))));
   const N_PALM = nf(madd(madd(madd(LAP, UP, 0.1), FWD, 0.12), LEFT, -0.06), norm(add(mul(LEFT, -0.6), mul(FWD, 0.5))), norm(add(mul(FWD, 0.45), UP)));
-  const lerpNF = (a, b, u) => { const L = towards(a.L, b.L, clamp(u)), N = ortho(towards(a.N, b.N, clamp(u)), L); return { O: lerp3(a.O, b.O, u), L, S: norm(cross(N, L)), N }; };
+  const lerpNF = (a, b, u) => { const q = slerp(m2q(a.L, a.S, a.N), m2q(b.L, b.S, b.N), clamp(u)), [L, S, N] = q2cols(q); return { O: lerp3(a.O, b.O, u), L, S, N }; };
   function notesAt(t, w) {
     // in the wallet until two fingers draw them out; laid on his right knee; picked up and counted; squared; weighed; back in
     if (t < K.draw) return { where: 'wallet', up: 0.03 + 0.035 * (1 - ease(K.open - 0.3, K.open + 0.2, t)) + 0.012 * win(t, K.riffle, K.riffle + 0.2, K.riffle + 0.9, K.riffle + 1.1) };
@@ -245,7 +265,7 @@
     if (t < K.draw + 0.95) {
       const u1 = ease(K.draw, K.draw + 0.38, t), u2 = ease(K.draw + 0.35, K.draw + 0.95, t);
       const outW = { ...inW, O: madd(inW.O, inW.S, 0.075 * u1) };
-      const f = lerpNF(outW, N_RKNEE, u2); return { where: 'free', f: { ...f, O: madd(f.O, UP, 0.05 * Math.sin(PI * u2)) }, bend: 0.5 * Math.sin(PI * u1) + 0.25 * Math.sin(PI * u2) };
+      const f = lerpNF(outW, N_RKNEE, u2); return { where: 'free', f: { ...f, O: madd(f.O, UP, 0.05 * Math.sin(PI * u2)) }, bend: 0.5 * Math.sin(PI * u1) + 0.25 * Math.sin(PI * u2), zb: 0.012 * (1 - ease(K.draw + 0.2, K.draw + 0.34, t)), fold: (PI - w.open) * (1 - u1) };
     }
     if (t < K.pickup) return { where: 'free', f: N_RKNEE, drape: 1 };
     if (t < K.weigh - 0.4) {                             // the count, in his right hand
@@ -264,24 +284,34 @@
     }
     if (t < K.slide + 0.55) {                            // slid back into the wallet
       const u = ease(K.slide, K.slide + 0.55, t), tgt = { ...inW, O: madd(inW.O, inW.S, 0.06 * (1 - u)) };
-      return { where: 'free', f: lerpNF(N_PALM, tgt, u), bend: 0.2 * Math.sin(PI * u) };
+      return { where: 'free', f: lerpNF(N_PALM, tgt, u), bend: 0.2 * Math.sin(PI * u), zb: 0.012 * ease(K.slide + 0.3, K.slide + 0.45, t), fold: (PI - w.open) * u };
     }
     return { where: 'wallet', up: 0.03 };
   }
   // the count: which note is under his thumb, and how far each has gone (a fan that he squares as he goes)
-  const NN = PR.NOTES.length, FLICK = 0.5;
+  const NN = PR.NOTES.length, FLICK = 0.5, GATHER = 0.45, CYCLE = NN * FLICK + GATHER, FAN = 0.026;
+  // which pass, how far into it, and whether it's flicking or gathering (the count stops on "half did", the pile is squared after)
+  function countPhase(t) {
+    const tc = clamp(Math.min(t, K.stop) - K.count0, 0, 1e9), p = Math.floor(tc / CYCLE), tau = tc - p * CYCLE;
+    const stopped = t >= K.stop, gather = stopped ? ease(K.square, K.square + 0.35, t) : tau > NN * FLICK ? mj((tau - NN * FLICK) / GATHER) : 0;
+    const c = Math.min(NN, Math.floor(Math.min(tau, NN * FLICK) / FLICK)), ph = tau < NN * FLICK ? (tau - c * FLICK) / FLICK : 1;
+    return { p, c, ph, gather, stopped };
+  }
   function countState(t) {
-    const per = []; const c0 = K.count0, c1 = K.stop;
-    for (let i = 0; i < NN; i++) per.push({});
-    if (t < c0 || t > K.square + 1.3) return per;
-    const tc = Math.min(t, c1) - c0, n = Math.floor(tc / FLICK), cyc = Math.floor(n / NN), k = n % NN, ph = (tc - n * FLICK) / FLICK;
+    const per = []; for (let i = 0; i < NN; i++) per.push({});
+    if (t < K.count0 || t > K.square + 1.3) return per;
+    const { p, c, ph, gather, stopped } = countPhase(t);
     for (let i = 0; i < NN; i++) {
-      const j = NN - 1 - i;                               // from the top note down
-      const done = j < k ? 1 : j === k ? (t < c1 ? clamp(ph * 1.4) : 1) : 0;
-      per[i] = { dx: 0.009 * j * mj(done) * (1 - (t > c1 ? ease(K.square, K.square + 0.3, t) : 0)), lift: j === k && t < c1 ? Math.sin(PI * clamp(ph * 1.25)) : 0, e: 1, curl: 0.5 };
+      const r = p % 2 ? NN - 1 - i : i, m = NN - 1 - r;   // its place in the stack this pass (0 the bottom) and its turn to be counted (0 first)
+      const fl = m === c && !stopped ? clamp(ph * 1.35) : m < c ? 1 : 0;   // how far it has gone over
+      const e = mj(fl), nzA = r * NT, nzB = (NN + m) * NT, back = gather;
+      per[i] = { rank: lerp(r, NN + m, e) * (1 - back) + (NN - 1 - r) * back,
+        nz: lerp(lerp(nzA, nzB, e), m * NT + NT * 0.5, back * e),
+        dx: lerp(FAN * e + 0.0025 * m * e, 0, back), lift: m === c && !stopped && fl < 1 ? Math.sin(PI * fl) : 0, e: 1, curl: 0.55, zb: m === c && fl > 0 && fl < 1 ? -0.003 : 0 };
     }
     return per;
   }
+  const NT = PR.NT;
 
   // ------------------------------------------------------------------ the token's path (brass, on the bench by his glass; into your wallet)
   const TOK_BENCH = [0.70, ST.BENCH.y + 0.002, 0.08];
@@ -290,7 +320,9 @@
     const slotTop = PR.leafFrame(w, 'front'), h = PR.WH / 2;
     const slot = madd(madd(madd(slotTop.o, slotTop.b, PR.WW * 0.66), w.A, h * 0.28 + 0.03), slotTop.n, 0.006);
     if (t < K.tok1 + 0.2) { const u = ease(K.tok0 + 0.35, K.tok1 + 0.2, t); const p = lerp3(madd(TOK_BENCH, UP, 0.012), slot, u); return { where: 'hand', O: madd(p, UP, 0.08 * Math.sin(PI * u)), n: towards(UP, slotTop.n, u) }; }
-    return { where: 'wallet', k: ease(K.tok1 + 0.2, K.tok2, t) - 0.55 * ease(K.openW, K.openW + 0.4, t) - 0.7 * ease(K.token - 0.2, K.token + 0.25, t) };
+    const k = ease(K.tok1 + 0.2, K.tok2, t) - 0.55 * ease(K.openW, K.openW + 0.4, t) - 0.7 * ease(K.token - 0.2, K.token + 0.25, t);
+    const O = madd(madd(madd(slotTop.o, slotTop.b, PR.WW * 0.66), w.A, h * 0.28 + 0.03 * (1 - k)), slotTop.n, 0.0011 + 0.004 * (1 - k));
+    return { where: 'wallet', k, O, n: slotTop.n };
   }
 
   // ------------------------------------------------------------------ the glass's path (his chai)
@@ -306,7 +338,7 @@
     if (t >= K.lean) [p] = leg(G_BENCH, madd(G_THIGH, FWD, 0.05), K.lean, 0.6);
     const S2 = K.E_n16 + 0.05;                          // a sip between his lines
     if (t >= S2 && t < S2 + 1.5) { const up = ease(S2, S2 + 0.45, t) * (1 - ease(S2 + 0.95, S2 + 1.45, t)); p = lerp3(madd(G_THIGH, FWD, 0.05), lips, up); ax = towards(UP, norm(add(mul(FWD, -0.6), UP)), ease(S2 + 0.35, S2 + 0.55, t) * (1 - ease(S2 + 0.85, S2 + 1.05, t))); }
-    if (t >= K.back) { const [q, u] = leg(madd(G_THIGH, FWD, 0.05), lips, K.back, 0.6); p = q; ax = towards(UP, norm(add(mul(FWD, -0.6), UP)), ease(K.back + 0.45, K.back + 0.75, t)); }
+    if (t >= K.back) { const [q, u] = leg(madd(G_THIGH, FWD, 0.05), lips, K.back, 0.75); p = madd(q, UP, 0.006 * Math.sin(TAU * 0.7 * (t - K.back))); ax = towards(UP, norm(add(mul(FWD, -0.6), UP)), ease(K.back + 0.55, K.back + 1.4, t)); }
     return { p, ax };
   }
 
@@ -386,8 +418,10 @@
       [K.open - 0.5, 0.3, (t, c) => gripEdge(c.w, ease(K.open - 0.05, K.open + 0.12, t) * (1 - ease(K.open + 0.25, K.open + 0.6, t)))],
       [K.riffle, 0.3, (t, c) => { const g = gripNotesTop(notesInWallet(c.w, 0.03), 0.2); const s = clamp((t - K.riffle - 0.2) / 0.8); return { ...g, W: madd(g.W, c.w.B, 0.07 * (s - 0.5)) }; }],
       [K.handoff + 0.25, 0.45, () => restKnee(KNEE_R, -1)],
+      [K.handoff + 0.85, 0.45, (t, c) => { const g = gripNotesTop(notesInWallet(c.w, 0.03), 0.25); return { ...g, W: madd(g.W, c.w.B, 0.02 * Math.sin(TAU * 0.8 * (t - K.handoff))) }; }],
+      [K.handoff + 1.75, 0.45, () => restKnee(KNEE_R, -1)],
       [K.draw - 0.3, 0.3, (t, c) => gripNotesTop(notesInWallet(c.w, 0.03), 1)],
-      [K.draw, 0.05, (t, c) => (c.n.f ? gripNotesTop(c.n.f, 1) : gripNotesTop(notesInWallet(c.w, 0.03), 1))],
+      [K.draw, 0.22, (t, c) => (c.n.f ? gripNotesTop(c.n.f, 1) : gripNotesTop(notesInWallet(c.w, 0.03), 1))],
       [K.draw + 0.95, 0.35, () => ({ ...restKnee(madd(KNEE_R, FWD, 0.02), -1), pose: 'hover' })],
       [K.pickup - 0.3, 0.3, (t, c) => gripTray(c.n.f || N_RKNEE, 0)],
       [K.count0, 0.1, (t, c) => gripTray(c.n.f, countThumb(t))],
@@ -404,7 +438,7 @@
       [K.reach - 0.3, 0.35, (t, c) => gripTop(c.w, 0.9)],
       [K.reach + 0.2, 0.1, (t, c) => gripTop(c.w, 1)],
       [K.reach + 0.45, 0.4, (t, c) => gripOffer(c.w, 0)],
-      [K.letGo - 0.05, 0.22, (t, c) => { const g = gripOffer(c.w, 1); return { ...g, W: madd(g.W, toYouH, -0.04 * ease(K.letGo, K.letGo + 0.3, t)) }; }],
+      [K.letGo - 0.05, 0.22, (t) => { const g = gripOffer(walletAt(K.letGo - 0.06), 1); return { ...g, W: madd(madd(g.W, toYouH, -0.05 * ease(K.letGo, K.letGo + 0.3, t)), UP, -0.02 * ease(K.letGo, K.letGo + 0.3, t)) }; }],
       [K.letGo + 0.45, 0.55, () => restKnee(KNEE_R, -1)],
       [K.lean + 0.2, 0.6, () => ({ W: madd(madd(madd(w3(J0.pel), FWD, -0.12), LEFT, -0.2), UP, 0.0), u: norm(add(mul(FWD, -0.2), mul(UP, -1))), n: norm(add(mul(FWD, -1), mul(LEFT, -0.3))), pose: 'flat', pole: [-0.6, -0.4, -0.8] })],
       [K.brim - 0.45, 0.4, (t, c) => gripBrim(c.J), 'g'],
@@ -428,7 +462,7 @@
     ];
   }
   // the thumb's flick on each note
-  function countThumb(t) { if (t < K.count0 || t > K.stop) return 0; const ph = ((t - K.count0) % FLICK) / FLICK; return Math.sin(PI * clamp(ph * 1.3)) ** 2; }
+  function countThumb(t) { if (t < K.count0 || t > K.stop) return 0; const { ph, gather } = countPhase(t); return Math.sin(PI * clamp(ph * 1.35)) ** 2 * (1 - gather); }
   // where a hand is: each move starts from where the hand really is when it begins, and eases there along an arc
   function handAt(moves, t, ctxAt, side) {
     let i = -1; for (let j = 0; j < moves.length; j++) if (t >= moves[j][0]) i = j;
@@ -459,14 +493,16 @@
       [K.yours, 0.45, (t, c) => gripYours(c.w, camAt(t), 0)],
       [K.take - 0.1, 0.14, (t, c) => gripYours(c.w, camAt(t), 1)],
       [K.down + 0.05, 0.5, (t, c) => yourGrip(c.w, 'front', 1)],
-      [K.up + 0.15, 0.55, (t) => yourHome(t, 1)],
+      [K.token - 0.3, 0.3, (t, c) => { const g = yourGrip(c.w, 'front', 1), L = PR.leafFrame(c.w, 'front'); return { ...g, W: madd(madd(g.W, c.w.A, 0.03 * ease(K.token - 0.2, K.token + 0.25, t)), L.b, -0.03) }; }],
+      [K.up + 0.6, 0.45, (t) => yourHome(t, 1)],
     ];
   }
   function yourLeftMoves() {
     return [
       [-1, 0.2, (t) => yourHome(t, -1)],
       [K.down - 0.05, 0.5, (t, c) => yourGrip(c.w, 'back', -1)],
-      [K.up + 0.1, 0.55, (t) => yourHome(t, -1)],
+      [K.L_n19 - 0.15, 0.2, (t, c) => { const g = yourGrip(c.w, 'back', -1); return { ...g, W: madd(g.W, c.w.A, 0.012 * Math.abs(Math.sin(TAU * 2.2 * (t - K.L_n19 + 0.15))) * (1 - ease(K.E_n19, K.E_n19 + 0.2, t))) }; }],
+      [K.up + 0.6, 0.45, (t) => yourHome(t, -1)],
     ];
   }
   const RMOVES = rightMoves(), LMOVES = leftMoves(), YRMOVES = yourRightMoves(), YLMOVES = yourLeftMoves();
@@ -478,9 +514,9 @@
     // leaning back at the end
     const lean = k1(t, [[0, 0.40], [K.close + 0.2, 0.42], [K.lift + 0.6, 0.30], [K.open, 0.24], [K.handoff, 0.2], [K.scales, 0.18], [K.pickup + 0.4, 0.24], [K.stop, 0.22],
       [K.square + 0.8, 0.14], [K.turnK, 0.08], [K.rack2 + 0.5, 0.06], [K.slide, 0.18], [K.slap + 0.3, 0.12], [K.pocket, 0.08], [K.sip, 0.04], [K.lookUp, 0.02],
-      [K.reach, 0.06], [K.holdOut, 0.14], [K.letGo + 0.4, 0.03], [K.lean + 0.7, -0.14], [K.brim, -0.12], [K.end, -0.13]]) + lf.lean;
+      [K.reach, 0.06], [K.holdOut, 0.14], [K.letGo + 0.4, 0.03], [K.lean + 0.8, -0.24], [K.L_n18, -0.22], [K.brim, -0.16], [K.end, -0.17]]) + lf.lean;
     const twist = k1(t, [[0, 0.34], [K.close + 0.2, 0.36], [K.lift + 0.7, 0.12], [K.open, 0.05], [K.handoff, 0.0], [K.turnK - 0.2, 0.0], [K.turnK + 0.35, -0.16], [K.rack2, -0.16],
-      [K.rack2 + 0.5, 0.0], [K.lookL - 0.1, 0.0], [K.lookL + 0.2, -0.12], [K.lookR - 0.1, -0.12], [K.lookR + 0.2, 0.12], [K.pocket - 0.2, 0.1], [K.pocket + 0.3, 0.0], [K.end, 0.0]]) + lf.twist;
+      [K.rack2 + 0.5, 0.0], [K.lookL - 0.15, 0.0], [K.lookL + 0.2, -0.26], [K.lookL + 0.4, -0.26], [K.lookR + 0.15, 0.22], [K.pocket - 0.2, 0.12], [K.pocket + 0.3, 0.0], [K.end, 0.0]]) + lf.twist;
     const shrug = 0.03 * win(t, K.smile, K.smile + 0.3, K.smile + 0.6, K.smile + 1.0) + 0.045 * win(t, K.L_n18 - 0.05, K.L_n18 + 0.2, K.L_n18 + 0.45, K.L_n18 + 0.8) + lf.shrug;
     return { ...SEAT, lean, twist, shrug, headTilt: lf.headTilt, lf };
   }
@@ -500,7 +536,7 @@
     ks.push([K.turnK - 0.05, ...N_PALM.O]); ks.push([K.turnK + 0.35, ...kettle]); ks.push([K.rack2, ...kettle]);
     ks.push([K.rack2 + 0.4, ...you]); ks.push([K.smile + 0.6, ...you]);
     ks.push([K.slide - 0.2, ...mid]); ks.push([K.slap + 0.1, ...mid]);
-    ks.push([K.lookL, ...stall]); ks.push([K.lookL + 0.6, ...stall]); ks.push([K.lookR, ...cyc]); ks.push([K.lookR + 0.55, ...cyc]);
+    ks.push([K.lookL - 0.05, ...stall]); ks.push([K.lookL + 0.4, ...stall]); ks.push([K.lookR + 0.12, ...cyc]); ks.push([K.lookR + 0.6, ...cyc]);
     ks.push([K.pocket, ...madd(POCK.O, UP, 0.05)]); ks.push([K.pat2 + 0.2, ...madd(POCK.O, UP, 0.05)]);
     ks.push([K.sip + 0.4, ...madd(HEADP, FWD, 0.6)]);
     ks.push([K.lookUp - 0.2, ...madd(HEADP, FWD, 0.6)]); ks.push([K.lookUp + 0.2, ...you]);
@@ -509,14 +545,16 @@
     return ks;
   }
   function headLook(t, J, bodyP) {
-    const ks = gazeAt(t);
-    const [yaw, pitch] = sprung(t, (tt) => { const q = key(tt, ks); return aimAt(q, J, bodyP.twist); });
+    const ks = gazeAt(t).map((k) => [k[0], ...aimAt([k[1], k[2], k[3]], J, bodyP.twist)]);
+    const [yaw, pitch] = sprung(t, (tt) => key(tt, ks));
+    const { ph, gather } = countPhase(t), counting = t > K.count0 && t < K.stop ? 1 - gather : 0;   // a small nod with each note he counts
+    const cnt = 0.035 * Math.sin(PI * clamp(ph * 1.35)) * counting;
     const nod = 0.16 * Math.sin(PI * clamp((t - word('work') + 0.05) / 0.45)) * (t > word('work') - 0.05 && t < word('work') + 0.4 ? 1 : 0);
-    return [yaw + bodyP.lf.headYaw, pitch + bodyP.lf.headPitch + nod];
+    return [yaw + bodyP.lf.headYaw, pitch + bodyP.lf.headPitch + nod + cnt];
   }
   function aimAt(Q, J, tw = 0) {
     const Hd = w3(J.head), dx = Q[0] - Hd[0], dz = Q[2] - Hd[2], dy = Q[1] - Hd[1];
-    return [clamp(wrap(Math.atan2(dx, dz) - H0 - tw), -1.4, 1.4), clamp(-Math.atan2(dy, Math.hypot(dx, dz)) * 0.85, -0.6, 0.75)];
+    return [clamp(wrap(Math.atan2(dx, dz) - H0 - tw), -1.2, 1.15), clamp(-Math.atan2(dy, Math.hypot(dx, dz)) * 0.85, -0.6, 0.75)];
   }
   function faceAt(t) {
     // his acting, beat by beat (nobody speaks: his lips never move as if talking, so Meta's Hindi dub stays possible)
@@ -626,21 +664,24 @@
       const gm = Lc('mid'); gm.save(); ST.pavement(gm, cam); ST.stall(gm, cam, t, { behind: (g2) => chaiwala(g2, cam, t), kettleView: (kg, kw, kh) => reflectHim(kg, kw, kh, t, Jf, faceAt(t)) }); gm.restore();
       // ---- him on the bench
       const gf = Lc('fig'); gf.save(); ST.bench(gf, cam);
-      const F = R.figure(gf, cam, { S: STY, look: LOOK.thief }, t, { tr: TR, pose, noHands: true, near: true, face: faceAt(t) });
+      const sag = ease(K.pocket + 0.1, K.pocket + 0.4, t) * (1 - ease(K.reach + 0.2, K.reach + 0.45, t));   // the cloth sags with the wallet's weight
+      const F = R.figure(gf, cam, { S: STY, look: LOOK.thief }, t, { tr: TR, pose, noHands: true, near: true, face: faceAt(t), onTorso: (g2, F2, lt2) => drawPocket(g2, cam, F2, lt2, sag) });
       gf.restore();
       // ---- the near things: the props and the hands, sorted far to near
       const gn = Lc('near'); gn.save();
       const prims = [];
       const inW = nt.where === 'wallet';
-      prims.push(...PR.wallet(cam, w, lt, { notes: inW ? countlessNotes() : null, notesUp: inW ? nt.up : 0.03, token: tk.where === 'wallet' ? tk.k : null }));
-      if (!inW && nt.f) prims.push(...PR.notes(cam, nt.f, nt.count ? countState(t) : bendNotes(nt.bend || 0)));
+      prims.push(...PR.wallet(cam, w, lt, { notes: inW ? countlessNotes(t) : null, notesUp: inW ? nt.up : 0.03, token: tk.where === 'wallet' ? tk.k : null }));
+      if (!inW && nt.f) prims.push(...PR.notes(cam, nt.f, nt.count ? countState(t) : bendNotes(nt.bend || 0), { zBias: nt.zb || 0, fold: nt.fold || 0 }));
       if (tk.where !== 'wallet') prims.push(...PR.token(cam, tk.O, tk.n, FWD, lt, { r: 0.0135 }));
-      prims.push(...PR.glass(cam, gl.p, gl.ax, lt));
-      prims.push(...PR.steam(cam, madd(gl.p, gl.ax, 0.08), t, 1 - 0.8 * win(t, K.sip, K.sip + 0.4, K.sip + 1.4, K.sip + 1.8), { h: 0.09, seed: 1 }));
+      if (F && walletInPocket(t)) { const pq = pocketQuad(F, sag), z = cam.toCam(...pq.mid)[2] - 0.006; prims.push({ z, draw: (g2) => drawPocket(g2, cam, F, lt, sag, true) }); }   // the pocket's front over the wallet in it
+      const his = t > K.letGo + 0.45 ? [] : prims;          // after the hand-back his things (his hands, his glass) are drawn with him
+      his.push(...PR.glass(cam, gl.p, gl.ax, lt));
+      his.push(...PR.steam(cam, madd(gl.p, gl.ax, 0.08), t, 1 - 0.8 * win(t, K.sip, K.sip + 0.4, K.sip + 1.4, K.sip + 1.8), { h: 0.09, seed: 1 }));
       if (F) {
         const WR = F.w3(F.J.wrR), WL = F.w3(F.J.wrL);
-        prims.push(...H3.prims(cam, H3.bones(WR, hr.u, hr.n, 1, hr.pose, 1.0), HANDLOOK.thief, lt));
-        prims.push(...H3.prims(cam, H3.bones(WL, hl.u, hl.n, -1, hl.pose, 1.0), HANDLOOK.thief, lt));
+        his.push(...H3.prims(cam, H3.bones(WR, hr.u, hr.n, 1, hr.pose, 1.0), HANDLOOK.thief, lt));
+        his.push(...H3.prims(cam, H3.bones(WL, hl.u, hl.n, -1, hl.pose, 1.0), HANDLOOK.thief, lt));
       }
       if (t > K.arc1 - 0.3) {
         for (const [mv, side] of [[YRMOVES, 1], [YLMOVES, -1]]) {
@@ -651,6 +692,7 @@
         }
       }
       prims.sort((a, b) => b.z - a.z); for (const p of prims) p.draw(gn);
+      if (his !== prims && his.length) { gf.save(); his.sort((a, b) => b.z - a.z); for (const p of his) p.draw(gf); gf.restore(); }
       gn.restore();
       // ---- compose: each layer blurred by how far it is from what's in focus
       const head = F ? F.w3(F.J.head) : HEADP, handsC = lerp3(hr.W, hl.W, 0.5);
@@ -762,9 +804,28 @@
     kg.restore();
     kg.fillStyle = 'rgba(255,250,235,0.85)'; kg.beginPath(); kg.ellipse(w * 0.2, h * 0.16, w * 0.05, h * 0.09, -0.2, 0, TAU); kg.fill();   // the bulb, caught in the steel
   }
+  // his shirt's left breast pocket, from his chest as it is now: [the four corners (top left, top right, bottom right, bottom left), its middle]
+  function pocketQuad(F, sag = 0) {
+    const J = F.J, lat = norm(sub(J.shL, J.shR)), up = norm(sub(J.chest, J.pel)), fw = norm(cross(up, lat));
+    const c = add(J.chest, mul(fw, 0.112), mul(lat, 0.084), mul(up, -0.07)), w = 0.058, top = 0.05, bot = -0.085 - 0.012 * sag;
+    const at = (a, b, d = 0) => F.w3(add(c, mul(lat, a), mul(up, b), mul(fw, d)));
+    return { pts: [at(-w, top), at(w, top), at(w * (1 + 0.1 * sag), bot, 0.01 * sag), at(-w * (1 + 0.1 * sag), bot, 0.01 * sag)], mid: at(0, -0.02) };
+  }
+  function drawPocket(g, cam, F, lt, sag, front = false) {
+    const { pts } = pocketQuad(F, sag), q = pts.map((p) => cam.P(p[0], p[1], p[2])); if (q.some((x) => !x)) return;
+    const [c0, c1] = R.tone(mix(LOOK.thief.shirt, '#1c3a34', 0.12), lt), sc = q[0][2];
+    g.save(); g.beginPath(); q.forEach((p, i) => (i ? g.lineTo(p[0], p[1]) : g.moveTo(p[0], p[1]))); g.closePath();
+    const gr = g.createLinearGradient(q[0][0], q[0][1], q[2][0], q[2][1]); gr.addColorStop(0, c0); gr.addColorStop(1, mix(c0, c1, 0.6 + 0.3 * sag));
+    g.fillStyle = gr; g.fill(); g.strokeStyle = 'rgba(10,40,34,0.45)'; g.lineWidth = Math.max(1, 0.0016 * sc); g.stroke();
+    g.setLineDash([Math.max(2, 0.004 * sc), Math.max(1.5, 0.003 * sc)]); g.strokeStyle = 'rgba(230,255,245,0.35)'; g.lineWidth = Math.max(0.8, 0.0012 * sc);
+    g.beginPath(); g.moveTo(lerp(q[0][0], q[1][0], 0.06), lerp(q[0][1], q[1][1], 0.06) + 0.006 * sc); g.lineTo(lerp(q[0][0], q[1][0], 0.94), lerp(q[0][1], q[1][1], 0.94) + 0.006 * sc); g.stroke(); g.setLineDash([]);
+    if (front) { g.strokeStyle = 'rgba(10,40,34,0.6)'; g.lineWidth = Math.max(1.2, 0.003 * sc); g.beginPath(); g.moveTo(q[0][0], q[0][1]); g.lineTo(q[1][0], q[1][1]); g.stroke(); }   // the pocket's lip, over the wallet
+    g.restore();
+  }
+  const walletInPocket = (t) => t > K.pocket + 0.1 && t < K.reach + 0.45;
   // everything the hands may hold, at any moment (the hands' moves ask for it at the times their moves began)
   function ctxAt(tt) { const bp = bodyAt(tt), J = R.skel(STY, 0, bp), w = walletAt(tt); return { w, n: notesAt(tt, w), tk: tokenAt(tt, w), g: glassAt(tt, J), J }; }
-  const countlessNotes = () => [0, 0.008, 0.003, 0.012, 0.005, 0.01, 0.002].map((dy) => ({ dy }));   // their tops not quite level, so their colours show
+  const countlessNotes = (t) => [0, 0.008, 0.003, 0.012, 0.005, 0.01, 0.002].map((dy) => ({ dy: dy * (t < K.draw ? 1 : 0) }));   // before he draws them, their tops not quite level, so their colours show
   const bendNotes = (b) => PR.NOTES.map((_, i) => ({ lift: b * (0.6 + 0.06 * i), e: 1, curl: 0.35 }));
   function focusAt(t, cam, head, wl) {
     const dist = (p) => Math.max(0.15, cam.toCam(p[0], p[1], p[2])[2]);
