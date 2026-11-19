@@ -96,7 +96,8 @@
     // the old fruit seller: white hair, a big white moustache, a faded blue shirt, a red-and-white gamchha on his shoulder; no glasses
     old: { headK: 0.155, handK: 0.058, skin: '#ab7650', skinD: '#83543a', skinH: '#c8946c', hair: '#e8e2d8', style: 'part', must: 0.17, brow: 0.095, browTilt: -0.05, shirt: '#5f86ad', leg: '#6e6152', shoe: '#5b3b24', sole: '#a08060', girth: 0.94 },
     // the traffic constable: khaki, a peaked cap (drawn over the head), heavy brows; reads his form and never looks up
-    cop: { headK: 0.155, handK: 0.058, skin: '#b07650', skinD: '#86553a', skinH: '#cc9670', hair: '#15110d', style: 'short', brow: 0.11, browTilt: 0.07, shirt: '#b9a271', leg: '#a38c5c', shoe: '#1a1410', sole: '#3a3028', girth: 1.14 },
+    cop: { headK: 0.155, handK: 0.058, skin: '#b07650', skinD: '#86553a', skinH: '#cc9670', hair: '#15110d', style: 'buzz', must: 0.13, brow: 0.1, browTilt: 0.06, shirt: '#c4a86f', leg: '#8e7a4e', shoe: '#121214', sole: '#2a2a2e', girth: 1.04,
+      police: { crown: '#b39d67', band: '#33271c' }, uniform: { belt: '#4a2e1a', buckle: '#c9a33a', cord: '#f2eee4' } },
     // the driver: young, curly hair, a grey shirt
     driver: { headK: 0.155, handK: 0.058, skin: '#b98258', skinD: '#8f5c3c', skinH: '#d3a07a', hair: '#1b130d', style: 'curly', brow: 0.08, shirt: '#8c96a3', leg: '#3e3a36', shoe: '#2a221c', sole: '#8a7a68', must: 0.05 },
     // the season's thief, as reel 42 draws him (its LOOK.thief), in the background once
@@ -104,7 +105,7 @@
   };
   const STY = {
     old: R.style({ stride: 0.9, cad: 0.95, arm: 0.3, lean: 0.07, slump: 0.6, headFwd: 0.03, stepH: 0.035 }),
-    cop: R.style({ stride: 1.15, cad: 0.92, arm: 0.12, chestYaw: 0.06, pelYaw: 0.08, lean: 0.03, headPitch: 0.55, headStab: 0.9, nod: 0.004 }),
+    cop: R.style({ stride: 1.12, cad: 0.94, arm: 0.1, chestYaw: 0.05, pelYaw: 0.07, pelRoll: 0.04, sway: 0.016, lean: -0.01, headPitch: 0, headStab: 0.92, nod: 0.004, slump: 0 }),   // upright, measured (the reading tilt is in each pose)
     still: R.style({ stride: 0.5, cad: 1 }),
   };
 
@@ -198,21 +199,21 @@
     const turn = ease(A('n05') - 0.1, A('n05') + 0.5, t), face = cam ? Math.atan2(cam.x - x, cam.z - COP.z) : -2.4;
     const tr = { x, z: COP.z, h: lerp(-PI / 2, face + 0.75, turn), tg: (COP.x0 - x) / STY.cop.stride * 2 };
     const wk = walkK(t, COPPATH), lf = life(3.1, t, 1 - wk);
-    const pose = { walk: Math.min(1, wk * 1.2), dyn: wk, lean: 0.03 + lf.lean + accLean(t, COPPATH) * 0.6, twist: lf.twist, shrug: lf.shrug, headPitch: 0.62 + lf.headPitch * 0.4, headYaw: 0.1 * lf.headYaw };
+    const pose = { walk: Math.min(1, wk * 1.2), dyn: wk, lean: -0.01 + lf.lean * 0.6 + accLean(t, COPPATH) * 0.6, twist: lf.twist * 0.5, shrug: lf.shrug, headPitch: 0.36 + lf.headPitch * 0.3, headYaw: 0.08 * lf.headYaw };
     const J0 = R.skel(STY.cop, tr.tg, pose);
-    const board = [0.3, -0.1, 0.03];
-    const pointAt = cam ? (() => { const d = [cam.x + 0.4 - x, 0, cam.z - COP.z], n = Math.hypot(d[0], d[2]); return [x + d[0] / n * 0.42 + 0.1, 1.33, COP.z + d[2] / n * 0.42]; })() : null;   // the pen held out at you, close to his chest
+    const board = BOARD;
+    const pointAt = cam ? (() => { const d = [cam.x + 0.4 - x, 0, cam.z - COP.z], n = Math.hypot(d[0], d[2]); return [x + d[0] / n * 0.5 + 0.08, 1.2, COP.z + d[2] / n * 0.5]; })() : null;   // the pen held out at you, in front of his chest
     const pt0 = A('n05') + 0.45, pt1 = B('n05') - 0.15, sc0 = B('n05') + 0.25;
     const r = armTrack(t, J0, [
-      [-99, () => body([board[0] - 0.02, board[1] - 0.02, -0.11], [0.2, -1, -0.8]), 0.3],
+      [-99, () => body([board[0] + 0.01, board[1] + 0.02, -0.05], [0.2, -1, -0.8]), 0.3],
       [pt0, (J, u) => (pointAt ? grab(J, tr, 'r', [pointAt[0], pointAt[1] + 0.035 * Math.sin((u - pt0) * 14) * win(u, pt0 + 0.3, pt0 + 0.45, pt1 - 0.6, pt1 - 0.3), pointAt[2]], [0.2, -1, -0.9], 1, 0.02) : null), 0.36, 'g'],     // the pen at you, wagging, eyes still on the form
-      [pt1, () => body([board[0] - 0.02, board[1] + 0.0, -0.06], [0.2, -1, -0.8]), 0.3],                // back to the form to write
-      [sc0, (J, u) => body([board[0] - 0.02 + 0.03 * Math.sin(u * 31), board[1] + 0.01 * Math.sin(u * 19), -0.05 + 0.04 * Math.sin(u * 23)], [0.2, -1, -0.8]), 0.12],
-      [sc0 + 0.75, () => body([board[0] - 0.02, board[1] - 0.02, -0.11], [0.2, -1, -0.8]), 0.25],
+      [pt1, () => body([board[0] + 0.01, board[1] + 0.03, -0.03], [0.2, -1, -0.8]), 0.3],                // back to the form to write
+      [sc0, (J, u) => body([board[0] + 0.01 + 0.02 * Math.sin(u * 31), board[1] + 0.03 + 0.008 * Math.sin(u * 19), -0.02 + 0.03 * Math.sin(u * 23)], [0.2, -1, -0.8]), 0.12],
+      [sc0 + 0.75, () => body([board[0] + 0.01, board[1] + 0.02, -0.05], [0.2, -1, -0.8]), 0.25],
     ], -1);
-    const l = { wrist: [board[0], board[1], board[2] + 0.1], pole: [0.2, -1, 0.8], w: 1 };
+    const l = { wrist: [BOARD[0] - 0.02, BOARD[1] - 0.1, BOARD[2] + 0.11], pole: [0.1, -1, 0.9], w: 1 };   // his left hand holds the board's lower edge
     pose.arms = { l, r };
-    return { tr, pose, face: { look: [0, -0.1], close: Math.max(0.35, blink(t, 2.1)), browY: -0.02 }, board };
+    return { tr, pose, face: { look: [0.0, -0.05], lid: 0.85, close: blink(t, 2.1) * 0.7, browY: -0.02 }, board };   // eyes lowered to his form
   }
   function copFigure(g, cam, t, items) {
     const st = copState(t, cam), W0 = { S: STY.cop, look: LOOK.cop };
@@ -221,42 +222,51 @@
       R.shadow(g, cam, W0, t, { tr: st.tr, pose: st.pose, a: 0.22, len: 1.4 });
       const F = R.figure(g, cam, W0, t, { tr: st.tr, pose: st.pose, face: st.face, handPose: { l: 'grip', r: 'grip' }, rim: 0.6, hold: { r: (g2, el, wr) => pen(g2, el, wr) } });
       if (!F) return;
-      clipboardBack(g, cam, st, F);
-      policeCap(g, F, st.pose.headPitch);
+      clipboardBack(g, cam, st, F, W0, t, () => R.figure(g, cam, W0, t, { tr: st.tr, pose: st.pose, face: st.face, handPose: { l: 'grip', r: 'grip' }, rim: 0.6, onlyArm: 1 }));
     } });
   }
-  function pen(g, el, wr) {                         // a ballpoint in his fingers, pointing on from his hand
-    const dx = wr[0] - el[0], dy = wr[1] - el[1], n = Math.hypot(dx, dy) || 1, u = wr[2], x = wr[0] + dx / n * 0.04 * u, y = wr[1] + dy / n * 0.04 * u;
-    g.save(); g.strokeStyle = '#1d2a4a'; g.lineCap = 'round'; g.lineWidth = Math.max(1.5, 0.012 * u);
-    g.beginPath(); g.moveTo(x - dx / n * 0.03 * u, y - dy / n * 0.03 * u); g.lineTo(x + dx / n * 0.11 * u, y + dy / n * 0.11 * u); g.stroke(); g.restore();
+  const BOARD = [0.27, -0.06, 0.04];                   // the board's middle, from his chest (forward, up, left)
+  function pen(g, el, wr) {                         // a ballpoint between his fingers: blue body, a steel clip, a white end
+    const dx = wr[0] - el[0], dy = wr[1] - el[1], n = Math.hypot(dx, dy) || 1, u = wr[2], ux = dx / n, uy = dy / n;
+    const a = Math.atan2(uy, ux) - 0.55, x = wr[0] + ux * 0.045 * u, y = wr[1] + uy * 0.045 * u;
+    g.save(); g.translate(x, y); g.rotate(a); g.lineCap = 'round';
+    g.strokeStyle = '#1f2f5c'; g.lineWidth = Math.max(1.6, 0.011 * u); g.beginPath(); g.moveTo(-0.05 * u, 0); g.lineTo(0.065 * u, 0); g.stroke();
+    g.strokeStyle = '#f1efe8'; g.beginPath(); g.moveTo(-0.068 * u, 0); g.lineTo(-0.05 * u, 0); g.stroke();
+    g.strokeStyle = '#b9bcc2'; g.lineWidth = Math.max(1, 0.004 * u); g.beginPath(); g.moveTo(-0.045 * u, -0.006 * u); g.lineTo(-0.01 * u, -0.006 * u); g.stroke();
+    g.fillStyle = '#1a1a1a'; g.beginPath(); g.moveTo(0.065 * u, -0.004 * u); g.lineTo(0.08 * u, 0); g.lineTo(0.065 * u, 0.004 * u); g.closePath(); g.fill();
+    g.restore();
   }
-  // the clipboard, held up to his face: we see its back (hardboard), or its paper if it turns to us
-  function clipboardBack(g, cam, st, F) {
+  // the clipboard, held up in front of him, tilted to his eyes: from the front the paper and the clip, from behind its hardboard
+  function clipboardBack(g, cam, st, F, W0, t, fig) {
     if (Math.cos(F.psi) < -0.15) return;                // seen from behind: it's in front of him, out of sight
-    const { tr } = st, sh = Math.sin(tr.h), ch = Math.cos(tr.h), J = F.J;
-    const w3 = (p) => [tr.x + sh * p[0] - ch * p[2], p[1], tr.z + ch * p[0] + sh * p[2]];
+    const { tr } = st, sh = Math.sin(tr.h), ch = Math.cos(tr.h), J = F.J, y0 = tr.y || 0;
+    const w3 = (p) => [tr.x + sh * p[0] - ch * p[2], p[1] + y0, tr.z + ch * p[0] + sh * p[2]];
     const c = [J.chest[0] + st.board[0], J.chest[1] + st.board[1], J.chest[2] + st.board[2]];
-    const tilt = 0.95, ax = [0, 0, 1], ay = [-Math.cos(tilt), Math.sin(tilt), 0];   // across his chest, and up the board towards his face
-    const P = (a, b) => { const p = [c[0] + ax[0] * a + ay[0] * b, c[1] + ax[1] * a + ay[1] * b, c[2] + ax[2] * a + ay[2] * b]; const w = w3(p); return cam.P(w[0], w[1], w[2]); };
-    const k = [P(-0.12, -0.16), P(0.12, -0.16), P(0.12, 0.16), P(-0.12, 0.16)]; if (k.some((q) => !q)) return;
-    g.save(); g.beginPath(); k.forEach((q, i) => (i ? g.lineTo(q[0], q[1]) : g.moveTo(q[0], q[1]))); g.closePath();
-    const n = [ax[1] * ay[2] - ax[2] * ay[1], ax[2] * ay[0] - ax[0] * ay[2], ax[0] * ay[1] - ax[1] * ay[0]], nw = [sh * n[0] - ch * n[2], n[1], ch * n[0] + sh * n[2]], cw = w3(c);
+    const al = 0.62, ax = [0, 0, 1], ay = [Math.sin(al), Math.cos(al), 0], nn = [-Math.cos(al), Math.sin(al), 0];   // across, up the board, and its face (towards his eyes)
+    const pt = (a, b, d = 0) => w3([c[0] + ax[0] * a + ay[0] * b + nn[0] * d, c[1] + ax[1] * a + ay[1] * b + nn[1] * d, c[2] + ax[2] * a + ay[2] * b + nn[2] * d]);
+    const P = (a, b, d = 0) => { const w = pt(a, b, d); return cam.P(w[0], w[1], w[2]); };
+    const nw = (() => { const a = pt(0, 0, 0), b = pt(0, 0, 1); return [b[0] - a[0], b[1] - a[1], b[2] - a[2]]; })(), cw = pt(0, 0, 0);
     const facing = (cam.x - cw[0]) * nw[0] + (cam.y - cw[1]) * nw[1] + (cam.z - cw[2]) * nw[2] > 0;
-    g.fillStyle = facing ? '#efe9dc' : '#8a5a33'; g.fill(); g.strokeStyle = '#5a3a1f'; g.lineWidth = 2; g.stroke();
+    const quad = (k, col, edge) => { if (k.some((q) => !q)) return; g.beginPath(); k.forEach((q, i) => (i ? g.lineTo(q[0], q[1]) : g.moveTo(q[0], q[1]))); g.closePath(); g.fillStyle = col; g.fill(); if (edge) { g.strokeStyle = edge; g.lineWidth = 1.5; g.stroke(); } };
+    const hw = 0.115, hh = 0.155, th = 0.007;
+    g.save(); g.lineJoin = 'round';
+    // its edge (thickness), then the face you can see
+    quad([P(-hw, -hh, -th), P(hw, -hh, -th), P(hw, -hh, th), P(-hw, -hh, th)], '#5e3c20');
+    quad([P(hw, -hh, -th), P(hw, hh, -th), P(hw, hh, th), P(hw, -hh, th)], '#6a4424');
+    if (!facing) quad([P(-hw, -hh, -th), P(hw, -hh, -th), P(hw, hh, -th), P(-hw, hh, -th)], '#8a5a33', '#5a3a1f');
+    else {
+      quad([P(-hw, -hh, th), P(hw, -hh, th), P(hw, hh, th), P(-hw, hh, th)], '#8a5a33', '#5a3a1f');
+      quad([P(-hw + 0.01, -hh + 0.012, th + 0.001), P(hw - 0.01, -hh + 0.012, th + 0.001), P(hw - 0.01, hh - 0.03, th + 0.001), P(-hw + 0.01, hh - 0.03, th + 0.001)], '#f1ede2');
+      g.strokeStyle = 'rgba(40,46,60,0.35)'; g.lineWidth = 1.2;
+      for (let i = 0; i < 7; i++) { const b = hh - 0.07 - i * 0.034, p0 = P(-hw + 0.025, b, th + 0.002), p1 = P(hw - 0.03 - 0.03 * (i % 3), b, th + 0.002); if (p0 && p1) { g.beginPath(); g.moveTo(p0[0], p0[1]); g.lineTo(p1[0], p1[1]); g.stroke(); } }
+    }
+    // the steel clip across the top, on whichever side faces you
+    const cd = facing ? th + 0.006 : -th - 0.006;
+    quad([P(-0.05, hh - 0.045, cd), P(0.05, hh - 0.045, cd), P(0.05, hh + 0.012, cd), P(-0.05, hh + 0.012, cd)], '#8c8f95', '#5d6066');
     g.restore();
+    if (fig) fig();                                     // his hand back over the board's edge
   }
-  // a traffic constable's peaked cap, drawn over the head: crown, band, badge, and the visor where his face points
-  function policeCap(g, F, pitch) {
-    const [hx, hy] = F.P.head, R0 = F.headR, ps = F.psiH, cs = Math.cos(ps), sn = Math.sin(ps), down = clamp(pitch / 0.7);
-    g.save(); g.translate(hx, hy); g.rotate(F.J.tiltH || 0);
-    const top = -0.62 * R0 + 0.12 * R0 * down;
-    g.fillStyle = '#a99260'; g.beginPath(); g.ellipse(0, top - 0.12 * R0, 1.18 * R0, (0.34 + 0.25 * down) * R0, 0, 0, TAU); g.fill();
-    g.fillStyle = '#8e7a4e'; g.beginPath(); g.ellipse(0, top - 0.12 * R0, 1.18 * R0, (0.34 + 0.25 * down) * R0, 0, 0, PI); g.fill();
-    g.fillStyle = '#3a2f22'; g.beginPath(); g.moveTo(-0.98 * R0, top); g.quadraticCurveTo(0, top + 0.28 * R0, 0.98 * R0, top); g.lineTo(0.98 * R0, top - 0.2 * R0); g.quadraticCurveTo(0, top + 0.06 * R0, -0.98 * R0, top - 0.2 * R0); g.closePath(); g.fill();
-    if (cs > -0.2) { g.globalAlpha = clamp((cs + 0.2) * 2); g.fillStyle = '#d8b44a'; g.beginPath(); g.arc(-sn * 0.7 * R0, top - 0.16 * R0, 0.16 * R0, 0, TAU); g.fill(); g.globalAlpha = 1; }
-    if (cs > -0.5) { g.fillStyle = '#16161a'; g.beginPath(); g.ellipse(-sn * 0.55 * R0, top + 0.14 * R0 + 0.12 * R0 * down, 0.82 * R0 * (0.55 + 0.45 * Math.abs(cs)), (0.22 + 0.18 * down) * R0, -sn * 0.3, 0, PI); g.fill(); }
-    g.restore();
-  }
+
 
   // ------------------------------------------------------------------ the driver, seated, carried by his rickshaw
   function driverFigure(g, cam, rk, t, o = {}) {
@@ -608,17 +618,24 @@
     g.strokeStyle = '#efe6d0'; g.lineWidth = 10; g.beginPath(); g.moveTo(140, 0); g.quadraticCurveTo(300, 600, 520, 820); g.stroke();   // the whistle's cord
     g.restore();
   }
-  function peekOver(g, x, y, s0, look = 0) {         // his cap and eyes, just over the board's top edge, looking down at it
+  function peekOver(g, x, y, s0, look = 0) {         // his cap and eyes, just over the board's top edge, reading it
     g.save(); g.translate(x, y); g.scale(s0, s0);
-    g.fillStyle = mix(SKIN, '#000000', 0.06); g.beginPath(); g.ellipse(0, 40, 170, 150, 0, PI, TAU); g.fill();
-    g.fillStyle = '#231510'; for (const k of [-1, 1]) { g.beginPath(); g.ellipse(k * 62 + look * 8, 10, 30, 10, 0, 0, PI); g.fill(); }   // eyelids lowered: reading
-    g.strokeStyle = '#15110d'; g.lineWidth = 14; g.lineCap = 'round'; for (const k of [-1, 1]) { g.beginPath(); g.moveTo(k * 30, -26); g.lineTo(k * 100, -18 - 10); g.stroke(); }
-    g.fillStyle = '#16161a'; g.beginPath(); g.ellipse(0, -48, 200, 34, 0, 0, PI); g.fill();      // the visor
-    g.fillStyle = '#3a2f22'; g.fillRect(-178, -96, 356, 50);                                      // the band
-    g.fillStyle = '#a99260'; g.beginPath(); g.ellipse(0, -110, 210, 66, 0, PI, TAU); g.fill(); g.fillRect(-210, -112, 420, 18);
-    g.fillStyle = '#d8b44a'; g.beginPath(); g.arc(0, -96, 20, 0, TAU); g.fill();
+    // his forehead and brows, the eyes lowered to the form
+    g.fillStyle = LOOK.cop.skin; g.beginPath(); g.ellipse(0, 70, 172, 150, 0, PI, TAU); g.fill();
+    g.fillStyle = mix(LOOK.cop.skin, '#000000', 0.1); g.beginPath(); g.ellipse(0, 70, 172, 40, 0, PI, TAU); g.fill();
+    g.strokeStyle = '#15110d'; g.lineWidth = 15; g.lineCap = 'round'; for (const k of [-1, 1]) { g.beginPath(); g.moveTo(k * 26, 6); g.quadraticCurveTo(k * 70, -6, k * 112, 4); g.stroke(); }
+    g.fillStyle = '#2a1a12'; for (const k of [-1, 1]) { g.beginPath(); g.ellipse(k * 68 + look * 8, 40, 32, 9, 0, 0, PI); g.fill(); }
+    // the cap: band, crown flaring to a flat top (higher in front), the badge, the black visor
+    g.fillStyle = '#33271c'; g.beginPath(); g.moveTo(-182, -6); g.quadraticCurveTo(0, 26, 182, -6); g.lineTo(184, -62); g.quadraticCurveTo(0, -34, -184, -62); g.closePath(); g.fill();
+    const cg = g.createLinearGradient(-230, -160, 230, -40); cg.addColorStop(0, '#c9b47e'); cg.addColorStop(0.55, '#b39d67'); cg.addColorStop(1, '#8a774a');
+    g.fillStyle = cg; g.beginPath(); g.moveTo(-184, -60); g.quadraticCurveTo(0, -30, 184, -60); g.lineTo(236, -150); g.quadraticCurveTo(0, -212, -236, -150); g.closePath(); g.fill();
+    g.strokeStyle = 'rgba(60,46,24,0.6)'; g.lineWidth = 4; g.stroke();
+    g.fillStyle = '#d6b04a'; g.beginPath(); g.ellipse(0, -96, 26, 30, 0, 0, TAU); g.fill(); g.fillStyle = '#8a6a1c'; g.beginPath(); g.ellipse(0, -96, 12, 14, 0, 0, TAU); g.fill();
+    g.fillStyle = '#121216'; g.beginPath(); g.moveTo(-170, 0); g.quadraticCurveTo(0, 30, 170, 0); g.quadraticCurveTo(150, 54, 0, 66); g.quadraticCurveTo(-150, 54, -170, 0); g.closePath(); g.fill();
+    g.strokeStyle = 'rgba(255,255,255,0.22)'; g.lineWidth = 5; g.beginPath(); g.moveTo(-150, 46); g.quadraticCurveTo(0, 72, 150, 46); g.stroke();
     g.restore();
   }
+
   // shot 4b: over his shoulder, the speed line; the pen waits on the blank, then he writes your answer
   function shotSpeed(g, t) {
     const t0 = SH.speed[0], t1 = SH.speed[1], u = t - t0;
@@ -982,9 +999,9 @@
   function camWalk(t) { const x = WALK2(t - A('n18'))[0]; return R.camera({ x: x - 0.9, y: 1.42, z: 2.65, yaw: 0.4, pitch: -0.06, f: 1500, cx: 540, cy: 960 }); }
   function walkFigure(g, cam, t, items) {
     const u = t - A('n18'), x = WALK2(u)[0], tr = { x, z: 5.4, h: PI / 2, tg: (x - 6) / STY.cop.stride * 2 }, lf = life(3.3, t, 0.3);
-    const pose = { walk: 1, lean: 0.04 + lf.lean, headPitch: 0.62, headYaw: 0.05 * lf.headYaw, arms: { l: { wrist: [0.3, -0.1, 0.13], pole: [0.2, -1, 0.8], w: 1 }, r: { wrist: [0.28, -0.12, -0.08], pole: [0.2, -1, -0.8], w: 1 } } };
+    const pose = { walk: 1, lean: -0.01 + lf.lean * 0.5, headPitch: 0.36, headYaw: 0.05 * lf.headYaw, arms: { l: { wrist: [BOARD[0] - 0.02, BOARD[1] - 0.1, BOARD[2] + 0.11], pole: [0.1, -1, 0.9], w: 1 }, r: { wrist: [BOARD[0] + 0.01, BOARD[1] + 0.02, -0.05], pole: [0.2, -1, -0.8], w: 1 } } };
     const W0 = { S: STY.cop, look: LOOK.cop }, q = cam.toCam(x, 1, 5.4);
-    items.push({ d: q[2], fn: () => { R.shadow(g, cam, W0, t, { tr, pose, a: 0.22, len: 1.4 }); const F = R.figure(g, cam, W0, t, { tr, pose, face: { look: [0, -0.1], close: 0.4 }, handPose: { l: 'grip', r: 'grip' }, rim: 0.6, hold: { r: (g2, el, wr) => pen(g2, el, wr) } }); if (F) { clipboardBack(g, cam, { tr, board: [0.3, -0.1, 0.03] }, F); policeCap(g, F, 0.62); } } });
+    items.push({ d: q[2], fn: () => { R.shadow(g, cam, W0, t, { tr, pose, a: 0.22, len: 1.4 }); const F = R.figure(g, cam, W0, t, { tr, pose, face: { look: [0, -0.05], lid: 0.85 }, handPose: { l: 'grip', r: 'grip' }, rim: 0.6, hold: { r: (g2, el, wr) => pen(g2, el, wr) } }); if (F) clipboardBack(g, cam, { tr, board: BOARD }, F, W0, t, () => R.figure(g, cam, W0, t, { tr, pose, face: {}, handPose: { l: 'grip', r: 'grip' }, rim: 0.6, onlyArm: 1 })); } });
   }
 
   // ------------------------------------------------------------------ the checkpoint (shots 10b, 11): they look for broken glass
@@ -992,7 +1009,8 @@
   // his: green and yellow, the lemon and chillies, its glass whole, a dried orange smear across it (no seeds, no shape). He
   // looks right at the glass, it isn't broken, and he waves it through. The driver smiles, sweating.
   const CK = { x: 24.5, lane: 3.55, stop: 22.6 };
-  const COP2 = { headK: 0.155, handK: 0.058, skin: '#a8714b', skinD: '#7f5134', skinH: '#c48e66', hair: '#1a1410', style: 'short', must: 0.14, brow: 0.11, browTilt: 0.04, shirt: '#b39c6a', leg: '#a08a5a', shoe: '#1a1410', sole: '#3a3028', girth: 1.24 };
+  const COP2 = { headK: 0.155, handK: 0.058, skin: '#a8714b', skinD: '#7f5134', skinH: '#c48e66', hair: '#1a1410', style: 'buzz', brow: 0.09, browTilt: 0.02, shirt: '#bfa36b', leg: '#8a764a', shoe: '#121214', sole: '#2a2a2e', girth: 1.2,
+    police: { crown: '#a99360', band: '#33271c' }, uniform: { belt: '#43291a', buckle: '#c9a33a', cord: '#f2eee4' } };
   // the queue: [arrives at the stop, waved on] for each rickshaw, in film seconds
   const Q = [{ arrive: SH.ck0 - 1.4, go: SH.ck0 + 0.4, look: 'black' }, { arrive: SH.ck0 + 0.5, go: WD('n19', 4), look: 'black' }, { arrive: WD('n19', 5), go: B('n20') + 0.3, look: 'ours' }, { arrive: B('n20') + 1.5, go: 999, look: 'black' }];
   function queueX(q, t) {                              // a rickshaw's front along the road: up to the stop, wait, then on
@@ -1038,13 +1056,13 @@
     const C = S.pose([CK.x - 0.9, 0, 2.35], 0); f.push(...S.tube(C, [0, 0, 0], [0, 0.5, 0], 0.11, '#e8622a', 8)); f.push(...S.box(C, 0, 0.02, 0, 0.18, 0.02, 0.18, '#2a2a2e'));
     return f;
   }
-  function officerAt(g, cam, t, items, who, x, z, bendT) {   // an officer at the checkpoint, bending to a windscreen when told
+  function officerAt(g, cam, t, items, who, x, z, bendT, hOver) {   // an officer at the checkpoint, bending to a windscreen when told
     const look = who === 'ours' ? LOOK.cop : COP2, bend = bendT, lf = life(who === 'ours' ? 3.1 : 6.2, t, 1);
-    const tr = { x, z, h: who === 'ours' ? -PI / 2 - 0.62 : -PI / 2 + 0.5, tg: 0 };
-    const pose = { walk: 0, lean: 0.03 + 0.5 * bend + lf.lean, sink: 0.05 * bend, headPitch: (who === 'ours' ? 0.18 : 0.1) - 0.32 * bend + lf.headPitch, headYaw: lf.headYaw, twist: lf.twist, shrug: lf.shrug,
-      arms: who === 'ours' ? { l: { wrist: [0.28, -0.1, 0.12], pole: [0.2, -1, 0.8], w: 1 }, r: { wrist: lerp3([0.06, -0.38, -0.16], [0.42, 0.18, -0.32], waveK(t)), pole: [0.2, -1, -0.8], w: 1 } } : { l: { wrist: [0.04, -0.4, 0.17], pole: [0.1, -1, 0.6], w: 1 }, r: { wrist: lerp3([0.04, -0.4, -0.17], [0.42, 0.2, -0.3], waveK2(t)), pole: [0.2, -1, -0.8], w: 1 } } };
+    const tr = { x, z, h: hOver ?? (who === 'ours' ? -PI / 2 - 0.62 : -PI / 2 + 0.5), tg: 0 };
+    const pose = { walk: 0, lean: -0.01 + 0.48 * bend + lf.lean * 0.5, sink: 0.05 * bend, headPitch: (who === 'ours' ? 0.12 : 0.05) - 0.3 * bend + lf.headPitch * 0.5, headYaw: lf.headYaw, twist: lf.twist * 0.5, shrug: lf.shrug,
+      arms: who === 'ours' ? { l: { wrist: [BOARD[0] - 0.02, BOARD[1] - 0.1, BOARD[2] + 0.11], pole: [0.1, -1, 0.9], w: 1 }, r: { wrist: lerp3([0.05, -0.36, -0.17], [0.4, 0.22, -0.3], waveK(t)), pole: [0.2, -1, -0.8], w: 1 } } : { l: { wrist: [-0.17, -0.33, 0.06], pole: [-0.4, -1, 0.5], w: 1 }, r: { wrist: lerp3([-0.17, -0.33, -0.06], [0.4, 0.22, -0.3], waveK2(t)), pole: [0.2, -1, -0.8], w: 1 } } };
     const W0 = { S: STY.cop, look }, q = cam.toCam(x, 1, z);
-    items.push({ d: q[2], fn: () => { R.shadow(g, cam, W0, t, { tr, pose, a: 0.22, len: 1.4 }); const F = R.figure(g, cam, W0, t, { tr, pose, face: { look: [0, 0.02], close: blink(t, who === 'ours' ? 2.1 : 5.5), browY: 0.03 * bend }, handPose: { l: 'grip', r: waveK(t) > 0.3 || waveK2(t) > 0.3 ? 'open' : 'relax' }, rim: 0.6 }); if (F) { if (who === 'ours') clipboardBack(g, cam, { tr, board: [0.28, -0.1, 0.03] }, F); policeCap(g, F, pose.headPitch); } } });
+    items.push({ d: q[2], fn: () => { R.shadow(g, cam, W0, t, { tr, pose, a: 0.22, len: 1.4 }); const hp = { l: who === 'ours' ? 'grip' : 'relax', r: (who === 'ours' ? waveK(t) : waveK2(t)) > 0.3 ? 'open' : 'relax' }; const F = R.figure(g, cam, W0, t, { tr, pose, face: { look: [0, 0.02], close: blink(t, who === 'ours' ? 2.1 : 5.5), browY: 0.03 * bend }, handPose: hp, rim: 0.6 }); if (F && who === 'ours') clipboardBack(g, cam, { tr, board: BOARD }, F, W0, t, () => R.figure(g, cam, W0, t, { tr, pose, face: {}, handPose: hp, rim: 0.6, onlyArm: 1 })); } });
   }
   const waveK = (t) => Q.reduce((m, q, i) => (i >= 1 && q.go < 998 ? Math.max(m, win(t, q.go - 0.35, q.go - 0.15, q.go + 0.35, q.go + 0.6)) : m), 0);
   const waveK2 = (t) => win(t, Q[0].go - 0.35, Q[0].go - 0.15, Q[0].go + 0.35, Q[0].go + 0.6);
@@ -1066,7 +1084,7 @@
 
   function camLast(t) {                                // the last picture: behind the officer bent to the next windscreen; his rickshaw going away up the road
     const u = ease(SH.last[0], SH.last[0] + 6, t);
-    return R.camera({ x: lerp(17.6, 17.85, u), y: 1.62, z: lerp(1.05, 1.1, u), yaw: PI / 2 - 0.12, pitch: -0.035, f: lerp(1500, 1560, u), cx: 540, cy: 960 });
+    return R.camera({ x: lerp(18.3, 18.55, u), y: 1.6, z: lerp(1.0, 1.05, u), yaw: PI / 2 - 0.27, pitch: -0.03, f: lerp(1450, 1500, u), cx: 540, cy: 960 });
   }
 
 
@@ -1076,8 +1094,9 @@
     const items = S.faceItems(cam, S.awnings(t));
     S.faceItems(cam, barricade(cam), items);
     Q.forEach((q, i) => { if (queueX(q, t) > -20 && queueX(q, t) < 80) ckRickshaw(g, cam, t, q, items, i); });
-    officerAt(g, cam, t, items, 'ours', CK.stop + 0.42, CK.lane + 0.78, bendFor(t, 'ours'));
-    officerAt(g, cam, t, items, 'two', CK.stop + 1.1, CK.lane - 1.55, bendFor(t, 'two'));
+    const last = t >= SH.last[0];
+    officerAt(g, cam, t, items, 'ours', last ? CK.stop + 0.5 : CK.stop + 0.42, last ? CK.lane - 1.0 : CK.lane + 0.78, bendFor(t, 'ours'), last ? -0.65 : null);
+    officerAt(g, cam, t, items, 'two', last ? CK.stop + 1.2 : CK.stop + 1.1, last ? CK.lane + 1.45 : CK.lane - 1.55, bendFor(t, 'two'), last ? -PI / 2 - 0.3 : null);
     S.drawItems(g, cam, items);
   }
 
