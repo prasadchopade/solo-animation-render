@@ -1,7 +1,8 @@
-// engine/riso46/lab.js: the Style Lab's canvas layer, brought into main for reel 46 Partner in Crime (23 Nov 2026).
-// Copied from branch claude/style-lab-31f05c, lab/engines/core/lab.js at 697c6b8. Two changes, both opt-in so the lab's
-// own calls behave as before: film() takes `to` (a mark or beat where the film stops, so the end card can follow) and
-// `start: false` (the reel calls UI.endcard() and C.start() itself). Nothing else differs from the lab's file.
+// engine/neon47/lab.js: the Style Lab's canvas layer, brought into main for reel 47 Close Your Eyes (23 Nov 2026).
+// Copied from branch claude/style-lab-31f05c, lab/engines/core/lab.js at 8cf5b67. The same two opt-in changes as
+// engine/riso46/lab.js, so the lab's own calls behave as before: film() takes `to` (a mark or beat where the film stops,
+// so the end card can follow) and `start: false` (the reel calls UI.endcard() and C.start() itself). Nothing else differs.
+// Its own copy, so reel 47 never depends on another reel's files.
 //
 // THE STYLE LAB's layer on our engine (core.js, copied unchanged from engine/core.js). Canvas films, each frame a pure
 // function of t, painted on one full-frame canvas and sealed in g.save()/g.restore().
