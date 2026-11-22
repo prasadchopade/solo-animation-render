@@ -77,7 +77,7 @@
 
   // ---- the folders at the end
   const FOLDER = { cx: 540, cy: 900, w: 640, h: 460, tabW: 230, tabH: 58, coverTop: 128, coverDrop: 90,
-    next: { dx: 18, dy: -16, rot: 3 * deg } };
+    next: { dx: 34, dy: -46, rot: 4 * deg } };      // 47 shows under 48: the file grows
   function shape(w = FOLDER.w, h = FOLDER.h, tabW = FOLDER.tabW, tabH = FOLDER.tabH) {
     const x0 = -w / 2, x1 = w / 2, y0 = -h / 2, y1 = h / 2;
     return [[x0, y1], [x0, y0 + 12], [x0 + 12, y0], [x0 + tabW, y0], [x0 + tabW + 30, y0 + tabH], [x1 - 12, y0 + tabH],
@@ -118,9 +118,9 @@
     const rise = r < 1 ? lerp(H - F.cy + F.h, 0, out(r)) - Math.sin(Math.PI * r) * 14 * r : 0;
     // b falls under gravity (ease-in), hits at land1, then one damped bounce
     const fall = seg(u, T.land0, T.land1), bounce = seg(u, T.land1, T.settle);
-    const bY = u < T.land1 ? lerp(-F.cy - F.h, 0, fall * fall) : -Math.sin(Math.PI * bounce) * 12 * (1 - bounce);
+    const bY = u < T.land1 ? lerp(-F.cy - F.h, 0, fall * fall) : -Math.sin(Math.PI * bounce) * 24 * (1 - bounce);
     const bRot = u < T.land1 ? lerp(-9 * deg, F.next.rot, out(fall)) : F.next.rot + Math.sin(Math.PI * bounce) * 1.2 * deg * (1 - bounce);
-    const jolt = u >= T.land1 && u < T.settle ? Math.sin(Math.PI * bounce) * 6 * (1 - bounce) : 0;
+    const jolt = u >= T.land1 && u < T.settle ? Math.sin(Math.PI * bounce) * 10 * (1 - bounce) : 0;
     // each folder's stamp lights once the folder has settled, so its words never cross a safe edge while it moves
     const a = { on: u >= T.a0, cx: F.cx, cy: F.cy + rise + jolt, rot: 0, open: 1 - inOut(seg(u, T.drop1, T.close1)),
       stamp: seg(u, T.a1, T.a1 + 0.15) };

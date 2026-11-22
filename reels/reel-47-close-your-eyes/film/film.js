@@ -5,11 +5,13 @@
 // sign's does.
 //
 // Shots: 1 the cash machine (POV: his whisper, your PIN, the cash, his gloved hand) · 2 the line-up behind frosted
-// glass · 3 the twist: his whisper glows and dies · 4 the two replays: SHTRAIGHT lights as it's said, the SH green ·
-// 5 the answer: four lit · 6 the why: five pitch lines and his flat whisper; the gaps where an S lives · 7 the two
-// endings · 8 the dare · 9 the case file's ending (engine/casefile.js) · the end card.
-// Motion test 2 (23 Nov), after the fresh review of motion test 1: a real turn at frame 0, life in every hold, the
-// answer before the why, the clue big enough to read, silhouettes instead of sign icons, text only with its words.
+// glass · 3 the twist: HIS VOICE glows and dies; one green mark survives · 4 the two replays, SHTRAIGHT lit as it's said,
+// the numbers waiting below; "four" lights the 4 · 5 four in the line-up · 6 the why: five pitch lines, his whisper flat;
+// each S in its gap, green only where it's SH · 7 the endings: four in a cell; then the man you picked in one, four
+// walking out · 8 the dare: a friend in silhouette, an earbud · 9 the case file (engine/casefile.js) · the end card.
+// Motion test 3 (23 Nov) answers the second fresh review: nothing names number four before "four"; the endings and the
+// friend drawn as the line-up's men, big, in real places; the WANTED poster gone (a framed portrait); three times the
+// line-up's life; green marks only where it's SH; the theft longer; frame 0's game line lit and bigger.
 (() => {
   const { W, H, rnd, rs, clamp, lerp, E, held, frameOf } = LAB;
   const NE = window.NEON, CF = window.CASEFILE;
@@ -27,20 +29,26 @@
   const T = {
     turn: word('W1', 1).t0,                    // "turn": the frame snaps back
     pin: P('W2').t0 + 0.5,                     // your PIN, as he tells you where to look
-    cash: P('W2').t1 + 0.12,                   // the notes come out
-    grab: P('W2').t1 + 0.42,                   // his hand
+    cash: P('W2').t1 + 0.15,                   // the notes come out
+    grab: P('W2').t1 + 0.55,                   // his hand
     lineup: P('N02').t0 - 0.10,                // cut on "Close your eyes"
-    charged: word('N03', 10).t0,               // "charged"
+    charged: wordOf('N03B', /charged/i).t0,    // "Whoever you pick is charged tonight."
     bar0: P('N09').t1 + 0.05, bar1: P('N09').t1 + 2.05,
     twist: P('N10').t0 - 0.2,                  // "I told you to remember his voice."
+    voiceW: wordOf('N10', /voice/i).t0,
     never: word('N11', 1).t0 - 0.05,           // "He never let you hear it."
-    replay: P('RW').t0 - 0.2,                  // the replays ("But one thing came through. Listen." is over the dimmed line-up)
-    answer: P('N15').t0 - 0.1,                 // "Number four."
+    came: wordOf('N13', /came/i).t0,           // "But one thing came through."
+    listen: P('N13B').t0,                      // "Listen."
+    replay: P('RW').t0 - 0.2,                  // the replays
+    hearS: wordOf('N14', /^S/).t0,             // "Hear the S?"
+    four: wordOf('N15', /four/i).t0,           // "It's number four."
+    answer: wordOf('N15', /four/i).t1 + 0.2,   // then four, lit, in the line-up
     why: P('N12').t0 - 0.15,                   // "He whispered, and a whisper has no pitch..."
     whispered: word('N12', 1).t0, nopitch: word('N12', 6).t0,
     s: word('N16', 1).t0,                      // "An S never uses your vocal cords..."
-    split: P('N17').t0 - 0.25, right: P('N18').t0 - 0.05,
-    dare: P('N19').t0 - 0.25, friend: wordOf('N19', /^friend/i).t0, sWord: word('N20', 4).t0,
+    end1: P('N17').t0 - 0.25, picked: wordOf('N17', /picked/i).t0, caught: wordOf('N17', /caught/i).t0,
+    end2: P('N18').t0 - 0.15, didnt: wordOf('N18', /didn/i).t0, walks: wordOf('N18', /walks/i).t0, jail: wordOf('N18', /jail/i).t0,
+    dare: P('N19').t0 - 0.25, friend: wordOf('N19', /^friend/i).t0, sWord: P('N20').w[P('N20').w.length - 1].t0,
   };
   const SPEAK = [1, 2, 3, 4, 5].map((k) => ({ k, n: P(`N0${k + 3}`), v: P(`L${k}`) }));   // "One." + his line, ...
 
@@ -56,6 +64,7 @@
   const lit = (t, t0) => (t < t0 ? 0 : NE.on(t, t0));                                // a tube catching at t0
   const outAt = (t, t1) => (t < t1 ? 1 : NE.off(t, t1));                             // a tube going out at t1
   const dark = 0.03;                                                                 // unlit glass, still visible
+  const MAROON = '#b4234a';                                                          // his cap, in a tube
   // neon lettering for words: no painted-out glass between the letters (it reads as stray lines at phone size)
   const tx = (Sg, str, cx, top, h, col, k, o = {}) => Sg.text(str, cx, top, h, col, k, { block: false, ...o });
   function camM(c) {
@@ -68,7 +77,7 @@
     for (let i = 0; i < W * H; i++) { const v = 200 + R() * 55; d[i * 4] = v; d[i * 4 + 1] = v + 6; d[i * 4 + 2] = v + 18; d[i * 4 + 3] = 18 + R() * 26; }
     g.putImageData(im, 0, 0);
   });
-  // the hooded head and shoulders (him: in the glass, and in the endings), as a path at scale s with its top at (cx, top)
+  // the hooded head and shoulders (him, in the glass), as a path at scale s with its top at (cx, top)
   function hoodPath(g, cx, top, s = 1) {
     g.beginPath();
     g.moveTo(cx - 100 * s, top + 262 * s); g.bezierCurveTo(cx - 118 * s, top + 132 * s, cx - 90 * s, top + 32 * s, cx, top);
@@ -76,38 +85,58 @@
     g.quadraticCurveTo(cx + 190 * s, top + 280 * s, cx + 210 * s, top + 392 * s); g.lineTo(cx - 212 * s, top + 392 * s);
     g.quadraticCurveTo(cx - 192 * s, top + 280 * s, cx - 100 * s, top + 262 * s); g.closePath();
   }
-  // a bareheaded man's head and shoulders, the same build
-  function headPath(g, cx, top, s = 1) {
-    g.beginPath(); g.ellipse(cx, top + 92 * s, 70 * s, 88 * s, 0, 0, TAU);
-    g.moveTo(cx - 34 * s, top + 168 * s); g.lineTo(cx + 34 * s, top + 168 * s); g.lineTo(cx + 34 * s, top + 214 * s); g.lineTo(cx - 34 * s, top + 214 * s); g.closePath();
-    g.moveTo(cx - 200 * s, top + 352 * s); g.quadraticCurveTo(cx - 172 * s, top + 222 * s, cx - 50 * s, top + 206 * s); g.lineTo(cx + 50 * s, top + 206 * s);
-    g.quadraticCurveTo(cx + 172 * s, top + 222 * s, cx + 200 * s, top + 352 * s); g.closePath();
+  // the line-up's man, standing, feet at (cx, foot): the same build as behind the glass, with legs. o.walk 0..3 (a
+  // stride in four drawings), o.bob, o.slump (0..1), o.look (-1..1: his head turned), o.hands ('bars': gripping)
+  function manPts(cx, foot, s, o = {}) {
+    const st = o.walk == null ? 0 : [1, 0, -1, 0][o.walk % 4], bob = (o.walk != null && o.walk % 2 === 1 ? -8 : 0) * s;
+    const sl = (o.slump || 0) * 26 * s, y = (v) => foot + (v + bob / s) * s;
+    return {
+      head: { x: cx + (o.look || 0) * 10 * s, y: y(-570) + sl, rx: 46 * s, ry: 56 * s, tilt: (o.look || 0) * 10 * deg + (o.slump || 0) * 14 * deg },
+      body: [[cx - 74 * s, y(-236)], [cx - 72 * s, y(-430) + sl * 0.6], [cx - 30 * s, y(-476) + sl], [cx + 30 * s, y(-476) + sl], [cx + 72 * s, y(-430) + sl * 0.6], [cx + 74 * s, y(-236)]],
+      legL: [[cx - 40 * s, y(-236)], [cx - 40 * s + st * 30 * s, y(0)]], legR: [[cx + 40 * s, y(-236)], [cx + 40 * s - st * 30 * s, y(0)]],
+      neck: [cx - 17 * s, y(-524) + sl, 34 * s, 50 * s], s,
+    };
+  }
+  function manFill(g, m) {
+    g.fillStyle = 'rgba(6,5,12,0.98)';
+    g.save(); g.translate(m.head.x, m.head.y); g.rotate(m.head.tilt); g.beginPath(); g.ellipse(0, 0, m.head.rx, m.head.ry, 0, 0, TAU); g.fill(); g.restore();
+    g.fillRect(...m.neck);
+    g.beginPath(); g.moveTo(...m.body[0]); for (const p of m.body.slice(1)) g.lineTo(...p); g.closePath(); g.fill();
+    g.strokeStyle = 'rgba(6,5,12,0.98)'; g.lineCap = 'round'; g.lineWidth = 52 * m.s;
+    for (const L of [m.legL, m.legR]) { g.beginPath(); g.moveTo(...L[0]); g.lineTo(...L[1]); g.stroke(); }
+  }
+  function manRim(S, m, col, k) {
+    const h = m.head, pts = [];
+    for (let i = 0; i <= 18; i++) { const a = Math.PI * (0.8 + 1.4 * i / 18) + h.tilt; pts.push([h.x + Math.cos(a) * h.rx, h.y + Math.sin(a) * h.ry]); }
+    S.tube(pts, col, k, 5, { smooth: true });
+    S.tube(m.body.slice(0, 3), col, k, 5); S.tube(m.body.slice(3), col, k, 5);
   }
 
   // ---------------------------------------------------------------- the camera (on twos)
   function camAt(t) {
     let x = 0, y = 0, s = 1, r = 0;
     if (t < T.lineup) {
-      // frame 0: you start to turn towards him (the scene slides right and tilts), and snap back on "turn"
+      // frame 0: you start to turn towards him (the scene slides right), and snap back on "turn"
       const out = E.out(clamp(t / 0.36)) * (1 - clamp((t - T.turn) / 0.1));
       const k = clamp((t - T.turn - 0.1) / 0.32), settle = t > T.turn + 0.1 ? Math.sin(Math.PI * k) * (1 - k) : 0;
-      x = 110 * out - 16 * settle; r = -3 * deg * out; s = 1 - 0.03 * out;
+      x = 95 * out - 16 * settle; s = 1 - 0.05 * out;
       s += 0.05 * E.inOut(clamp((t - P('N01').t0) / (P('N01').t1 - P('N01').t0)));       // closer while you're told
       s += 0.03 * E.out(clamp((t - P('W2').t0) / 0.3));                                   // "Look straight ahead": closer
       x += 8 * Math.sin(t * 0.9) * clamp(t - 1.2);                                         // a held breath's drift
-      const grab = clamp((t - T.grab) / 0.6); x += 10 * Math.sin(Math.PI * grab) * (1 - grab);   // his hand brushes you
+      const grab = clamp((t - T.grab) / 0.7); x += 12 * Math.sin(Math.PI * grab) * (1 - grab);   // his hand brushes you
     } else if (t < T.twist) { s = 1 + 0.06 * E.inOut(clamp((t - T.lineup) / (T.twist - T.lineup))); y = -10 * clamp((t - T.lineup) / 12); }
-    else if (t < T.replay) s = 1.06 - 0.02 * E.inOut(clamp((t - T.twist) / 1.5));
-    else if (t < T.answer) s = 1 + 0.025 * E.inOut(clamp((t - T.replay) / (T.answer - T.replay)));
-    else if (t < T.why) s = 1.0 + 0.05 * E.out(clamp((t - T.answer) / 1.2));
-    else if (t < T.split) s = 1 + 0.03 * E.inOut(clamp((t - T.why) / (T.split - T.why)));
-    else if (t < T.dare) s = 1 + 0.02 * E.inOut(clamp((t - T.split) / (T.dare - T.split)));
+    else if (t < T.replay) s = 1.06 - 0.02 * E.inOut(clamp((t - T.twist) / 1.5)) + 0.03 * E.inOut(clamp((t - T.listen) / 0.8));
+    else if (t < T.answer) s = 1 + 0.03 * E.inOut(clamp((t - T.replay) / (T.answer - T.replay)));
+    else if (t < T.why) s = 1.0 + 0.05 * E.out(clamp((t - T.answer) / 1.0));
+    else if (t < T.end1) s = 1 + 0.06 * E.inOut(clamp((t - T.why) / (T.end1 - T.why)));                // a slow push on the chart
+    else if (t < T.end2) s = 1 + 0.04 * E.inOut(clamp((t - T.end1) / (T.end2 - T.end1)));
+    else if (t < T.dare) s = 1 + 0.03 * E.inOut(clamp((t - T.end2) / (T.dare - T.end2)));
     else s = 1 + 0.035 * E.inOut(clamp((t - (END + CF.T.land1)) / 1.7));                  // the case file: push in on 48
     return { x, y, s, r };
   }
 
   // ---------------------------------------------------------------- shot 1: the cash machine
-  const ATM = { x0: 190, y0: 528, x1: 890, y1: 1306, sx0: 236, sy0: 576, sx1: 844, sy1: 1056 };
+  const ATM = { x0: 214, y0: 528, x1: 866, y1: 1306, sx0: 236, sy0: 576, sx1: 844, sy1: 1056 };
   const KEYS = Array.from({ length: 12 }, (_, i) => ({ x: 456 + (i % 3) * 84, y: 1092 + Math.floor(i / 3) * 44 }));
   const PIN = [4, 7, 1, 9].map((d, i) => ({ key: [0, 1, 2, 3, 4, 5, 6, 7, 8, 10][d], t: T.pin + 0.17 * i }));
   function atmFills(g, t) {
@@ -118,25 +147,27 @@
     const gr = g.createRadialGradient(sx0 + 470, sy0 + 120, 30, sx0 + 380, sy0 + 260, 520);
     gr.addColorStop(0, 'rgba(150,230,235,0.85)'); gr.addColorStop(0.45, 'rgba(60,150,165,0.75)'); gr.addColorStop(1, 'rgba(10,36,46,0.92)');
     g.fillStyle = gr; g.fillRect(sx0, sy0, sx1 - sx0, sy1 - sy0);
-    const breath = Math.sin(t * TAU / 3.2) * 4;
+    const breath = Math.sin(t * TAU / 2.6) * 7;                                           // he breathes; you can see it
     const lean = E.out(clamp((t + 0.15) / 0.4));                                          // on "Don't" he leans in to your ear
-    const step = mj(clamp((t - T.grab - 0.4) / 0.6));                                     // after the cash he steps back, out of the glass
+    const reach = mj(clamp((t - T.grab) / 0.4)) * (1 - mj(clamp((t - T.grab - 0.55) / 0.4)));   // his shoulder dips as his hand reaches
+    const step = mj(clamp((t - T.grab - 0.75) / 0.6));                                    // then he steps back, out of the glass
     if (step < 1) {
       g.save();
-      g.translate(470 - 300 * step, 940); g.rotate((12 * lean - 4 * step) * deg); g.scale(1 - 0.12 * step, 1 - 0.12 * step); g.translate(-470, -940);
-      g.translate(18 * lean, 8 * lean + breath * 0.5);
+      g.translate(470 - 320 * step, 940); g.rotate((12 * lean - 4 * step + 6 * reach) * deg); g.scale(1 - 0.12 * step, 1 - 0.12 * step); g.translate(-470, -940);
+      g.translate(26 * lean + 24 * reach, 8 * lean + breath * 0.6 + 30 * reach);
       g.fillStyle = 'rgba(4,3,10,0.98)'; hoodPath(g, 470, 662, 1); g.fill();
       g.strokeStyle = 'rgba(205,160,255,0.85)'; g.lineWidth = 5;                          // the lamp catches the hood's edge
       g.beginPath(); g.moveTo(370, 924); g.bezierCurveTo(352, 794, 380, 694, 470, 662); g.bezierCurveTo(520, 672, 548, 700, 562, 750); g.stroke();
       g.restore();
     }
     // YOU: nearer the glass, right of centre; a rim of light on the side towards him, so the two heads never merge
+    const flinch = 6 * Math.sin(Math.PI * clamp(t / 0.45));                                // you flinch at his voice
     g.fillStyle = 'rgba(2,6,10,0.98)';
-    g.beginPath(); g.ellipse(624, 852 + breath * 0.3, 78, 94, 0, 0, TAU); g.fill();
+    g.beginPath(); g.ellipse(624 + flinch, 852 + breath * 0.25, 78, 94, 0, 0, TAU); g.fill();
     g.fillRect(592, 920, 64, 50);
     g.beginPath(); g.moveTo(442, 1060); g.quadraticCurveTo(474, 966, 584, 952); g.lineTo(664, 952); g.quadraticCurveTo(782, 966, 812, 1060); g.closePath(); g.fill();
     g.strokeStyle = 'rgba(170,240,255,0.75)'; g.lineWidth = 5;
-    g.beginPath(); g.ellipse(624, 852, 78, 94, 0, Math.PI * 0.62, Math.PI * 1.55); g.stroke();
+    g.beginPath(); g.ellipse(624 + flinch, 852, 78, 94, 0, Math.PI * 0.62, Math.PI * 1.55); g.stroke();
     // his gloved hand on your left shoulder (the screen's left): four fingers over it, tightening on "robbing"
     const lift = mj(clamp((t - T.grab + 0.08) / 0.16)), grip = E.out(clamp((t - wordOf('N01', /^robbing/i).t0) / 0.2)) * 7;
     if (lift < 1) {
@@ -164,26 +195,26 @@
     }
     const stars = PIN.filter((p) => t >= p.t).length, gone = clamp((t - T.cash) / 0.2);
     if (stars > 0 && gone < 1) { const str = '* * * *'.slice(0, stars * 2 - 1); tx(S, str, 540 - NE.textWidth('* * * *', 52) / 2 + NE.textWidth(str, 52) / 2, 612, 52, 'white', 1 - gone); }
-    const out = clamp((t - T.cash) / 0.3), taken = clamp((t - T.grab - 0.2) / 0.45);
+    const out = clamp((t - T.cash) / 0.3), taken = clamp((t - T.grab - 0.45) / 0.5);
     S.tube([[400, 1262], [680, 1262]], out > 0 && taken < 1 ? 'green' : 'orange', out > 0 && taken < 1 ? 1 : 0.5, 7);
     if (out > 0 && taken < 1) {                                                          // the notes fan out
       for (let i = 0; i < 3; i++) {
-        const ox = (i - 1) * 26 - 300 * mj(taken), oy = 1266 + 40 * E.out(out) + i * 6 - 30 * mj(taken);
-        S.push(540 + ox, oy, (i - 1) * 5 * deg - 20 * deg * mj(taken), 1);
-        S.tube(rr(-95, 0, 95, 70, 6, 2), 'green', 0.9, 5, { closed: true });
-        S.tube(circ(0, 35, 15, 14), 'green', 0.7, 4, { closed: true });
+        const ox = (i - 1) * 30 - 330 * mj(taken), oy = 1266 + 44 * E.out(out) + i * 6 - 40 * mj(taken);
+        S.push(540 + ox, oy, (i - 1) * 5 * deg - 22 * deg * mj(taken), 1.15);
+        S.tube(rr(-95, 0, 95, 70, 6, 2), 'green', 0.95, 5, { closed: true });
+        S.tube(circ(0, 35, 15, 14), 'green', 0.75, 4, { closed: true });
         S.pop();
       }
     }
-    // his gloved hand, from behind your left shoulder: in, closes on the notes, gone
-    const reach = mj(clamp((t - T.grab) / 0.32)), back = mj(clamp((t - T.grab - 0.42) / 0.4));
+    // his gloved hand, from behind your left shoulder: in, closes on the notes, out with them
+    const reach = mj(clamp((t - T.grab) / 0.4)), back = mj(clamp((t - T.grab - 0.55) / 0.5));
     if (reach > 0 && back < 1) {
-      const hx = lerp(-160, 450, reach) - 660 * back, hy = lerp(1350, 1290, reach) - Math.sin(Math.PI * reach) * 40 + 40 * back;
-      glove(S, hx, hy, -28 * deg + 12 * deg * back, clamp((t - T.grab - 0.3) / 0.1));
+      const hx = lerp(-200, 470, reach) - 720 * back, hy = lerp(1180, 1290, reach) - Math.sin(Math.PI * reach) * 50 + 40 * back;
+      glove(S, hx, hy, -30 * deg + 14 * deg * back, clamp((t - T.grab - 0.38) / 0.12));
     }
   }
   function glove(S, x, y, rot, shut) {
-    S.push(x, y, rot, 1.5);
+    S.push(x, y, rot, 2.0);
     S.tube([[-40, 60], [-46, -6], [-30, -30], [40, -30], [52, -4], [48, 60]], 'violet', 1, 7);   // the back of the glove
     for (let i = 0; i < 4; i++) {
       const fx = -30 + i * 22, L = (i === 1 || i === 2 ? 62 : 52) * (1 - 0.55 * shut);
@@ -205,25 +236,25 @@
   function lineupFills(g, t, mode) {
     const { x0, y0, x1, y1 } = PANEL;
     const sp = mode === 'reveal' ? { k: 4, a: 0.6 } : mode === 'line' ? speaker(t) : { k: 0, a: 0 };
-    const power = mode === 'dim' ? 0.4 : 1;
+    const power = mode === 'dim' ? 0.4 : mode === 'low' ? 0.18 : 1;
     const bg = g.createLinearGradient(0, y0, 0, y1);
     bg.addColorStop(0, `rgba(150,180,220,${0.5 * power})`); bg.addColorStop(1, `rgba(70,90,130,${0.4 * power})`);
     g.fillStyle = bg; g.fillRect(x0, y0, x1 - x0, y1 - y0);
-    for (let k = 1; k <= 5; k++) {                                                        // a pool of light behind whoever speaks
-      const hot = sp.k === k ? (mode === 'reveal' ? 1 : 0.55 + 0.45 * sp.a) : 0;
+    for (let k = 1; k <= 5; k++) {                                                        // a pool of light behind whoever speaks, pulsing with him
+      const hot = sp.k === k ? (mode === 'reveal' ? 1 : 0.35 + 0.65 * sp.a) : 0;
       if (hot <= 0) continue;
       const rg = g.createRadialGradient(SLOT(k), y0 + 170, 10, SLOT(k), y0 + 220, 210);
       const c = mode === 'reveal' ? '255,90,150' : '200,235,255';
-      rg.addColorStop(0, `rgba(${c},${0.6 * hot})`); rg.addColorStop(1, `rgba(${c},0)`);
+      rg.addColorStop(0, `rgba(${c},${0.7 * hot})`); rg.addColorStop(1, `rgba(${c},0)`);
       g.fillStyle = rg; g.fillRect(x0, y0, x1 - x0, y1 - y0);
     }
-    // five men the same height and build behind the glass: each breathes, shifts his weight and tilts his head, the
+    // five men the same height and build behind the glass: each breathes, shifts his weight and turns his head, the
     // same amount for every man (so nothing on screen picks one), out of step with each other
     const s = scratch();
     s.g.fillStyle = 'rgba(4,6,16,0.94)';
     for (let k = 1; k <= 5; k++) {
-      const ph = PHASE[k - 1], cx = SLOT(k) + 7 * Math.sin(t * TAU / 5.3 + ph);
-      const br = 1 + 0.02 * Math.sin(t * TAU / 3.6 + ph * 1.7), tilt = 3.5 * deg * Math.sin(t * TAU / 4.4 + ph * 0.9);
+      const ph = PHASE[k - 1], cx = SLOT(k) + 18 * Math.sin(t * TAU / 5.3 + ph);
+      const br = 1 + 0.035 * Math.sin(t * TAU / 3.6 + ph * 1.7), tilt = 7 * deg * Math.sin(t * TAU / 4.4 + ph * 0.9);
       s.g.globalAlpha = mode === 'reveal' && k !== 4 ? 0.5 : 1;
       s.g.save(); s.g.translate(cx, y1); s.g.scale(1, br); s.g.translate(-cx, -y1);
       s.g.save(); s.g.translate(cx, y0 + 230); s.g.rotate(tilt); s.g.translate(-cx, -(y0 + 230));
@@ -241,7 +272,7 @@
   }
   function lineupTubes(S, t, th, mode) {
     const { x0, y0, x1, y1 } = PANEL, sp = mode === 'reveal' ? { k: 4, a: 1 } : mode === 'line' ? speaker(th) : { k: 0, a: 0 };
-    const dim = mode === 'dim' ? 0.45 : 1;
+    const dim = mode === 'dim' ? 0.45 : mode === 'low' ? 0.2 : 1;
     S.tube(rr(x0, y0, x1, y1, 10), 'white', 0.55 * dim, 6, { closed: true });
     tx(S, 'POLICE', 540, 336, 44, 'cyan', 0.8 * NE.tired(t, 'police', 0.25) * dim);
     for (const s of SPEAK) {                                                             // the numbers, lit as they're called
@@ -256,7 +287,7 @@
     }
   }
 
-  // ---------------------------------------------------------------- shot 3: his whisper glows, then dies on "never"
+  // ---------------------------------------------------------------- shot 3: HIS VOICE glows, dies on "never"; one mark survives
   function whisperWave(S, t, th) {
     const e = ENV.W2, x0 = 170, x1 = 910, y = 1300;
     const pts = [];
@@ -265,29 +296,49 @@
       pts.push([lerp(x0, x1, u), y + Math.sin(u * 70 + th * 9) * 78 * a * Math.sin(Math.PI * u)]);
     }
     const k = t < T.never ? lit(t, P('N10').t0 - 0.05) * 0.95 : NE.flick(t, T.never, [0.6, 0.6, 0.1, 0.1, 0.45, 0.45, 0.03]);
-    S.tube(pts, 'violet', Math.max(dark, k), 8, { smooth: true });
+    const low = t >= T.listen ? 0.4 : 1;                                                   // on "Listen." all but the mark goes down
+    S.tube(pts, 'violet', Math.max(dark, k * low), 8, { smooth: true });
+    if (t >= T.voiceW - 0.05) tx(S, 'HIS VOICE', 540, 1150, 44, 'violet', Math.max(dark, (t < T.never ? lit(t, T.voiceW - 0.05) : k) * low));
     if (t >= T.never && t < T.never + 0.5) NE.sparks(S, 540, y, t, T.never + 0.16, 'dead', 12, 0.34);
+    // "But one thing came through": one point on the dead wave lights green, where his SH was; on "Listen." it swells
+    if (t >= T.came - 0.05 && e) {
+      const w = wordOf('W2', /straight/i), u0 = (w.t0 - e.t0) / (e.rms.length / 30);
+      const sw = t >= T.listen ? 1 + 0.5 * E.out(clamp((t - T.listen) / 0.3)) : 1;
+      const xa = lerp(x0, x1, u0), xb = lerp(x0, x1, u0 + 0.075), xc = (xa + xb) / 2, hw = (xb - xa) / 2 * sw;
+      S.tube([[xc - hw, y], [xc + hw, y]], 'green', lit(t, T.came - 0.05), 12 * sw);
+    }
   }
 
   // ---------------------------------------------------------------- shot 4: the two replays, the word lit as it's said
-  function clueWord(S, t, id, top, col, label) {
+  const NUM_Y = 1330;
+  function clueWord(S, t, id, top, col, label, labelCol) {
     const w = wordOf(id, /straight/i), p = P(id);
     if (t < p.t0 - 0.12) return;                                                         // nothing before his voice plays
-    tx(S, label, 540, top - 62, 32, col, lit(t, p.t0 - 0.12) * 0.85);
+    tx(S, label, 540, top - 70, 40, labelCol, lit(t, p.t0 - 0.12) * 0.9);
     const u = clamp((t - w.t0) / Math.max(0.2, w.t1 - w.t0));                          // how far through "straight" he is
     const said = t >= w.t0 - 0.02, shHot = t >= w.t0 - 0.02 && t < w.t0 + 0.22;
-    const sw = wordOf('N14', /shtraight/i), pulse = t >= sw.t0 - 0.05 && t < P('N14').t1 + 0.1 ? 1 : 0;   // "Hear it? Shtraight.": both SH flare
+    const pop = t >= T.hearS - 0.05 ? 1 + 0.35 * E.out(clamp((t - T.hearS + 0.05) / 0.2)) : 1;   // "Hear the S?": the SH swells
+    const rest = t >= T.hearS - 0.05 ? 0.45 : 0.95;                                        // ...and the rest of the word steps back
+    const h = 92, u6 = h / 6, L = 540 - NE.textWidth('SHTRAIGHT', h) / 2;
+    const shC = L + NE.textWidth('SH', h) / 2, trC = L + 11.2 * u6 + NE.textWidth('TRAIGHT', h) / 2;
     // only what he has said is drawn: no letter shows, lit or dark, before his voice reaches it
-    tx(S, 'SHTRAIGHT', 540, top, 92, col, (i) => (i >= 2 && said && (i - 2) / 7 <= u + 0.05 ? 0.95 : 0));
-    tx(S, 'SHTRAIGHT', 540, top, 92, 'green', (i) => (i < 2 && said ? (shHot || pulse ? 1 : 0.7) : 0));
+    tx(S, 'TRAIGHT', trC, top, h, col, (i) => (said && i / 7 <= u + 0.05 ? rest : 0));
+    if (said) { S.push(shC, top + h / 2, 0, pop); tx(S, 'SH', 0, -h / 2, h, 'green', shHot || pop > 1 ? 1 : 0.75); S.pop(); }
+  }
+  function replayTubes(S, t) {
+    clueWord(S, t, 'RW', 640, 'violet', 'WHAT YOU HEARD', 'violet');
+    const named = t >= T.four - 0.03;                                                      // nothing names four before "four"
+    clueWord(S, t, 'R4', 1010, named ? 'pink' : 'cyan', named ? 'NUMBER 4' : 'ONE OF THE FIVE', named ? 'pink' : 'cyan');
+    for (let k = 1; k <= 5; k++) tx(S, String(k), 540 + (k - 3) * 130, NUM_Y, 70, named && k === 4 ? 'pink' : 'cyan', named ? (k === 4 ? lit(t, T.four - 0.03) : 0.2) : 0.4);
   }
 
   // ---------------------------------------------------------------- shot 6: the why: five pitch lines; his has none
   const ROWS = { x0: 190, x1: 900, y: [540, 660, 780, 900, 1020], wy: 1160 };
   function chartTubes(S, t) {
-    const t0 = word('N12', 0).t0;
+    const t0 = T.why + 0.08;
+    const pulse = 0.75 + 0.25 * Math.sin((t - T.s) * TAU / 1.2);                           // the S marks breathe once they're lit
     for (let k = 1; k <= 5; k++) {
-      const e = ENV[`L${k}`], y = ROWS.y[k - 1], d0 = t0 + 0.14 * (k - 1), u = clamp((t - d0) / 0.55);
+      const e = ENV[`L${k}`], y = ROWS.y[k - 1], d0 = t0 + 0.12 * (k - 1), u = clamp((t - d0) / 0.5);
       tx(S, String(k), 140, y - 26, 48, k === 4 ? 'pink' : 'cyan', Math.max(dark, 0.8 * lit(t, d0)));
       if (!e) continue;
       const n = e.f0.length, seg = [], col = k === 4 ? 'pink' : 'cyan';
@@ -298,122 +349,111 @@
         if (f > 0) seg.push([lerp(ROWS.x0, ROWS.x1, i / (n - 1)), y + 40 - clamp((f - 80) / 110) * 80]); else flush();
       }
       flush();
-      // "An S never uses your vocal cords": the gaps where the voice stops inside his line light green
+      // "An S never uses your vocal cords": the gaps where the voice stops: his (four's) green, his SH; the others white
       if (t >= T.s - 0.05) {
-        let i = 0;
         const first = e.f0.findIndex((f) => f > 0), last = n - 1 - [...e.f0].reverse().findIndex((f) => f > 0);
-        for (i = first; i < last; i++) {
+        for (let i = first; i < last; i++) {
           if (e.f0[i] > 0) continue;
           let j = i; while (j < last && !(e.f0[j] > 0)) j++;
-          S.tube([[lerp(ROWS.x0, ROWS.x1, i / (n - 1)), y + 10], [lerp(ROWS.x0, ROWS.x1, Math.max(i + 0.6, j - 1) / (n - 1)), y + 10]], 'green', lit(t, T.s + 0.05 * k), 9);
+          S.tube([[lerp(ROWS.x0, ROWS.x1, i / (n - 1)), y + 10], [lerp(ROWS.x0, ROWS.x1, Math.max(i + 0.6, j - 1) / (n - 1)), y + 10]], k === 4 ? 'green' : 'white', lit(t, T.s + 0.05 * k) * (k === 4 ? pulse : 0.55), 9);
           i = j;
         }
       }
     }
-    // his whisper: the same words, no pitch at all, flat dark glass; the SH in it lights green with the others
+    // his whisper: the same words, no pitch at all, flat dark glass; the SH in it lights green with four's
     const wy = ROWS.wy;
     S.tube([[ROWS.x0, wy], [ROWS.x1, wy]], 'violet', dark, 8);
-    if (t >= T.whispered) tx(S, 'HIS WHISPER', 540, wy + 30, 32, 'violet', lit(t, T.whispered) * 0.85);
-    if (t >= T.nopitch) tx(S, 'NO PITCH', 540, 1270, 70, 'pink', lit(t, T.nopitch - 0.05) * (t > T.s - 0.6 ? 0.45 : 1));
+    if (t >= T.whispered) tx(S, 'HIS WHISPER', 540, wy + 30, 40, 'violet', lit(t, T.whispered) * 0.85);
+    if (t >= T.nopitch) tx(S, 'NO PITCH', 540, 1290, 70, 'pink', lit(t, T.nopitch - 0.05) * (t > T.s - 0.6 ? 0.45 : 1));
     if (t >= T.s - 0.05) {
       const e = ENV.W2, w = wordOf('W2', /straight/i);
       const u0 = e ? (w.t0 - e.t0) / (e.rms.length / 30) : 0.3;
-      S.tube([[lerp(ROWS.x0, ROWS.x1, u0), wy], [lerp(ROWS.x0, ROWS.x1, u0 + 0.07), wy]], 'green', lit(t, T.s + 0.3), 12);
+      S.tube([[lerp(ROWS.x0, ROWS.x1, u0), wy], [lerp(ROWS.x0, ROWS.x1, u0 + 0.07), wy]], 'green', lit(t, T.s + 0.3) * pulse, 12);
     }
   }
 
-  // ---------------------------------------------------------------- shot 7: the two endings, in silhouette
-  function man(g, S, cx, top, s, hooded, rim, k, o = {}) {      // a filled figure with a neon rim; o.walk: drawing 0..3, o.slump
-    g.save(); g.globalAlpha = k;
-    g.fillStyle = 'rgba(6,5,12,0.98)';
-    const dy = (o.slump || 0) * 14 * s;
-    g.save(); g.translate(0, dy);
-    if (hooded) hoodPath(g, cx, top, s); else headPath(g, cx, top, s);
-    g.fill(); g.restore();
-    // legs below the shoulders (a walk: four drawings)
-    const L = (o.walk == null ? [0, 0] : [[-1, 1], [0, 0], [1, -1], [0, 0]][o.walk % 4]);
-    const hip = top + 392 * s + dy, foot = hip + 230 * s;
-    g.strokeStyle = 'rgba(6,5,12,0.98)'; g.lineCap = 'round'; g.lineWidth = 46 * s;
-    g.beginPath(); g.moveTo(cx - 52 * s, hip); g.lineTo(cx - 52 * s + L[0] * 46 * s, foot); g.stroke();
-    g.beginPath(); g.moveTo(cx + 52 * s, hip); g.lineTo(cx + 52 * s + L[1] * 46 * s, foot); g.stroke();
-    g.fillStyle = 'rgba(6,5,12,0.98)'; g.fillRect(cx - 150 * s, top + 380 * s + dy, 300 * s, 40 * s);
-    g.restore();
-    // the rim: the head's and shoulders' edge, in neon
-    const pts = [];
-    if (hooded) { pts.push([cx - 100 * s, top + 262 * s], [cx - 112 * s, top + 140 * s], [cx - 70 * s, top + 40 * s], [cx, top], [cx + 70 * s, top + 34 * s], [cx + 104 * s, top + 130 * s], [cx + 98 * s, top + 262 * s]); }
-    else { for (let i = 0; i <= 16; i++) { const a = Math.PI * (1 + i / 16); pts.push([cx + Math.cos(a) * 70 * s, top + 92 * s + Math.sin(a) * 88 * s]); } }
-    S.tube(pts.map(([x, y]) => [x, y + dy]), rim, k, 5, { smooth: true });
-    if (o.label) tx(S, o.label, cx, top + 286 * s + dy, 72 * s, rim, k);
-  }
+  // ---------------------------------------------------------------- shot 7: the two endings, big, in real places
   function bars(S, x0, x1, y0, y1, u, k) {
-    const n = 5, w = (x1 - x0);
-    for (let i = 0; i < n; i++) { const x = x0 + w * (i + 0.5) / n + (1 - u) * w * 1.1; if (x < x1 + 2) S.tube([[x, y0], [x, y1]], 'white', k, 6); }
-    if (u > 0.95) { S.tube([[x0, y0], [x1, y0]], 'white', k, 6); S.tube([[x0, y1], [x1, y1]], 'white', k, 6); }
+    const n = 6, w = (x1 - x0);
+    for (let i = 0; i < n; i++) { const x = x0 + w * (i + 0.5) / n + (1 - u) * w * 1.15; if (x < x1 + 2) S.tube([[x, y0], [x, y1]], 'white', k, 7); }
+    if (u > 0.95) { S.tube([[x0, y0], [x1, y0]], 'white', k, 7); S.tube([[x0, y1], [x1, y1]], 'white', k, 7); }
   }
-  function splitDraw(g, S, t) {
-    const L = t < T.right ? 1 : 0.32, R = t < T.right ? 0 : 1;
-    S.tube([[540, 320], [540, 1470]], 'white', 0.5, 4);
-    tx(S, 'PICKED 4', 290, 330, 44, 'cyan', L);
-    const caught = mj(clamp((t - wordOf('N17', /caught/i).t0) / 0.5));
-    man(g, S, 290, 700, 0.5, true, 'pink', L, { label: '4', slump: mj(clamp((t - wordOf('N17', /caught/i).t0 - 0.7) / 0.6)) });
-    bars(S, 160, 420, 680, 1060, caught, L);                                               // "caught him"
-    if (R > 0) {
-      const r = lit(t, T.right);
-      tx(S, 'PICKED', 745, 330, 36, 'cyan', r); tx(S, 'ANYONE ELSE', 745, 380, 36, 'cyan', r);
-      S.tube([[830, 1020], [830, 640], [930, 640], [930, 1020]], 'green', 0.7 * r, 6);          // the station door
-      tx(S, 'EXIT', 880, 586, 36, 'green', r);
-      const wk = clamp((t - wordOf('N18', /walks/i).t0) / 1.5);                               // "he walks": out through the door
-      if (wk < 1) {
-        const x = lerp(650, 880, mj(wk)), fade = 1 - clamp((x - 850) / 40);
-        g.save(); g.beginPath(); g.rect(560, 300, 270 + 100 * (x < 840 ? 1 : 0), 1200); g.clip();
-        man(g, S, x, 700, 0.42, true, 'pink', r * fade, { label: '4', walk: wk > 0 ? Math.floor(held(t, 2) * 7.5) : null });
-        g.restore();
-      }
-      const jail = mj(clamp((t - wordOf('N18', /jail/i).t0) / 0.5));                        // "goes to jail"
-      man(g, S, 700, 1110, 0.42, false, 'white', r, { label: '?' });
-      bars(S, 600, 800, 1100, 1450, jail, r);
+  function ending1(g, S, t) {                                    // "If you picked four, you caught him by one sound."
+    tx(S, 'PICKED 4', 540, 330, 52, 'cyan', lit(t, T.picked - 0.04));
+    const shut = mj(clamp((t - T.caught) / 0.5)), slump = mj(clamp((t - T.caught - 0.6) / 0.7));
+    const m = manPts(540, 1420, 1.25, { slump, look: 0.25 * Math.sin(t * TAU / 3.1) * (1 - slump) });
+    manFill(g, m); manRim(S, m, 'pink', 1);
+    tx(S, '4', 540, 1420 - 360 * 1.25, 80, 'pink', 1);
+    bars(S, 300, 780, 560, 1440, shut, 1);
+  }
+  function ending2(g, S, t) {                                    // "If you didn't, he walks, and the man you picked goes to jail..."
+    tx(S, "IF YOU DIDN'T", 540, 330, 48, 'cyan', lit(t, T.didnt - 0.04));
+    // the man you picked, in a cell on the left: the bars close on "jail", then he grips them
+    const jail = mj(clamp((t - T.jail) / 0.5)), grip = clamp((t - T.jail - 0.5) / 0.3);
+    const inn = manPts(290, 1430, 0.95, { look: 0.3 * Math.sin(t * TAU / 2.7) * (1 - grip) });
+    manFill(g, inn); manRim(S, inn, 'white', 0.9);
+    tx(S, '?', 290, 1430 - 360 * 0.95, 70, 'white', 0.9);
+    bars(S, 120, 460, 760, 1450, jail, 0.95);
+    if (grip > 0) for (const hx of [214, 366]) { g.fillStyle = 'rgba(6,5,12,0.98)'; g.beginPath(); g.ellipse(hx, 1000 - 10 * (1 - grip), 22, 28, 0, 0, TAU); g.fill(); S.tube(circ(hx, 1000 - 10 * (1 - grip), 22, 12, Math.PI, TAU), 'white', 0.8 * grip, 4); }
+    // the station door on the right, EXIT over it
+    S.tube([[770, 1450], [770, 720], [930, 720], [930, 1450]], 'green', 0.75, 7);
+    tx(S, 'EXIT', 850, 652, 46, 'green', 0.95);
+    // four walks out: a stride in four drawings on twos, a bob, one glance back at the cell, and through the door
+    const wk = clamp((t - T.walks) / 1.9);
+    if (wk < 1) {
+      const x = lerp(560, 860, mj(wk)), dr = Math.floor(held(t, 2) * 7.5) % 4;
+      const look = wk > 0.35 && wk < 0.6 ? -1 : 0;
+      const m = manPts(x, 1440, 0.95, { walk: wk > 0 && wk < 1 ? dr : null, look });
+      const fade = 1 - clamp((x - 820) / 40);
+      g.save(); g.globalAlpha = fade; manFill(g, m); g.restore();
+      manRim(S, m, 'pink', fade);
+      tx(S, '4', x, 1440 - 360 * 0.95, 70, 'pink', fade);
     }
   }
 
-  // ---------------------------------------------------------------- shot 8: the dare, the S, and the WANTED poster
-  const PHONE = { x0: 560, y0: 640, x1: 860, y1: 1180 };
-  const S_ON_PHONE = { x: 710, y: 960 };
-  function wanted(S, k) {    // the man with the mole, hidden once: a WANTED poster behind the friend, small and soft
-    S.push(196, 418, -3 * deg, 1);
-    const q = 0.36 * k;
-    S.tube(rr(-50, 0, 50, 128, 4, 2), 'white', q, 4, { closed: true });
-    tx(S, 'WANTED', 0, 8, 14, 'white', q, { w: 3 });
-    S.tube(circ(0, 80, 23, 18), 'white', q, 4, { closed: true });                         // his face
-    S.tube([[-26, 62], [-23, 50], [0, 45], [23, 50], [26, 62], [-26, 62]], 'red', 0.45 * k, 5);   // the cap first
-    S.tube([[26, 62], [40, 64]], 'red', 0.45 * k, 5);                                     // its brim
-    S.tube(circ(10, 86, 2, 8), 'white', q, 3, { closed: true });                          // the mole: his left cheek, the screen's right
+  // ---------------------------------------------------------------- shot 8: the dare: a friend in silhouette, an earbud
+  const PHONE = { x0: 600, y0: 660, x1: 880, y1: 1180 };
+  const S_ON_PHONE = { x: 740, y: 960 };
+  // her profile, facing the phone: back of the head, brow, nose, lips, chin, neck, shoulders
+  const FACE = [[260, 1080], [228, 960], [236, 860], [292, 784], [372, 772], [418, 812], [426, 852], [452, 902], [428, 918], [436, 940], [426, 952], [432, 972], [418, 1000], [380, 1022], [372, 1080], [470, 1130], [520, 1300], [120, 1300], [170, 1120]];
+  function portrait(S, k) {      // the man with the mole, once: a framed photo on her wall (no text), small and soft
+    S.push(150, 430, -3 * deg, 1);
+    const q = 0.38 * k;
+    S.tube(rr(-52, 0, 52, 132, 6, 2), 'white', q, 4, { closed: true });
+    S.tube(circ(0, 82, 24, 18), 'white', q, 4, { closed: true });                          // his face
+    S.tube([[-27, 64], [-24, 52], [0, 46], [24, 52], [27, 64], [-27, 64]], MAROON, 0.55 * k, 5);   // the maroon cap first
+    S.tube([[27, 64], [42, 66]], MAROON, 0.55 * k, 5);                                    // its brim
+    S.tube(circ(10, 88, 2, 8), 'white', q, 3, { closed: true });                          // the mole: his left cheek, the screen's right
     S.pop();
   }
+  function dareFills(g, t, th, fade) {
+    const nod = 4 * Math.sin(th * TAU / 1.1) * clamp((t - T.friend) / 0.3);
+    g.save(); g.globalAlpha = fade; g.translate(0, nod);
+    g.fillStyle = 'rgba(6,5,12,0.98)'; g.beginPath(); g.moveTo(...FACE[0]); for (const p of FACE.slice(1)) g.lineTo(...p); g.closePath(); g.fill();
+    g.restore();
+  }
   function dareTubes(S, t, th, fade) {
-    const k = fade, hx = 300, hy = 880 + 4 * Math.sin(th * TAU / 1.1) * clamp((t - T.friend) / 0.3);   // she nods along
-    wanted(S, k);
-    S.tube(circ(hx, hy, 98, 30), 'white', k, 6, { closed: true });
-    S.tube(circ(hx, hy - 8, 104, 16, -0.95 * Math.PI, -0.05 * Math.PI), 'white', k * 0.7, 6);   // hair
-    const shut = mj(clamp((t - T.friend) / 0.25));                                           // eyes open, then shut as she listens
-    for (const ex of [-34, 34]) {
-      if (shut < 0.5) S.tube(circ(hx + ex, hy - 10, 9, 10), 'white', k, 5, { closed: true });
-      else S.tube(circ(hx + ex, hy - 4, 16, 8, 0.15 * Math.PI, 0.85 * Math.PI), 'white', k, 5);
-    }
-    S.tube(circ(hx, hy + 30, 26, 10, 0.2 * Math.PI, 0.8 * Math.PI), 'white', k, 5);           // a knowing smile
-    S.tube([[hx - 150, hy + 230], [hx - 120, hy + 140], [hx - 40, hy + 112], [hx + 40, hy + 112], [hx + 120, hy + 140], [hx + 150, hy + 230]], 'white', k * 0.8, 6, { smooth: true });
-    const bud = mj(clamp((t - T.friend + 0.35) / 0.35));                                     // the earbud goes in
-    const bx = lerp(hx + 200, hx + 100, bud), by = lerp(hy + 200, hy + 6, bud);
-    S.tube(circ(bx, by, 12, 10), 'cyan', k, 5, { closed: true });
-    S.tube([[bx + 4, by + 12], [hx + 130, hy + 140], [hx + 200, hy + 230], [PHONE.x0 + 40, PHONE.y1]], 'cyan', k * 0.75, 4, { smooth: true });
+    const k = fade, nod = 4 * Math.sin(th * TAU / 1.1) * clamp((t - T.friend) / 0.3);
+    portrait(S, k);
+    S.push(0, nod, 0, 1);
+    S.tube(FACE.slice(2, 15), 'white', k, 6, { smooth: true });                            // the light along her face
+    const shut = mj(clamp((t - T.friend) / 0.25));                                        // eyes open, then shut as she listens
+    if (shut < 0.5) S.tube(circ(392, 846, 7, 8), 'white', k, 4, { closed: true });
+    else S.tube([[380, 850], [392, 856], [404, 850]], 'white', k, 4, { smooth: true });
+    const bud = mj(clamp((t - T.friend + 0.35) / 0.35));                                  // the earbud goes in
+    const bx = lerp(420, 300, bud), by = lerp(1060, 880, bud);
+    S.tube(circ(bx, by, 14, 10), 'cyan', k, 5, { closed: true });
+    S.pop();
+    S.tube([[bx + 4, by + 14 + nod], [330, 1040], [470, 1180], [PHONE.x0 + 40, PHONE.y1]], 'cyan', k * 0.75, 4, { smooth: true });
     if (bud >= 1) for (let i = 0; i < 2; i++) {
       const ph = ((t * 1.4 + i / 2) % 1);
-      S.tube(circ(hx + 100, hy + 6, 22 + 26 * ph, 8, -0.3 * Math.PI, 0.3 * Math.PI), 'cyan', k * (1 - ph) * 0.8, 4);
+      S.tube(circ(300, 880 + nod, 24 + 28 * ph, 8, 0.65 * Math.PI, 1.35 * Math.PI), 'cyan', k * (1 - ph) * 0.8, 4);
     }
     S.tube(rr(PHONE.x0, PHONE.y0, PHONE.x1, PHONE.y1, 34), 'cyan', k, 8, { closed: true });  // the phone, playing this test
-    S.tube([[680, 676], [740, 676]], 'cyan', k * 0.7, 5);
+    S.tube([[710, 696], [770, 696]], 'cyan', k * 0.7, 5);
     const playing = Math.floor(th * 2.5) % 5;                                                // its line-up, one number after another
-    for (let i = 0; i < 5; i++) tx(S, String(i + 1), 616 + i * 47, 730, 34, 'cyan', k * (i === playing && t < T.sWord ? 1 : 0.35));
-    for (let i = 0; i < 5; i++) S.tube(circ(616 + i * 47, 830, 13, 10), 'white', k * (i === playing && t < T.sWord ? 0.9 : 0.4), 4, { closed: true });
+    for (let i = 0; i < 5; i++) tx(S, String(i + 1), 650 + i * 45, 750, 34, 'cyan', k * (i === playing && t < T.sWord ? 1 : 0.35));
+    for (let i = 0; i < 5; i++) S.tube(circ(650 + i * 45, 850, 13, 10), 'white', k * (i === playing && t < T.sWord ? 0.9 : 0.4), 4, { closed: true });
   }
   function keyS(S, x, y, s, k) { tx(S, 'S', x, y - 60 * s, 120 * s, 'green', k); }
 
@@ -444,17 +484,17 @@
     if (E1.drop.on) keyS(S, E1.drop.x, E1.drop.y, E1.drop.s, 1);
   }
   function caseFront(g, t, M) {                                // then 47's cover over it, then 48 on top: each solid
-    const E1 = CF.ending(t, END, { from: S_ON_PHONE });
-    g.save(); g.setTransform(...M);
-    if (E1.a.on) { solid(g, E1.a, coverPts(E1.a.open)); g.restore(); const S2 = NE.sign(); S2.push(M[4], M[5], 0, Math.hypot(M[0], M[1])); folderCover(S2, E1.a, 47, '', 1); S2.pop(); S2.flush(g, { wall: false }); g.save(); g.setTransform(...M); }
+    const E1 = CF.ending(t, END, { from: S_ON_PHONE }), sc = Math.hypot(M[0], M[1]);
+    if (E1.a.on) {
+      g.save(); g.setTransform(...M); solid(g, E1.a, coverPts(E1.a.open)); g.restore();
+      const S2 = NE.sign(); S2.push(M[4], M[5], 0, sc); folderCover(S2, E1.a, 47, '', 1); S2.pop(); S2.flush(g, { wall: false });
+    }
     if (E1.b.on) {
-      solid(g, E1.b, CF.shape()); g.restore();
-      const S3 = NE.sign(); S3.push(M[4], M[5], 0, Math.hypot(M[0], M[1]));
+      g.save(); g.setTransform(...M); solid(g, E1.b, CF.shape()); g.restore();
+      const S3 = NE.sign(); S3.push(M[4], M[5], 0, sc);
       folderBack(S3, E1.b, 1); folderCover(S3, { ...E1.b, open: 0 }, 48, CF.label(window.NEXT_LABEL || ''), 1);
       S3.pop(); S3.flush(g, { wall: false });
-      return;
     }
-    g.restore();
   }
 
   // ---------------------------------------------------------------- the frame-0 case tab (engine/casefile.js), in neon
@@ -478,9 +518,9 @@
     U.tube(circ(658, 329, 12, 8, -0.35 * Math.PI, 0.35 * Math.PI), 'yellow', 0.75, 4);
     U.tube(circ(658, 329, 21, 10, -0.35 * Math.PI, 0.35 * Math.PI), 'yellow', 0.6, 4);
     tx(U, 'SOUND ON', 812, 311, 36, 'yellow', 0.92);
-    // the game, readable on frame 0, full from 0.65 s; it leaves with his words when the narrator finishes
+    // the game, lit on frame 0; it leaves with his words when the narrator finishes
     const offW = outAt(t, P('N01').t1 + 0.2);
-    tx(U, "YOU'LL PICK HIM BY HIS VOICE", 540, 446, 32, 'white', (t < 0.65 ? 0.55 : Math.max(0.55, lit(t, 0.65))) * 0.9 * offW);
+    tx(U, "YOU'LL PICK HIM BY HIS VOICE", 540, 400, 36, 'white', 0.92 * offW);
     // his words, as he whispers them: the whole line readable on frame 0, each word full as it's said
     const ws = P('W1').w, kw = (i) => (i === 0 || t >= ws[i].t0 - 0.03 ? 1 : 0.55);
     tx(U, "DON'T TURN", 540, 1338, 80, 'white', (i) => (i < 5 ? kw(0) : kw(1)) * offW);
@@ -494,21 +534,25 @@
       const th = held(t, 2);
       const cam = camAt(th), M = camM(cam);
       const S = NE.sign(), U = NE.sign();
+      S.push(M[4], M[5], cam.r, cam.s);                                                    // the camera, for every tube that follows
       g.save(); g.setTransform(...M);
       g.drawImage(NE.wall(), -260, -200, W + 520, H + 400);
       if (t < T.lineup) atmFills(g, th);
       else if (t < T.twist) lineupFills(g, th, 'line');
-      else if (t < T.replay) lineupFills(g, th, 'dim');
+      else if (t < T.replay) lineupFills(g, th, t >= T.listen ? 'low' : 'dim');
       else if (t >= T.answer && t < T.why) lineupFills(g, th, 'reveal');
+      else if (t >= T.why && t < T.why + 0.45) lineupFills(g, th, 'dim');                  // the line-up goes down as the chart comes up
+      else if (t >= T.end1 && t < T.end2) ending1(g, S, th);
+      else if (t >= T.end2 && t < T.dare) ending2(g, S, th);
+      else if (t >= T.dare) { const fade = 1 - clamp((t - (END + CF.T.a0 - 0.25)) / 0.3); if (fade > 0) dareFills(g, t, th, fade); }
       g.restore();
-      S.push(M[4], M[5], cam.r, cam.s);
       if (t < T.lineup) atmTubes(S, th);
       else if (t < T.twist) lineupTubes(S, t, th, 'line');
-      else if (t < T.replay) { lineupTubes(S, t, th, 'dim'); whisperWave(S, t, th); }
-      else if (t < T.answer) { clueWord(S, t, 'RW', 640, 'violet', 'WHAT YOU HEARD'); clueWord(S, t, 'R4', 1010, 'pink', 'NUMBER 4'); }
+      else if (t < T.replay) { lineupTubes(S, t, th, t >= T.listen ? 'low' : 'dim'); whisperWave(S, t, th); }
+      else if (t < T.answer) replayTubes(S, t);
       else if (t < T.why) lineupTubes(S, t, th, 'reveal');
-      else if (t < T.split) chartTubes(S, t);
-      else if (t < T.dare) { g.save(); g.setTransform(...M); splitDraw(g, S, th); g.restore(); }
+      else if (t < T.end1) { if (t < T.why + 0.45) lineupTubes(S, t, th, 'dim'); chartTubes(S, t); }
+      else if (t < T.dare) { /* the endings' tubes were added with their fills */ }
       else {
         const fade = 1 - clamp((t - (END + CF.T.a0 - 0.25)) / 0.3);                         // the friend and phone go before the folder rises
         if (fade > 0) dareTubes(S, t, th, fade);
@@ -521,11 +565,11 @@
       if (t < T.lineup) hookTubes(U, t);
       if (t >= T.lineup && t < T.twist) {
         if (t < T.charged) tx(U, 'CLOSE YOUR EYES', 540, 1290, 58, 'pink', lit(t, P('N02').t0 - 0.04));
-        else if (t < P('N03').t1 + 1.3) tx(U, 'CHARGED TONIGHT', 540, 1290, 58, 'yellow', lit(t, T.charged - 0.04) * outAt(t, P('N03').t1 + 1.0));
+        else if (t < P('N03B').t1 + 1.3) tx(U, 'CHARGED TONIGHT', 540, 1290, 58, 'yellow', lit(t, T.charged - 0.04) * outAt(t, P('N03B').t1 + 1.0));
         if (t >= P('N09').t0 - 0.04) {
-          tx(U, 'PICK ONE', 540, 1290, 64, 'yellow', lit(t, P('N09').t0 - 0.04));
-          const u = clamp((held(t, 2) - T.bar0) / (T.bar1 - T.bar0)), half = 210 * (1 - u);     // a bar that runs out to its middle
-          if (u < 1) U.tube([[540 - half, 1400], [540 + half, 1400]], 'yellow', 0.95, 8);
+          tx(U, 'PICK ONE', 520, 1290, 64, 'yellow', lit(t, P('N09').t0 - 0.04));
+          const u = clamp((held(t, 2) - T.bar0) / (T.bar1 - T.bar0));                    // a ring that runs out, beside the words
+          if (u < 1) U.tube(circ(820, 1322, 34, 36, -Math.PI / 2 + u * TAU, 1.5 * Math.PI), 'yellow', 0.95, 7);
         }
       }
       caseTab(U, t);
