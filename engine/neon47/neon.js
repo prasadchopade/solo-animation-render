@@ -1,7 +1,8 @@
 // engine/neon47/neon.js: the Style Lab's neon look, brought into main for reel 47 Close Your Eyes (23 Nov 2026).
 // Copied from branch claude/style-lab-31f05c, lab/engines/neon/neon.js at 8cf5b67. Loads after engine/neon47/lab.js.
-// Added for 47 (nothing else changed): the letters and signs the lab's alphabet lacked (B D J K P Q V X Y Z, 0 4-9,
-// the apostrophe, colon, dash, comma and middle dot), on the same 4 x 6 single-stroke grid.
+// Added for 47: the letters and signs the lab's alphabet lacked (B D J K P Q V X Y Z, 0 4-9, the apostrophe, colon,
+// dash, comma, middle dot and asterisk), on the same 4 x 6 single-stroke grid; and the I drawn from x 0 with a 3.6
+// advance (the lab's left a wider gap before and after it: "P ICK"). Nothing else changed.
 //
 // THE STYLE LAB · neon: an animated neon sign on a dark brick wall. Glass tubes bent into lines and lit from inside.
 // It animates the way real signs do: each pose is its own set of tubes, switched on and off, with the stutter of a
@@ -69,7 +70,7 @@
     F: [[[4, 0], [0, 0], [0, 6]], [[0, 3], [3, 3]]],
     G: [[[4, 1], [3, 0], [1, 0], [0, 1], [0, 5], [1, 6], [3, 6], [4, 5], [4, 3.3], [2.2, 3.3]]],
     H: [[[0, 0], [0, 6]], [[4, 0], [4, 6]], [[0, 3], [4, 3]]],
-    I: [[[1, 0], [3, 0]], [[2, 0], [2, 6]], [[1, 6], [3, 6]]],
+    I: [[[0, 0], [2, 0]], [[1, 0], [1, 6]], [[0, 6], [2, 6]]],                // 47: drawn from x 0 (the lab's started at 1)
     L: [[[0, 0], [0, 6], [4, 6]]],
     M: [[[0, 6], [0, 0], [2, 3.2], [4, 0], [4, 6]]],
     N: [[[0, 6], [0, 0], [4, 6], [4, 0]]],
@@ -107,8 +108,9 @@
     '-': [[[0.4, 3], [3.6, 3]]],
     ',': [[[1, 5.2], [0.5, 6.8]]],
     '·': [[...dot(1.2, 3), dot(1.2, 3)[0]]],
+    '*': [[[2, 0.9], [2, 5.1]], [[0.2, 1.95], [3.8, 4.05]], [[0.2, 4.05], [3.8, 1.95]]],
   };
-  const ADV = { ' ': 2.8, '.': 2.4, I: 4.6, "'": 2.0, ':': 2.4, ',': 2.4, '·': 3.0 };   // advance in grid units (the rest are 5.6)
+  const ADV = { ' ': 2.8, '.': 2.4, I: 3.6, "'": 2.0, ':': 2.4, ',': 2.4, '·': 3.0, '*': 5.2 };   // advance in grid units (the rest are 5.6)
   const textWidth = (str, h) => { let w = 0; for (const ch of str) w += (ADV[ch] ?? 5.6); return (w - 1.6) * h / 6; };
 
   // ------------------------------------------------------------------ the sign: collect tubes, then paint them all at once

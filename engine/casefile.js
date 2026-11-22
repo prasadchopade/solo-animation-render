@@ -37,7 +37,7 @@
 //   Draw order at the end: folder n's back, the key object, folder n's cover (solid, with its stamp), then folder n + 1
 //   whole (solid: it hides folder n where it lies on it).
 //
-// POSES (pure functions of t: any frame in any order)
+// POSES (pure functions of t: any frame in any order; held on twos, a new pose every 1/15 s, as the house's motion is)
 //   CASEFILE.words(n)                 'CASE 47'
 //   CASEFILE.label(text)              checks a label (one to three words) and returns it in capitals, or '' for none
 //   CASEFILE.tab(t)                   { on, dy, k } for the frame-0 tab: draw it at TAB shifted by dy, at brightness or
@@ -101,7 +101,9 @@
   }
 
   // ---- frame 0's tab: on from 0; at 2.6–2.8 s it rises 16 px and goes out (its words never leave the safe zones)
+  const twos = (t) => Math.floor(t * 15 + 1e-6) / 15;              // the house's motion is on twos at 30 fps
   function tab(t) {
+    t = twos(t);
     if (t >= T.tabGone) return { on: false, dy: 0, k: 0 };
     const u = seg(t, T.tabOut, T.tabGone);
     return { on: true, dy: -16 * u, k: 1 - u };
@@ -109,6 +111,7 @@
 
   // ---- the ending
   function ending(t, end, opt = {}) {
+    t = twos(t);
     const u = t - end, F = FOLDER, from = opt.from || { x: F.cx, y: F.cy - 520 };
     // folder n rises into place, with a small overshoot
     const r = seg(u, T.a0, T.a1);
