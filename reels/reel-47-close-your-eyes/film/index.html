@@ -1,0 +1,32 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Close Your Eyes</title>
+<style>
+  /* Reel 47 draws everything on one canvas in the neon look (engine/neon47): lettering is our own single-stroke tube
+     alphabet, so no font is used before the end card, which loads its own (Geist, OFL). */
+  html, body { margin: 0; background: #000; overflow: hidden; }
+  #stage { position: relative; overflow: hidden; background: #09080c; transform-origin: 0 0; }
+  .scene { position: absolute; inset: 0; overflow: hidden; }
+  .abs { position: absolute; left: 0; top: 0; transform-origin: 0 0; }
+  canvas { position: absolute; left: 0; top: 0; }
+</style>
+</head>
+<body>
+<div id="stage"></div>
+<script src="../../../engine/lib/motion.js"></script>
+<script src="data.js"></script>
+<script src="words.js"></script>
+<script src="env.js"></script>
+<script src="../../../engine/core.js"></script>
+<script src="../../../engine/type.js"></script>
+<script src="../../../engine/kit.js"></script>
+<script src="../../../engine/ui.js"></script>
+<script src="../../../engine/endcard/endcard.js"></script>
+<script src="../../../engine/casefile.js"></script>
+<script src="../../../engine/neon47/lab.js"></script>
+<script src="../../../engine/neon47/neon.js"></script>
+<script src="film.js"></script>
+</body>
+</html>
