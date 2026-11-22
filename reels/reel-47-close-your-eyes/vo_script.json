@@ -117,16 +117,50 @@
   {
    "id": "n15b",
    "text": "It's number four."
+  },
+  {
+   "id": "n03a",
+   "text": "Which of these five is him?"
+  },
+  {
+   "id": "n03b",
+   "text": "Whoever you pick is charged tonight."
+  },
+  {
+   "id": "n13a",
+   "text": "But one thing came through."
+  },
+  {
+   "id": "n13b",
+   "text": "Listen."
+  },
+  {
+   "id": "n14c",
+   "text": "Hear the S?",
+   "text_kokoro": "Hear the [S](/ˈɛs/)?"
   }
  ],
  "cast_lines": [
-  "r02",
-  "r02b",
-  "n14",
-  "n14b",
-  "n15b"
+  "n03a",
+  "n03b",
+  "n13a",
+  "n13b",
+  "n14c",
+  "r02"
  ],
  "cast": [
+  {
+   "id": "k-heart-cast",
+   "engine": "kokoro",
+   "voice": "af_heart",
+   "speed": 1.0
+  },
+  {
+   "id": "k-heart-cast-096",
+   "engine": "kokoro",
+   "voice": "af_heart",
+   "speed": 0.96
+  },
   {
    "id": "m-eric-onyx",
    "engine": "kokoro",
@@ -134,10 +168,16 @@
    "speed": 1.0
   },
   {
-   "id": "k-heart-cast",
+   "id": "m-eric-onyx-096",
    "engine": "kokoro",
-   "voice": "af_heart",
-   "speed": 1.0
+   "voice": "am_eric,am_onyx",
+   "speed": 0.96
+  },
+  {
+   "id": "m-eric-onyx-104",
+   "engine": "kokoro",
+   "voice": "am_eric,am_onyx",
+   "speed": 1.04
   }
  ],
  "take": {
@@ -146,5 +186,5 @@
   "voice": "af_heart",
   "speed": 1.0
  },
- "cast_note": "Cast run 2 (23 Nov, after the fresh review): the robber (m-eric-onyx) re-reads the clue with Kokoro's own vowel token A (the first run used eɪ, read as two vowels), plain and with a long sh; af_heart re-reads Shtraight and two alternatives. Run 1's audition of 14 voices is in audio/vo_lab_castscore."
+ "cast_note": "Cast run 3 (23 Nov, after the fresh review of motion test 2): lines that need a real pause become their own lines (n03a/n03b, n13a/n13b); 'Hear the S?' (n14c) replaces 'Hear it? Shtraight.' (both checkers heard 'Hear it straight'); the robber's r02 at 0.96 and 1.04 for a take with less creak than 8.6 %. Earlier runs: audio/vo_lab_castscore (run 1, 14 voices), audio/vo_lab_run2score (run 2)."
 }
