@@ -276,7 +276,7 @@
     tx(S, label, 540, top - 62, 32, col, lit(t, p.t0 - 0.12) * 0.85);
     const u = clamp((t - w.t0) / Math.max(0.2, w.t1 - w.t0));                          // how far through "straight" he is
     const said = t >= w.t0 - 0.02, shHot = t >= w.t0 - 0.02 && t < w.t0 + 0.22;
-    const pulse = t >= P('N14').t0 - 0.05 && t < P('N14').t1 + 0.1 ? 1 : 0;              // "Shtraight.": both SH flare
+    const sw = wordOf('N14', /shtraight/i), pulse = t >= sw.t0 - 0.05 && t < P('N14').t1 + 0.1 ? 1 : 0;   // "Hear it? Shtraight.": both SH flare
     // only what he has said is drawn: no letter shows, lit or dark, before his voice reaches it
     tx(S, 'SHTRAIGHT', 540, top, 92, col, (i) => (i >= 2 && said && (i - 2) / 7 <= u + 0.05 ? 0.95 : 0));
     tx(S, 'SHTRAIGHT', 540, top, 92, 'green', (i) => (i < 2 && said ? (shHot || pulse ? 1 : 0.7) : 0));
