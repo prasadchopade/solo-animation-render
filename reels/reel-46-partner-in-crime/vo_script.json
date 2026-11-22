@@ -1,0 +1,42 @@
+{
+ "note": "Reel 46 Partner in Crime, draft 3 with HQ's notes (23 Nov 2026). n = narrator (af_heart, the takes run); d = the officer in your room, f = your partner in crime, l = the officer in his room, heard only as a muffled laugh (all three from the cast run). Pauses are set by hand between lines in place_vo.py, never inside one.",
+ "ref_text": "The kettle had boiled twice before anyone noticed. Outside, the rain kept on, steady and grey, and the bus was late again.",
+ "lines": [
+  { "id": "n01", "text": "Your partner in crime is in the next room." },
+  { "id": "n02", "text": "And he's talking." },
+  { "id": "d01", "text": "Whoever talks walks out tonight." },
+  { "id": "d02", "text": "The other one does ten years." },
+  { "id": "d03", "text": "You both talk? Five each." },
+  { "id": "n03", "text": "If nobody talks, a year each." },
+  { "id": "n04", "text": "Stay silent, or talk?" },
+  { "id": "f01", "text": "Nah. My partner won't talk." },
+  { "id": "f02", "text": "I'd bet ten years on it." },
+  { "id": "n05", "text": "He was talking about you." },
+  { "id": "n06", "text": "If you stayed silent, you both do a year." },
+  { "id": "n07", "text": "If you talked, you walk out tonight, and he does the ten." },
+  { "id": "n08", "text": "For trusting you." },
+  { "id": "n09", "text": "Talking was the safe move." },
+  { "id": "n10", "text": "That's the deal." },
+  { "id": "n11", "text": "It doesn't need a bad friend." },
+  { "id": "n12", "text": "It just needs you to doubt a good one." },
+  { "id": "n13", "text": "Now try it on your partner in crime." },
+  { "id": "n14", "text": "And don't warn them." },
+  { "id": "n15", "text": "Unless they just tried it on you." },
+  { "id": "n16", "text": "Next case." },
+  { "id": "l01", "text": "Ha! Ha ha ha!" }
+ ],
+ "cast_lines": ["d01", "d02", "d03", "f01", "f02", "l01"],
+ "cast": [
+  { "id": "onyx", "engine": "kokoro", "voice": "am_onyx" },
+  { "id": "michael", "engine": "kokoro", "voice": "am_michael" },
+  { "id": "adam", "engine": "kokoro", "voice": "am_adam" },
+  { "id": "lewis", "engine": "kokoro", "voice": "bm_lewis" },
+  { "id": "puck", "engine": "kokoro", "voice": "am_puck" },
+  { "id": "liam", "engine": "kokoro", "voice": "am_liam" },
+  { "id": "echo", "engine": "kokoro", "voice": "am_echo" },
+  { "id": "eric", "engine": "kokoro", "voice": "am_eric" },
+  { "id": "nicole", "engine": "kokoro", "voice": "af_nicole" },
+  { "id": "sarah", "engine": "kokoro", "voice": "af_sarah" }
+ ],
+ "take": { "id": "heart", "engine": "kokoro", "voice": "af_heart" }
+}
