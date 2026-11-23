@@ -24,7 +24,7 @@
     ring0: TM.ring0, ring1: TM.ring1, help: line(TM.boy).start, wave: line('c02').start,
     half: line('n04').start, last: line('n05').start,
     reveal: line('n07').start, under: word('n08', 'under'),
-    noise: line('n09').start, boy: word('n10', 'boy'), man: word('n10', 'man'), boat: word('n10', 'boat'),
+    noise: line('n09').start, noiseW: word('n09', 'noise'), boy: word('n10', 'boy'), man: word('n10', 'man'), boat: word('n10', 'boat'),
     found: line('n11').start, saw: word('n11', 'saw'), there: line('n12').start,
     c03: line('c03').start, c03e: line('c03').end, c04: line('c04').start, c04e: line('c04').end, c05: line('c05').start, c05e: line('c05').end,
     why: line('n13').start, breathe: word('n13', 'breathe'), pushing: word('n13', 'pushing'), whyEnd: line('n13').end,
@@ -41,9 +41,9 @@
   // story times in world time: after the freeze, every beat sits F earlier in the world
   const S = {};
   for (const [k, v] of Object.entries(T)) S[k] = v >= T.reveal - 1e-6 ? v - F : v;
-  S.lgStand = S.saw - 0.05; S.whistle = S.saw + 0.2; S.point = S.saw + 0.5;    // "you saw": on her feet; she points on "friends"
+  S.lgStand = S.saw - 0.05; S.whistle = S.saw + 0.15; S.point = S.saw + 0.3;   // "you saw": on her feet; pointing by "friends"
   S.lgJump = S.there + 0.1; S.lgLand = S.lgJump + 0.45;
-  S.lgWade = S.lgLand + 0.85; S.lgDive = S.lgWade + 0.7; S.lgSwim = S.lgDive + 0.35;   // (she's in the water before "Help!")
+  S.lgWade = S.lgLand + 0.85; S.lgDive = S.lgWade + 1.4; S.lgSwim = S.lgDive + 0.35;   // run, wade to chest depth, dive, swim
   S.reach = S.pushing + 0.6;                                         // the tube lifts her as "…pushing her mouth up." ends
   // her approach: a body length short she comes upright, hauls the tube in hand over hand on its line, and on "pushing"
   // kicks in behind Maya pushing it across her chest; she grips its ends and tows her in to the sandbar
@@ -100,8 +100,8 @@
     const spray = [(wt - S.cough) / 0.55, (wt - S.cough - 0.45) / 0.55];
     const dx = TOW.dx * tow, dy = TOW.dy * tow;
     const handR = { x: MAYA.x + dx + 55, y: MAYA.y + dy + 30, k: ramp(wt, S.hand - 0.5, S.hand) };
-    const relief = win(wt, S.reach + 0.3, S.reach + 0.5, S.reach + 1.6, S.reach + 1.8), smile = ramp(wt, S.hand + 0.1, S.hand + 0.4);
-    return { s: Math.max(s, held), press: press * (1 - held), held, cough, spray, dx, dy, handR, relief, smile };
+    const eyeOpen = ramp(wt, S.reveal + 0.6, S.reveal + 0.9), lids = ramp(wt, S.reach + 0.25, S.reach + 0.5), smile = ramp(wt, S.hand + 0.05, S.hand + 0.3);
+    return { s: Math.max(s, held), press: press * (1 - held), held, cough, spray, dx, dy, handR, eyeOpen, lids, smile };
   }
   // her friends. No. 4: "Maya?", arms open, looking round (to the beach first); "Maya!", a startle and a lunge, the arm
   // nearer Maya reaching for her; "Help!", turned to the shore, the other arm waving high. When the tow brings Maya in,
@@ -144,7 +144,7 @@
   // and Maya's shoulder, turns to the shore, and tows her in beside her with a sidestroke.
   const P0 = { x: MAYA.x - 170, y: MAYA.y + 10 };                    // where she stops: a body length off Maya's left
   const SIDE = { x: -66, y: 12 };                                    // beside her, heads level and apart
-  const SWIM_DIR = LOOK(420, 1130, P0.x, P0.y);
+  const SWIM_DIR = LOOK(400, 980, P0.x, P0.y);
   const TRAIL = [P0.x - Math.sin(SWIM_DIR) * 190, P0.y + Math.cos(SWIM_DIR) * 190];   // where the tube lies when she stops
   function lifeguard(wt) {
     const toMaya = LOOK(178, 1440, MAYA.x, MAYA.y);
@@ -161,7 +161,7 @@
       const u = (wt - S.lgJump) / (S.lgLand - S.lgJump);
       return { mode: 'hop', x: lerp(178, 226, ease(u)), y: lerp(1430, 1400, ease(u)), dir: LOOK(178, 1430, 226, 1400), u: 0.25, air: Math.sin(u * Math.PI) };
     }
-    const path = [[S.lgLand, 226, 1400], [S.lgWade, 420, 1262], [S.lgDive, 424, 1190], [S.lgSwim, 420, 1130], [S.short, P0.x, P0.y]];
+    const path = [[S.lgLand, 226, 1400], [S.lgWade, 420, 1262], [S.lgDive, 410, 1020], [S.lgSwim, 400, 980], [S.short, P0.x, P0.y]];
     if (wt < S.short) {
       let i = 1; while (i < path.length - 1 && wt >= path[i][0]) i++;
       const [t0, x0, y0] = path[i - 1], [t1, x1, y1] = path[i];
@@ -202,8 +202,8 @@
     // No. 6: a crouch, "Help!", arms flung up, flailing; then bobbing and slapping the water; his brother jumps at the
     // shout and turns to him. After "Time.", the water he throws at his brother flies on "boy", and they both laugh.
     boy(wt) {
-      const flail = Math.max(win(wt, T.help - 0.12, T.help + 0.12, T.help + 1.1, T.help + 1.5), win(wt, S.noise + 0.05, S.noise + 0.25, S.noise + 1.0, S.noise + 1.3));
-      const face = Math.max(win(wt, T.help - 0.3, T.help + 0.15, T.help + 1.1, T.help + 1.6), win(wt, S.noise - 0.15, S.noise + 0.3, S.noise + 1.0, S.noise + 1.45));
+      const flail = Math.max(win(wt, T.help - 0.12, T.help + 0.12, T.help + 1.1, T.help + 1.5), win(wt, S.noiseW - 0.15, S.noiseW + 0.05, S.noiseW + 0.75, S.noiseW + 1.0));
+      const face = Math.max(win(wt, T.help - 0.3, T.help + 0.15, T.help + 1.1, T.help + 1.6), win(wt, S.noiseW - 0.35, S.noiseW + 0.1, S.noiseW + 0.75, S.noiseW + 1.15));
       const th = (wt - (S.boy - 0.4)) / 1.1;
       return { flail, face, help: T.help, throwK: th > 0 && th < 1 ? th : 0,
         laugh: win(wt, S.boy - 0.15, S.boy + 0.3, S.boy + 2.75, S.boy + 3.35), broLaugh: win(wt, S.boy - 0.05, S.boy + 0.4, S.boy + 2.85, S.boy + 3.45),
@@ -212,8 +212,8 @@
     },
     waving(wt) {
       const a = win(wt, T.wave - 0.2, T.wave + 0.15, T.wave + 3.0, T.wave + 3.4), b = win(wt, S.man - 0.2, S.man + 0.15, S.man + 2.6, S.man + 3.0);
-      const c = win(wt, S.noise + 0.2, S.noise + 0.45, S.noise + 1.15, S.noise + 1.45);
-      return { k: Math.max(a, b, c), t0: wt < S.noise - 0.5 ? T.wave - 0.2 : wt < S.man - 0.6 ? S.noise + 0.0 : S.man - 0.2 };
+      const c = win(wt, S.noiseW - 0.1, S.noiseW + 0.15, S.noiseW + 0.8, S.noiseW + 1.1);
+      return { k: Math.max(a, b, c), t0: wt < S.noiseW - 0.6 ? T.wave - 0.2 : wt < S.man - 0.6 ? S.noiseW - 0.2 : S.man - 0.2 };
     },
     boatWave(wt) { return win(wt, S.boat - 0.15, S.boat + 0.15, S.boat + 2.4, S.boat + 2.8); },
     lifeguard, maya, friend,
@@ -226,7 +226,7 @@
   // Moves stay slow enough not to strobe; long jumps are cuts (two keys a millisecond apart). After "Time." every story
   // beat is framed close enough to read on a phone (about 3x).
   function camAt(cx, cy, s) { return { s, x: -s * (cx - W / 2), y: -s * (cy - H / 2) }; }
-  const CUT0 = T.noise - 0.02, CUT1 = T.boy - 0.42, CUT2 = T.man - 0.24, CUT2B = T.boat - 0.2, CUT3 = T.found - 0.12, CUT4 = T.saw - 0.12, CUT5 = T.there - 0.12;
+  const CUT0 = T.noiseW - 0.1, CUT1 = T.boy - 0.3, CUT2 = T.man - 0.24, CUT2B = T.boat - 0.2, CUT3 = T.found - 0.12, CUT4 = T.saw - 0.12, CUT5 = T.there - 0.12;
   const BX = 280 + 13 * S.boat - 30;                  // the boat, where it is on "boat" (beach.js: x = 280 + 13 t)
   const K = [
     [0, 540, 960, 1.0],
@@ -236,20 +236,20 @@
     [T.ring0 + 7.5, 560, 900, 1.04],                 // one wide drift while she's up; every tag stays inside x 950
     [T.ring0 + 8.5, 540, 960, 1.0],                  // back before she slips under
     [T.reveal, 540, 960, 1.0],                       // the freeze holds the whole beach
-    [T.reveal + 2.5, 370, 760, 3.4],                 // "It's number nine.": in on her, close (2.5 s: no judder)
-    [CUT0, 370, 760, 3.4],
+    [T.reveal + 2.5, 330, 704, 4.4],                 // "It's number nine.": in on her, centred, close (2.5 s: no judder)
+    [CUT0, 330, 704, 4.4],
     [CUT0 + 0.001, 540, 960, 1.0],                   // cut: "Did you go for the noise?": the boy flails, the man waves
     [CUT1, 552, 950, 1.06],
-    [CUT1 + 0.001, 831, 1180, 3.4],                  // cut: the boys alone, close (the water flies on "boy")
-    [CUT2, 831, 1180, 3.4],
+    [CUT1 + 0.001, 831, 1210, 3.4],                  // cut: the boys alone, close (the water flies on "boy")
+    [CUT2, 831, 1210, 3.4],
     [CUT2 + 0.001, 838, 930, 2.4],                   // cut: the man, waving
     [CUT2B, 838, 930, 2.4],
-    [CUT2B + 0.001, BX, 246, 2.8],                   // cut: the boat far out, a towel swung back
-    [CUT3, BX + 8, 246, 2.8],
-    [CUT3 + 0.001, 370, 760, 3.4],                   // cut: "If you found her": Maya
-    [CUT4, 370, 760, 3.4],
-    [CUT4 + 0.001, 186, 1425, 3.6],                  // cut: "you saw": the lifeguard, close: on her feet, a whistle, pointing
-    [CUT5, 186, 1425, 3.6],
+    [CUT2B + 0.001, BX + 12, 240, 3.6],              // cut: the boat far out, a striped towel swung back
+    [CUT3, BX + 20, 240, 3.6],
+    [CUT3 + 0.001, 330, 704, 4.4],                   // cut: "If you found her": Maya
+    [CUT4, 330, 704, 4.4],
+    [CUT4 + 0.001, 172, 1480, 3.6],                  // cut: "you saw": the lifeguard on her chair, close (no one else in it)
+    [CUT5, 172, 1480, 3.6],
     [CUT5 + 0.001, 470, 820, 2.3],                   // cut: "They're right there.": Maya and both her friends, inside x 950
     [T.c05e + 0.2, 480, 830, 2.45],                  // a slow push through her three calls
   ];
@@ -262,8 +262,8 @@
       const L = lifeguard(wt), mh = maya(wt) || { dx: 0, dy: 0 };
       const mx = MAYA.x + mh.dx, my = MAYA.y + mh.dy, lx = L.x ?? 178, ly = L.y ?? 1452;
       const d = Math.hypot(lx - mx, ly - my);
-      const rc = [(lx + mx) / 2, (ly + my) / 2 + 30, clamp(1450 / (d + 480), 1.8, 2.4)];
-      const end = [mx, my + 60, 2.6];                     // (the floater, No. 2, stays out of the rescue)
+      const rc = [(lx + mx) / 2, (ly + my) / 2 + 70, clamp(1800 / (d + 480), 2.2, 2.8)];
+      const end = [mx - 20, my + 80, 3.0];                // the pair large, framed low so the floater, No. 2, stays out
       const k = ramp(t, T.c05e + 0.2, T.c05e + 1.6), k2 = ramp(t, T.reachF - 0.6, T.reachF + 0.5);
       [cx, cy, s] = [0, 1, 2].map((j) => lerp(lerp([cx, cy, s][j], rc[j], k), end[j], k2));
     }
@@ -363,10 +363,10 @@
         o.save(); o.setTransform(1, 0, 0, 1, 0, 0); o.clearRect(0, 0, W, H);
         B.paint(o, W0(T.rewind0), { ctx, cam: camera(T.rewind0 - 0.001), tags: tagLift(T.rewind0 - 0.001) });
         o.restore();
-        const u = (t - T.rewind0) / (R - T.rewind0), up = ease(clamp(u / 0.25)), away = ease(clamp((u - 0.2) / 0.8));
+        const u = (t - T.rewind0) / (R - T.rewind0), up = ease(clamp(u / 0.3)), away = ease(clamp((u - 0.3) / 0.7));
         g.save();
-        g.translate(W / 2 - 1300 * away, H / 2 - 260 * away); g.rotate(-0.16 * away - 0.02 * up);
-        g.scale(1 + 0.03 * up, 1 + 0.03 * up); g.translate(-W / 2, -H / 2);
+        g.translate(W / 2 - 1250 * away, H / 2 - 520 * away); g.rotate(-0.28 * away - 0.02 * up);
+        g.scale(1 + 0.045 * up, 1 + 0.045 * up); g.translate(-W / 2, -H / 2);
         g.shadowColor = 'rgba(16, 34, 52, 0.45)'; g.shadowBlur = 8 + 26 * up; g.shadowOffsetX = 16 * up; g.shadowOffsetY = 24 * up;
         g.drawImage(off, 0, 0);
         g.shadowColor = 'transparent';
