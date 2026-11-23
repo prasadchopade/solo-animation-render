@@ -254,12 +254,13 @@
     S.tube([[718, 1120], [816, 1120]], 'cyan', 0.4, 4);
     const stars = PIN.filter((p) => t >= p.t).length, gone = clamp((t - T.cash) / 0.2);
     if (stars > 0 && gone < 1) { const str = '* * * *'.slice(0, stars * 2 - 1); tx(S, str, 540 - NE.textWidth('* * * *', 52) / 2 + NE.textWidth(str, 52) / 2, 628, 52, 'white', 1 - gone); }
-    const out = clamp((t - T.cash) / 0.3), taken = clamp((t - T.grab - 0.45) / 0.5);
-    S.tube([[400, 1262], [680, 1262]], out > 0 && taken < 1 ? 'green' : 'orange', out > 0 && taken < 1 ? 1 : 0.5, 7);
-    if (out > 0 && taken < 1) {                                                          // the notes fan out
+    // the notes fan out of the slot; once his glove has closed on them they go where it goes (they leave with him)
+    const out = clamp((t - T.cash) / 0.3), q = glovePose(t), inHand = q && t >= T.grab + 0.5, left = !q && t >= T.grab + 0.5;
+    S.tube([[400, 1262], [680, 1262]], out > 0 && !left && !inHand ? 'green' : 'orange', out > 0 && !left && !inHand ? 1 : 0.5, 7);
+    if (out > 0 && !left) {
       for (let i = 0; i < 3; i++) {
-        const ox = (i - 1) * 30 - 330 * mj(taken), oy = 1266 + 44 * E.out(out) + i * 6 - 40 * mj(taken);
-        S.push(540 + ox, oy, (i - 1) * 5 * deg - 22 * deg * mj(taken), 1.15);
+        const x = inHand ? q.x + 70 + (i - 1) * 30 : 540 + (i - 1) * 30, y = inHand ? q.y + 64 + i * 6 : 1266 + 44 * E.out(out) + i * 6;
+        S.push(x, y, (i - 1) * 5 * deg + (inHand ? q.rot + 30 * deg : 0), 1.15);
         S.tube(rr(-95, 0, 95, 70, 6, 2), 'green', 0.95, 5, { closed: true });
         S.tube(circ(0, 35, 15, 14), 'green', 0.75, 4, { closed: true });
         S.pop();
