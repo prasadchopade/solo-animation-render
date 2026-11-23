@@ -99,7 +99,7 @@
     if (o.shadow !== false) {                       // a crisp contact shadow: paper lying just above the layer below
       const d = (o.lift ?? 3) * SHADOW_K;
       g.shadowColor = o.shadowColor || 'rgba(16, 34, 52, 0.36)';
-      g.shadowBlur = o.blur ?? d * 0.6;
+      g.shadowBlur = o.blur ?? d * 0.5;
       g.shadowOffsetX = d * 0.5; g.shadowOffsetY = d * 0.75;
     }
     g.globalAlpha *= o.alpha ?? 1;
@@ -112,7 +112,7 @@
       const path = REC;
       g.save(); g.clip();
       const m = g.getTransform(), sc = Math.sqrt(Math.abs(m.a * m.d - m.b * m.c)) || 1;
-      const k = clamp(1.0 * Math.sqrt(sc) * (o.coreW ?? 1), 0.9, 2.6);
+      const k = clamp(2.2 * Math.sqrt(sc) * (o.coreW ?? 1), 2.2, 4.2);
       g.globalAlpha = 0.62; g.fillStyle = '#fffaf0'; g.fillRect(-1e5, -1e5, 2e5, 2e5);
       g.globalAlpha = 1; g.setTransform(m.a, m.b, m.c, m.d, m.e + k, m.f + k); g.fillStyle = color; g.fill(path);
       g.restore();
@@ -189,7 +189,7 @@
     return c;
   }
   let PIECE = null;
-  let SHADOW_K = (typeof window !== 'undefined' && window.SHADOW_K) || 1.5;   // how far pieces stand off the layer below (crisp, so they read at phone size)
+  let SHADOW_K = (typeof window !== 'undefined' && window.SHADOW_K) || 2.0;   // how far pieces stand off the layer below (crisp, so they read at phone size)
   const patCache = new WeakMap();
   function patternFor(g, tile) {
     let m = patCache.get(g); if (!m) { m = new Map(); patCache.set(g, m); }
@@ -212,7 +212,7 @@
   }
 
   // time on twos: the picture changes every other frame at 30 fps (15 changes a second), like stop-motion paper
-  const twos = (t, fps = 30) => Math.floor(t * fps / 2) * 2 / fps;
+  const twos = (t, fps = 30) => Math.floor(t * fps / 2 + 1e-6) * 2 / fps;   // (+1e-6: n/30*15 can round just under a whole step)
 
   window.PAPER = { TAU, loopNoise, tooth, blob, limb, poly, strip, fill, fibreTile, paperTile, usePieceTexture, grain, twos, setShadow: (k) => (SHADOW_K = k) };
 })();
