@@ -43,7 +43,7 @@
   for (const [k, v] of Object.entries(T)) S[k] = v >= T.reveal - 1e-6 ? v - F : v;
   S.lgStand = S.saw - 0.05; S.whistle = S.saw + 0.2; S.point = S.saw + 0.5;    // "you saw": on her feet; she points on "friends"
   S.lgJump = S.there + 0.1; S.lgLand = S.lgJump + 0.45;
-  S.lgWade = S.lgLand + 1.15; S.lgDive = S.lgWade + 1.0; S.lgSwim = S.lgDive + 0.4;
+  S.lgWade = S.lgLand + 0.85; S.lgDive = S.lgWade + 0.7; S.lgSwim = S.lgDive + 0.35;   // (she's in the water before "Help!")
   S.reach = S.pushing + 0.6;                                         // the tube lifts her as "…pushing her mouth up." ends
   // her approach: a body length short she comes upright, hauls the tube in hand over hand on its line, and on "pushing"
   // kicks in behind Maya pushing it across her chest; she grips its ends and tows her in to the sandbar
@@ -87,9 +87,10 @@
     } else if (wt < S.c03 - 1.2) {
       const nat = B.mayaState(wt); s = nat.s; press = nat.press;
     } else if (wt < S.reach) {
-      s = keys(wt, [[S.c03 - 1.2, B.mayaState(S.c03 - 1.2).s], [S.c03 - 0.4, 0.5], [S.c03e + 0.15, 0.5], [S.c03e + 0.5, 0.05], [S.c04 + 0.05, 0.05], [S.c04 + 0.45, 0.45],
-        [S.c05 + 0.05, 0.45], [S.c05 + 0.4, 0], [S.c05 + 1.15, 0], [S.c05 + 1.55, 0.6], [S.c05 + 2.0, 0.6], [S.c05 + 2.35, 0],
-        [S.breathe - 0.95, 0], [S.breathe - 0.15, 0.85], [S.breathe + 0.45, 0.85], [S.breathe + 0.8, 0.1], [S.pushing - 0.5, 0.1], [S.pushing + 0.35, 0.65], [S.reach, 0.65]])[0];
+      s = keys(wt, [[S.c03 - 1.2, B.mayaState(S.c03 - 1.2).s], [S.c03 - 0.5, 0.78], [S.c03e + 0.1, 0.78], [S.c03e + 0.45, 0.1], [S.c04 - 0.15, 0.1], [S.c04 + 0.3, 0.8],
+        [S.c04e + 0.1, 0.8], [S.c05 - 0.05, 0.15], [S.c05 + 0.4, 0.15], [S.c05 + 0.85, 0.78], [S.c05 + 1.6, 0.78], [S.c05 + 1.95, 0.12], [S.c05 + 2.5, 0.12],
+        [S.c05 + 2.9, 0.75], [S.c05 + 3.3, 0.75], [S.breathe - 0.6, 0.2], [S.breathe - 0.15, 0.85], [S.breathe + 0.3, 0.85], [S.breathe + 0.6, 0.55],
+        [S.pushing - 0.2, 0.55], [S.pushing + 0.35, 0.75], [S.reach, 0.75]])[0];
       press = s > 0.05 ? 1 : 0.45;
     } else { s = 1; press = 0; }
     const held = ramp(wt, S.reach, S.reach + 0.7);
@@ -99,7 +100,8 @@
     const spray = [(wt - S.cough) / 0.55, (wt - S.cough - 0.45) / 0.55];
     const dx = TOW.dx * tow, dy = TOW.dy * tow;
     const handR = { x: MAYA.x + dx + 55, y: MAYA.y + dy + 30, k: ramp(wt, S.hand - 0.5, S.hand) };
-    return { s: Math.max(s, held), press: press * (1 - held), held, cough, spray, dx, dy, handR };
+    const relief = win(wt, S.reach + 0.3, S.reach + 0.5, S.reach + 1.6, S.reach + 1.8), smile = ramp(wt, S.hand + 0.1, S.hand + 0.4);
+    return { s: Math.max(s, held), press: press * (1 - held), held, cough, spray, dx, dy, handR, relief, smile };
   }
   // her friends. No. 4: "Maya?", arms open, looking round (to the beach first); "Maya!", a startle and a lunge, the arm
   // nearer Maya reaching for her; "Help!", turned to the shore, the other arm waving high. When the tow brings Maya in,
@@ -126,10 +128,11 @@
       const reach = { x: mh.handR.x, y: mh.handR.y, k: ramp(wt, S.hand - 0.7, S.hand) };
       return { stop: 1, look, toMaya, shout, open, startle, lunge, waveShore, armsUp, reach, dx, dy };
     }
-    if (n === 13) {
+    if (n === 13) {                                     // she stops on "Maya?", looks at her friend, then at Maya: hands to her mouth
       const p = { x: 606, y: 866 };
-      if (wt < S.c04 - 0.25) return null;
-      return { stop: 1, look: LOOK(p.x, p.y, MAYA.x, MAYA.y), shout: 0, armsUp: 0.5 * ramp(wt, S.c05e + 0.4, S.c05e + 0.9) * (1 - ramp(wt, S.hand - 0.5, S.hand)) };
+      if (wt < S.c03 - 0.1) return null;
+      const look = turnTo(turnTo(-1.9, LOOK(p.x, p.y, 462, 824), ramp(wt, S.c03 - 0.1, S.c03 + 0.3)), LOOK(p.x, p.y, MAYA.x, MAYA.y), ramp(wt, S.c04 - 0.2, S.c04 + 0.15));
+      return { stop: 1, look, shout: 0, armsUp: 0, worried: ramp(wt, S.c04 - 0.1, S.c04 + 0.3) * (1 - ramp(wt, S.hand + 0.3, S.hand + 0.8)) };
     }
     return null;
   }
@@ -139,8 +142,8 @@
   // line. She comes in on Maya's left, never head-on: a body length off she comes upright facing her, hauls the tube in
   // hand over hand round her side, and on "pushing" kicks in beside Maya sliding it across her chest. She grips its end
   // and Maya's shoulder, turns to the shore, and tows her in beside her with a sidestroke.
-  const P0 = { x: MAYA.x - 120, y: MAYA.y + 10 };                    // where she stops: a body length off Maya's left
-  const SIDE = { x: -56, y: 14 };                                    // beside her, heads level
+  const P0 = { x: MAYA.x - 170, y: MAYA.y + 10 };                    // where she stops: a body length off Maya's left
+  const SIDE = { x: -66, y: 12 };                                    // beside her, heads level and apart
   const SWIM_DIR = LOOK(420, 1130, P0.x, P0.y);
   const TRAIL = [P0.x - Math.sin(SWIM_DIR) * 190, P0.y + Math.cos(SWIM_DIR) * 190];   // where the tube lies when she stops
   function lifeguard(wt) {
@@ -192,26 +195,30 @@
         tube: { x: lerp(P0.x + 58, M.x, k), y: lerp(P0.y + 44, M.y + 58, k), len: 92, rot: 0 } };
     }
     const towK = ramp(wt, S.tow - 0.2, S.tow + 0.3);
-    return { mode: 'hold', grip: ramp(wt, S.reach, S.reach + 0.4), tow: towK * (1 - ramp(wt, S.towEnd - 0.3, S.towEnd)), mayaW: M,
+    return { mode: 'hold', grip: ramp(wt, S.reach, S.reach + 0.4), towK, tow: towK * (1 - ramp(wt, S.towEnd - 0.3, S.towEnd)), mayaW: M,
       x: M.x + SIDE.x, y: M.y + SIDE.y, dir: turnTo(Math.PI / 2, Math.PI, towK), tube: { x: M.x, y: M.y + 58, len: 92, rot: 0 } };
   }
   const ctx = {
     // No. 6: a crouch, "Help!", arms flung up, flailing; then bobbing and slapping the water; his brother jumps at the
     // shout and turns to him. After "Time.", the water he throws at his brother flies on "boy", and they both laugh.
     boy(wt) {
-      const flail = win(wt, T.help - 0.12, T.help + 0.12, T.help + 1.1, T.help + 1.5);
+      const flail = Math.max(win(wt, T.help - 0.12, T.help + 0.12, T.help + 1.1, T.help + 1.5), win(wt, S.noise + 0.05, S.noise + 0.25, S.noise + 1.0, S.noise + 1.3));
+      const face = Math.max(win(wt, T.help - 0.3, T.help + 0.15, T.help + 1.1, T.help + 1.6), win(wt, S.noise - 0.15, S.noise + 0.3, S.noise + 1.0, S.noise + 1.45));
       const th = (wt - (S.boy - 0.4)) / 1.1;
-      return { flail, help: T.help, throwK: th > 0 && th < 1 ? th : 0,
+      return { flail, face, help: T.help, throwK: th > 0 && th < 1 ? th : 0,
         laugh: win(wt, S.boy - 0.15, S.boy + 0.3, S.boy + 2.75, S.boy + 3.35), broLaugh: win(wt, S.boy - 0.05, S.boy + 0.4, S.boy + 2.85, S.boy + 3.45),
         flinch: win(wt, S.boy + 0.05, S.boy + 0.25, S.boy + 1.95, S.boy + 2.55),
         broStartle: win(wt, T.help + 0.05, T.help + 0.14, T.help + 0.45, T.help + 0.95), broTurn: win(wt, T.help + 0.1, T.help + 0.45, T.help + 2.3, T.help + 2.9) };
     },
     waving(wt) {
       const a = win(wt, T.wave - 0.2, T.wave + 0.15, T.wave + 3.0, T.wave + 3.4), b = win(wt, S.man - 0.2, S.man + 0.15, S.man + 2.6, S.man + 3.0);
-      return { k: Math.max(a, b), t0: wt < S.man - 0.6 ? T.wave - 0.2 : S.man - 0.2 };
+      const c = win(wt, S.noise + 0.2, S.noise + 0.45, S.noise + 1.15, S.noise + 1.45);
+      return { k: Math.max(a, b, c), t0: wt < S.noise - 0.5 ? T.wave - 0.2 : wt < S.man - 0.6 ? S.noise + 0.0 : S.man - 0.2 };
     },
     boatWave(wt) { return win(wt, S.boat - 0.15, S.boat + 0.15, S.boat + 2.4, S.boat + 2.8); },
     lifeguard, maya, friend,
+    // No. 7: after the answer she stops her chatting gestures; on "Help!" she turns to look
+    bystander(n, wt) { return n === 7 ? { quiet: ramp(wt, S.reveal, S.reveal + 0.5), look: LOOK(566, 640, MAYA.x, MAYA.y), k: ramp(wt, S.c05 - 0.05, S.c05 + 0.45) } : null; },
     sets: [[12.6, 15.8]],
   };
 
@@ -226,28 +233,25 @@
     [drowning, 540, 960, 1.0],
     [drowning + 0.7, 548, 952, 1.02],                // a breath in on "drowning"
     [T.ring0 + 6.0, 548, 952, 1.02],
-    [T.ring0 + 8.2, 560, 900, 1.04],                 // one wide drift; every tag stays inside x 950
-    [T.ring0 + 10.4, 540, 930, 1.03],
-    [T.ring0 + 12.0, 540, 960, 1.0],
+    [T.ring0 + 7.5, 560, 900, 1.04],                 // one wide drift while she's up; every tag stays inside x 950
+    [T.ring0 + 8.5, 540, 960, 1.0],                  // back before she slips under
     [T.reveal, 540, 960, 1.0],                       // the freeze holds the whole beach
-    [T.reveal + 1.8, 330, 712, 3.2],                 // "It's number nine.": in on her, close
-    [CUT0, 330, 712, 3.2],
-    [CUT0 + 0.001, 540, 960, 1.0],                   // cut: "Did you go for the noise?": the whole loud beach
+    [T.reveal + 2.5, 370, 760, 3.4],                 // "It's number nine.": in on her, close (2.5 s: no judder)
+    [CUT0, 370, 760, 3.4],
+    [CUT0 + 0.001, 540, 960, 1.0],                   // cut: "Did you go for the noise?": the boy flails, the man waves
     [CUT1, 552, 950, 1.06],
-    [CUT1 + 0.001, 831, 1140, 3.0],                  // cut: the boys, close (the water flies on "boy")
-    [CUT2, 831, 1140, 3.0],
+    [CUT1 + 0.001, 831, 1180, 3.4],                  // cut: the boys alone, close (the water flies on "boy")
+    [CUT2, 831, 1180, 3.4],
     [CUT2 + 0.001, 838, 930, 2.4],                   // cut: the man, waving
     [CUT2B, 838, 930, 2.4],
     [CUT2B + 0.001, BX, 246, 2.8],                   // cut: the boat far out, a towel swung back
     [CUT3, BX + 8, 246, 2.8],
-    [CUT3 + 0.001, 330, 712, 3.0],                   // cut: "If you found her": Maya
-    [CUT4, 330, 712, 3.0],
-    [CUT4 + 0.001, 186, 1410, 3.0],                  // cut: "you saw": the lifeguard on her feet, a whistle, pointing
-    [CUT5, 186, 1410, 3.0],
-    [CUT5 + 0.001, 400, 780, 2.3],                   // cut: "They're right there.": Maya and her friends
-    [T.c03 - 0.3, 400, 780, 2.3],
-    [T.c03 + 0.3, 420, 800, 2.8],                    // her friend large, Maya behind her, for her three calls
-    [T.c05e + 0.2, 420, 800, 2.8],
+    [CUT3 + 0.001, 370, 760, 3.4],                   // cut: "If you found her": Maya
+    [CUT4, 370, 760, 3.4],
+    [CUT4 + 0.001, 186, 1425, 3.6],                  // cut: "you saw": the lifeguard, close: on her feet, a whistle, pointing
+    [CUT5, 186, 1425, 3.6],
+    [CUT5 + 0.001, 470, 820, 2.3],                   // cut: "They're right there.": Maya and both her friends, inside x 950
+    [T.c05e + 0.2, 480, 830, 2.45],                  // a slow push through her three calls
   ];
   function camera(t) {
     if (t >= T.rewind0) return camAt(540, 960, 1.0);  // the replay: the first frame's full view
@@ -260,7 +264,7 @@
       const d = Math.hypot(lx - mx, ly - my);
       const rc = [(lx + mx) / 2, (ly + my) / 2 + 30, clamp(1450 / (d + 480), 1.8, 2.4)];
       const end = [mx, my + 60, 2.6];                     // (the floater, No. 2, stays out of the rescue)
-      const k = ramp(t, T.c05e + 0.2, T.c05e + 1.2), k2 = ramp(t, T.reachF - 0.6, T.reachF + 0.5);
+      const k = ramp(t, T.c05e + 0.2, T.c05e + 1.6), k2 = ramp(t, T.reachF - 0.6, T.reachF + 0.5);
       [cx, cy, s] = [0, 1, 2].map((j) => lerp(lerp([cx, cy, s][j], rc[j], k), end[j], k2));
     }
     return camAt(cx, cy, s);
@@ -275,7 +279,7 @@
     return (n) => {
       let off;
       if (n === 9) off = ramp(t, T.c03 + 0.05, T.c03 + 0.8);                 // her number gives way to her name
-      else { const t0 = T.ring1 + 0.2 + 0.05 * LIFT_ORDER.indexOf(n); off = ramp(t, t0, t0 + 0.75); }
+      else off = ramp(t, T.ring1 + 0.2, T.ring1 + 0.95);                  // all fifteen in one sweep, gone by 17.9 s
       return t >= T.rewind0 ? 1 - back : off;
     };
   }

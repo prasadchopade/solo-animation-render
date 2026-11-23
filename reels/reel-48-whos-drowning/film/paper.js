@@ -212,7 +212,9 @@
   }
 
   // time on twos: the picture changes every other frame at 30 fps (15 changes a second), like stop-motion paper
-  const twos = (t, fps = 30) => Math.floor(t * fps / 2 + 1e-6) * 2 / fps;   // (+1e-6: n/30*15 can round just under a whole step)
+  // drawings change on whole even frames: from the frame number, rounded (a render chunk's start time can be a
+  // fraction of a millisecond early, which put every step a frame late from there on: a shimmer)
+  const twos = (t, fps = 30) => Math.floor(Math.round(t * fps) / 2) * 2 / fps;
 
   window.PAPER = { TAU, loopNoise, tooth, blob, limb, poly, strip, fill, fibreTile, paperTile, usePieceTexture, grain, twos, setShadow: (k) => (SHADOW_K = k) };
 })();
