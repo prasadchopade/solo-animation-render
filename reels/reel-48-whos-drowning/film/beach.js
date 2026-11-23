@@ -69,7 +69,7 @@
   const PEOPLE = [
     { n: 9, kind: 'maya', x: 330, y: 692, skin: 2, hair: 1, suit: 'teal', T: 4.6, ph: 0.15 },
     { n: 2, kind: 'floater', x: 118, y: 486, skin: 0, hair: 3, suit: 'coral', rot: -1.62, T: 6.0, ph: 0.4 },
-    { n: 1, kind: 'crawl', x: 900, y: 500, skin: 3, hair: 2, suit: 'navy', rot: -1.57, T: 2.6, ph: 0.0, style: 'cap', capC: '#e5352a' },
+    { n: 1, kind: 'crawl', x: 870, y: 500, skin: 3, hair: 2, suit: 'navy', rot: -1.57, T: 2.6, ph: 0.0, style: 'cap', capC: '#e5352a' },
     { n: 3, kind: 'snorkel', x: 872, y: 612, skin: 1, hair: 0, suit: 'purple', rot: 0.15, T: 1.1, ph: 0.3 },
     { n: 7, kind: 'tread', x: 566, y: 640, skin: 4, hair: 2, suit: 'yellow', rot: 1.35, T: 2.4, ph: 0.2, style: 'cap', capC: '#ff8db0' },
     { n: 16, kind: 'tread', x: 708, y: 704, skin: 1, hair: 4, suit: 'coral', rot: -1.6, T: 2.7, ph: 0.65, style: 'curly' },
@@ -77,7 +77,7 @@
     { n: 13, kind: 'splash', x: 606, y: 866, skin: 3, hair: 2, suit: 'yellow', rot: -1.9, T: 0.9, ph: 0.5, style: 'braids' },
     { n: 11, kind: 'waver', x: 838, y: 910, skin: 2, hair: 2, suit: 'navy', rot: -0.2, T: 0.8, ph: 0.0, style: 'bald' },
     { n: 14, kind: 'stander', x: 140, y: 936, skin: 4, hair: 2, suit: 'blue', rot: 3.0, T: 3.4, ph: 0.3, style: 'cap', capC: '#fbfbf6' },
-    { n: 8, kind: 'breast', x: 664, y: 1012, skin: 0, hair: 4, suit: 'coral', rot: -0.15, T: 2.0, ph: 0.1, style: 'flowercap' },
+    { n: 8, kind: 'breast', x: 720, y: 1012, skin: 0, hair: 4, suit: 'coral', rot: -0.15, T: 2.0, ph: 0.1, style: 'flowercap' },
     { n: 6, kind: 'flailer', x: 778, y: 1130, skin: 1, hair: 0, suit: 'yellow', rot: 0.1, T: 0.5, ph: 0.0, size: 0.8 },
     { n: 15, kind: 'brother', x: 884, y: 1156, skin: 1, hair: 0, suit: 'teal', rot: -1.0, T: 1.3, ph: 0.4, size: 0.8 },
     { n: 10, kind: 'ringkid', x: 332, y: 1160, skin: 3, hair: 2, suit: 'pink', rot: -2.0, T: 2.2, ph: 0.2 },
@@ -480,9 +480,10 @@
 
   // front crawl: a slow lap across the channel and back, breathing to the side every third stroke
   function crawlPath(p, tt) {
-    // one long straight swim from the right to the left, no turns (a turn swept his legs across his neighbours), a lane
-    // clear of every head, tag and the ring
-    return { x: p.x - 26 * tt, y: p.y, rot: -Math.PI / 2 };
+    // a slow straight swim from the right, no turns (a turn swept his legs across his neighbours), in a lane clear of every
+    // head, tag and the ring; at about 22 s he slows to a stop (well short of No. 2) and treads water
+    const v = 12.8, s0 = 20.7, u = clamp((tt - s0) / 1.2), d = tt < s0 ? v * tt : v * (s0 + 1.2 * (u - u * u / 2));
+    return { x: p.x - d, y: p.y, rot: -Math.PI / 2, rest: u };
   }
   DRAW.crawl = (g, p, t, pass) => {
     const tt = tw(t);
@@ -491,7 +492,8 @@
     const ph = (tt / p.T + p.ph) % 1;
     const breath = ph < 0.5 && Math.floor(tt / p.T + p.ph) % 3 === 0 ? Math.sin(ph * 2 * Math.PI) : 0;
     g.save(); g.translate(x, y); g.rotate(P2.rot);
-    const pull = ph < 0.5 ? 1 : -1, a = ph < 0.5 ? ph * 2 : (ph - 0.5) * 2;
+    const pull = ph < 0.5 ? 1 : -1, a0 = ph < 0.5 ? ph * 2 : (ph - 0.5) * 2, rest = P2.rest || 0;
+    const a = lerp(a0, 0.55, rest);                            // resting: the stroke stops with his arms forward, gliding
     if (pass === 'under') {
       torso(g, 0, 16, 0, 44, 34, 70, p.seed + 1); g.fillStyle = under(p.suitC, 0.9); g.fill();
       for (const s2 of [-1, 1]) arm2(g, s2 * 10, 86, s2 * 12 + 4 * wave(tt, 0.5, s2 * 0.25), 150, { L1: 32, L2: 32, r1: 9, r2: 7, color: under(p.skinC, 1.1), under: true, seed: p.seed + 2 + s2 * 4, ox: 0, oy: 120 });
@@ -505,7 +507,7 @@
       for (let i = 0; i < 5; i++) {
         const u = ((tt * 3 + i * 0.21) % 1);
         g.save(); g.globalAlpha = 0.8 * (1 - u);
-        blob(g, (i - 2) * 6, 150 + u * 26, 5 + u * 4, 3.5 + u * 3, 0, p.seed + 20 + i, 0.25); fill(g, COL.foam, { lift: 1 });
+        blob(g, (i - 2) * 6, 150 + u * 26, (5 + u * 4) * (1 - rest), (3.5 + u * 3) * (1 - rest) + 0.1, 0, p.seed + 20 + i, 0.25); fill(g, COL.foam, { lift: 1 });
         g.restore();
       }
     }
@@ -644,7 +646,7 @@
       for (const s2 of [-1, 1]) arm2(g, x + s2 * 10, y + 58, x + s2 * 12, y + 92, { L1: 18, L2: 18, r1: 9, r2: 8, color: under(p.skinC, d * 0.6), under: true, seed: p.seed + 2 + s2 * 4, ox: x, oy: y + 70, inside: true });
       g.save(); g.globalAlpha = 0.16; blob(g, x + 26, y + 70, 30, 44, 0.3, p.seed + 5, 0.1); g.fillStyle = COL.shade; g.fill(); g.restore();
     } else if (pass === 'above') {
-      let waveArm = null;
+      let waveArm = null, worriedArms = null;
       const jk = 1 + 0.07 * (R && R.startle ? R.startle : 0);       // a startle: she jolts up, bigger for a beat
       g.save(); g.translate(x, y); g.scale(jk, jk); g.translate(-x, -y);
       const [SL, SR] = shoulders(x, y + 12, body - 0, 20);
@@ -666,9 +668,10 @@
         for (const s2 of [-1, 1]) {
           const S = s2 > 0 ? SR : SL;
           let hx = S[0] + s2 * 12, hy = S[1] + 22, lift = 2;
-          if (R.worried > 0) {                                            // hands to her mouth, trembling
+          if (R.worried > 0) {                                            // hands to her mouth, trembling, elbows out
             const tr = 1.5 * Math.sin(tt * 40 + s2);
-            hx = lerp(hx, x + Math.sin(look) * 12 + s2 * 7 + tr, R.worried); hy = lerp(hy, y - Math.cos(look) * 12 + 6, R.worried); lift = 3 + 2 * R.worried;
+            hx = lerp(hx, x + Math.sin(look) * 18 + s2 * 8 + tr, R.worried); hy = lerp(hy, y - Math.cos(look) * 18 + 4, R.worried); lift = 5 + 3 * R.worried;
+            if (R.worried > 0.3) { (worriedArms = worriedArms || []).push([S[0], S[1], hx, hy, lift, s2]); continue; }   // drawn over her head
           }
           if (open > 0) { const ox2 = S[0] - x, oy2 = S[1] - (y + 12); hx = lerp(hx, S[0] + ox2 * 1.5 + Math.sin(look) * 6, open); hy = lerp(hy, S[1] + oy2 * 1.5 - Math.cos(look) * 6, open); lift = 2 + 2 * open; }
           if (up > 0) { const a2 = look + s2 * (0.35 + 0.28 * wave(tt, 0.45, s2 > 0 ? 0 : 0.5)); hx = lerp(hx, x + s2 * 18 + sin(a2) * 46, up); hy = lerp(hy, y + 6 - cos(a2) * 46, up); lift = 4 + 6 * up; }
@@ -688,6 +691,7 @@
       const quake = R && R.worried ? 0.05 * Math.sin(tt * 7) * R.worried : 0;
       head3(g, x, y, 20, p, look + 0.12 * sin(tt * 3) * (1 - stop) + quake, Math.max(0.45 * laughing, 0.55 * shoutK * toUs, stop * 0.08), { expr: shoutK > 0.3 ? 'shout' : laughing > 0.3 ? 'laugh' : 'blank', mouth: 0.2, lift: 3 + 2 * shoutK });
       if (waveArm) { const [sx, sy, hx, hy, lift, s2] = waveArm; arm2(g, sx, sy, hx, hy, { L1: 26, L2: 28, color: p.skinC, lift, seed: p.seed + 7 + s2 * 4, ox: x, oy: y + 20 }); }
+      if (worriedArms) for (const [sx, sy, hx, hy, lift, s2] of worriedArms) arm2(g, sx, sy, hx, hy, { L1: 26, L2: 28, color: p.skinC, lift, seed: p.seed + 7 + s2 * 4, ox: x, oy: y + 40 });
       // the water thrown at the friend: white paper drops flying along `look`
       if (stop < 0.5 && ph > 0.32 && ph < 0.95) {
         const u = (ph - 0.32) / 0.63;
@@ -1280,7 +1284,7 @@
       g.save(); g.globalAlpha = 0.2 + 0.1 * k; blob(g, cx + 34 + 62 * k, cy + 38 + 66 * k, 36 + 36 * k, 22 + 8 * k, 0.8, 939, 0.12); g.fillStyle = COL.shade; g.fill(); g.restore();
       g.save(); g.translate(cx, cy - 10); g.scale(FIG * (1 + 0.14 * k), FIG * (1 + 0.14 * k)); g.translate(-cx, -(cy - 10));
       const turn = (LG.turn || 0) * (1 - k), shade = (LG.shade || 0) * (1 - k);
-      if (k > 0.05) for (const s2 of [-1, 1]) { limb(g, cx + s2 * 10, cy + 18 - 10 * k, cx + s2 * 12, cy + 18 - 10 * k + 36 * k, 8, 6.5, 937 + s2, 0.06); fill(g, lp.skinC, { lift: 13 + 8 * k }); }   // standing: her legs
+      if (k > 0.05) for (const s2 of [-1, 1]) { limb(g, cx + s2 * 10, cy + 18 - 10 * k, cx + s2 * 12, cy + 18 - 10 * k + 16 * k, 8, 6.5, 937 + s2, 0.06); fill(g, lp.skinC, { lift: 13 + 8 * k }); }   // standing: her legs
       torso(g, cx, cy - 8 - 10 * k, turn, 46, 38, 30, 931); fill(g, COL.red, { lift: 14 + 8 * k });
       const [SL, SR] = shoulders(cx, cy - 6 - 10 * k, turn, 20);
       const look = LG.look ?? 0;
@@ -1289,7 +1293,8 @@
       arm2(g, SL[0], SL[1], lerp(lerp(cx - 28, brow[0], shade), cx + Math.sin(look) * 14, whistle), lerp(lerp(cy + 14 - 10 * k, brow[1], shade), hy - Math.cos(look) * 14, whistle),
         { L1: 22, L2: 22, color: COL.red, lift: 15 + 10 * k, seed: 932, ox: cx, oy: cy + 10, hand: false });
       // right hand: on her knee, then pointing at Maya, the arm straight
-      arm2(g, SR[0], SR[1], lerp(cx + 28, SR[0] + Math.sin(LG.pointAt ?? look) * 50, point), lerp(cy + 14 - 10 * k, SR[1] - Math.cos(LG.pointAt ?? look) * 50, point),
+      const pa = (LG.pointAt ?? look) + 0.04 * Math.sin(tw(t) * 6) * point;   // a held point, still alive
+      arm2(g, SR[0], SR[1], lerp(cx + 28, SR[0] + Math.sin(pa) * 50, point), lerp(cy + 14 - 10 * k, SR[1] - Math.cos(pa) * 50, point),
         { L1: 24, L2: 25, color: COL.red, lift: 15 + 10 * k + 6 * point, seed: 936, ox: cx, oy: cy + 10, hand: false });
       head3(g, cx, hy, 18, lp, look, 0.12, { lift: 15 + 10 * k });
       if (whistle > 0.5) { blob(g, cx + Math.sin(look) * 18, hy - Math.cos(look) * 18, 4.5, 3.5, look, 935, 0.1); fill(g, '#cfd6da', { lift: 26 }); }
@@ -1373,7 +1378,7 @@
       const x = r() * W, y = 300 + r() * 420;
       const u = ((tt / T + ph) % 1);
       if (u > 0.18) continue;
-      if (pos && Object.values(pos).some((q) => Math.hypot(q.x - x, q.y - y) < 95)) continue;
+      if (pos && Object.values(pos).some((q) => Math.hypot(q.x - x, q.y - y) < 150)) continue;
       const k = Math.sin((u / 0.18) * Math.PI);
       g.save(); g.translate(x, y); g.globalAlpha = 0.9 * k;
       for (let j = 0; j < 2; j++) {                                          // one or two slivers, torn, lying flat
@@ -1401,6 +1406,7 @@
     poly(g, [[-20, -14], [14, -14], [14, 14], [-20, 14]], 622, 0.8); fill(g, '#d9e6ea', { lift: 3 });
     const bp = { seed: 640, skinC: SKIN[3], hairC: HAIR[0], suitC: COL.yellow };
     torso(g, -44, 8, 0, 26, 22, 16, 642); fill(g, COL.yellow, { lift: 5 + 4 * w });
+    if (w <= 0.25) { limb(g, -54, 2, -40, 14, 5, 5, 653, 0.08); fill(g, COL.white, { lift: 6 }); }   // the towel over her shoulder
     const sw = Math.sin(TAU * tt / 0.9);                              // one swing of the towel every 0.9 s (on twos)
     const hand = [lerp(-30, -38 + 12 * sw, w), lerp(14, -30, w)];
     arm2(g, -52, 4, -58, 14, { L1: 14, L2: 14, r1: 4.5, r2: 4, color: bp.skinC, lift: 5, seed: 643, ox: -44, oy: 20 });
@@ -1447,8 +1453,11 @@
       const off = o.lift ? o.lift(p.n) : 0;
       if (off >= 0.999) continue;
       const [ox, oy] = TAG_AT[p.n] || [40, -46];
-      const up = ez(clamp(off / 0.3)), away = ez(clamp((off - 0.3) / 0.7)), side = q.x + ox < W / 2 ? -1 : 1;
-      const x = q.x + ox + side * 1150 * away, y = q.y + oy - 34 * up - 150 * away;
+      // off 0..1 runs evenly: the first quarter lifts it; the rest carries it off, accelerating, just past the frame's
+      // nearer edge, on the side away from Maya (tag 9, in a closer shot, goes up and to the left)
+      const tx0 = q.x + ox, ty0 = q.y + oy, up = ez(clamp(off / 0.25)), cc = clamp((off - 0.25) / 0.75), away = cc * cc;
+      const side = p.n === 9 ? -1 : tx0 < 330 ? -1 : 1, dist = p.n === 9 ? 270 : side < 0 ? tx0 + 90 : W - tx0 + 90;
+      const x = tx0 + side * dist * away, y = ty0 - 30 * up - (p.n === 9 ? 120 : 60) * away;
       const tr = mulberry32(1000 + p.n), rad = 29.5 + tr() * 3, rot = (tr() - 0.5) * 0.16 + side * 0.7 * away + 0.12 * up * (tr() - 0.5);
       g.save(); g.translate(x, y); g.rotate(rot); g.scale(1 + 0.2 * up, 1 + 0.2 * up);
       blob(g, 0, 0, rad, rad * (0.96 + tr() * 0.06), tr() * 3, 1000 + p.n, 0.08); fill(g, COL.white, { lift: 4 + 22 * up, texA: 0.5 });
