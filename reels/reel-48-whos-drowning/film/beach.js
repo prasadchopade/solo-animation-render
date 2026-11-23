@@ -216,7 +216,7 @@
       blob(g, x - lx * b - r * 0.1, y - ly * b - r * 0.12, r * 0.52, r * 0.44, -0.6, p.seed + 4, 0.12); g.fillStyle = 'rgba(190, 70, 50, 0.16)'; g.fill();
     } else {
       // hair (or a cap) over the back of the head; it slides back as the head tips up, leaving a hairline at the brow
-      const back = r * (0.42 + 0.66 * t) * (capped ? 0.8 : 1);
+      const back = r * (0.42 + 1.1 * t) * (capped ? 0.8 : 1);   // tipped right back, the hairline is well behind the eyes
       blob(g, x - lx * back, y - ly * back, r * (capped ? 1.14 : 1.1), r * (capped ? 1.06 : 1.02), look, p.seed + 2, st === 'curly' ? 0.2 : 0.08);
       g.fillStyle = hairC; g.fill();
       if (st === 'curly') for (let i = 0; i < 9; i++) {
@@ -268,7 +268,7 @@
           if (op > 0.12) { g.beginPath(); g.ellipse(X, Y, r * (0.085 + 0.085 * op), (r * 0.14 * (0.5 + 0.5 * fore) + 0.4) * op, look, 0, TAU); g.fillStyle = '#fbf6ea'; g.fill(); }
           if (lids < 0.6) { g.beginPath(); g.arc(X, Y, r * 0.075, 0, TAU); g.fillStyle = ink; g.fill(); }
         }
-        if (lids > 0.4) for (const v of [-0.36, 0.36]) { path(arcPts(-0.16, v, 0.3, 0.06, false)); g.stroke(); }
+        if (lids > 0.4) { const lw = g.lineWidth; g.lineWidth = r * 0.14; for (const v of [-0.36, 0.36]) { path(arcPts(-0.16, v, 0.34, 0.08, false)); g.stroke(); } g.lineWidth = lw; }   // bold lid arcs: they must read on a phone
         const bw = (o.eyeOpen ?? 1) * (1 - 0.6 * lids);
         if (bw > 0.1) for (const s2 of [-1, 1]) { path([F(-0.36, 0.56 * s2), F(-0.36 - 0.11 * bw, 0.2 * s2)]); g.stroke(); }
       } else {                                                         // open eyes: dots
