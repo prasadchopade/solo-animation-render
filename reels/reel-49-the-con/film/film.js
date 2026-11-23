@@ -73,7 +73,7 @@
     T.point = T.cut + 0.25;
     T.sweep = atW('u06', /change/) - 0.05;                        // "you have change?": the coin into the tin
     T.take500 = atW('u06', /take/);                               // "Then take your five hundred back": the 500 goes over
-    T.give = en('u06') - 0.05;                                    // the 500 meets his hand
+    T.give = atW('u06', /back/) + 0.08;                           // he takes the 500 on "back"
     T.pocket = T.give + 0.2;
     T.tap = [T.pocket + 0.4, T.pocket + 0.7, T.pocket + 1.0];     // one, two, three
     T.brow = T.tap[2] + 0.2;
@@ -137,15 +137,15 @@
       const [px, py] = PILE[i];
       ks.push({ t: tl - 0.42, d: 0.16, x: 362, y: 1112, a: -0.3, fs: 1, pose: 'pinch' });
       ks.push({ t: tl - 0.24, d: 0.24, x: px - 70, y: py - 12, a: 0.2, fs: 1, pose: 'flat', swap: 0.9, bow: 0.22, ease: ein });
-      ks.push({ t: tl + 0.04, d: 0.16, x: px - 90, y: py - 70, a: 0.4, fs: 0.95, pose: 'rest' });
+      ks.push({ t: tl + 0.05, d: 0.26, x: 440, y: 1150, a: -0.1, fs: 1, pose: 'pinch', bow: -0.12 });   // straight off the note and back towards the wad: the number shows
     };
     T.c.forEach((tl, i) => deal(tl, i));
     ks.push({ t: T.cut + 0.05, d: 0.2, x: 520, y: 1150, a: 1.1, fs: 0.9, pose: 'open' });
     ks.push({ t: T.sweep, d: 0.22, x: COIN[0] + 40, y: COIN[1] + 10, a: PI - 0.3, fs: 0.95, pose: 'flat', bow: 0.1 });
     ks.push({ t: T.sweep + 0.24, d: 0.26, x: TIN[0] + 50, y: TIN[1] + 20, a: PI - 0.6, fs: 0.95, pose: 'flat', bow: -0.15 });
-    ks.push({ t: T.take500 - 0.1, d: 0.28, x: N500[0] + 70, y: N500[1] - 20, a: 0.15, fs: 1, pose: 'pinch', bow: 0.1 });
-    ks.push({ t: T.take500 + 0.25, d: 0.5, x: 560, y: 1150, a: -0.05, fs: 1, pose: 'pinch', bow: 0.2, ease: settle });
-    ks.push({ t: T.give + 0.2, d: 0.3, x: 560, y: 1080, a: 1.3, fs: 0.9, pose: 'rest' });
+    ks.push({ t: T.take500 - 0.12, d: 0.24, x: N500[0] + 70, y: N500[1] - 20, a: 0.15, fs: 1, pose: 'pinch', bow: 0.1 });
+    ks.push({ t: T.take500 + 0.16, d: 0.42, x: 555, y: 1085, a: -0.05, fs: 1, pose: 'pinch', bow: 0.3, ease: settle });
+    ks.push({ t: T.give + 0.15, d: 0.3, x: 560, y: 1080, a: 1.3, fs: 0.9, pose: 'rest' });
     T.c2.forEach((tl, j) => deal(tl, 3 + j));
     ks.push({ t: T.go - 0.35, d: 0.3, x: UN.x + 260, y: UN.y + 210, a: -1.65, fs: 1, pose: 'open', bow: 0.15 });
     ks.push({ t: T.go + 0.9, d: 0.4, x: 600, y: 1090, a: PI - 0.6, fs: 0.95, pose: 'rest' });
@@ -161,7 +161,7 @@
       { t: T.cut - 0.14, d: 0.14, x: COIN[0] + 92, y: COIN[1] - 4, a: PI + 0.1, fs: 1, pose: 'flat', ease: ein },
       { t: T.point, d: 0.22, x: N500[0] + 190, y: N500[1] - 40, a: PI - 0.2, fs: 1, pose: 'point' },
       { t: T.point + 0.5, d: 0.25, x: 780, y: 1180, a: -1.2, fs: 1, pose: 'point', bow: 0.1 },
-      { t: T.give - 0.32, d: 0.3, x: 760, y: 1150, a: PI + 0.05, fs: 1, pose: 'pinch', ease: settle },
+      { t: T.give - 0.3, d: 0.28, x: 765, y: 1092, a: PI + 0.05, fs: 1, pose: 'pinch', ease: settle },
       { t: T.pocket, d: 0.36, x: POCKET[0] + 60, y: POCKET[1] - 10, a: -1.9, fs: 1, pose: 'pinch', bow: 0.2 },
       { t: T.pocket + 0.4, d: 0.22, x: 830, y: 1330, a: PI + 0.45, fs: 1, pose: 'rest' },
       { t: T.tap[0] - 0.16, d: 0.16, x: PILE[0][0] + 160, y: PILE[0][1] - 20, a: PI - 0.4, fs: 1, pose: 'point' },
@@ -222,7 +222,7 @@
   function money500(t, T, ul, tl) {                   // where the 500 is: his hand, the counter, the uncle's hand, his hand, his pocket
     if (t < T.slap) return { where: 'thief', x: tl.x - 290, y: tl.y + 8, r: -0.06, sq: lerp(0.95, FLAT, t / T.slap) };
     if (t < T.take500 + 0.12) return { where: 'counter', x: N500[0], y: N500[1], r: -0.06 };
-    if (t < T.give) { const u = clamp((t - T.take500 - 0.12) / 0.4); return { where: 'uncle', x: ul.x + 140, y: ul.y + 8, r: lerp(-0.06, 0.02, u), sq: lerp(FLAT, 0.95, u) }; }
+    if (t < T.give) { const u = clamp((t - T.take500 - 0.12) / 0.4), bob = 5 * Math.sin((t - T.take500) * 18) * clamp((t - T.take500 - 0.55) * 4); return { where: 'uncle', x: ul.x + 140, y: ul.y + 8 + bob, r: lerp(-0.06, 0.02, u), sq: lerp(FLAT, 0.95, u) }; }
     if (t < T.pocket + 0.3) { const u = clamp((t - T.pocket) / 0.36); return { where: 'thief', x: tl.x - 130 * (1 - u), y: tl.y + 6, r: lerp(0.02, -1.3, u), sq: lerp(0.95, 0.8, u) }; }
     return { where: 'pocket' };
   }
