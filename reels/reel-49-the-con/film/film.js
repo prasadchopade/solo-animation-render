@@ -9,7 +9,7 @@
 (() => {
   const { W, H, scene, canvas, clamp, lerp, mulberry32 } = C;
   const K = window.KIT, D = window.DRAW;
-  const { TAU, PI, sstep, txt, R, lg, mix, MEN, FLAT, note, coin, tin, hand, arm, fanOf, glass, steam } = D;
+  const { TAU, PI, sstep, txt, R, lg, rg, mix, MEN, FLAT, note, coin, tin, hand, arm, fanOf, glass, steam } = D;
   C.fonts = ['700 condensed 100px Bahn', '700 semi-condensed 46px Bahn', '600 semi-condensed 64px Bahn'];
 
   // ------------------------------------------------------------------ motion helpers (reel 42: mj, key, life)
@@ -121,16 +121,16 @@
   // the uncle's right hand (screen-left): at rest, then the wad out of the tin, held while he deals, back in the tin at the end
   function uRightKeys(T) {
     return [
-      { t: 0, x: 230, y: 1170, a: 1.62, fs: 0.86, pose: 'flat', ex: 100, ey: 1010 },
+      { t: 0, x: 200, y: 1150, a: 0.55, fs: 0.95, pose: 'rest', ex: 90, ey: 1020 },
       { t: T.wad, d: 0.32, x: TIN[0] - 30, y: TIN[1] + 10, a: 1.2, fs: 0.9, pose: 'fist', bow: 0.15, ex: 170, ey: 1000 },
       { t: T.wad + 0.34, d: 0.3, x: 300, y: 1240, a: -PI / 2 + 0.1, fs: 1, pose: 'fist', bow: -0.1, ease: settle, ex: 130, ey: 1290 },
       { t: T.gather - 0.1, d: 0.4, x: TIN[0] - 40, y: TIN[1] + 20, a: 1.3, fs: 0.9, pose: 'fist', bow: 0.12, ex: 170, ey: 1000 },
-      { t: T.gather + 0.35, d: 0.35, x: 230, y: 1170, a: 1.62, fs: 0.86, pose: 'flat', ex: 100, ey: 1010 },
+      { t: T.gather + 0.35, d: 0.35, x: 200, y: 1150, a: 0.55, fs: 0.95, pose: 'rest', ex: 90, ey: 1020 },
     ];
   }
   // the uncle's left hand (screen-right): the lick, five notes dealt with a slap each, the coin into the tin, the 500 handed back, the wave
   function uLeftKeys(T) {
-    const ks = [{ t: 0, x: 570, y: 1070, a: 1.5, fs: 0.86, pose: 'flat' }];
+    const ks = [{ t: 0, x: 600, y: 1090, a: PI - 0.6, fs: 0.95, pose: 'rest' }];
     ks.push({ t: T.lick, d: 0.2, x: UN.x + 70, y: UN.y + 180, a: -2.2, fs: 0.95, pose: 'fist', bow: -0.2 });
     ks.push({ t: T.lick + 0.32, d: 0.18, x: 360, y: 1120, a: -0.3, fs: 1, pose: 'pinch', bow: 0.1 });
     const deal = (tl, i) => {                                       // pull the front note off the wad, carry it, slap it down
@@ -148,7 +148,7 @@
     ks.push({ t: T.give + 0.2, d: 0.3, x: 560, y: 1080, a: 1.3, fs: 0.9, pose: 'rest' });
     T.c2.forEach((tl, j) => deal(tl, 3 + j));
     ks.push({ t: T.go - 0.35, d: 0.3, x: UN.x + 260, y: UN.y + 210, a: -1.65, fs: 1, pose: 'open', bow: 0.15 });
-    ks.push({ t: T.go + 0.9, d: 0.4, x: 570, y: 1070, a: 1.5, fs: 0.86, pose: 'flat' });
+    ks.push({ t: T.go + 0.9, d: 0.4, x: 600, y: 1090, a: PI - 0.6, fs: 0.95, pose: 'rest' });
     return ks;
   }
   // the thief's near (left) hand: the slap, the coin, the point, the 500 into his pocket, the taps, the notes gathered into a fan
@@ -237,6 +237,11 @@
     for (const a of [-2.75, -2.35, -0.8, -0.4, 2.55, 0.55]) { const r0 = 150 + 30 * (1 - s), r1 = r0 + 40 * s; g.beginPath(); g.moveTo(x + Math.cos(a) * r0, y + Math.sin(a) * r0 * 0.42); g.lineTo(x + Math.cos(a) * r1, y + Math.sin(a) * r1 * 0.42); g.stroke(); }
     g.restore();
   }
+  function handShadow(g, x, y, ang, s, a = 0.24) {
+    if (y < D.CF + 20) return;
+    const cx = x + Math.cos(ang) * s * 0.42 + 8, cy = y + Math.sin(ang) * s * 0.42 + 12;
+    g.save(); g.translate(cx, cy); g.rotate(ang); g.fillStyle = rg(g, 0, 0, 4, s * 0.5, [0, 'rgba(40,20,8,' + a + ')'], [1, 'rgba(40,20,8,0)']); g.scale(1, 0.55); g.beginPath(); g.arc(0, 0, s * 0.5, 0, TAU); g.fill(); g.restore();
+  }
   function heldNote(g, h, ang, skin, left, drawNote) { hand(g, h[0], h[1], ang, 185, 'hold', { left, skin, part: 'under' }); drawNote(); hand(g, h[0], h[1], ang, 185, 'hold', { left, skin, part: 'over' }); }
   function shotCounter(g, t, T) {
     if (!BG0) BG0 = stall({});
@@ -270,6 +275,10 @@
     }
     // arms
     const dip = 18 * tapDip(tc, T), Wt = [tl.x + goX, tl.y + dip], Wr = [ur.x, ur.y], Wl = [ul.x, ul.y];
+    const onTable = (p) => p === 'flat' || p === 'rest' || p === 'point' || p === 'open';
+    if (onTable(ur.pose) && !(tc >= T.wad + 0.2 && tc < T.gather + 0.2)) handShadow(g, ur.x, ur.y, ur.a, 185);
+    if (onTable(ul.pose)) handShadow(g, ul.x, ul.y, ul.a, 185);
+    if (here && onTable(tl.pose) && gat <= 0) handShadow(g, Wt[0], Wt[1] - dip, tl.a, 190, 0.24 - 0.14 * tapDip(tc, T));
     if (here) { const S = [TS[0] + goX, TS[1]]; arm(g, S, elbow(S, Wt, 0.22), Wt, TA); }
     arm(g, US.r, ur.ex != null ? [ur.ex, ur.ey] : elbow(US.r, Wr, -0.2), Wr, { ...UA, foldSide: -1 });
     arm(g, US.l, elbow(US.l, Wl, 0.2), Wl, UA);
@@ -381,18 +390,18 @@
     if (!BG0) BG0 = stall({});
     const tc = on2(t), d = tc - T.juggle;
     g.drawImage(BG0, 0, 0); g.fillStyle = 'rgba(40,30,60,0.35)'; g.fillRect(0, 0, W, H);
-    const cx = UN.x + 40, cy = 470, rx = 230, ry = 170, sp = 1.1;
+    const cx = UN.x + 10, cy = 860, rx = 200, ry = 380, sp = 1.1;
     const extra = mj((tc - (T.drop - 1.0)) / 0.5), fall = mj((tc - T.drop) / 0.6);
-    D.uncleBody(g, { look: [8 * Math.sin(d * sp * TAU / 2), -26], op: 0.15 + 0.2 * fall, browUp: 0.4 + 0.8 * fall, close: 0 }, {});
+    D.uncleBody(g, { look: [10 * Math.sin(d * sp * TAU), -9], op: 0.15 + 0.25 * fall, browUp: 0.5 + 0.7 * fall, close: 0, browIn: 0.5 * (1 - fall) }, {});
     D.counter(g);
     const kinds = ['500', '450', 'coin', 'glass'];
     for (let i = 0; i < 4; i++) {
-      const a = (d * sp + i / 4) * TAU, x = cx + rx * Math.cos(a), y = cy - ry * Math.abs(Math.sin(a)) + 40;
+      const a = (d * sp + i / 4) * TAU, x = cx + rx * Math.cos(a), y = cy - ry * Math.abs(Math.sin(a));
       if (i === 1 && fall > 0) { juggleItem(g, '450', lerp(x, 860, fall), lerp(y, 1240, fall) - 220 * Math.sin(fall * PI), fall * 2.4); continue; }
       juggleItem(g, kinds[i], x, y, a);
     }
     if (extra > 0 && fall < 1) { const qx = lerp(980, cx + 120, extra), qy = lerp(900, 360, extra) - 120 * Math.sin(extra * PI); g.save(); g.globalAlpha = 1 - fall; txt(g, '?', qx, qy, 150, '#ffd34a', { align: 'center', stroke: '#14100a', sw: 0.12 }); g.restore(); }
-    for (const [S, sgn] of [[US.r, -1], [US.l, 1]]) { const Wh = [cx + sgn * 170, 860 + 20 * Math.sin(d * sp * TAU + (sgn > 0 ? PI : 0))]; arm(g, S, elbow(S, Wh, sgn * 0.2), Wh, UA); hand(g, Wh[0], Wh[1], -PI / 2 + sgn * 0.3, 185, 'open', { left: sgn > 0, skin: MEN.s2.skin }); }
+    for (const [S, sgn] of [[US.r, -1], [US.l, 1]]) { const Wh = [cx + sgn * 200, 930 + 26 * Math.sin(d * sp * TAU * 2 + (sgn > 0 ? PI : 0))]; arm(g, S, elbow(S, Wh, sgn * 0.2), Wh, UA); hand(g, Wh[0], Wh[1], -PI / 2 + sgn * 0.3, 185, 'open', { left: sgn > 0, skin: MEN.s2.skin }); }
     const pa = mj((tc - (T.drop - 0.3)) / 0.3); if (pa > 0) { g.save(); g.globalAlpha = pa; D.palmUp(g, 900, 1290, 1.0, MEN.thief.skin); g.restore(); }
   }
   function juggleItem(g, kind, x, y, a) {
