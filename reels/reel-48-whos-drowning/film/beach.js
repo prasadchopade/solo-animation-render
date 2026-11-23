@@ -51,6 +51,7 @@
   // the swell: crests travel from the top of the frame to the shore; lift(x, y, t) is 0..1 near a crest
   const SWELL = { T: 5.2, speed: 92, set: [12.6, 15.8] };   // a bigger set rolls through at about 13 s
   function crestY(i, t) { return 200 + ((t * SWELL.speed + i * SWELL.T * SWELL.speed) % (SWELL.T * SWELL.speed * 3)) - SWELL.T * SWELL.speed * 0.5; }
+  let SETS = [[12.6, 15.8]];
   function lift(x, y, t) {
     let L = 0;
     for (let i = 0; i < 3; i++) {
@@ -58,7 +59,7 @@
       const d = (y - cy) / 70;
       L = Math.max(L, Math.exp(-d * d));
     }
-    const setK = clamp((t - SWELL.set[0]) / 0.8) * clamp((SWELL.set[1] - t) / 1.2);
+    const setK = Math.max(0, ...SETS.map(([a, b]) => clamp((t - a) / 0.8) * clamp((b - t) / 1.2)));
     return L * (0.5 + 0.9 * setK);
   }
 
@@ -170,14 +171,14 @@
   function hairFan(g, x, y, r, color, tt, seed, alpha = 0.85) {
     for (let i = 0; i < 8; i++) {
       const a0 = -Math.PI / 2 + (i - 3.5) * 0.3;
-      const L = r * (1.35 + 0.35 * sin(i * 2.3 + seed * 0.01 + 1)), w0 = r * 0.36;
+      const L = r * (1.05 + 0.3 * sin(i * 2.3 + seed * 0.01 + 1)), w0 = r * 0.44;
       const left = [], right = [];
       for (let k = 0; k <= 8; k++) {
         const u = k / 8;
         const a = a0 + 0.5 * sin(u * 2.6 + i * 1.7 + tt * 0.9) * u;
         const d = r * 0.75 + L * u;
         const cx2 = x + Math.cos(a) * d, cy2 = y - r * 0.15 + Math.sin(a) * d;
-        const w = w0 * (1 - 0.8 * u), nx = -Math.sin(a), ny = Math.cos(a);
+        const w = w0 * (1 - 0.6 * u), nx = -Math.sin(a), ny = Math.cos(a);
         left.push([cx2 + nx * w, cy2 + ny * w]); right.push([cx2 - nx * w, cy2 - ny * w]);
       }
       g.beginPath();
@@ -238,26 +239,37 @@
   const DRAW = {};
 
   // Maya: upright, head back, face to the sky, mouth at the water; arms out to her sides pressing down; no kick
-  DRAW.maya = (g, p, t, pass) => {
-    const tt = tw(t), st = mayaState(tt);
-    const x = p.x + 2 * sin(tt * 0.7), y = p.y + 3 * (1 - st.s) + 2 * wave(tt, 3.1);
+  DRAW.maya = (g, p, t, pass, ctx) => {
+    const tt = tw(t);
+    const ov = ctx && ctx.maya ? ctx.maya(tt) : null;               // the story's choreography, after the answer
+    const nat = mayaState(tt);
+    const st = ov ? { s: ov.s ?? nat.s, press: ov.press ?? nat.press } : nat;
+    const held = ov && ov.held ? ov.held : 0, cough = ov && ov.cough ? ov.cough : 0;
+    const x = p.x + 2 * sin(tt * 0.7) + (ov && ov.dx ? ov.dx / FIG : 0);
+    const y = p.y + 3 * (1 - st.s) * (1 - held) + 2 * wave(tt, 3.1) + (ov && ov.dy ? ov.dy / FIG : 0) - 2 * cough;
     const r = 21;
     const d = depthAt(x, y);
+    // the T of her arms, or (held) her hands on the tube across her chest
+    const armPts = (s2, press) => {
+      const sp = 0.55 + 0.25 * press;
+      const sx = x + s2 * 20, sy = y + 18;
+      const ex0 = sx + s2 * 34, ey0 = sy + 10 - 6 * press;
+      const hx0 = ex0 + s2 * 28 * sp, hy0 = ey0 + 4 - 8 * press;
+      const ex = lerp(ex0, x + s2 * 34, held), ey = lerp(ey0, y + 40, held);
+      const hx = lerp(hx0, x + s2 * 22, held), hy = lerp(hy0, y + 50, held);
+      return { sx, sy, ex, ey, hx, hy };
+    };
     if (pass === 'under') {
       // her body, straight down below her head, fading into the deep water
       g.save(); g.globalAlpha = 0.55;
       torsoPath(g, x, y + 16, 46, 44, 0, p.seed + 20); g.fillStyle = under(p.suitC, d + 0.6); g.fill();
       g.restore();
-      // arms out to the sides, just under the surface, pressing down
-      const sp = 0.55 + 0.25 * st.press;
-      for (const s of [-1, 1]) {
-        const sx = x + s * 20, sy = y + 18;
-        const ex = sx + s * 34, ey = sy + 10 - 6 * st.press;
-        const hx = ex + s * 28 * sp, hy = ey + 4 - 8 * st.press;
+      for (const s2 of [-1, 1]) {
+        const A = armPts(s2, st.press);
         g.save(); g.globalAlpha = 0.9;
-        limb(g, sx, sy, ex, ey, 7, 6, p.seed + 21 + s); g.fillStyle = under(p.skinC, d * 0.6); g.fill();
-        limb(g, ex, ey, hx, hy, 6, 5, p.seed + 23 + s); g.fill();
-        blob(g, hx, hy, 7, 6, 0, p.seed + 25 + s, 0.1); g.fill();
+        limb(g, A.sx, A.sy, A.ex, A.ey, 7, 6, p.seed + 21 + s2); g.fillStyle = under(p.skinC, d * 0.6); g.fill();
+        limb(g, A.ex, A.ey, A.hx, A.hy, 6, 5, p.seed + 23 + s2); g.fill();
+        blob(g, A.hx, A.hy, 7, 6, 0, p.seed + 25 + s2, 0.1); g.fill();
         g.restore();
       }
       // the whole face, under the sheet (seen through the water when she sinks)
@@ -266,53 +278,62 @@
         skin: under(p.skinC, 0.55), hairColor: under(p.hairC, 0.4), ink: under('#3a2418', 0.4) });
       g.restore();
     } else if (pass === 'above') {
-      // her arms out to her sides at the surface, pressing down: half out of the water, laced with foam
-      const spA = 0.55 + 0.25 * st.press;
-      for (const s of [-1, 1]) {
-        const sx = x + s * 20, sy = y + 18;
-        const ex = sx + s * 34, ey = sy + 10 - 6 * st.press;
-        const hx = ex + s * 28 * spA, hy = ey + 4 - 8 * st.press;
-        limb(g, sx, sy, ex, ey, 7, 6, p.seed + 21 + s); fill(g, mix(p.skinC, WATER, 0.1), { lift: 1.2 });
-        limb(g, ex, ey, hx, hy, 6, 5, p.seed + 23 + s); fill(g, mix(p.skinC, WATER, 0.1 + 0.12 * (1 - st.press)), { lift: 1.2 });
-        g.save(); g.globalAlpha = 0.85; g.strokeStyle = COL.foam; g.lineWidth = 2; g.lineCap = 'round';
-        for (const u of [0.28, 0.6, 0.92]) {
-          const qx = lerp(sx, hx, u), qy = lerp(sy, hy, u);
-          g.beginPath(); g.moveTo(qx - 3, qy - 8); g.quadraticCurveTo(qx + s * 4, qy, qx - 3, qy + 8); g.stroke();
+      // her arms at the surface, pressing down: half out of the water, laced with foam (or, held, resting on the tube)
+      for (const s2 of [-1, 1]) {
+        const A = armPts(s2, st.press);
+        limb(g, A.sx, A.sy, A.ex, A.ey, 7, 6, p.seed + 21 + s2); fill(g, mix(p.skinC, WATER, 0.1), { lift: 1.2 + 2 * held });
+        limb(g, A.ex, A.ey, A.hx, A.hy, 6, 5, p.seed + 23 + s2); fill(g, mix(p.skinC, WATER, (0.1 + 0.12 * (1 - st.press)) * (1 - held)), { lift: 1.2 + 2 * held });
+        if (held > 0.5) { blob(g, A.hx, A.hy, 6.5, 6, 0, p.seed + 27 + s2, 0.1); fill(g, p.skinC, { lift: 4 }); }
+        if (held < 0.5) {
+          g.save(); g.globalAlpha = 0.85 * (1 - held * 2); g.strokeStyle = COL.foam; g.lineWidth = 2; g.lineCap = 'round';
+          for (const u of [0.28, 0.6, 0.92]) {
+            const qx = lerp(A.sx, A.hx, u), qy = lerp(A.sy, A.hy, u);
+            g.beginPath(); g.moveTo(qx - 3, qy - 8); g.quadraticCurveTo(qx + s2 * 4, qy, qx - 3, qy + 8); g.stroke();
+          }
+          g.restore();
         }
-        g.restore();
       }
       // her hair floats at the surface round her head, whether her face is out or under
       hairFan(g, x, y, r, mix(p.hairC, WATER_DEEP, 0.18), tt, p.seed, 0.85);
       // the part of her face above the water: an island round her nose and mouth that shrinks as she sinks
       if (st.s > 0.02) {
+        const k = Math.max(st.s, held);
         g.save();
-        blob(g, x, y + r * 0.22, r * (0.25 + 0.75 * st.s), r * (0.3 + 0.85 * st.s), 0, p.seed + 30 + Math.floor(tt * 7.5) % 3, 0.12);
+        blob(g, x, y + r * 0.22 * (1 - held), r * (0.25 + 0.75 * k) + 4 * held, r * (0.3 + 0.85 * k) + 4 * held, 0, p.seed + 30 + Math.floor(tt * 7.5) % 3, 0.12);
         g.clip();
-        faceUp(g, x, y, r, p, { tt, strand: true, eyes: st.s > 0.75 ? 'open' : 'closed', mouth: 0.35 + 0.5 * st.press, lift: 2 });
+        faceUp(g, x, y, r, p, { tt, strand: held < 0.5, eyes: k > 0.75 ? 'open' : 'closed', mouth: cough > 0.3 ? 0.95 : 0.35 + 0.5 * st.press * (1 - held), lift: 2 + 2 * held });
         g.restore();
-        // the waterline round the island
         g.save(); g.globalAlpha = 0.85; g.strokeStyle = COL.foam; g.lineWidth = 2.2;
-        blob(g, x, y + r * 0.22, r * (0.25 + 0.75 * st.s) + 1.5, r * (0.3 + 0.85 * st.s) + 1.5, 0, p.seed + 31, 0.12); g.stroke();
+        blob(g, x, y + r * 0.22 * (1 - held), r * (0.25 + 0.75 * k) + 5.5 * held + 1.5, r * (0.3 + 0.85 * k) + 5.5 * held + 1.5, 0, p.seed + 31, 0.12); g.stroke();
         g.restore();
       }
+      // a cough: a little spray of water off her mouth
+      if (cough > 0.05) {
+        for (let i = 0; i < 6; i++) {
+          const rr = mulberry32(p.seed * 17 + i);
+          const a = -Math.PI / 2 + (rr() - 0.5) * 1.6, dd = 10 + 26 * cough * (0.6 + rr() * 0.6);
+          g.save(); g.globalAlpha = 0.9 * (1 - cough * 0.6);
+          blob(g, x + cos(a) * dd, y + r * 0.5 + sin(a) * dd, 2.5 + rr() * 2.5, 2 + rr() * 2, a, p.seed + 160 + i, 0.2); fill(g, COL.foam, { lift: 6 });
+          g.restore();
+        }
+      }
       // splashes where her hands press near the surface
-      const sp = 0.55 + 0.25 * st.press;
-      for (const s of [-1, 1]) {
-        const hx = x + s * (20 + 34 + 28 * sp), hy = y + 18 + 10 + 4 - 14 * st.press;
+      if (held < 0.3) for (const s2 of [-1, 1]) {
+        const A = armPts(s2, st.press);
         if (st.press > 0.35) {
           g.save(); g.globalAlpha = clamp((st.press - 0.35) * 2.2) * 0.9;
           for (let i = 0; i < 4; i++) {
-            const a = -Math.PI / 2 + (i - 1.5) * 0.7 + s * 0.4;
-            blob(g, hx + cos(a) * 9, hy + sin(a) * 9, 4.5, 3, a, p.seed + 60 + i, 0.2);
+            const a = -Math.PI / 2 + (i - 1.5) * 0.7 + s2 * 0.4;
+            blob(g, A.hx + cos(a) * 9, A.hy + sin(a) * 9, 4.5, 3, a, p.seed + 60 + i, 0.2);
             fill(g, COL.foam, { lift: 1.5 });
           }
           g.restore();
         }
-        ripples(g, hx, hy, 9, 7, tt, 1.3, p.seed + 70 + s, 0.8);
+        ripples(g, A.hx, A.hy, 9, 7, tt, 1.3, p.seed + 70 + s2, 0.8);
       }
       ripples(g, x, y + 8, 26, 22, tt, 1.6, p.seed + 80, 0.9);
     }
-    return { x, y, under: st.s < 0.02 };
+    return { x, y, under: st.s < 0.02 && held < 0.5 };
   };
 
   // the floater: on her back, flat on the surface, arms and legs spread, sunglasses, still (quiet, face up, and fine)
@@ -342,7 +363,7 @@
   // front crawl, heading left across the channel
   DRAW.crawl = (g, p, t, pass) => {
     const tt = tw(t);
-    const x = p.x - 7 * tt, y = p.y + 2 * wave(tt, 2.3, 0.2);
+    const x = p.x - 3 * tt, y = p.y + 2 * wave(tt, 2.3, 0.2);
     const ph = (tt / p.T + p.ph) % 1;
     g.save(); g.translate(x, y); g.rotate(p.rot);
     if (pass === 'under') {
@@ -468,10 +489,12 @@
   };
 
   // the two friends: chest-deep on the sandbar, facing each other, splashing (loud, and fine)
-  DRAW.splash = (g, p, t, pass) => {
+  DRAW.splash = (g, p, t, pass, ctx) => {
     const tt = tw(t);
+    const R = ctx && ctx.friend ? ctx.friend(p.n, tt) : null;       // {stop, look, shout, armsUp, reach: {x, y, k}}
+    const stop = R ? R.stop || 0 : 0;
     const x = p.x + 2 * sin(tt * 0.5 + p.ph * 3), y = p.y + 2 * wave(tt, 2.2, p.ph);
-    const look = p.rot;
+    const look = R && R.look != null ? R.look : p.rot;
     const ph = (tt / p.T + p.ph) % 1;          // one sweep of the arm per period
     const side = Math.floor(tt / p.T + p.ph) % 2 ? 1 : -1;
     const d = depthAt(x, y);
@@ -484,16 +507,32 @@
       g.save(); g.globalAlpha = 0.16; blob(g, x + 26, y + 70, 30, 44, 0.3, p.seed + 5, 0.1); g.fillStyle = COL.shade; g.fill(); g.restore();
     } else if (pass === 'above') {
       blob(g, x, y + 12, 28, 13, 0, p.seed + 6, 0.06); fill(g, p.skinC, { lift: 1.5 });
-      // the splashing arm sweeps across the surface towards the other one; the other arm rests
-      const sw = Math.sin(ph * Math.PI);
-      const base = look + side * 1.2;
-      const a = base - side * 1.6 * ph;
-      const ax = x + sin(a) * 52, ay = y + 10 - cos(a) * 36;
-      limb(g, x + side * 20, y + 12, ax, ay, 7, 6, p.seed + 7); fill(g, p.skinC, { lift: 3 + 3 * sw });
-      limb(g, x - side * 20, y + 12, x - side * 34, y + 30, 7, 6, p.seed + 8); fill(g, p.skinC, { lift: 2 });
-      headTop(g, x, y, 20, p, look + 0.15 * sin(tt * 3), { lift: 3 });
+      if (stop < 0.5) {
+        // the splashing arm sweeps across the surface towards the other one; the other arm rests
+        const sw = Math.sin(ph * Math.PI);
+        const base = look + side * 1.2;
+        const a = base - side * 1.6 * ph;
+        const ax = x + sin(a) * 52, ay = y + 10 - cos(a) * 36;
+        limb(g, x + side * 20, y + 12, ax, ay, 7, 6, p.seed + 7); fill(g, p.skinC, { lift: 3 + 3 * sw });
+        limb(g, x - side * 20, y + 12, x - side * 34, y + 30, 7, 6, p.seed + 8); fill(g, p.skinC, { lift: 2 });
+      } else {
+        // stopped: arms up and waving for help, or one arm reaching out, or both resting
+        const up = R.armsUp || 0, rk = R.reach;
+        for (const s2 of [-1, 1]) {
+          let ex, ey, lift = 2;
+          if (rk && s2 === -1 && rk.k > 0) { ex = lerp(x - 30, p.x + (rk.x - p.x) / FIG, rk.k); ey = lerp(y + 30, p.y + (rk.y - p.y) / FIG, rk.k); lift = 3; }
+          else if (up > 0) {
+            const a2 = look + s2 * (0.35 + 0.25 * wave(tt, 0.45, s2 > 0 ? 0 : 0.5));
+            ex = x + s2 * 18 + sin(a2) * 44 * up; ey = y + 8 - cos(a2) * 44 * up; lift = 4 + 6 * up;
+          } else { ex = x + s2 * 34; ey = y + 30; }
+          limb(g, x + s2 * 20, y + 12, ex, ey, 7, 6, p.seed + 7 + s2); fill(g, p.skinC, { lift });
+          blob(g, ex, ey, 6.5, 6.5, 0, p.seed + 11 + s2, 0.1); fill(g, p.skinC, { lift });
+        }
+      }
+      if (R && R.shout > 0.3) faceUp(g, x, y, 20, p, { mouth: 0.9, eyes: 'open', lift: 4 });
+      else headTop(g, x, y, 20, p, look + 0.15 * sin(tt * 3) * (1 - stop), { lift: 3 });
       // the sheet of water thrown at the friend: white paper drops flying along `look`
-      if (ph > 0.25 && ph < 0.95) {
+      if (stop < 0.5 && ph > 0.25 && ph < 0.95) {
         const u = (ph - 0.25) / 0.7;
         for (let i = 0; i < 9; i++) {
           const rr = mulberry32(p.seed * 13 + i + Math.floor(tt / p.T) * 101);
@@ -505,6 +544,91 @@
         }
       }
       ripples(g, x, y + 16, 34, 26, tt, 0.9, p.seed + 30, 0.7);
+    }
+    return { x, y };
+  };
+
+  // the lifeguard once she's off her chair. ctx.lifeguard(t) = {mode, x, y, dir, u, tube}; x, y is her head (world).
+  // dir: the way she's heading (0 = out to sea); u: her stroke or stride phase. She draws herself 25 % up like everyone.
+  DRAW.lifeguard = (g, p, t, pass, ctx) => {
+    const L = ctx && ctx.lifeguard ? ctx.lifeguard(t) : null;
+    if (!L || L.mode === 'chair' || L.mode === 'stand') return { x: p.x, y: p.y };
+    const tt = tw(t), x = L.x, y = L.y, dir = L.dir || 0, u = L.u || 0;
+    const red = p.suitC, skin = p.skinC;
+    const inWater = L.mode !== 'run';
+    g.save(); g.translate(x, y); g.rotate(dir);
+    if (L.mode === 'run' || L.mode === 'wade') {
+      const k = Math.sin(TAU * u), hop = L.mode === 'run' ? 1 : 0.6;
+      if (pass === (inWater ? 'under' : 'above')) {                       // legs: a stride along the way she runs
+        for (const s2 of [-1, 1]) {
+          const fy = 40 + 46 - 30 * k * s2 * hop;
+          limb(g, s2 * 9, 44, s2 * 11, fy, 9, 7, p.seed + 40 + s2);
+          if (inWater) { g.fillStyle = under(skin, 0.3); g.fill(); } else fill(g, skin, { lift: 3 });
+        }
+      }
+      if (pass === 'above') {
+        torsoPath(g, 0, 12, 44, 34, 0, p.seed + 41); fill(g, red, { lift: 5 });
+        for (const s2 of [-1, 1]) {                                        // arms swing against the legs
+          const hy = 16 + 28 * k * s2;
+          limb(g, s2 * 20, 14, s2 * 26, hy, 6.5, 5.5, p.seed + 42 + s2); fill(g, skin, { lift: 6 });
+        }
+        limb(g, 26, 16 + 28 * k, 30, 16 + 28 * k + 70, 7, 7, p.seed + 45, 0.03); fill(g, '#e5352a', { lift: 6 });   // the tube in her hand
+        headTop(g, 0, 0, 19, p, 0, { lift: 6 });
+        if (L.mode === 'wade') {                                           // splashes kicked up at each step
+          for (let i = 0; i < 6; i++) {
+            const rr = mulberry32(p.seed * 7 + i + Math.floor(tt * 7.5) * 13);
+            g.save(); g.globalAlpha = 0.9;
+            blob(g, (rr() - 0.5) * 70, 50 + rr() * 50, 4 + rr() * 5, 3 + rr() * 4, rr() * 3, p.seed + 60 + i, 0.25); fill(g, COL.foam, { lift: 4 });
+            g.restore();
+          }
+        }
+      }
+    } else if (L.mode === 'dive' || L.mode === 'swim' || L.mode === 'tow') {
+      const ph = u % 1, side = ph < 0.5 ? -1 : 1, a = ph < 0.5 ? ph * 2 : (ph - 0.5) * 2;
+      if (pass === 'under') {
+        torsoPath(g, 0, 16, 44, 70, 0, p.seed + 1); g.fillStyle = under(red, 0.7); g.fill();
+        for (const s2 of [-1, 1]) { limb(g, s2 * 10, 86, s2 * 12 + 5 * wave(tt, 0.4, s2 * 0.25), 150, 9, 7, p.seed + 2 + s2); g.fillStyle = under(skin, 0.9); g.fill(); }
+        limb(g, -side * 18, 16, -side * 22, lerp(-50, 70, a), 7, 6, p.seed + 5); g.fillStyle = under(skin, 0.7); g.fill();
+      } else {
+        const ax = side * (22 + 26 * Math.sin(a * Math.PI)), ay = lerp(70, -55, a);
+        limb(g, side * 18, 14, ax, ay, 7.5, 6.5, p.seed + 6); fill(g, skin, { lift: 4 });
+        blob(g, 0, 22, 18, 22, 0, p.seed + 7, 0.06); fill(g, red, { lift: 1.5 });
+        headTop(g, 0, 0, 20, { ...p, style: 'cap', capC: '#ffc233' }, 0.5 * Math.sin(TAU * ph), { lift: 2 });
+        for (let i = 0; i < 5; i++) {                                     // kick foam
+          const w2 = ((tt * 3 + i * 0.21) % 1);
+          g.save(); g.globalAlpha = 0.85 * (1 - w2);
+          blob(g, (i - 2) * 6, 150 + w2 * 26, 6 + w2 * 4, 4 + w2 * 3, 0, p.seed + 20 + i, 0.25); fill(g, COL.foam, { lift: 1 });
+          g.restore();
+        }
+        if (L.mode === 'dive') {                                           // the splash where she went in
+          for (let i = 0; i < 10; i++) {
+            const rr = mulberry32(p.seed * 11 + i), aa = rr() * TAU, dd = 30 + 50 * (L.splash || 0) * rr();
+            g.save(); g.globalAlpha = 0.95 * (1 - (L.splash || 0) * 0.5);
+            blob(g, cos(aa) * dd, 40 + sin(aa) * dd, 5 + rr() * 6, 4 + rr() * 5, aa, p.seed + 80 + i, 0.25); fill(g, COL.foam, { lift: 6 });
+            g.restore();
+          }
+        }
+      }
+    } else if (L.mode === 'hold') {
+      // behind her (towards the shore), her arms round the tube across Maya's chest
+      if (pass === 'under') {
+        torsoPath(g, 0, 16, 46, 50, 0, p.seed + 1); g.fillStyle = under(red, 0.8); g.fill();
+        for (const s2 of [-1, 1]) { limb(g, s2 * 10, 60, s2 * 14 + 6 * wave(tt, 0.6, s2 * 0.3), 104, 9, 7, p.seed + 2 + s2); g.fillStyle = under(skin, 1.0); g.fill(); }
+      } else {
+        blob(g, 0, 12, 26, 12, 0, p.seed + 3, 0.06); fill(g, skin, { lift: 2 });
+        headTop(g, 0, 0, 19, { ...p, style: 'cap', capC: '#ffc233' }, 0, { lift: 3 });
+      }
+    }
+    g.restore();
+    // the tube on its line: trailing behind her as she swims, then across Maya's chest
+    if (pass === 'above' && L.tube) {
+      const T2 = L.tube;
+      if (T2.line) { g.save(); g.strokeStyle = '#f6f1e6'; g.lineWidth = 2.2; g.beginPath(); g.moveTo(T2.line[0], T2.line[1]); g.quadraticCurveTo((T2.line[0] + T2.x) / 2 + 10, (T2.line[1] + T2.y) / 2 + 14, T2.x, T2.y); g.stroke(); g.restore(); }
+      g.save(); g.translate(T2.x, T2.y); g.rotate(T2.rot || 0);
+      limb(g, -T2.len / 2, 0, T2.len / 2, 0, 9, 9, p.seed + 90, 0.03); fill(g, '#e5352a', { lift: 3 });
+      for (const s2 of [-1, 1]) { blob(g, s2 * (T2.len / 2 - 4), 0, 4, 4, 0, p.seed + 91 + s2, 0.1); fill(g, '#2b2b2b', { lift: 3.5, rim: false }); }
+      g.restore();
+      ripples(g, T2.x, T2.y, T2.len * 0.6, 14, tt, 1.2, p.seed + 95, 0.6);
     }
     return { x, y };
   };
@@ -719,6 +843,7 @@
   };
 
   const PEOPLE_BY = {}; PEOPLE.forEach((p) => (PEOPLE_BY[p.n] = p));
+  const LIFEGUARD = { n: 0, kind: 'lifeguard', x: 178, y: 1452, seed: 930, skinC: SKIN[1], hairC: HAIR[4], suitC: '#e5352a', style: null };
   const FIG = 1.25;                     // every person is drawn 25 % up from the sizes above, about their head
 
   // ------------------------------------------------------------------ the ground: sand, the floor under the water
@@ -856,23 +981,28 @@
     umbrella(560, 1440, 74, COL.coral, COL.white, 911);
     umbrella(870, 1520, 66, COL.teal, COL.yellow, 912);
     // the lifeguard's chair: a raised red platform; she sits on it facing the sea
-    const LG = ctx && ctx.lifeguard ? ctx.lifeguard(t) : { onChair: 1, point: 0, x: 0, y: 0 };
+    const LG = ctx && ctx.lifeguard ? ctx.lifeguard(t) : { mode: 'chair' };
     const cx = 178, cy = 1452;
     g.save(); g.globalAlpha = 0.25; poly(g, [[cx - 36 + 30, cy - 40 + 40], [cx + 36 + 30, cy - 40 + 40], [cx + 36 + 30, cy + 46 + 40], [cx - 36 + 30, cy + 46 + 40]], 921, 1); g.fillStyle = COL.shade; g.fill(); g.restore();
     for (const [lx, ly] of [[-32, -36], [32, -36], [-32, 42], [32, 42]]) { blob(g, cx + lx, cy + ly, 6, 6, 0, 922 + lx, 0.05); fill(g, COL.white, { lift: 4 }); }
     poly(g, [[cx - 40, cy - 46], [cx + 40, cy - 46], [cx + 40, cy + 30], [cx - 40, cy + 30]], 924, 1); fill(g, COL.red, { lift: 12 });
     poly(g, [[cx - 40, cy + 30], [cx + 40, cy + 30], [cx + 40, cy + 50], [cx - 40, cy + 50]], 925, 1); fill(g, COL.white, { lift: 10 });
     // the red rescue tube hanging on the chair (until she takes it)
-    if (LG.onChair > 0.5) { limb(g, cx + 46, cy - 30, cx + 50, cy + 40, 7, 7, 926, 0.03); fill(g, COL.red, { lift: 8 }); }
-    if (LG.onChair > 0.5) {
+    const onChair = !LG.mode || LG.mode === 'chair' || LG.mode === 'stand';
+    if (onChair) { limb(g, cx + 46, cy - 30, cx + 50, cy + 40, 7, 7, 926, 0.03); fill(g, COL.red, { lift: 8 }); }
+    if (onChair) {
       const lp = { seed: 930, skinC: SKIN[1], hairC: HAIR[4], suitC: COL.red };
-      torsoPath(g, cx, cy - 8, 46, 30, 0, 931); fill(g, COL.red, { lift: 14 });
-      for (const s of [-1, 1]) {
-        const pointing = s > 0 && LG.point > 0;
-        const ex = pointing ? cx + 58 : cx + s * 30, ey = pointing ? cy - 60 : cy + 14;
-        limb(g, cx + s * 20, cy - 6, ex, ey, 6.5, 5.5, 932 + s); fill(g, lp.skinC, { lift: 15 + (pointing ? 6 : 0) });
+      const standing = LG.mode === 'stand' ? (LG.k ?? 1) : 0;
+      g.save(); g.translate(cx, cy - 10); g.scale(FIG * (1 + 0.12 * standing), FIG * (1 + 0.12 * standing)); g.translate(-cx, -(cy - 10));
+      torsoPath(g, cx, cy - 8 - 8 * standing, 46, 30, 0, 931); fill(g, COL.red, { lift: 14 + 8 * standing });
+      for (const s2 of [-1, 1]) {
+        const toMouth = standing > 0.5 && s2 > 0;                          // the whistle to her mouth
+        const ex = toMouth ? cx + 8 : cx + s2 * 30, ey = toMouth ? cy - 34 : cy + 14 - 10 * standing;
+        limb(g, cx + s2 * 20, cy - 6 - 8 * standing, ex, ey, 6.5, 5.5, 932 + s2); fill(g, lp.skinC, { lift: 15 + 10 * standing });
       }
-      headTop(g, cx, cy - 12, 18, lp, 0.1, { lift: 15 });
+      headTop(g, cx, cy - 12 - 10 * standing, 18, lp, LG.look ?? 0.1, { lift: 15 + 10 * standing });
+      if (standing > 0.5) { blob(g, cx + 6, cy - 36, 5, 4, 0, 935, 0.1); fill(g, '#cfd6da', { lift: 26 }); }
+      g.restore();
     }
   }
 
@@ -906,7 +1036,8 @@
       // where it has reached the sandbar, it breaks: torn white foam, in pieces
       let run = [];
       const flush = (k) => {
-        if (run.length > 2) { strip(g, run, 9 + 5 * Math.sin(k), 320 + i * 17 + k, 0.55); fill(g, COL.foam, { lift: 2, alpha: 0.92 }); }
+        const big = 1 + 0.9 * Math.max(0, ...SETS.map(([a, b]) => clamp((tt - a) / 0.8) * clamp((b - tt) / 1.2)));
+        if (run.length > 2) { strip(g, run, (9 + 5 * Math.sin(k)) * big, 320 + i * 17 + k, 0.55); fill(g, COL.foam, { lift: 2 * big, alpha: 0.92 }); }
         run = [];
       };
       pts.forEach((pt, k) => {
@@ -1006,12 +1137,24 @@
     }
   }
 
+  // the lifeguard is drawn 25 % up like everyone, about her own head (ctx.lifeguard gives world coordinates)
+  function lifeguardPass(g, t, ctx, pass) {
+    const L = ctx && ctx.lifeguard ? ctx.lifeguard(t) : null;
+    if (!L || L.mode === 'chair' || L.mode === 'stand') return;
+    g.save(); g.translate(L.x, L.y); g.scale(FIG, FIG); g.translate(-L.x, -L.y);
+    const L2 = { ...L, tube: null };
+    DRAW.lifeguard(g, LIFEGUARD, t, pass, { lifeguard: () => L2 });
+    g.restore();
+    if (pass === 'above' && L.tube) DRAW.lifeguard(g, LIFEGUARD, t, 'above', { lifeguard: () => ({ ...L, mode: 'none' }) }) ;
+  }
+
   // ------------------------------------------------------------------ the whole world
   // opts: { cam: { s, x, y } camera (scale about the frame centre, then a shift), ctx: story callbacks, tags: alpha(n) }
   function paint(g, t, opts = {}) {
     tiles();
     const cam = opts.cam || { s: 1, x: 0, y: 0 };
     const ctx = opts.ctx || {};
+    if (ctx.sets) SETS = ctx.sets;
     g.save();
     g.translate(W / 2 + cam.x, H / 2 + cam.y); g.scale(cam.s, cam.s); g.translate(-W / 2, -H / 2);
     paintFloor(g, t);
@@ -1020,11 +1163,13 @@
     // under the water (clipped to the water, so nothing under it shows on dry sand)
     g.save(); waterPath(g, t); g.clip();
     for (const p of PEOPLE) {
-      g.save(); g.translate(p.x, p.y); g.scale(FIG, FIG); g.translate(-p.x, -p.y);
+      const lk = FIG * (1 + 0.05 * lift(p.x, p.y, tw(t)));                 // a passing swell lifts them towards the lens
+      g.save(); g.translate(p.x, p.y); g.scale(lk, lk); g.translate(-p.x, -p.y);
       const q = DRAW[p.kind](g, p, t, 'under', ctx);
       g.restore();
       pos[p.n] = { ...q, x: p.x + (q.x - p.x) * FIG, y: p.y + (q.y - p.y) * FIG };
     }
+    lifeguardPass(g, t, ctx, 'under');
     g.restore();
     paintSheet(g, t);
     paintSwell(g, t);
@@ -1033,10 +1178,12 @@
     paintBoat(g, t, ctx);
     // above the water
     for (const p of PEOPLE) {
-      g.save(); g.translate(p.x, p.y); g.scale(FIG, FIG); g.translate(-p.x, -p.y);
+      const lk = FIG * (1 + 0.05 * lift(p.x, p.y, tw(t)));
+      g.save(); g.translate(p.x, p.y); g.scale(lk, lk); g.translate(-p.x, -p.y);
       DRAW[p.kind](g, p, t, 'above', ctx);
       g.restore();
     }
+    lifeguardPass(g, t, ctx, 'above');
     paintGulls(g, t);
     paintTags(g, t, pos, { alpha: opts.tags });
     // one sheet of paper fibre over the whole picture, so every piece reads as paper
