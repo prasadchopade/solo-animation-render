@@ -825,13 +825,13 @@
         [-1, rest],
         [d1 - 0.55, [2.9, 'fist', 0, -0.3, 'mitt', 0.2, 1.75, 1.0]],             // his hand comes up with the sheet, in front of him
         [d1 - 0.3, [2.9, 'fist', 0, -1.3, 'back', 0, 1.75, 1.6]],                // and slaps it down
-        [d2 - 0.05, [-0.2, 'point', -0.55, -1.3, 'back', 0, 1.2, 1.6]],          // "the other one": a finger up at the wall
+        [d2 - 0.05, [2.9, 'fist', 0, -1.3, 'back', 0, 1.75, 1.6]],                // "the other one": his head turns to the wall
         [F('d02') + 0.2, rest],
         [d3 - 0.05, [-0.1, 'mitt', -0.3, 0.1, 'mitt', 0.3, 1.0, 1.0]],           // "you both"
         [F('d03') + 0.2, rest],
       ], 0.14);
       const P = {
-        x: 545, y: 840, s: 1.0, turn: 0.2, open: lips(t, ['d01', 'd02', 'd03']), brow: -0.25, frown: 0.85,
+        x: 545, y: 840, s: 1.0, turn: keyed(t, [[-1, [0.2]], [d2 - 0.05, [-0.45]], [F('d02') + 0.2, [0.2]]], 0.14)[0], open: lips(t, ['d01', 'd02', 'd03']), brow: -0.25, frown: 0.85,
         look: t >= d2 - 0.05 && t < F('d02') + 0.2 ? [-0.9, 0.1] : [0.1, 0.55],
         arms: { l: [A[0], A[1], A[2]], r: [A[3], A[4], A[5]] }, elbowX: [A[6], A[7]],
       };
@@ -1058,7 +1058,7 @@
   }
   // the dare: his doodle, alive, drawn big on its paper (the figures ~800 px tall). A high-five that slaps twice and
   // holds; on "And don't warn them" he turns out to you, finger on his lips, "shh"; on "tried it on you" the camera
-  // punches in and both lean in and stare straight into the lens, pupils big and dead centre, the high-five frozen
+  // punches in and both stare straight into the lens, eye holes wide, pupils big and dead centre, the high-five frozen
   function doodleBig(t, ox, oy, k, L) {
     const five = L.five ?? 0, shh = L.shh ?? 0, stare = L.stare ?? 0;
     const slap = five >= 1 || five <= 0 ? 1 : 0.5 + 0.5 * Math.cos(five * Math.PI * 4);
@@ -1067,7 +1067,7 @@
     const pen = (names, pts, id, w = 12) => line(names, polyOpen(bpts(t, id, pts.map(([u, v]) => P(u, v)), 1.6)), w);
     const hands = [];
     for (const [cx, sg, nm, id] of [[-50, 1, TE, 'dy'], [50, -1, PK, 'dh']]) {
-      const ink1 = [nm], [bx, by] = boil(t, id + 'h', 1.6), hx = cx + sg * 15 * stare;
+      const ink1 = [nm], [bx, by] = boil(t, id + 'h', 1.6), hx = cx;
       const hc = P(hx, -66);
       line(ink1, circ(hc[0] + bx, hc[1] + by, 21 * k), 12);
       // the bandit mask: a band with two eye holes; the pupils look at each other, then out at you
@@ -1087,7 +1087,7 @@
       if (sg > 0 || shh < 0.02) pen(ink1, [[cx, -28], [cx - sg * 28, -2]], id + 'f');
       else {
         // his free arm bends up to his mouth; the finger stands on his lips; "shh" goes out in two little waves
-        pen(ink1, [[cx, -28], [cx - sg * lerp(28, 27, shh), lerp(-2, -16, shh)], [lerp(cx - sg * 28, hx + 2, shh), lerp(-2, -45, shh)]], id + 'f');
+        pen(ink1, [[cx, -28], [cx - sg * lerp(28, 18, shh), lerp(-2, -16, shh)], [lerp(cx - sg * 28, hx + 2, shh), lerp(-2, -45, shh)]], id + 'f');
         if (shh > 0.5) pen(ink1, [[hx + 2, -44], [hx + 2, -60]], id + 's', 11);
         if (shh > 0.5 && stare < 0.5) for (const dy of [-63, -54]) pen(ink1, [[hx + 24, dy], [hx + 27, dy - 2.5], [hx + 30, dy + 1.5], [hx + 33, dy - 2.5], [hx + 36, dy + 0.5]], id + 'w' + dy, 7);
       }
@@ -1100,8 +1100,8 @@
     const life = { five: ramp(S('n13'), Wt('n13', 7), t), shh: sm(S('n14') - 0.1, S('n14') + 0.12, t), stare: sm(Wt('n15', 3) - 0.1, Wt('n15', 3) + 0.08, t) };
     const k = sm(S('n13') - 0.15, F('n15'), t), k0 = 5.5 + 0.12 * k, ox = 450, oy = 1060 - 8 * k;
     // on "tried it on you": a snap punch-in on the two masks
-    const punch = keyed(t, [[-1, [0]], [Wt('n15', 3) - 0.1, [1]]], 0.12)[0], s = 1 + 0.5 * punch;
-    const c = [ox, oy - 66 * k0], d = [530 - c[0], 860 - c[1]];
+    const punch = keyed(t, [[-1, [0]], [Wt('n15', 3) - 0.1, [1]]], 0.12)[0], s = 1 + 0.12 * punch;
+    const c = [ox, oy - 66 * k0], d = [480 - c[0], 860 - c[1]];
     view({ s, x: c[0] - c[0] * s + d[0] * punch, y: c[1] - c[1] * s + d[1] * punch }, null, () => {
       line(BOTH, polyOpen([[-20, 1652], [W + 20, 1640]]), 6);           // the foot rule of his sheet
       doodleBig(t, ox, oy, k0, life);
