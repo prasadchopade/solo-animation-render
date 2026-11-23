@@ -104,7 +104,7 @@
     T.wipe = T.wave + 1.75;                                           // alone, content, he wipes the counter while we're asked
     T.q = at('n04');
     T.replay = at('n05') - 0.12;
-    T.rIn = at('n05');                                                // "Nothing was hidden.": everything set out where it began, in plain view
+    T.rIn = at('n05') - 0.1;                                          // "Nothing was hidden.": everything set out where it began, in plain view
     T.r500 = atW('n06', /came/);
     T.r450 = atW('n06', /counted/);
     T.rCoin = atW('n07', /^ten/);
@@ -503,8 +503,8 @@
   // and its 490 showed before the viewer had answered). On "Nothing was hidden" everything is set out where it began; the camera drifts,
   // each thing pulses as it is named, flies on an arc and lands with a bounce; at the end the uncle's notes gather by the count.
   const UNC = '#ff8a1f';
-  const RT = { tin: [230, 560], h500: [740, 1440], u500: [720, 640], hcoin: [840, 1280], tcoin: [300, 470], out: [230, 520] };
-  const DEST = [[190, 1060, '200'], [430, 1075, '200'], [670, 1090, '50'], [310, 1232, '20'], [550, 1246, '20']];
+  const RT = { tin: [230, 560], h500: [720, 1420], u500: [700, 640], hcoin: [820, 1270], tcoin: [300, 470], out: [230, 520] };
+  const DEST = [[220, 1060, '200'], [460, 1075, '200'], [700, 1090, '50'], [340, 1232, '20'], [580, 1246, '20']];
   const KR = 0.82;
   function inset(g, t, T, cx, cy, r, a) {             // his face in a bubble: the raised eyebrow, seen up close
     if (a <= 0) return;
@@ -526,15 +526,15 @@
   function shotAbove(g, t, T) {
     const tc = on2(t);
     g.fillStyle = lg(g, 0, 0, 0, H, [0, '#b98048'], [1, '#a46c3a']); g.fillRect(0, 0, W, H);
-    const dr = t - T.replay, zoom = 1 + 0.07 * sstep(T.replay, T.closing, t), dcx = 22 * Math.sin(dr * 0.42), dcy = 10 * Math.sin(dr * 0.31 + 1.1);
+    const dr = t - T.replay, zoom = 1 + 0.06 * mj(dr / 1.6) + 0.04 * sstep(T.rBack, T.closing, t), dcx = 30 * Math.sin(dr * 0.6), dcy = 10 * Math.sin(dr * 0.45 + 1.1);
     g.save(); g.translate(540, 1300); g.scale(zoom, zoom); g.translate(-540 + dcx, -1300 + dcy);           // a slow drift that keeps the count and his 500 inside the safe area
     const r = mulberry32(3); g.strokeStyle = 'rgba(70,40,18,0.3)'; g.lineWidth = 3; for (let i = 0; i < 10; i++) { g.beginPath(); g.moveTo(-100, i * 220); g.lineTo(W + 100, i * 220); g.stroke(); }
     g.strokeStyle = 'rgba(70,40,18,0.1)'; g.lineWidth = 2; for (let i = 0; i < 40; i++) { const y = r() * H, x = r() * W; g.beginPath(); g.moveTo(x, y); g.quadraticCurveTo(x + 80, y + 4, x + 200, y - 2); g.stroke(); }
     const MID = 930;
     g.strokeStyle = 'rgba(255,240,215,0.45)'; g.setLineDash([22, 18]); g.lineWidth = 5; g.beginPath(); g.moveTo(40, MID); g.lineTo(1040, MID); g.stroke(); g.setLineDash([]);
     const la = clamp((t - T.replay - 0.2) * 4);
-    txt(g, "THE UNCLE'S SIDE", 80, MID - 26, 52, UNC, { stroke: '#2a1608', sw: 0.14, a: la });
-    txt(g, 'HIS SIDE', 80, MID + 70, 52, '#fff6e2', { stroke: '#2a1608', sw: 0.14, a: la });
+    txt(g, "THE UNCLE'S SIDE", 110, MID - 26, 52, UNC, { stroke: '#2a1608', sw: 0.14, a: la });
+    txt(g, 'HIS SIDE', 110, MID + 70, 52, '#fff6e2', { stroke: '#2a1608', sw: 0.14, a: la });
     // set out on "Nothing was hidden": the tin, his 500, his coin, each popping into place
     const pop = (t0) => { const u = clamp((tc - t0) / 0.28); return u <= 0 ? 0 : settle(u); };
     const bump = (t1) => 1 + 0.08 * Math.max(0, 1 - Math.abs(tc - t1) / 0.15);                     // the bounce of a landing
@@ -576,11 +576,11 @@
       hand(g, Wr[0], Wr[1], aH, 210, 'pinch', { left: true, skin: MEN.s2.skin });
     }
     // the raised eyebrow, up close
-    inset(g, t, T, 735, 548, 140, clamp((t - T.rBrow + 0.62) / 0.25) * (1 - clamp((t - T.r470 + 0.15) / 0.2)));
+    inset(g, t, T, 715, 548, 140, clamp((t - T.rBrow + 0.62) / 0.25) * (1 - clamp((t - T.r470 + 0.15) / 0.2)));
     // the count over his side: only the uncle's notes. On the answer, it grows
     if (show && count > 0) {
       const ans = settle(clamp((t - T.rAns + 0.05) / 0.35)), glow = t > T.r490 + 0.4 ? 0.5 + 0.5 * Math.sin((t - T.r490) * 5) : 0, sc = 1 + 0.22 * ans;
-      g.save(); g.translate(360, 1438); g.scale(sc, sc);
+      g.save(); g.translate(360, 1400); g.scale(sc, sc);
       R(g, -200, -68, 400, 136, 68); g.fillStyle = 'rgba(20,14,10,0.86)'; g.fill();
       txt(g, String(count), 0, 40, 118, count === 490 ? UNC : '#fff6e2', { align: 'center' });
       if (glow > 0) { g.globalAlpha = 0.35 * glow; R(g, -210, -78, 420, 156, 78); g.strokeStyle = UNC; g.lineWidth = 12; g.stroke(); }
@@ -771,7 +771,8 @@
       { t: 0, x: EAR5[0] + 150 * 0.434 + 18, y: EAR5[1], a: PI, pose: 'hold', ex: 1000, ey: 760 },
       { t: T.next + 0.12, d: 0.4, x: N500[0] + 168, y: N500[1] - 74, a: PI, pose: 'hold', ex: 815, ey: 1120, bow: -0.12 },
       { t: SLAPN - 0.06, d: 0.06, x: N500[0] + 168, y: N500[1] - 2, a: PI, pose: 'hold', ex: 800, ey: 1170, ease: ein },
-      { t: SLAPN + 0.4, d: 0.45, x: 930, y: 1350, a: PI - 0.3, fs: 0.7, pose: 'rest', ex: 975, ey: 1110, bow: -0.1 },
+      { t: SLAPN + 0.03, d: 0.2, x: N500[0] + 238, y: N500[1] - 122, a: PI - 0.45, pose: 'rest', ex: 820, ey: 1080, ease: settle },   // straight off it
+      { t: SLAPN + 0.45, d: 0.45, x: 930, y: 1320, a: PI - 0.3, fs: 0.7, pose: 'rest', ex: 1000, ey: 1160, bow: -0.1 },
     ];
     const tl = trackAt(tc, keysN), Wt = [tl.x, tl.y];
     if (tc >= SLAPN) { note(g, 500, N500[0], N500[1], 0, FLAT); dust(g, N500[0], N500[1], slapAt(tc, SLAPN)); }
