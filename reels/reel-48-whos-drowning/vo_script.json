@@ -1,0 +1,29 @@
+{
+ "voice": "af_heart",
+ "speed": 1.0,
+ "note": "Reel 48 Who's Drowning?, script draft 3.1 (25 Nov): draft 3 cut back to about 55 s plus the card (the user, through HQ: 'Cut back to ~55 s'), with the research line split after HQ's slop check; the user's yes to voice it, 25 Nov. Narration n01–n08 in af_heart (takes at 1.0 / 0.96 / 1.04). Characters, from the cast runs: c01 the boy (am_puck) and c02 the man (am_adam), 23 Nov, each placed twice by place_vo.py (their same calls again over the decoy cuts); c03–c05 her friend calling her name three times, 'Mayaa', the way the user asked ('mayaa, mayaa, mayaa'): af_kore, 25 Nov (the versions stressed on the last syllable failed and are dropped). Maya is said natively, /mˈɑːjɑː/ (Maa-yaa, the long final vowel), everywhere.",
+ "ref_text": "The tide came in slowly over the sand, and the gulls drifted above the water while the lifeguard watched the swimmers.",
+ "lines": [
+  { "id": "n01", "text": "You're looking at someone drowning, and you've got fifteen seconds to find them." },
+  { "id": "n02", "text": "It's number nine, and she hasn't made a sound." },
+  { "id": "n03", "text": "Her mouth is only above the water long enough to breathe." },
+  { "id": "n04", "text": "Maya's friends are right there, and neither of them has noticed.",
+    "text_kokoro": "[Maya's](/mˈɑːjɑːz/) friends are right there, and neither of them has noticed." },
+  { "id": "n05", "text": "But the lifeguard has." },
+  { "id": "n06", "text": "When researchers watched videos of real drownings, nobody waved or shouted for help." },
+  { "id": "n07", "text": "So if someone in the water can't answer you, get a lifeguard." },
+  { "id": "n08", "text": "You were looking at her from the very first second." },
+  { "id": "c01", "text": "Help!" },
+  { "id": "c02", "text": "Hey! Over here!" },
+  { "id": "c03", "text": "Mayaa?", "text_kokoro": "[Mayaa](/mˈɑːjɑː/)?" },
+  { "id": "c04", "text": "Mayaa!", "text_kokoro": "[Mayaa](/mˈɑːjɑː/)!" },
+  { "id": "c05", "text": "Mayaa!", "text_kokoro": "[Mayaa](/mˈɑːjɑː/)!" }
+ ],
+ "say": { "Maya's": "m ɑː j ɑː z", "Mayaa": "m ɑː j ɑː" },
+ "cast_lines": ["c03", "c04", "c05"],
+ "cast": [
+  { "id": "k-kore", "engine": "kokoro", "voice": "af_kore" },
+  { "id": "k-kore-88", "engine": "kokoro", "voice": "af_kore", "speed": 0.88 }
+ ],
+ "take": { "id": "k-heart", "engine": "kokoro", "voice": "af_heart" }
+}
