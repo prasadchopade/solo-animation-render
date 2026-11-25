@@ -1,5 +1,5 @@
 {
- "note": "Reel 49: The Con. Script draft 3 (approved by the user through HQ, 23 Nov: 'Yes, the thief'). The narrator is the series voice (af_heart, 1.0; takes 2-3 at 0.96 and 1.04). The thief never speaks. The uncle (u*) and the new chaiwala at the next stall (c01) are auditioned in a cast run (six male voices; reel 25 found am_onyx, am_michael and am_adam clean; hm_omega read a TV line clean in reel 40) and read straight from it. Every line is one breath; a count that needs a real pause is its own line, placed on its note's slap (pauses are set by hand, never edited inside a line). Variants (b, c): hand-planned phonemes for the Indian words (chaiwala, rupee, Arre) and the cut-off count; Kokoro's Hindi voices read phoneme markup aloud, so their variants are plain spellings. Facts: docs/research.md. Round 2 (23 Nov): the cast run picked am_michael for the uncle (creak near 0, 'Arre' planned as /əɹˈA/ heard as 'Array', which is the sound) and am_onyx for the next stall's chaiwala; 'Four-sev' came out /sˈAv/ ('save'), so u05c plans it by hand, in am_michael only.",
+ "note": "Reel 49: The Con. Script draft 3 (approved by the user through HQ, 23 Nov: 'Yes, the thief'). The narrator is the series voice (af_heart, 1.0; takes 2-3 at 0.96 and 1.04). The thief never speaks. The uncle (u*) and the new chaiwala at the next stall (c01) are auditioned in a cast run (six male voices; reel 25 found am_onyx, am_michael and am_adam clean; hm_omega read a TV line clean in reel 40) and read straight from it. Every line is one breath; a count that needs a real pause is its own line, placed on its note's slap (pauses are set by hand, never edited inside a line). Variants (b, c): hand-planned phonemes for the Indian words (chaiwala, rupee, Arre) and the cut-off count; Kokoro's Hindi voices read phoneme markup aloud, so their variants are plain spellings. Facts: docs/research.md. Round 2 (23 Nov): the cast run picked am_michael for the uncle (creak near 0, 'Arre' planned as /əɹˈA/ heard as 'Array', which is the sound) and am_onyx for the next stall's chaiwala; 'Four-sev' came out /sˈAv/ ('save'), so u05c plans it by hand, in am_michael only. Round 3 (25 Nov, the user: 'Cut all three'): n01 and n03 are no longer placed, and c01 is shortened to 'Five hundred?' (a fresh am_onyx read, cast run, k-onyx only; the loop brings the full line back with the uncle).",
  "voice": "af_heart",
  "speed": 1.0,
  "ref_text": "The night was cold and very quiet. Most of the street was asleep, and the lamps hummed over the empty road. Somewhere far away, a train rolled past, and then the silence came back.",
@@ -10,13 +10,13 @@
   "speed": 1.0
  },
  "cast_lines": [
-  "u05c"
+  "c01"
  ],
  "cast": [
   {
-   "id": "k-michael",
+   "id": "k-onyx",
    "engine": "kokoro",
-   "voice": "am_michael",
+   "voice": "am_onyx",
    "speed": 1.0
   }
  ],
@@ -150,7 +150,7 @@
   },
   {
    "id": "c01",
-   "text": "Five hundred? For a ten-rupee chai?"
+   "text": "Five hundred?"
   }
  ]
 }
