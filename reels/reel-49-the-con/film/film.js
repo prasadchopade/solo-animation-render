@@ -71,8 +71,8 @@
     if (T) return T;
     T = {};
     T.slap = 0.15;
-    T.look1 = 1.28; T.look2 = 1.5; T.look3 = 1.64; T.snap = 1.8;      // the double take: down at the note, up at him, down, the snap
-    T.sipA = 1.95;                                                    // the customer sips his chai while the uncle stares at him
+    T.look1 = 0.45; T.look2 = 0.62; T.look3 = 0.76; T.snap = 0.9;     // the double take, inside "Watch the money." (n01 is cut, 25 Nov): down at the note, up at him, down, the snap
+    T.sipA = 0.95;                                                    // the customer sips his chai while the uncle stares at him
     T.point500 = at('u01') + 0.02;                                    // "Five hundred?": a finger at the note
     T.shrug = at('u01') + 0.32;                                       // the customer: a small shrug
     T.board = atW('u01', /ten|rupee/) - 0.06;                         // "ten-rupee": a jab at the CHAI 10/- board behind him
@@ -754,13 +754,12 @@
     g.drawImage(BGX, 0, 0);
     // the next chaiwala: the same jolt, the same finger at the note, the same jab at the board, the same palms
     const cw = (re) => atW('c01', re), startle = win(tc, SLAPN, SLAPN + 0.08, SLAPN + 0.4, SLAPN + 0.8);
-    const fv = cw(/^five/), tr = cw(/ten|rupee/), ch = cw(/chai/);
-    const look = lookSeq(tc, [[0, LK.th], [SLAPN + 0.05, LK.n5], [fv - 0.4, LK.th], [tr - 0.15, LK.board], [ch, LK.th]]);
+    const fv = cw(/^five/), ch = cw(/hundred/) + 0.12;                // c01 is "Five hundred?" now (25 Nov): palms up as "hundred?" rises
+    const look = lookSeq(tc, [[0, LK.th], [SLAPN + 0.05, LK.n5], [fv - 0.3, LK.th]]);
     const incred = win(tc, ch - 0.05, ch + 0.08, ch + 0.5, ch + 0.7);
     D.uncleBody(g, { look, browUp: 1.0 * startle + 0.5 * win(tc, fv, fv + 0.15, ch, ch + 0.2) + 0.9 * incred, browIn: 0.5 * win(tc, fv, fv + 0.15, ch, ch + 0.2), op: talk(tc, ['c01'], 0.26) + 0.3 * startle, close: blink(tc, 5.3) * (tc > T.end - 0.6 ? 0 : 1) - 0.3 * startle, frown: 0.3 * win(tc, fv, fv + 0.15, ch, ch + 0.2) }, { who: 'next', dy: -10 * startle, shrug: startle + 1.2 * incred });
     const tf = { smile: 0.4, close: blink(tc, 8.2) * (tc > T.endBrow - 0.4 ? 0 : 1), ear500: tc < T.next + 0.12, look: 0, lookY: 0 };
-    const sipN = win(tc, fv + 0.05, fv + 0.35, fv + 0.75, fv + 1.05);
-    tf.close = Math.max(tf.close, 0.92 * win(tc, fv + 0.3, fv + 0.4, fv + 0.7, fv + 0.8));
+    const sipN = 0;                                                   // no sip at the next stall: the line is short, and his look at us follows it
     // his eyebrow, at us: the eye slides back toward the camera, the brow goes up, the corner of the mouth with it
     const ebw = tc - T.endBrow, eb = ebw <= 0 ? 0 : k1(ebw, [[0, 0], [0.07, -0.35], [0.14, 1.2], [0.24, 0.95], [0.3, 1.0]]), gl = mj((tc - T.endBrow + 0.3) / 0.2);
     tf.look = 3 * gl; tf.browUp = eb; tf.smile = 0.4 + 0.45 * clamp(eb);
@@ -783,9 +782,6 @@
       { t: SLAPN, d: 0.1, x: 600, y: 1040, a: PI - 0.55, pose: 'rest', ex: 612, ey: 975 },
       { t: SLAPN + 0.3, d: 0.3, x: 590, y: 1070, a: PI - 0.55, pose: 'rest', ex: 610, ey: 1000 },
       { t: fv - 0.2, d: 0.2, x: 560, y: 1110, a: 2.25, pose: 'point', ex: 640, ey: 1040, ease: settle },
-      { t: tr - 0.3, d: 0.3, x: 640, y: 880, a: -PI / 2 - 0.25, pose: 'point', ex: 640, ey: 1060, bow: 0.12 },
-      { t: tr + 0.12, d: 0.07, x: 636, y: 860, a: -PI / 2 - 0.25, pose: 'point', ex: 640, ey: 1060 },
-      { t: tr + 0.2, d: 0.08, x: 640, y: 880, a: -PI / 2 - 0.25, pose: 'point', ex: 640, ey: 1060 },
       { t: ch - 0.04, d: 0.16, x: 640, y: 990, a: -1.8, pose: 'open', ex: 640, ey: 1090, ease: settle },
     ]);
     const urN = trackAt(tc, [{ t: 0, x: 205, y: 1165, a: 0.5, pose: 'rest', ex: 100, ey: 1060 }, { t: ch - 0.04, d: 0.16, x: 205, y: 1040, a: -1.3, pose: 'open', ex: 92, ey: 1085, ease: settle }]);
