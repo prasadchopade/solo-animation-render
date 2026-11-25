@@ -1,0 +1,37 @@
+{
+ "voice": "af_heart",
+ "speed": 1.0,
+ "note": "Reel 48 Who's Drowning?, script draft 3 (25 Nov): the narration rewritten as connected speech (the user: draft 2.1's 'storyline and narration is AI slop'; 'kokoro voice is fine'). Narration n01–n10 in af_heart (takes at 1.0 / 0.96 / 1.04). Characters: c01 the boy (am_puck) and c02 the man (am_adam) as picked on 23 Nov; c03–c05 her friend calling her name three times across the water, the way the user asked ('mayaa, mayaa, mayaa'), auditioned in the cast run with b-versions stressed on the last syllable. Maya is said natively, /mˈɑːjɑː/ (Maa-yaa, with the long final vowel), everywhere.",
+ "ref_text": "The tide came in slowly over the sand, and the gulls drifted above the water while the lifeguard watched the swimmers.",
+ "lines": [
+  { "id": "n01", "text": "You're looking at someone drowning, and you've got fifteen seconds to find them." },
+  { "id": "n02", "text": "Time." },
+  { "id": "n03", "text": "It's number nine, and she hasn't made a sound." },
+  { "id": "n04", "text": "Her mouth comes up for one breath, and then the water closes over her face again." },
+  { "id": "n05", "text": "If you picked the boy shouting 'help', he was only teasing his brother, and the man was waving at his friend's boat." },
+  { "id": "n06", "text": "Maya's friends are right there, but they're busy splashing each other, and neither of them has noticed she's gone quiet.",
+    "text_kokoro": "[Maya's](/mˈɑːjɑːz/) friends are right there, but they're busy splashing each other, and neither of them has noticed she's gone quiet." },
+  { "id": "n07", "text": "But the lifeguard has." },
+  { "id": "n08", "text": "When researchers watched videos of real drownings, nobody waved or shouted for help, because every breath and both arms went into staying up." },
+  { "id": "n09", "text": "So if you're not sure someone's okay, ask them, and if they can't answer, get a lifeguard." },
+  { "id": "n10", "text": "You were looking at her from the very first second." },
+  { "id": "c01", "text": "Help!" },
+  { "id": "c02", "text": "Hey! Over here!" },
+  { "id": "c03", "text": "Mayaa?", "text_kokoro": "[Mayaa](/mˈɑːjɑː/)?" },
+  { "id": "c04", "text": "Mayaa!", "text_kokoro": "[Mayaa](/mˈɑːjɑː/)!" },
+  { "id": "c05", "text": "Mayaa!", "text_kokoro": "[Mayaa](/mˈɑːjɑː/)!" },
+  { "id": "c03b", "text": "Mayaa?", "text_kokoro": "[Mayaa](/mɑːjˈɑː/)?" },
+  { "id": "c04b", "text": "Mayaa!", "text_kokoro": "[Mayaa](/mɑːjˈɑː/)!" },
+  { "id": "c05b", "text": "Mayaa!", "text_kokoro": "[Mayaa](/mɑːjˈɑːɑː/)!" }
+ ],
+ "say": { "Maya's": "m ɑː j ɑː z", "Mayaa": "m ɑː j ɑː" },
+ "cast_lines": ["c03", "c04", "c05", "c03b", "c04b", "c05b"],
+ "cast": [
+  { "id": "k-kore", "engine": "kokoro", "voice": "af_kore" },
+  { "id": "k-kore-88", "engine": "kokoro", "voice": "af_kore", "speed": 0.88 },
+  { "id": "k-kore-78", "engine": "kokoro", "voice": "af_kore", "speed": 0.78 },
+  { "id": "k-sky-88", "engine": "kokoro", "voice": "af_sky", "speed": 0.88 },
+  { "id": "k-nova-88", "engine": "kokoro", "voice": "af_nova", "speed": 0.88 }
+ ],
+ "take": { "id": "k-heart", "engine": "kokoro", "voice": "af_heart" }
+}
