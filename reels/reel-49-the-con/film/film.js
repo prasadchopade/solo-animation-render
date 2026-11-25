@@ -79,7 +79,7 @@
     T.palms = atW('u01', /chai/) + 0.02;                              // "chai?": palms up
     T.sigh = en('u01');
     T.wad = en('u01') - 0.02;                                         // the change, counted out of the tin before he deals it
-    T.lick = en('u01') + 0.15;                                        // a lick of the thumb
+    T.lick = en('u01') - 0.04;                                        // a lick of the thumb, as "chai?" ends (then straight to the wad)
     T.c = [at('u02') - 0.05, at('u03') - 0.05, at('u04') - 0.05];     // each note slapped down just before its count (the sound rules: hit, then say)
     T.reach4 = at('u05') - 0.05;                                      // a 20, pulled for "Four-sev—"
     T.cut = en('u05') - 0.3;                                          // the coin's slap lands as 'sev' dies (measured: the voice is gone by 10.05 s)
@@ -91,7 +91,7 @@
     T.take500 = atW('u06', /take/);                                   // "Then take your five hundred back"
     T.give = atW('u06', /back/) + 0.08;                               // he takes it on "back"
     T.ear = T.give + 0.06; T.tucked = T.ear + 0.38;                   // straight up to his temple, under the edge of his cap
-    T.tap = [T.tucked + 0.36, T.tucked + 0.63, T.tucked + 0.9];       // one, two, three
+    T.tap = [T.tucked + 0.3, T.tucked + 0.54, T.tucked + 0.78];       // one, two, three
     T.brow = T.tap[2] + 0.18;                                         // the eyebrow: a dip, up past the top, settle; held 20 frames, nothing else moving
     T.sorry = at('u07'); T.sorry1 = atW('u07', /sorry/, 0); T.sorry2 = atW('u07', /sorry/, 1);
     T.flinch = T.sorry - 0.16;                                        // then the uncle gets it
@@ -120,7 +120,7 @@
     T.more = atW('n12', /^one$/);                                     // "...handing the uncle one more."
     T.chalk = at('n13') - 0.2;
     T.write = [atW('n13', /^one$/) - 0.08, atW('n13', /^deal/) - 0.06, atW('n13', /^at$/) - 0.05, atW('n13', /^a$/) - 0.03, atW('n13', /^time/) - 0.03];
-    T.next = at('c01') - 1.1;
+    T.next = at('c01') - 0.9;
     T.endBrow = en('c01') + 0.08;
     T.end = K.tb('end');
     return T;
@@ -213,7 +213,7 @@
     ks.push({ t: T.board + 0.28, d: 0.07, ...BD, x: 636, y: 860 });
     ks.push({ t: T.board + 0.36, d: 0.08, ...BD });
     ks.push({ t: T.palms - 0.04, d: 0.16, x: 640, y: 990, a: -1.8, pose: 'open', ex: 640, ey: 1090, ease: settle });   // "chai?"
-    ks.push({ t: T.lick, d: 0.16, x: 352, y: 754, a: -2.3, pose: 'fist', ex: 520, ey: 1010, bow: 0.1 });          // a lick of the thumb
+    ks.push({ t: T.lick, d: 0.14, x: 352, y: 754, a: -2.3, pose: 'fist', ex: 520, ey: 1010, bow: 0.1 });          // a lick of the thumb
     // a deal: plucked off the front of the wad (from above), swung across and slapped down, the hand straight off it
     const grab = (tl) => ks.push({ t: tl - 0.46, d: 0.16, x: GRABW[0], y: GRABW[1], a: AG, pose: 'pinch', ex: 560, ey: 1060, bow: 0.06 });
     const slap = (tl, i) => { const w = slapW(i), e = slapE(i); ks.push({ t: tl - 0.24, d: 0.24, x: w[0], y: w[1], a: AS, pose: 'flat', swap: 0.7, ease: ein, bow: 0.12, ex: e[0], ey: e[1] }); };
@@ -279,8 +279,8 @@
       { t: T.give - 0.3, d: 0.28, x: HO[0] + 168, y: HO[1], a: PI, fs: 1, pose: 'hold', ex: 905, ey: 1040 },
       { t: T.ear, d: T.tucked - T.ear, x: EAR5[0] + 150 * 0.434 + 18, y: EAR5[1], a: PI, fs: 1, pose: 'hold', ex: 1000, ey: 760, bow: -0.08 },
       // away to the right and down, then one, two, three: the three notes tapped, window side; then still, poised, for the eyebrow
-      { t: T.tucked + 0.02, d: 0.12, x: 975, y: 700, a: PI - 0.7, fs: 1, pose: 'rest', ex: 1010, ey: 880 },
-      { t: T.tucked + 0.14, d: 0.2, x: tapW(0)[0], y: tapW(0)[1], a: PI - 0.9, fs: 1, pose: 'point', swap: 0.3, ex: 965, ey: 1100, bow: 0.08 },
+      { t: T.tucked, d: 0.1, x: 975, y: 700, a: PI - 0.7, fs: 1, pose: 'rest', ex: 1010, ey: 880 },
+      { t: T.tucked + 0.1, d: 0.18, x: tapW(0)[0], y: tapW(0)[1], a: PI - 0.9, fs: 1, pose: 'point', swap: 0.3, ex: 965, ey: 1100, bow: 0.08 },
       { t: T.tap[1] - 0.15, d: 0.13, x: tapW(1)[0], y: tapW(1)[1], a: PI - 0.9, fs: 1, pose: 'point', ex: 962, ey: 1020 },
       { t: T.tap[2] - 0.15, d: 0.13, x: tapW(2)[0], y: tapW(2)[1], a: PI - 0.9, fs: 1, pose: 'point', ex: 958, ey: 940 },
       { t: T.tap[2] + 0.06, d: 0.12, x: tapW(2)[0] + 24, y: tapW(2)[1] - 30, a: PI - 0.85, fs: 1, pose: 'point', ex: 960, ey: 930 },
@@ -340,7 +340,7 @@
     F.smile = Math.max(1.0 * joy, 0.6 * oops, 0.55 * glad, 1.0 * beam, 0.7 * wiping) * (1 - wc);
     F.frown = 0.35 * peeved;
     F.tilt = (L.tilt * (1 - still)) - 0.05 * sigh + 0.06 * bow + 0.04 * oops - 0.07 * wince + 0.03 * puzzle + 0.05 * Math.max(0, dd) - 0.04 * Math.max(0, -dd) + 0.03 * wiping * Math.sin(t * 7);
-    F.tongue = win(t, T.lick + 0.12, T.lick + 0.15, T.lick + 0.24, T.lick + 0.28);
+    F.tongue = win(t, T.lick + 0.1, T.lick + 0.13, T.lick + 0.2, T.lick + 0.24);
     B.dy = 3 * L.breath * (1 - still) - 10 * startle + 9 * dd + 8 * sigh + 16 * bow - 9 * flinch - 5 * cutJ + 3 * wiping * Math.abs(Math.sin(t * 7));
     B.dx = -9 * Math.max(0, dd) + 13 * Math.max(0, -dd) + 7 * peeved + 4 * windup - 10 * wince;
     B.shrug = 1.0 * startle + 1.3 * incred - 0.6 * sigh + 0.5 * cutJ + 0.6 * flinch + 0.5 * wince + 0.25 * Math.max(0, -dd - 1);
@@ -708,7 +708,7 @@
     tin(g, 230, 1700, 0.9, { coin: true, empty: true });
     const chalk = (s, x, y, size) => { const rr = mulberry32(s.length * 31 + y); for (let k = 0; k < 4; k++) txt(g, s, x + (rr() - 0.5) * 5, y + (rr() - 0.5) * 4, size, 'rgba(255,250,228,0.42)', { align: 'center', rot: (rr() - 0.5) * 0.012 }); };
     // each word chalked across as it is said: the reveal runs along the line, word by word
-    const DUR = [0.26, 0.26, 0.12, 0.08, 0.38], SZ = 150;
+    const DUR = [0.26, 0.26, 0.12, 0.08, 0.3], SZ = 150;
     g.font = D.font(SZ);
     const LINES = [{ s: 'ONE DEAL', y: 1010, w: [0, 1] }, { s: 'AT A TIME', y: 1250, w: [2, 3, 4] }];
     let tip = null;
@@ -757,7 +757,7 @@
     const fv = cw(/^five/), tr = cw(/ten|rupee/), ch = cw(/chai/);
     const look = lookSeq(tc, [[0, LK.th], [SLAPN + 0.05, LK.n5], [fv - 0.4, LK.th], [tr - 0.15, LK.board], [ch, LK.th]]);
     const incred = win(tc, ch - 0.05, ch + 0.08, ch + 0.5, ch + 0.7);
-    D.uncleBody(g, { look, browUp: 1.0 * startle + 0.5 * win(tc, fv, fv + 0.15, ch, ch + 0.2) + 0.9 * incred, browIn: 0.5 * win(tc, fv, fv + 0.15, ch, ch + 0.2), op: talk(tc, ['c01'], 0.26) + 0.3 * startle, close: blink(tc, 5.3) - 0.3 * startle, frown: 0.3 * win(tc, fv, fv + 0.15, ch, ch + 0.2) }, { who: 'next', dy: -10 * startle, shrug: startle + 1.2 * incred });
+    D.uncleBody(g, { look, browUp: 1.0 * startle + 0.5 * win(tc, fv, fv + 0.15, ch, ch + 0.2) + 0.9 * incred, browIn: 0.5 * win(tc, fv, fv + 0.15, ch, ch + 0.2), op: talk(tc, ['c01'], 0.26) + 0.3 * startle, close: blink(tc, 5.3) * (tc > T.end - 0.6 ? 0 : 1) - 0.3 * startle, frown: 0.3 * win(tc, fv, fv + 0.15, ch, ch + 0.2) }, { who: 'next', dy: -10 * startle, shrug: startle + 1.2 * incred });
     const tf = { smile: 0.4, close: blink(tc, 8.2) * (tc > T.endBrow - 0.4 ? 0 : 1), ear500: tc < T.next + 0.12, look: 0, lookY: 0 };
     const sipN = win(tc, fv + 0.05, fv + 0.35, fv + 0.75, fv + 1.05);
     tf.close = Math.max(tf.close, 0.92 * win(tc, fv + 0.3, fv + 0.4, fv + 0.7, fv + 0.8));
