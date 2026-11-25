@@ -151,7 +151,8 @@
     if (L.stub) { g.fillStyle = `rgba(30,22,18,${0.3 * L.stub})`; g.beginPath(); g.moveTo(-170, 120); g.bezierCurveTo(-150, 240, 40, 220, 100, 130); g.lineTo(60, 90); g.bezierCurveTo(0, 160, -100, 150, -150, 100); g.closePath(); g.fill(); }
     g.restore();
     // his own 500, tucked under the edge of his cap above his ear (in view, never behind the counter; flat, so '500' reads)
-    if (o.ear500) note(g, 500, 80, -80, 0, 1, { shadow: false, k: 0.7 });
+    // it rides up with the cap when his eyebrow pops it (the fresh review of the final: it stayed on his temple, skin showing above it)
+    if (o.ear500) { g.save(); g.translate(5 * bu, -50 * bu); g.rotate(-0.06 * bu); note(g, 500, 80, -80, 0, 1, { shadow: false, k: 0.7 }); g.restore(); }
     // ear
     ell(g, 70, -10, 30, 50, 0.12); g.fillStyle = L.skin; g.fill(); ell(g, 72, -8, 15, 30, 0.12); g.fillStyle = L.skinD; g.fill();
     // the nostril, a crease from it
@@ -360,6 +361,9 @@
     const c = document.createElement('canvas'); c.width = W; c.height = H; const g = c.getContext('2d'), r = mulberry32(o.next ? 77 : 49);
     const wall = o.next ? ['#5a3f4e', '#3e2a36', '#26181f'] : ['#6a4a30', '#4a3322', '#2e2016'];
     g.fillStyle = lg(g, 0, 0, 0, 900, [0, wall[0]], [0.6, wall[1]], [1, wall[2]]); g.fillRect(0, 0, W, 980);
+    // the ground beyond the stall's end, right of the counter: bare once the customer has gone (the fresh review found it black)
+    g.fillStyle = lg(g, 0, 980, 0, H, [0, o.next ? '#3b2c33' : '#4b3828'], [1, o.next ? '#1d1519' : '#251a12']); g.fillRect(0, 980, W, H - 980);
+    g.strokeStyle = 'rgba(0,0,0,0.2)'; g.lineWidth = 4; for (const y of [1150, 1390, 1690]) { g.beginPath(); g.moveTo(860, y); g.lineTo(W, y + 24); g.stroke(); }
     for (let i = 0; i < 14; i++) { g.fillStyle = 'rgba(0,0,0,' + (0.05 + r() * 0.06) + ')'; g.fillRect(i * 80 + r() * 20, 0, 3, 980); }
     const sy = 470;
     g.fillStyle = o.next ? '#6a4a5a' : '#7a5434'; g.fillRect(0, sy, W, 20); g.fillStyle = 'rgba(0,0,0,0.3)'; g.fillRect(0, sy + 20, W, 10);
@@ -388,7 +392,7 @@
       g.fillStyle = '#b9bec4'; R(g, 860, 640, 150, 130, 30); g.fill(); g.fillStyle = 'rgba(255,255,255,0.35)'; R(g, 880, 652, 20, 90, 10); g.fill();
     }
     g.fillStyle = rg(g, 420, 640, 60, 700, [0, 'rgba(255,196,120,0.22)'], [1, 'rgba(255,196,120,0)']); g.fillRect(0, 0, W, 980);
-    if (o.night) { g.fillStyle = 'rgba(20,24,60,0.3)'; g.fillRect(0, 0, W, 980); }
+    if (o.night) { g.fillStyle = 'rgba(20,24,60,0.3)'; g.fillRect(0, 0, W, H); }
     BG = c;
   }
 
@@ -548,10 +552,11 @@
     { const S = [-182, -1150], E = [-300, -1250], Wr = [-360, -1420];
       const lim = (p, q, w0, w1, fill) => { const ang = Math.atan2(q[1] - p[1], q[0] - p[0]); g.beginPath(); g.arc(p[0], p[1], w0, ang + PI / 2, ang - PI / 2); g.arc(q[0], q[1], w1, ang - PI / 2, ang + PI / 2); g.closePath(); g.fillStyle = fill; g.fill(); };
       lim(E, Wr, 34, 28, sk); g.strokeStyle = ln; g.lineWidth = 6; g.stroke(); lim(S, E, 50, 40, '#2f8f7a');
-      if (o.fan) fanOf(g, ['200', '200', '50', '20', '20'], Wr[0], Wr[1] - 55, -0.49, 0.26, 1.05, 0, sk, true); }
+      // fanned up and to the left, away from his head, so the 500 tucked at his cap never reads as one of them (the fresh review of the final)
+      if (o.fan) fanOf(g, ['200', '200', '50', '20', '20'], Wr[0], Wr[1] - 55, -0.95, 0.2, 1.05, 0, sk, true); }
     // neck, the back of his head, the nape's hair, ears, the cap from behind with its strap
     g.fillStyle = skD; g.beginPath(); g.roundRect(-50, -1340, 100, 130, 34); g.fill();                           // the neck
-    if (o.ear500) { g.save(); g.translate(-168, -1494); g.rotate(0.18); note(g, 500, 0, 0, 0, 1, { shadow: false, k: 0.42 }); g.restore(); }   // his 500, above his left ear
+    if (o.ear500) { g.save(); g.translate(-156, -1502); g.rotate(0.18); note(g, 500, 0, 0, 0, 1, { shadow: false, k: 0.42 }); g.restore(); }   // his 500, above his left ear, against the cap
     for (const k of [-1, 1]) { g.fillStyle = sk; g.beginPath(); g.ellipse(k * 124, -1450, 22, 40, k * 0.1, 0, TAU); g.fill(); }   // ears
     g.fillStyle = '#1a130e'; g.beginPath(); g.ellipse(0, -1455, 120, 140, 0, 0, TAU); g.fill();                  // the back of his head: hair, under the cap
     g.fillStyle = 'rgba(255,255,255,0.06)'; g.beginPath(); g.ellipse(-30, -1480, 60, 90, -0.2, 0, TAU); g.fill();

@@ -233,7 +233,7 @@
     const pw = fromTip([N500[0] + 70, N500[1] - 36], A500, PINCH), hw = fromTip([HO[0] + 70, HO[1] - 51], A500, PINCH);
     ks.push({ t: T.take500 - 0.23, d: 0.23, x: pw[0], y: pw[1], a: A500, pose: 'pinch', ex: 590, ey: 1080 });
     ks.push({ t: T.take500 + 0.02, d: 0.2, x: pw[0] + 8, y: pw[1] - 95, a: A500, pose: 'pinch', ex: 600, ey: 960 });
-    ks.push({ t: T.take500 + 0.24, d: 0.66, x: hw[0], y: hw[1], a: A500, pose: 'pinch', ex: 680, ey: 780, bow: 0.1 });
+    ks.push({ t: T.take500 + 0.24, d: 0.66, x: hw[0], y: hw[1], a: A500, pose: 'pinch', ex: 615, ey: 985, bow: 0.1 });   // the elbow below his shoulder (the fresh review: up at the customer's chin)
     ks.push({ t: T.give + 0.06, d: 0.32, ...REST, bow: -0.1 });
     // the flinch at his eyebrow; "Arre": a slap to the forehead; "sorry, sorry!": his hand on his heart, a bow each
     ks.push({ t: T.sorry - 0.22, d: 0.16, x: 430, y: 512, a: PI + 0.3, pose: 'flat', ex: 600, ey: 720, ease: ein, bow: 0.15 });   // lands 0.06 s before 'Arre'
@@ -253,7 +253,7 @@
   function tLeftKeys(T) {
     const REST = { x: 930, y: 1320, a: PI - 0.3, fs: 0.7, pose: 'rest', ex: 1000, ey: 1160 };
     const S0 = { x: N500[0] + 168, y: N500[1] - 2, a: PI, fs: 1, pose: 'hold', ex: 800, ey: 1170 };
-    const cHold = fromTip([COIN[0] + 70, COIN[1] - 140], PI - 0.9, PINCH), cSlap = fromTip([COIN[0] + 26, COIN[1] - 18], PI - 0.9, 176);
+    const cHold = fromTip([COIN[0] + 80, COIN[1] - 90], PI - 0.9, PINCH), cSlap = fromTip([COIN[0] + 26, COIN[1] - 18], PI - 0.9, 176);
     const tapW = (i) => fromTip([PILE[i][0] + 62, PILE[i][1] - 6], PI - 0.9, 176);
     const ks = [
       { t: 0, ...S0, x: S0.x + 20, y: S0.y - 72, ey: 1110 },                                                    // frame 0: coming down
@@ -261,10 +261,10 @@
       { t: T.slap + 0.03, d: 0.2, x: S0.x + 70, y: S0.y - 120, a: PI - 0.45, fs: 1, pose: 'rest', ex: 820, ey: 1080, ease: settle },
       { t: T.slap + 0.4, d: 0.45, ...REST, bow: -0.1 },
       // the coin: out of his own trouser pocket, up, slapped down on the clear wood, his hand straight off it
-      { t: T.coinUp, d: 0.22, x: 940, y: 1420, a: PI / 2 + 0.25, fs: 1, pose: 'fist', ex: 985, ey: 1150 },
-      { t: T.coinUp + 0.26, d: 0.34, x: cHold[0], y: cHold[1], a: PI - 0.9, fs: 1, pose: 'pinch', ex: 990, ey: 760, bow: 0.12 },
-      { t: T.cut - 0.14, d: 0.12, x: cSlap[0], y: cSlap[1], a: PI - 0.9, fs: 1, pose: 'point', swap: 0.4, ex: 985, ey: 770, ease: ein },
-      { t: T.cut + 0.03, d: 0.2, x: 935, y: 760, a: PI - 1.1, fs: 1, pose: 'rest', ex: 1000, ey: 700, ease: settle },
+      { t: T.coinUp, d: 0.22, x: 948, y: 1330, a: PI / 2 + 0.1, fs: 1, pose: 'fist', ex: 1000, ey: 1130 },
+      { t: T.coinUp + 0.26, d: 0.34, x: cHold[0], y: cHold[1], a: PI - 0.9, fs: 1, pose: 'pinch', ex: 1000, ey: 1075, bow: 0.12 },
+      { t: T.cut - 0.14, d: 0.12, x: cSlap[0], y: cSlap[1], a: PI - 0.9, fs: 1, pose: 'point', swap: 0.4, ex: 1000, ey: 1060, ease: ein },
+      { t: T.cut + 0.03, d: 0.2, x: 905, y: 900, a: PI - 0.7, fs: 1, pose: 'rest', ex: 1005, ey: 1080, ease: settle },
       { t: T.cut + 0.3, d: 0.36, ...REST },
       // his finger at his own 500, twice; then his hand, open: give it back
       { t: T.point - 0.24, d: 0.24, x: 800, y: 1110, a: 2.75, fs: 1, pose: 'point', ex: 905, ey: 1060, ease: settle },
@@ -503,7 +503,7 @@
   // and its 490 showed before the viewer had answered). On "Nothing was hidden" everything is set out where it began; the camera drifts,
   // each thing pulses as it is named, flies on an arc and lands with a bounce; at the end the uncle's notes gather by the count.
   const UNC = '#ff8a1f';
-  const RT = { tin: [230, 560], h500: [720, 1420], u500: [700, 640], hcoin: [820, 1270], tcoin: [300, 470], out: [230, 520] };
+  const RT = { tin: [230, 560], h500: [720, 1420], u500: [710, 600], hcoin: [820, 1270], tcoin: [300, 470], out: [230, 520] };
   const DEST = [[220, 1060, '200'], [460, 1075, '200'], [700, 1090, '50'], [340, 1232, '20'], [580, 1246, '20']];
   const KR = 0.82;
   function inset(g, t, T, cx, cy, r, a) {             // his face in a bubble: the raised eyebrow, seen up close
@@ -534,7 +534,7 @@
     g.strokeStyle = 'rgba(255,240,215,0.45)'; g.setLineDash([22, 18]); g.lineWidth = 5; g.beginPath(); g.moveTo(40, MID); g.lineTo(1040, MID); g.stroke(); g.setLineDash([]);
     const la = clamp((t - T.replay - 0.2) * 4);
     txt(g, "THE UNCLE'S SIDE", 110, MID - 26, 52, UNC, { stroke: '#2a1608', sw: 0.14, a: la });
-    txt(g, 'HIS SIDE', 110, MID + 70, 52, '#fff6e2', { stroke: '#2a1608', sw: 0.14, a: la });
+    txt(g, 'HIS SIDE', 110, MID + 52, 52, '#fff6e2', { stroke: '#2a1608', sw: 0.14, a: la });       // clear of the first 200's orange edge (the fresh review)
     // set out on "Nothing was hidden": the tin, his 500, his coin, each popping into place
     const pop = (t0) => { const u = clamp((tc - t0) / 0.28); return u <= 0 ? 0 : settle(u); };
     const bump = (t1) => 1 + 0.08 * Math.max(0, 1 - Math.abs(tc - t1) / 0.15);                     // the bounce of a landing
@@ -570,9 +570,10 @@
     const nowI = TOUT.findIndex((t0) => tc >= t0 - 0.3 && tc < t0 + FL + 0.2);
     if (nowI >= 0) {
       const t0 = TOUT[nowI], [dx, dy] = DEST[nowI], u = mj((tc - t0) / FL), pre = mj((tc - t0 + 0.3) / 0.25), post = mj((tc - t0 - FL) / 0.2);
-      const nx = lerp(RT.out[0], dx, u), ny = lerp(RT.out[1], dy, u) - 70 * Math.sin(u * PI) - 260 * (1 - pre) - 400 * post;
-      const tip = [nx + 60, ny - 44], aH = PI / 2 + 0.2, Wr = fromTip(tip, aH, 165), S = [Wr[0] + 260, -180];
-      arm(g, S, fitElbow(S, [Wr[0] + 120, Wr[1] - 330], Wr, 560), Wr, { ...UA, w0: 52, w1: 46, w2: 34 });
+      const uh = Math.min(u, 0.5), off = mj((tc - t0 - 0.28) / 0.22);                                   // it pushes the note out and lets go before the line
+      const nx = lerp(RT.out[0], dx, uh), ny = lerp(RT.out[1], dy, uh) - 70 * Math.sin(uh * PI) - 260 * (1 - pre) - 400 * Math.max(post, off);
+      const tip = [nx - 40, ny - 44], aH = PI / 2 + 0.2, Wr = fromTip(tip, aH, 165), S = [Wr[0] + 260, -180];
+      arm(g, S, fitElbow(S, [Wr[0] + 120, Wr[1] - 330], Wr, 560), Wr, { ...UA, w0: 64, w1: 50, w2: 36 });
       hand(g, Wr[0], Wr[1], aH, 210, 'pinch', { left: true, skin: MEN.s2.skin });
     }
     // the raised eyebrow, up close
@@ -638,7 +639,7 @@
       const v = (u - 0.72) / 0.28; return [lerp(HL[0], HR[0], v), lerp(HL[1], HR[1], v) - 4 * 70 * v * (1 - v), -1];
     };
     const phase = (i) => (((d / P) + i / 4 + OFF) % 1 + 1) % 1;
-    const kinds = ['500', '450', 'coin', '20'];
+    const kinds = ['500', '450', 'coin', 'chai'];                                                   // the script's four: the 500, the 450, the coin, the chai
     const fall = mj((tc - T.more) / 0.55), qIn = mj((tc - T.more + 0.55) / 0.55);
     // catches and throws, for the hands
     let dipL = 0, liftR = 0; for (let i = 0; i < 4; i++) { const u = phase(i); dipL = Math.max(dipL, pulse(u, 0.72, 0.035)); liftR = Math.max(liftR, pulse(u, 0.0, 0.04), pulse(u, 1.0, 0.04)); }
@@ -681,15 +682,19 @@
       const p = fall < 1 ? [lerp(s0[0], land[0], fall), lerp(s0[1], land[1], fall) - 160 * Math.sin(fall * PI)] : land;
       g.save(); g.translate(p[0], p[1]); g.rotate(lerp(0.6, 0, fall)); g.scale(Z * lerp(1, 0.8, fall), Z * lerp(1, 0.8, fall));
       for (const [d2, ox, oy, rr] of [['50', 18, 14, 0.08], ['200', 9, 7, -0.04], ['200', 0, 0, 0]]) note(g, d2, ox, oy, rr, lerp(1, 0.8, fall), { shadow: false, k: 0.56 });
+      pill450(g, 0, 44);
       g.restore();
     }
+  }
+  function pill450(g, x, y) {                        // the replay's count, small: so the stack reads as the 450 (a lone 200, the fresh review said)
+    R(g, x - 74, y - 27, 148, 54, 27); g.fillStyle = 'rgba(20,14,10,0.86)'; g.fill(); txt(g, '450', x, y + 17, 46, '#fff6e2', { align: 'center' });
   }
   function juggleItem(g, kind, x, y, a) {
     g.save(); g.translate(x, y); g.rotate(Math.sin(a) * 0.4);
     if (kind === '500') note(g, 500, 0, 0, 0, 1, { shadow: false, k: 0.55 });
-    else if (kind === '450') { note(g, '50', 16, 10, 0.08, 1, { shadow: false, k: 0.5 }); note(g, '200', 8, 4, -0.04, 1, { shadow: false, k: 0.5 }); note(g, '200', 0, 0, 0, 1, { shadow: false, k: 0.5 }); }
+    else if (kind === '450') { note(g, '50', 16, 10, 0.08, 1, { shadow: false, k: 0.5 }); note(g, '200', 8, 4, -0.04, 1, { shadow: false, k: 0.5 }); note(g, '200', 0, 0, 0, 1, { shadow: false, k: 0.5 }); pill450(g, 0, 40); }
     else if (kind === 'coin') coin(g, 0, 0, 40, 1, { shadow: false });
-    else note(g, '20', 0, 0, 0, 1, { shadow: false, k: 0.5 });
+    else glass(g, 0, 0, 0.42, 0);
     g.restore();
   }
 
