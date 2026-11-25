@@ -108,7 +108,7 @@
     const spray = [(wt - S.cough) / 0.55, (wt - S.cough - 0.45) / 0.55];
     const dx = TOW.dx * tow, dy = TOW.dy * tow;
     const handR = { x: MAYA.x + dx + 55, y: MAYA.y + dy + 30, k: ramp(wt, S.hand - 0.5, S.hand) };
-    const eyeOpen = ramp(wt, S.reveal + 0.6, S.reveal + 0.9), lids = win(wt, S.reach + 0.25, S.reach + 0.5, S.reach + 1.6, S.reach + 1.85), smile = ramp(wt, S.hand + 0.05, S.hand + 0.3);
+    const eyeOpen = ramp(wt, S.reveal + 0.6, S.reveal + 0.9), lids = win(wt, S.hand - 0.25, S.hand + 0.05, S.hand + 0.9, S.hand + 1.15), smile = ramp(wt, S.hand + 0.05, S.hand + 0.3);
     return { s: Math.max(s, held), press: press * (1 - held), held, cough, spray, dx, dy, handR, eyeOpen, lids, smile };
   }
   // her friends. No. 4: the whistle stops her splashing and turns her to the shore; "Mayaa?", arms open, looking round;
@@ -327,7 +327,7 @@
   }
   function ring(g, t, k) {
     if (k >= 0.999) return;
-    const cx = 858, cy = 344, R2 = 58, r = 37, N = 15, TAU = Math.PI * 2;
+    const cx = 858, cy = 349, R2 = 58, r = 37, N = 15, TAU = Math.PI * 2;   // (cy 349: its halfway pulse stays below the 269 line)
     const tt = P.twos(t), replay = t >= T.rewind0;
     const gap = 15 / (N - 1), tornAt = (i) => (replay ? Infinity : T.ring0 + i * gap);   // the first on "fifteen", the last at 15 s
     const last = Math.floor((tt - T.ring0) / gap + 1e-6);
