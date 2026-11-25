@@ -1,0 +1,156 @@
+{
+ "note": "Reel 49: The Con. Script draft 3 (approved by the user through HQ, 23 Nov: 'Yes, the thief'). The narrator is the series voice (af_heart, 1.0; takes 2-3 at 0.96 and 1.04). The thief never speaks. The uncle (u*) and the new chaiwala at the next stall (c01) are auditioned in a cast run (six male voices; reel 25 found am_onyx, am_michael and am_adam clean; hm_omega read a TV line clean in reel 40) and read straight from it. Every line is one breath; a count that needs a real pause is its own line, placed on its note's slap (pauses are set by hand, never edited inside a line). Variants (b, c): hand-planned phonemes for the Indian words (chaiwala, rupee, Arre) and the cut-off count; Kokoro's Hindi voices read phoneme markup aloud, so their variants are plain spellings. Facts: docs/research.md. Round 2 (23 Nov): the cast run picked am_michael for the uncle (creak near 0, 'Arre' planned as /əɹˈA/ heard as 'Array', which is the sound) and am_onyx for the next stall's chaiwala; 'Four-sev' came out /sˈAv/ ('save'), so u05c plans it by hand, in am_michael only. Round 3 (25 Nov, the user: 'Cut all three'): n01 and n03 are no longer placed, and c01 is shortened to 'Five hundred?' (a fresh am_onyx read, cast run, k-onyx only; the loop brings the full line back with the uncle). Round 4 (25 Nov): the fresh c01 passed every check (UTMOS 4.0, no word errors, no creak or pitch breaks) but its pitch falls all through 'hundred' (97 to 72 Hz), where the uncle's peaks at 157 Hz on 'HUN-'; the second ear wrote it with a full stop. So the same two words are read three more ways, each at 0.96, 1.0 and 1.04: '?!' (c01b), 'Five' at secondary stress so the accent can fall on 'HUN-' (c01c), and both (c01d). The pick is the read whose 'hundred' lifts, if it passes the checks; the variants come out of the script once it's made. Round 4's result: none of the twelve reads lifts on 'hundred' (am_onyx reads it falling, whatever the spelling or pace). The pick is the plain spelling at 1.04 (k-onyx104), whose 'hundred' falls least (about 3 semitones from its peak, against 5 at 1.0): no word errors in either ear, no creak, no pitch breaks, phonemes f aɪ v h ʌ n d ɹ ᵻ d. The variants are out of the script. If the user hears it as flat: am_adam lifts on 'hundred' (+1.0 semitone over 'Five' in his u01b read; the uncle's am_michael +1.9, am_onyx -0.3), at a pitch nearer the uncle's.",
+ "voice": "af_heart",
+ "speed": 1.0,
+ "ref_text": "The night was cold and very quiet. Most of the street was asleep, and the lamps hummed over the empty road. Somewhere far away, a train rolled past, and then the silence came back.",
+ "take": {
+  "id": "k-heart",
+  "engine": "kokoro",
+  "voice": "af_heart",
+  "speed": 1.0
+ },
+ "cast_lines": [
+  "c01"
+ ],
+ "cast": [
+  {
+   "id": "k-onyx104",
+   "engine": "kokoro",
+   "voice": "am_onyx",
+   "speed": 1.04
+  }
+ ],
+ "lines": [
+  {
+   "id": "n02",
+   "text": "Watch the money."
+  },
+  {
+   "id": "n01",
+   "text": "He's about to con the chaiwala.",
+   "text_kokoro": "He's about to con the [chaiwala](/ʧˈIwɑːlə/)."
+  },
+  {
+   "id": "n01b",
+   "text": "He's about to con the chaiwala.",
+   "text_kokoro": "He's about to con the [chaiwala](/ʧIwˈɑːlə/)."
+  },
+  {
+   "id": "u01",
+   "text": "Five hundred? For a ten-rupee chai?"
+  },
+  {
+   "id": "u01b",
+   "text": "Five hundred? For a ten-rupee chai?",
+   "text_kokoro": "Five hundred? For a ten-[rupee](/ɹˈuːpi/) [chai](/ʧˈI/)?"
+  },
+  {
+   "id": "u02",
+   "text": "Two hundred."
+  },
+  {
+   "id": "u03",
+   "text": "Four hundred."
+  },
+  {
+   "id": "u04",
+   "text": "Four-fifty."
+  },
+  {
+   "id": "u05",
+   "text": "Four-sev—"
+  },
+  {
+   "id": "u05b",
+   "text": "Four—"
+  },
+  {
+   "id": "u05c",
+   "text": "Four-sev—",
+   "text_kokoro": "[Four](/fˈɔɹ/)-[sev](/sˈɛv/)—"
+  },
+  {
+   "id": "u06",
+   "text": "Oh, you have change? Then take your five hundred back."
+  },
+  {
+   "id": "u07",
+   "text": "Arre, sorry, sorry!"
+  },
+  {
+   "id": "u07b",
+   "text": "Arre, sorry, sorry!",
+   "text_kokoro": "[Arre](/əɹˈA/), sorry, sorry!"
+  },
+  {
+   "id": "u07c",
+   "text": "Arre, sorry, sorry!",
+   "text_kokoro": "[Arre](/ɑɹˈA/), sorry, sorry!"
+  },
+  {
+   "id": "u08",
+   "text": "Four-seventy."
+  },
+  {
+   "id": "u09",
+   "text": "Four-ninety."
+  },
+  {
+   "id": "u10",
+   "text": "Come again!"
+  },
+  {
+   "id": "n03",
+   "text": "So."
+  },
+  {
+   "id": "n04",
+   "text": "How much did he steal?"
+  },
+  {
+   "id": "n05",
+   "text": "Nothing was hidden."
+  },
+  {
+   "id": "n06",
+   "text": "His five hundred came down, and the uncle counted out four-fifty."
+  },
+  {
+   "id": "n07",
+   "text": "Then a ten for the chai, and his five hundred went back.",
+   "text_kokoro": "Then a ten for the [chai](/ʧˈI/), and his five hundred went back."
+  },
+  {
+   "id": "n08",
+   "text": "But one raised eyebrow, and the uncle counted on: four-seventy, four-ninety."
+  },
+  {
+   "id": "n09",
+   "text": "Four hundred and ninety."
+  },
+  {
+   "id": "u11",
+   "text": "Short?"
+  },
+  {
+   "id": "n10",
+   "text": "He never picked a pocket."
+  },
+  {
+   "id": "n11",
+   "text": "The uncle counted it all out for him."
+  },
+  {
+   "id": "n12",
+   "text": "Your brain can only hold about four things at once, so he kept handing the uncle one more."
+  },
+  {
+   "id": "n13",
+   "text": "That's why police tell shopkeepers: one deal at a time."
+  },
+  {
+   "id": "c01",
+   "text": "Five hundred?"
+  }
+ ]
+}
