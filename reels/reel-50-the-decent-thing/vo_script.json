@@ -1,0 +1,79 @@
+{
+ "note": "Draft 3's lines, for the timed read (26 Nov): af_heart reads every line once at 1.0, the character lines too, only to time them. The character voices are cast at the voice stage.",
+ "voice": "af_heart",
+ "speed": 1.0,
+ "cast": [
+  {
+   "id": "k-heart",
+   "engine": "kokoro",
+   "voice": "af_heart"
+  }
+ ],
+ "take": {
+  "id": "k-heart",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "lines": [
+  {
+   "id": "v01",
+   "text": "You know this man is a thief."
+  },
+  {
+   "id": "c01",
+   "text": "Sorry, sorry!"
+  },
+  {
+   "id": "v02",
+   "text": "So watch closely, because somebody here is about to lose something."
+  },
+  {
+   "id": "c02",
+   "text": "My wallet!"
+  },
+  {
+   "id": "c03",
+   "text": "Chor! Chor!"
+  },
+  {
+   "id": "v03",
+   "text": "This lane is about to grab somebody."
+  },
+  {
+   "id": "v03b",
+   "text": "Who stole her wallet?"
+  },
+  {
+   "id": "v04",
+   "text": "Nobody needed to see him do it, because everyone here knows what he is."
+  },
+  {
+   "id": "v05",
+   "text": "But he wasn't running away with her wallet."
+  },
+  {
+   "id": "v05b",
+   "text": "He was running after her, to give it back."
+  },
+  {
+   "id": "v06",
+   "text": "He'd seen the man who said sorry take it, then drop it at the sight of a constable."
+  },
+  {
+   "id": "v07",
+   "text": "If you said number two, you were right that he's a thief."
+  },
+  {
+   "id": "v07b",
+   "text": "You were wrong about which way he was running."
+  },
+  {
+   "id": "v08",
+   "text": "And the man who said sorry never left the lane."
+  },
+  {
+   "id": "c04",
+   "text": "Sorry, sorry."
+  }
+ ]
+}
