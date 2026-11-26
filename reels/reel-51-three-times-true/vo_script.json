@@ -1,0 +1,39 @@
+{
+ "voice": "af_heart",
+ "speed": 1.0,
+ "note": "Draft 2's timed read (26 Nov). c01-c04 are the characters (barber, student, rickshaw driver, chaiwala), cast by the 'cast' run; af_heart's takes of them are not used. n01-n08 are the narrator.",
+ "ref_text": "The lane was busy, and nobody looked twice.",
+ "lines": [
+  { "id": "c01", "text": "You there, keep a hand on your wallet. There's a pickpocket at the east gate." },
+  { "id": "c02", "text": "Did you hear? There's a pickpocket at the east gate, everyone's saying it!" },
+  { "id": "c03", "text": "East gate, saab. Pickpocket. Police are going there now." },
+  { "id": "n01", "text": "So where's the pickpocket?" },
+  { "id": "n02", "text": "He's at the west gate, where he took a wallet in the very first second." },
+  { "id": "n03", "text": "And the warning was his." },
+  { "id": "n04", "text": "He whispered it to the barber himself, so the three people who warned you were one man, three times." },
+  { "id": "n05", "text": "None of them had seen him, but a thing you hear three times starts to feel true." },
+  { "id": "n06", "text": "And every warning sent a hand to a pocket, yours too, and showed him where the money was." },
+  { "id": "n07", "text": "So while the police ran east and grabbed the first man they saw running," },
+  { "id": "n08", "text": "he walked back through every pocket he'd seen them touch." },
+  { "id": "c04", "text": "You there, keep a hand on your wallet." }
+ ],
+ "take": { "id": "af_heart", "engine": "kokoro", "voice": "af_heart" },
+ "cast_lines": ["c01", "c02", "c03", "c04"],
+ "cast": [
+  { "id": "am_michael", "engine": "kokoro", "voice": "am_michael" },
+  { "id": "am_onyx", "engine": "kokoro", "voice": "am_onyx" },
+  { "id": "am_adam", "engine": "kokoro", "voice": "am_adam" },
+  { "id": "bm_fable", "engine": "kokoro", "voice": "bm_fable" },
+  { "id": "bm_daniel", "engine": "kokoro", "voice": "bm_daniel" },
+  { "id": "bm_lewis", "engine": "kokoro", "voice": "bm_lewis" },
+  { "id": "hm_omega", "engine": "kokoro", "voice": "hm_omega" },
+  { "id": "hm_psi", "engine": "kokoro", "voice": "hm_psi" },
+  { "id": "af_bella", "engine": "kokoro", "voice": "af_bella" },
+  { "id": "af_nicole", "engine": "kokoro", "voice": "af_nicole" },
+  { "id": "af_sarah", "engine": "kokoro", "voice": "af_sarah" },
+  { "id": "bf_emma", "engine": "kokoro", "voice": "bf_emma" },
+  { "id": "bf_isabella", "engine": "kokoro", "voice": "bf_isabella" },
+  { "id": "hf_alpha", "engine": "kokoro", "voice": "hf_alpha" },
+  { "id": "hf_beta", "engine": "kokoro", "voice": "hf_beta" }
+ ]
+}
