@@ -1,0 +1,38 @@
+{
+ "note": "Draft 3's lines. n.. = the narrator (af_heart, task 'takes'); s.. the stall-keeper, c.. the constable, t.. the tea man, auditioned across the cast (task 'cast'). Run 1 (draft 1) auditioned s01, c01, t01, c02 across eighteen voices; run 2 s02 and c03 (draft 2); run 3 the new character lines, c00, t02 and s02b, across the twelve voices still in the running.",
+ "voice": "af_heart",
+ "speed": 1.0,
+ "ref_text": "The market opens slowly in the mornings. Shutters rattle up one by one, a radio plays somewhere behind a wall, and the first customers stand at the counter counting out their change.",
+ "lines": [
+  { "id": "n01b", "text": "You get one chance to hear what was in that box, so remember every word." },
+  { "id": "c00", "text": "Slowly, madam. Everything that was in it." },
+  { "id": "s01", "text": "My box! Milk, sugar, ginger, cardamom, the cups, the strainer, the biscuits, my kettle, the spoons!" },
+  { "id": "n03", "text": "Did she say tea?" },
+  { "id": "n04", "text": "She never said it." },
+  { "id": "c01", "text": "The kettle, the spoons, and the tea." },
+  { "id": "n10c", "text": "Every word she did say was about tea, so that's what stuck, in your memory and in his notebook." },
+  { "id": "t01", "text": "It's for her stall!" },
+  { "id": "c02", "text": "Exactly." },
+  { "id": "t02", "text": "I bring it every morning!" },
+  { "id": "s02b", "text": "He's my tea man!" },
+  { "id": "c03", "text": "You nodded." },
+  { "id": "n07b", "text": "Even he went looking for the tea." },
+  { "id": "n08", "text": "If you said no, name the nine things she did say." }
+ ],
+ "take": { "id": "af_heart", "engine": "kokoro", "voice": "af_heart", "speed": 1.0 },
+ "cast_lines": ["c00", "t02", "s02b"],
+ "cast": [
+  { "id": "hf_alpha", "engine": "kokoro", "voice": "hf_alpha" },
+  { "id": "hf_beta", "engine": "kokoro", "voice": "hf_beta" },
+  { "id": "af_sarah", "engine": "kokoro", "voice": "af_sarah" },
+  { "id": "bf_emma", "engine": "kokoro", "voice": "bf_emma" },
+  { "id": "bf_isabella", "engine": "kokoro", "voice": "bf_isabella" },
+  { "id": "hm_omega", "engine": "kokoro", "voice": "hm_omega" },
+  { "id": "hm_psi", "engine": "kokoro", "voice": "hm_psi" },
+  { "id": "am_onyx", "engine": "kokoro", "voice": "am_onyx" },
+  { "id": "am_michael", "engine": "kokoro", "voice": "am_michael" },
+  { "id": "am_adam", "engine": "kokoro", "voice": "am_adam" },
+  { "id": "bm_daniel", "engine": "kokoro", "voice": "bm_daniel" },
+  { "id": "bm_lewis", "engine": "kokoro", "voice": "bm_lewis" }
+ ]
+}
