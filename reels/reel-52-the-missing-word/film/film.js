@@ -88,24 +88,24 @@
     T.nods = [atW('c01', /spoons/) - 0.05, T.readTea + 0.05];   // her absent nods
     T.page = en('c01') + 0.3;                         // the notebook, close
     T.pageOut = atW('n10c', /stuck/) + 0.3;           // back to the two of them
-    T.tear = atW('n10c', /notebook/) - 0.12;          // he rips the page out on "notebook" and holds it up
+    T.tear = en('n10c') + 0.02;                       // he rips the page out as the line ends (the rip in the gap) and holds it up
     T.zoomIn = T.counts[2] - 0.06; T.zoomOut = T.listEnd + 0.06;   // close on her face and fingers through the middle of the list
     T.nb = atW('n10c', /notebook/);
-    T.lane = en('n10c') + 0.12;                       // the lane: he tears the page out and marches
-    T.whistle = T.lane + 0.3;
-    T.teaIn = T.lane + 0.9;                           // the tea man comes on from the right
+    T.lane = en('n10c') + 0.5;                        // the lane: he marches with the page held up
+    T.whistle = T.lane + 0.25;
+    T.teaIn = T.lane + 0.7;                           // the tea man comes on from the right
     T.meet = at('t01') - 0.55;                        // they meet; the page against the sack
     T.grab = at('t01') - 0.12;
     T.exactly = at('c02');
-    T.thiefIn = at('t01') + 0.1; T.thiefOut = en('t02') + 0.35;
-    T.morning = at('t02');
-    T.pull = at('t02') - 0.1;                         // he pulls the tea man back up the lane
-    T.back = en('t02') + 0.3;                         // the stall: they come past her
+    T.thiefIn = at('t01') + 0.1; T.thiefOut = en('t02s') + 0.35;
+    T.morning = at('t02s');
+    T.pull = at('t02s') - 0.1;                         // he pulls the tea man back up the lane
+    T.back = en('t02s') + 0.3;                         // the stall: they come past her
     T.tm = at('s02b'); T.nod = at('c03');
     T.nodK = [at('c03') + 0.05, at('c03') + 0.42];   // his nod back at her, twice
     T.leave = en('c03') + 0.1;
     T.step = en('c03') + 0.55;                        // the quiet step
-    T.dig = T.step + 0.35;
+    T.dig = T.step + 0.2;                             // the kettle comes up in the gap before "Even he went looking"
     T.even = at('n07b');
     T.look = at('n08') - 0.3;                         // he looks up at you
     T.brow = atW('n08', /nine/) - 0.08;               // his eyebrow (reel 49's key), held to the end
@@ -364,7 +364,7 @@
     const tx = lerp(1300, 820, tmIn) - (pulling ? 50 * ramp(t, T.pull, T.back) : 0), strideT = t < T.meet ? (t - T.teaIn) * 2.1 : pulling ? (t - T.pull) * 2.2 : 0;
     const bobT = (t < T.meet || pulling) ? 11 * Math.abs(Math.sin(strideT * PI)) : 0;
     const alarm = ramp(tp, T.grab - 0.1, T.grab + 0.1);
-    const fT = { yaw: -0.42, look: [-16, 0], close: blink(tp, 3.7) - 0.25 * alarm, op: talk(tp, ['t01', 't02'], 0.5), browUp: 0.9 * alarm, browIn: 0.5 * alarm, smile: 0.2 * (1 - alarm), tilt: 0.04 * alarm * Math.sin(t * 5) };
+    const fT = { yaw: -0.42, look: [-16, 0], close: blink(tp, 3.7) - 0.25 * alarm, op: talk(tp, ['t01', 't02s'], 0.5), browUp: 0.9 * alarm, browIn: 0.5 * alarm, smile: 0.2 * (1 - alarm), tilt: 0.04 * alarm * Math.sin(t * 5) };
     if (t > T.teaIn - 0.05) teaMan(g, tx, 730 - bobT, 0.72, fT, alarm);
     coSide(g, cx, 730 - bobC, 0.76, fC, { lean: marching ? 0.04 : pulling ? -0.06 : 0 });
     if (whistle > 0) { g.save(); g.translate(cx + 0.76 * 210, 730 - bobC + 0.76 * 128); g.rotate(-0.2); g.fillStyle = '#c9cfd5'; R(g, -6, -18, 58, 30, 12); g.fill(); g.strokeStyle = '#7d848b'; g.lineWidth = 3; g.stroke(); g.restore(); }
