@@ -1,7 +1,11 @@
-// Reel 50 · The Decent Thing: the series' drawing kit (window.DRAW), copied whole from reel 49 (tag source/reel-49-the-con,
-// film/draw.js), which copied reel 20's by name (txt, R, ell, lg, rg, sstep, mouth, eye, head, MEN, glass, steam) and added the
-// hands and arms as keyed 2D poses (no rig: HQ's brief after reel 45), the stall, the thief in profile and from behind, and the
-// money. This reel's own people, props and places (the market lane) are in film/lane.js. Our own drawings, nobody real.
+// Reel 51 · Three Times True: reel 49's draw.js (tag source/reel-49-the-con, film/draw.js), copied whole and unchanged below this header:
+// the brief names reel 49's thiefFace, uncleRig, handShadow and stall, and these are the drawings they draw with (the faces, the thief in
+// profile, the hands and arms, the stall). Reel 51's own drawings are in film/world.js and film/film.js.
+// Reel 49 · The Con: the drawings (window.DRAW). film.js times and stages them.
+// Copied from reel 20 (archive/reels-source-2026-11-04: reels/reel-20-the-only-witness/film/film.js), by name: txt, R, ell, lg,
+// rg, sstep, mouth, eye, head, MEN (s2, the chaiwala, and thief), glass, steam. New here: the notes, the coin, the tin, the
+// counter, the stall, the hands and arms (keyed 2D poses, no rig: HQ's brief, after reel 45), the thief in profile, the people's
+// bodies. Our own drawings, nobody real; the money is invented (big numerals, our own colours, a chai-glass watermark).
 // Every function draws from its arguments alone: nothing is kept between frames except offscreen backgrounds, built once.
 (() => {
   const { W, H, clamp, lerp, mulberry32 } = C;
