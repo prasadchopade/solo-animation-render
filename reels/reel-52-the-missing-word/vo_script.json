@@ -1,0 +1,116 @@
+{
+ "note": "Draft 3's lines. n.. = the narrator (af_heart, task 'takes'); s.. the stall-keeper, c.. the constable, t.. the tea man, auditioned across the cast (task 'cast'). Run 1 auditioned s01, c01, t01, c02 across eighteen voices; run 2 s02 and c03; run 3 c00, t02 and s02b across twelve. Cast from the scores: stall-keeper bf_isabella, constable am_onyx, tea man am_adam. Run 4 re-reads the tea man's two lines across eight male voices (t02 creaked in every man still free in run 3).",
+ "voice": "af_heart",
+ "speed": 1.0,
+ "ref_text": "The market opens slowly in the mornings. Shutters rattle up one by one, a radio plays somewhere behind a wall, and the first customers stand at the counter counting out their change.",
+ "lines": [
+  {
+   "id": "n01b",
+   "text": "You get one chance to hear what was in that box, so remember every word."
+  },
+  {
+   "id": "c00",
+   "text": "Slowly, madam. Everything that was in it."
+  },
+  {
+   "id": "s01",
+   "text": "My box! Milk, sugar, ginger, cardamom, the cups, the strainer, the biscuits, my kettle, the spoons!"
+  },
+  {
+   "id": "n03",
+   "text": "Did she say tea?"
+  },
+  {
+   "id": "n04",
+   "text": "She never said it."
+  },
+  {
+   "id": "c01",
+   "text": "The kettle, the spoons, and the tea."
+  },
+  {
+   "id": "n10c",
+   "text": "Every word she did say was about tea, so that's what stuck, in your memory and in his notebook."
+  },
+  {
+   "id": "t01",
+   "text": "It's for her stall!"
+  },
+  {
+   "id": "c02",
+   "text": "Exactly."
+  },
+  {
+   "id": "t02",
+   "text": "I bring it every morning!"
+  },
+  {
+   "id": "s02b",
+   "text": "He's my tea man!"
+  },
+  {
+   "id": "c03",
+   "text": "You nodded."
+  },
+  {
+   "id": "n07b",
+   "text": "Even he went looking for the tea."
+  },
+  {
+   "id": "n08",
+   "text": "If you said no, name the nine things she did say."
+  }
+ ],
+ "take": {
+  "id": "af_heart",
+  "engine": "kokoro",
+  "voice": "af_heart",
+  "speed": 1.0
+ },
+ "cast_lines": [
+  "t01",
+  "t02"
+ ],
+ "cast": [
+  {
+   "id": "am_adam",
+   "engine": "kokoro",
+   "voice": "am_adam"
+  },
+  {
+   "id": "am_michael",
+   "engine": "kokoro",
+   "voice": "am_michael"
+  },
+  {
+   "id": "bm_daniel",
+   "engine": "kokoro",
+   "voice": "bm_daniel"
+  },
+  {
+   "id": "bm_fable",
+   "engine": "kokoro",
+   "voice": "bm_fable"
+  },
+  {
+   "id": "bm_george",
+   "engine": "kokoro",
+   "voice": "bm_george"
+  },
+  {
+   "id": "am_eric",
+   "engine": "kokoro",
+   "voice": "am_eric"
+  },
+  {
+   "id": "am_liam",
+   "engine": "kokoro",
+   "voice": "am_liam"
+  },
+  {
+   "id": "am_echo",
+   "engine": "kokoro",
+   "voice": "am_echo"
+  }
+ ]
+}
