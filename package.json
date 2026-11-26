@@ -1,7 +1,7 @@
 {
   "name": "solo-animation",
   "private": true,
-  "description": "The Root Cause studio: deterministic seek(t) Shorts rendered with Playwright + ffmpeg (one folder per reel under reels/)",
+  "description": "The Root Cause studio: deterministic seek(t) reels for Instagram, rendered with Playwright + ffmpeg (one folder per reel under reels/)",
   "scripts": {
     "render": "node scripts/render.mjs",
     "draft": "node scripts/render.mjs --draft"
