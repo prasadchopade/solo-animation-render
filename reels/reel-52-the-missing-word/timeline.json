@@ -244,46 +244,67 @@
       "file": "audio/_fx_crate_down.wav"
     },
     {
-      "at": 76.98,
+      "at": 76.9,
       "type": "wav",
       "gain": 0.42,
-      "what": "the kettle lifted out of the crate (a gap, just before the line)",
+      "what": "the kettle lifted out (the gap before \"Even he went looking\")",
       "file": "audio/_fx_kettle.wav"
     },
     {
-      "at": 79.12,
+      "at": 78.64,
       "type": "wav",
       "gain": 0.3,
       "what": "the kettle put back (above 4.5 kHz, under the line)",
       "file": "audio/_fx_kettle_hi.wav"
     },
     {
-      "at": 80.38,
+      "at": 79.1,
+      "type": "wav",
+      "gain": 0.3,
+      "what": "the biscuit packet lifted (above 4.5 kHz)",
+      "file": "audio/_fx_crinkle.wav"
+    },
+    {
+      "at": 80.1,
+      "type": "wav",
+      "gain": 0.26,
+      "what": "the biscuit packet tossed back (above 4.5 kHz)",
+      "file": "audio/_fx_crinkle.wav"
+    },
+    {
+      "at": 80.6,
+      "type": "wav",
+      "gain": 0.3,
+      "what": "the strainer lifted out (above 4.5 kHz)",
+      "file": "audio/_fx_strainer_hi.wav"
+    },
+    {
+      "at": 81.82,
+      "type": "wav",
+      "gain": 0.42,
+      "what": "the strainer dropped back in (the gap before the dare)",
+      "file": "audio/_fx_strainer_drop.wav"
+    },
+    {
+      "at": 82.6,
       "type": "clink",
-      "gain": 0.13,
-      "what": "things clinking as he digs (4–9 kHz)",
+      "gain": 0.14,
+      "what": "things clinking as both arms dig deep (4-9 kHz)",
       "pitch": 0.9
     },
     {
-      "at": 80.88,
+      "at": 83.1,
       "type": "clink",
-      "gain": 0.13,
-      "what": "things clinking as he digs (4–9 kHz)",
+      "gain": 0.14,
+      "what": "things clinking as both arms dig deep (4-9 kHz)",
       "pitch": 0.97
     },
     {
-      "at": 81.48,
+      "at": 83.6,
       "type": "clink",
-      "gain": 0.13,
-      "what": "things clinking as he digs (4–9 kHz)",
+      "gain": 0.14,
+      "what": "things clinking as both arms dig deep (4-9 kHz)",
       "pitch": 1.04
-    },
-    {
-      "at": 82.08,
-      "type": "clink",
-      "gain": 0.13,
-      "what": "things clinking as he digs (4–9 kHz)",
-      "pitch": 1.11
     },
     {
       "at": "end",

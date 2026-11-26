@@ -331,24 +331,47 @@
 
   // ------------------------------------------------------------------ props
   // the supply box: a wooden crate, a kettle's spout and lid and a biscuit packet over its rim. (x, y): the crate's centre; o.tilt; o.lid
-  function crate(g, x, y, s, o = {}) {
+  // the kettle, the biscuit packet and the strainer, each drawable on its own (lifted out of the crate on the step)
+  function kettle(g, x, y, s, rot = 0) {                 // origin: the body's centre; its handle's top is at (0, -83)
+    g.save(); g.translate(x, y); g.rotate(rot); g.scale(s, s);
+    g.fillStyle = lg(g, -80, -70, 80, 20, [0, '#e4e8ec'], [0.5, '#b9c0c7'], [1, '#8d949b']); ell(g, 0, 0, 92, 70); g.fill();
+    g.strokeStyle = '#7d848b'; g.lineWidth = 5; g.stroke();
+    g.fillStyle = '#c9cfd5'; g.beginPath(); g.moveTo(70, -10); g.bezierCurveTo(110, -30, 130, -70, 150, -96); g.lineTo(166, -88); g.bezierCurveTo(146, -54, 128, -12, 84, 16); g.closePath(); g.fill(); g.stroke();
+    ell(g, 0, -64, 46, 14); g.fillStyle = '#aeb5bc'; g.fill(); g.stroke(); ell(g, 0, -80, 13, 11); g.fillStyle = '#2a2a2e'; g.fill();
+    g.strokeStyle = '#2a2a2e'; g.lineWidth = 10; g.lineCap = 'round'; g.beginPath(); g.moveTo(-70, -30); g.bezierCurveTo(-60, -110, 60, -110, 70, -30); g.stroke();
+    g.fillStyle = 'rgba(255,255,255,0.5)'; R(g, -56, -40, 18, 50, 9); g.fill();
+    g.restore();
+  }
+  function packet(g, x, y, s, rot = 0) {                 // origin: the packet's middle; its top edge at (0, -78)
+    g.save(); g.translate(x, y); g.rotate(rot); g.scale(s, s);
+    R(g, -34, -78, 68, 120, 6); g.fillStyle = '#d8342c'; g.fill(); g.fillStyle = '#f3c23a'; g.fillRect(-34, -40, 68, 30); g.fillStyle = 'rgba(255,255,255,0.35)'; g.fillRect(-26, -72, 8, 104);
+    g.fillStyle = '#b52a22'; for (let i = 0; i < 6; i++) g.fillRect(-34 + i * 12, -86, 8, 10);
+    g.restore();
+  }
+  function strainer(g, x, y, s, rot = 0) {               // origin: the mesh cup's rim centre; the handle runs to +x (its grip at (150, -14))
+    g.save(); g.translate(x, y); g.rotate(rot); g.scale(s, s); g.lineCap = 'round'; g.lineJoin = 'round';
+    g.save(); g.beginPath(); g.moveTo(-50, 0); g.bezierCurveTo(-50, 66, 50, 66, 50, 0); g.closePath(); g.fillStyle = 'rgba(200,205,210,0.35)'; g.fill(); g.clip();
+    g.strokeStyle = 'rgba(120,128,136,0.8)'; g.lineWidth = 2.5; for (let k = -60; k <= 60; k += 9) { g.beginPath(); g.moveTo(k, 0); g.lineTo(k + 40, 70); g.stroke(); g.beginPath(); g.moveTo(k, 0); g.lineTo(k - 40, 70); g.stroke(); }
+    g.restore();
+    g.strokeStyle = '#8a9198'; g.lineWidth = 6; g.beginPath(); g.moveTo(-50, 0); g.bezierCurveTo(-50, 66, 50, 66, 50, 0); g.stroke();
+    ell(g, 0, 0, 50, 10); g.strokeStyle = '#c9cfd5'; g.lineWidth = 7; g.stroke();
+    g.strokeStyle = '#a7aeb5'; g.lineWidth = 11; g.beginPath(); g.moveTo(46, -4); g.quadraticCurveTo(110, -20, 180, -16); g.stroke();
+    g.fillStyle = '#a7aeb5'; ell(g, 186, -16, 12, 9); g.fill(); g.fillStyle = '#4a4f55'; ell(g, 186, -16, 5, 4); g.fill();
+    g.restore();
+  }
+  // the supply box: a wooden crate, its kettle's spout and lid and a biscuit packet over its rim. (x, y): the crate's centre.
+  // crateContents (what pokes over the rim) and crateFront (the box itself) can be drawn apart, so things lifted out rise from behind
+  // the front, and hands that go in vanish into it. o.noKettle, o.noPacket: those are out (lifted); o.kdx/kdy/krot, o.pdx/pdy/prot: jiggle
+  const CW = 300, CH = 190;
+  function crateContents(g, x, y, s, o = {}) {
     g.save(); g.translate(x, y); g.rotate(o.tilt || 0); g.scale(s, s);
-    const w = 300, h = 190;
-    if (!o.noFill) {
-      g.save(); g.translate(-40 + (o.kdx || 0), -h / 2 + 6 + (o.kdy || 0)); g.rotate(o.krot || 0);   // the kettle: aluminium, its spout up and right, the lid's knob
-      g.fillStyle = lg(g, -80, -70, 80, 20, [0, '#e4e8ec'], [0.5, '#b9c0c7'], [1, '#8d949b']); ell(g, 0, 0, 92, 70); g.fill();
-      g.strokeStyle = '#7d848b'; g.lineWidth = 5; g.stroke();
-      g.fillStyle = '#c9cfd5'; g.beginPath(); g.moveTo(70, -10); g.bezierCurveTo(110, -30, 130, -70, 150, -96); g.lineTo(166, -88); g.bezierCurveTo(146, -54, 128, -12, 84, 16); g.closePath(); g.fill(); g.stroke();
-      ell(g, 0, -64, 46, 14); g.fillStyle = '#aeb5bc'; g.fill(); g.stroke(); ell(g, 0, -80, 13, 11); g.fillStyle = '#2a2a2e'; g.fill();
-      g.strokeStyle = '#2a2a2e'; g.lineWidth = 10; g.lineCap = 'round'; g.beginPath(); g.moveTo(-70, -30); g.bezierCurveTo(-60, -110, 60, -110, 70, -30); g.stroke();
-      g.fillStyle = 'rgba(255,255,255,0.5)'; R(g, -56, -40, 18, 50, 9); g.fill();
-      g.restore();
-      g.save(); g.translate(92 + (o.pdx || 0), -h / 2 + 2 + (o.pdy || 0)); g.rotate(0.22 + (o.prot || 0));   // a biscuit packet: red and yellow, no words
-      R(g, -34, -78, 68, 120, 6); g.fillStyle = '#d8342c'; g.fill(); g.fillStyle = '#f3c23a'; g.fillRect(-34, -40, 68, 30); g.fillStyle = 'rgba(255,255,255,0.35)'; g.fillRect(-26, -72, 8, 104);
-      g.fillStyle = '#b52a22'; for (let i = 0; i < 6; i++) g.fillRect(-34 + i * 12, -86, 8, 10);
-      g.restore();
-    }
-    // the crate: slats, its ends, nails
+    if (!o.noKettle) kettle(g, -40 + (o.kdx || 0), -CH / 2 + 6 + (o.kdy || 0), 1, o.krot || 0);
+    if (!o.noPacket) packet(g, 92 + (o.pdx || 0), -CH / 2 + 2 + (o.pdy || 0), 1, 0.22 + (o.prot || 0));
+    g.restore();
+  }
+  function crateFront(g, x, y, s, o = {}) {
+    const w = CW, h = CH;
+    g.save(); g.translate(x, y); g.rotate(o.tilt || 0); g.scale(s, s);
     g.fillStyle = lg(g, 0, -h / 2, 0, h / 2, [0, '#c99a5e'], [1, '#9a6c3a']); R(g, -w / 2, -h / 2, w, h, 8); g.fill();
     g.strokeStyle = '#6e4a24'; g.lineWidth = 6; g.strokeRect(-w / 2, -h / 2, w, h);
     g.strokeStyle = 'rgba(80,50,20,0.55)'; g.lineWidth = 5; for (const yy of [-h / 6, h / 6]) { g.beginPath(); g.moveTo(-w / 2, yy); g.lineTo(w / 2, yy); g.stroke(); }
@@ -357,6 +380,7 @@
     g.strokeStyle = 'rgba(80,50,20,0.25)'; g.lineWidth = 2; const r = mulberry32(31); for (let i = 0; i < 14; i++) { const yy = -h / 2 + r() * h, xx = -w / 2 + 30 + r() * (w - 60); g.beginPath(); g.moveTo(xx, yy); g.quadraticCurveTo(xx + 40, yy + 2, xx + 70 + r() * 30, yy); g.stroke(); }
     g.restore();
   }
+  function crate(g, x, y, s, o = {}) { if (!o.noFill) crateContents(g, x, y, s, o); crateFront(g, x, y, s, o); }
   // a single-burner steel stove on the counter; flame 0…1
   function stove(g, x, y, s, flame, t) {
     g.save(); g.translate(x, y); g.scale(s, s);
@@ -704,6 +728,6 @@
   }
 
   window.DRAW = { TAU, PI, sstep, font, txt, R, ell, lg, rg, hex, mix, rgba, capsule, mouth, eye, MEN, head, headSide, glass, steam,
-    FING, POSE, LINE, hand, arm, crate, stove, saucepan, rack, match, notebookBack, pencil, penHand, scrawl, page, sack, speaker,
+    FING, POSE, LINE, hand, arm, crate, crateContents, crateFront, kettle, packet, strainer, CW, CH, stove, saucepan, rack, match, notebookBack, pencil, penHand, scrawl, page, sack, speaker,
     stallBack, bench, counterFront, CT, laneBG, LW, stepBG, skBust, coBust, coSide, tmBust, thiefBust, thiefWalk };
 })();

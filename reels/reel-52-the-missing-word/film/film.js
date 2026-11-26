@@ -11,7 +11,7 @@
 (() => {
   const { W, H, scene, canvas, clamp, lerp, mulberry32 } = C;
   const K = window.KIT, D = window.DRAW, U = window.UI;
-  const { TAU, PI, sstep, txt, R, ell, lg, rg, mix, MEN, hand, arm, crate, stove, saucepan, rack, match, notebookBack, pencil, scrawl,
+  const { TAU, PI, sstep, txt, R, ell, lg, rg, mix, MEN, hand, arm, crate, crateContents, crateFront, kettle, packet, strainer, stove, saucepan, rack, match, notebookBack, pencil, scrawl,
     page, sack, speaker, stallBack, bench, counterFront, CT, laneBG, LW, stepBG, skBust, coBust, coSide, tmBust, thiefBust, thiefWalk, capsule, LINE } = D;
   C.fonts = ['700 condensed 100px Bahn', '700 semi-condensed 46px Bahn', '600 semi-condensed 64px Bahn'];
 
@@ -85,11 +85,14 @@
     T.q = at('n03'); T.qTea = atW('n03', /tea/); T.qEnd = en('n03');
     T.rev = at('n04');
     T.read = at('c01'); T.readTea = atW('c01', /tea/); T.readEnd = en('c01');
-    T.nods = [atW('c01', /spoons/) - 0.05, T.readTea + 0.05];   // her absent nods
-    T.page = en('c01') + 0.3;                         // the notebook, close
+    T.nods = [en('c01') + 0.08, en('c01') + 0.46];   // her absent nods, after his "and the tea"
+    T.page = en('c01') + 0.85;                        // the notebook, close (as the narrator starts)
     T.pageOut = atW('n10c', /stuck/) + 0.3;           // back to the two of them
     T.tear = en('n10c') + 0.02;                       // he rips the page out as the line ends (the rip in the gap) and holds it up
-    T.zoomIn = T.counts[2] - 0.06; T.zoomOut = T.listEnd + 0.06;   // close on her face and fingers through the middle of the list
+    // the two-shot's cut-ins (HQ, 26 Nov): her fingers counting up, his pencil racing and falling behind, her face for the nine up,
+    // his face on "...and the tea", then her absent nod
+    T.cA = T.counts[0] - 0.08; T.cB = T.counts[5] - 0.1; T.cZ = T.counts[7] - 0.1; T.cZ1 = T.listEnd + 0.06;
+    T.cC = at('c01') - 0.05; T.cD = en('c01') + 0.02;
     T.nb = atW('n10c', /notebook/);
     T.lane = en('n10c') + 0.5;                        // the lane: he marches with the page held up
     T.whistle = T.lane + 0.25;
@@ -104,10 +107,15 @@
     T.tm = at('s02b'); T.nod = at('c03');
     T.nodK = [at('c03') + 0.05, at('c03') + 0.42];   // his nod back at her, twice
     T.leave = en('c03') + 0.1;
-    T.step = en('c03') + 0.55;                        // the quiet step
-    T.dig = T.step + 0.2;                             // the kettle comes up in the gap before "Even he went looking"
-    T.even = at('n07b');
-    T.look = at('n08') - 0.3;                         // he looks up at you
+    T.step = en('c03') + 0.55;                        // the quiet step: the crate set down
+    // the rummage (HQ, 26 Nov: it has to move): the kettle up and looked under, the biscuits, the strainer, both arms in deep, then
+    // empty hands; each dig deeper than the last
+    T.k = T.step + 0.16;                              // the kettle (its clank in the gap before "Even he went looking")
+    T.b = T.k + 1.1;                                  // the biscuits
+    T.s = T.k + 1.85;                                 // the strainer (dropped back in the gap before the dare)
+    T.deep = T.k + 2.7;                               // both arms in
+    T.empty = T.k + 3.5;                              // empty hands, palms up
+    T.look = T.k + 3.8;                               // he looks up at you
     T.brow = atW('n08', /nine/) - 0.08;               // his eyebrow (reel 49's key), held to the end
     T.end = K.tb('end');
     return T;
@@ -145,6 +153,7 @@
     const cx = x + Math.cos(ang) * s * 0.42 + 8, cy = y + Math.sin(ang) * s * 0.42 + 12;
     g.save(); g.translate(cx, cy); g.rotate(ang); g.fillStyle = rg(g, 0, 0, 4, s * 0.5, [0, 'rgba(40,20,8,' + a + ')'], [1, 'rgba(40,20,8,0)']); g.scale(1, 0.55); g.beginPath(); g.arc(0, 0, s * 0.5, 0, TAU); g.fill(); g.restore();
   }
+  const CH2 = D.CH / 2;
   const SKA = { skin: MEN.sk.skin, sleeve: MEN.sk.blouse, short: true };
   const COA = { skin: MEN.co.skin, sleeve: MEN.co.khaki, long: true };
   const TMA = { skin: MEN.tm.skin, sleeve: MEN.tm.shirt, long: true };
@@ -248,10 +257,13 @@
   const CO2 = { x: 280, y: 740, s: 0.82 }, SK2 = { x: 770, y: 720, s: 0.84 };
   function shotTwo(g, t, T) {
     const tp = on2(t);
-    const close = t >= T.zoomIn && t < T.zoomOut;
-    const push = close ? 1.42 + 0.03 * ramp(t, T.zoomIn, T.zoomOut) : 1 + 0.05 * ramp(t, T.two, T.listEnd) + 0.05 * ramp(t, T.q - 0.1, T.qEnd + 0.4) - 0.04 * ramp(t, T.pageOut, T.lane);
-    const d = K.drift(t, 4), cxy = close ? [780, 1010] : [540, 900];
+    // which framing: the two-shot, or one of the cut-ins (hard cuts; a slight push inside each)
+    const shots = [[T.cA, T.cB, 2.25, [690, 1000]], [T.cB, T.cZ, 2.05, [480, 930]], [T.cZ, T.cZ1, 1.42, [780, 1010]], [T.cC, T.cD, 1.9, [350, 790]], [T.cD, T.page, 1.85, [775, 770]]];
+    const cut = shots.find(([a, b]) => t >= a && t < b);
+    const push = cut ? cut[2] * (1 + 0.035 * ramp(t, cut[0], cut[1])) : 1 + 0.05 * ramp(t, T.two, T.listEnd) + 0.05 * ramp(t, T.q - 0.1, T.qEnd + 0.4) - 0.04 * ramp(t, T.pageOut, T.lane);
+    const d = K.drift(t, 4), cxy = cut ? cut[3] : [540, 900];
     g.save(); g.translate(cxy[0] + d.x, cxy[1] + d.y); g.scale(push, push); g.translate(-cxy[0], -cxy[1]);
+    const behind = t >= T.cB && t < T.cZ;              // the pencil cut-in: he falls behind
     g.drawImage(stallBlur(), 0, 0);
     // ---- the constable, side-on, facing her: the notebook in his near hand, the pencil in the far one behind it
     const Lc = life(5.2, tp, 1);
@@ -260,9 +272,9 @@
     const fC = { look: 0.6, lookY: 1.3 * (1 - lookUp), close: blink(tp, 6.2), op: talk(tp, ['c00', 'c01'], 0.42), smile: 0.1, tilt: Lc.tilt + 0.05 * (1 - lookUp), browUp: 0.3 * win(tp, T.q - 0.1, T.q + 0.1, T.rev, T.rev + 0.2) };
     // the far arm and pencil hand, behind the notebook
     const NB = [528, 1052];
-    const scrib = writing * (Math.sin(tp * 47) * 10 + Math.sin(tp * 23) * 6) + readingTea * Math.sin(tp * 40) * 9;
+    const scrib = writing * (Math.sin(tp * 47) * 10 + Math.sin(tp * 23) * 6) * (behind ? 1.8 : 1) + readingTea * Math.sin(tp * 40) * 9;
     const penY = writing ? ((tp - T.box) * 38) % 60 : 0;
-    const pen = { x: NB[0] + 36 + scrib, y: NB[1] - 96 + penY, a: 1.25, pose: 'pen' };
+    const pen = { x: NB[0] + 36 + scrib, y: NB[1] - (behind ? 150 : 96) + penY * (behind ? 0.5 : 1), a: 1.25, pose: 'pen' };
     const licking = win(tp, T.lick, T.lick + 0.15, T.lick + 0.35, T.lick + 0.55);
     if (licking > 0) { pen.x = lerp(pen.x, CO2.x + 150, licking); pen.y = lerp(pen.y, CO2.y + 110, licking); pen.a = lerp(pen.a, 2.2, licking); }
     const rip = t >= T.pageOut ? mj((tp - T.tear) / 0.35) : 0, reach = t >= T.pageOut ? mj((tp - T.tear + 0.45) / 0.35) : 0;
@@ -270,9 +282,21 @@
     if (reach > 0) { pen.x = lerp(pen.x, PG[0] + 10, reach); pen.y = lerp(pen.y, PG[1] - 118, reach); pen.a = lerp(pen.a, -1.45, reach); pen.pose = reach > 0.6 ? 'pinch' : 'pen'; }
     limb(g, [CO2.x + 60, CO2.y + 0.86 * 360], pen, [0.6, 0.8], CO2.s, COA, { size: 190 });
     if (reach < 0.5) pencil(g, pen.x + 40, pen.y + 30, pen.a + 0.3, 1.0);
+    if (behind) { fC.lookY = (Math.floor((tp - T.cB) / 0.3) % 2) ? 0.2 : 1.4; fC.browIn = 0.8; fC.tongue = 1; }   // eyes darting up to her and back, tongue out
     coSide(g, CO2.x, CO2.y + 4 * Lc.breath, CO2.s, fC, { lean: -0.02 });
+    if (behind) {                                         // a drop of sweat sliding down his temple
+      const u = ((tp - T.cB) % 0.9) / 0.9, sx = CO2.x + 120, sy = CO2.y - 120 + 70 * u;
+      g.save(); g.globalAlpha = 1 - 0.6 * u; g.fillStyle = '#dff1ff'; g.strokeStyle = '#7fb2d6'; g.lineWidth = 3;
+      g.beginPath(); g.moveTo(sx, sy - 20); g.quadraticCurveTo(sx + 12, sy, sx, sy + 8); g.quadraticCurveTo(sx - 12, sy, sx, sy - 20); g.closePath(); g.fill(); g.stroke(); g.restore();
+    }
     // the notebook, its back to us, held up in his near hand
     notebookBack(g, NB[0], NB[1], -0.12, 1.25);
+    if (writing && t < T.q) {                             // the pencil's top racing above the notebook's edge (the page stays turned away)
+      g.save(); g.beginPath(); g.moveTo(0, 0); g.lineTo(W, 0); g.lineTo(W, 859); g.lineTo(0, 989); g.closePath(); g.clip();
+      const wob = (behind ? 1.8 : 1) * (Math.sin(tp * 47) * 10 + Math.sin(tp * 23) * 6), tx = 515 + wob, ty = 962 + 6 * Math.sin(tp * 31);
+      pencil(g, tx, ty, -2.0 + 0.08 * Math.sin(tp * 37) * (behind ? 1.6 : 1), 1.3);
+      g.restore();
+    }
     if (rip > 0) {                                        // the torn page, turned to us: the end of the list in his hand, TEA last
       g.save(); g.translate(PG[0], PG[1]); g.rotate(pgA); g.scale(1.25, 1.25);
       g.fillStyle = 'rgba(40,20,8,0.25)'; R(g, -66, -92, 140, 200, 3); g.fill();
@@ -406,30 +430,55 @@
     const tp = on2(t);
     g.save(); const d = K.drift(t, 4); g.translate(540 + d.x, 960 + d.y); const push = 1 + 0.05 * ramp(t, T.look - 0.2, T.look + 0.6); g.scale(push, push); g.translate(-540, -960);
     g.drawImage(stepBG(), 0, 0);
-    const t0 = T.dig;
-    const kLift = win(tp, t0 + 0.05, t0 + 0.45, t0 + 1.05, t0 + 1.4);           // the kettle up and out, looked under, put back
-    const peer = win(tp, t0 + 0.4, t0 + 0.6, t0 + 1.0, t0 + 1.2);               // his head over the crate
-    const dig = ramp(tp, t0 + 1.35, t0 + 1.55) * (1 - ramp(tp, T.look - 0.05, T.look + 0.15));
-    const look = ramp(tp, T.look, T.look + 0.25);
-    const brow = thiefBrow(tp, T.brow) * 1.25;
-    const f = { look: look > 0.5 ? [0, 0] : kLift > 0.5 && peer < 0.3 ? [-14, 6] : [6 * Math.sin(tp * 3), 17], close: blink(tp, 4.4) * (tp > T.brow - 0.3 ? 0 : 1),
-      smile: 0.15 + 0.3 * look, browIn: 0.55 * dig + 0.3 * peer, browOne: brow, tilt: 0.05 * (dig + peer) - 0.03 * look + 0.04 * look * Math.min(1, brow) };
-    const bodyY = 680 + 24 * peer + 16 * dig - 16 * look;
+    const CR = [540, 1340], sc = 1.5, rim = CR[1] - sc * D.CH / 2;
+    // the beats: each item up (its window), looked at, put back; then both arms deep; then empty hands; then the look and the eyebrow
+    const kW = win(tp, T.k, T.k + 0.35, T.k + 0.8, T.k + 1.0);            // the kettle out and back
+    const bW = win(tp, T.b, T.b + 0.28, T.b + 0.5, T.b + 0.68);             // the biscuits
+    const sW = win(tp, T.s, T.s + 0.3, T.s + 0.62, T.s + 0.74);             // the strainer (it drops back fast)
+    const deep = win(tp, T.deep, T.deep + 0.2, T.empty - 0.12, T.empty + 0.05);
+    const empty = win(tp, T.empty, T.empty + 0.2, T.look + 0.45, T.look + 0.75);
+    const look = ramp(tp, T.look, T.look + 0.22);
+    const brow = thiefBrow(tp, T.brow) * 1.3;
+    const late = win(tp, T.brow + 2.3, T.brow + 2.38, T.brow + 2.6, T.brow + 2.7);   // a last glance down at the crate, and back up
+    const lean = 18 * kW + 14 * bW + 16 * sW + 40 * deep;
+    const bodyY = 680 + lean - 14 * look - 10 * empty;
+    const f = {
+      look: look > 0.5 ? [0, 0 + 16 * late] : deep > 0.3 ? [3 * Math.sin(tp * 9), 18] : kW > 0.3 ? [-10, 15] : bW > 0.3 ? [16, 2] : sW > 0.3 ? [-14, -2] : empty > 0.3 ? [0, 12] : [0, 14],
+      close: blink(tp, 4.4) * (tp > T.brow - 0.3 && tp < T.brow + 1.2 ? 0 : 1),
+      smile: 0.12 + 0.3 * look * (1 - 0.5 * late), browIn: 0.6 * deep + 0.3 * sW + 0.2 * kW, browUp: 0.25 * empty * (1 - look), browOne: brow,
+      tilt: 0.04 * deep + 0.03 * kW - 0.03 * bW - 0.02 * look + 0.04 * look * Math.min(1, brow),
+    };
     thiefBust(g, 540, bodyY, 0.82, f);
-    const CR = [540, 1340], sc = 1.5;
-    const jig = dig > 0 ? Math.sin(tp * 11) : 0, jig2 = dig > 0 ? Math.sin(tp * 8.3 + 1) : 0;
-    const kdy = -150 * kLift, kdx = -190 * kLift;
-    // his arms: the right (screen left) lifts the kettle by its handle; both dig after; on the look up, they rest on the crate's rim
     const S1 = [540 - 0.82 * 255, bodyY + 0.82 * 420], S2 = [540 + 0.82 * 255, bodyY + 0.82 * 420];
-    const kHandle = [CR[0] + sc * (-40 + kdx / sc), CR[1] + sc * (-89 - 90) + kdy];
-    const rim = CR[1] - sc * 95;
-    const hA = look > 0.5 ? { x: CR[0] - 150, y: rim + 4, a: 0.2, pose: 'rest' } : kLift > 0.02 ? { x: kHandle[0] - 6, y: kHandle[1] + 10, a: -0.2, pose: 'grip' } : { x: CR[0] - 70 + 30 * jig * dig, y: rim + 60 + 20 * dig, a: 1.2, pose: 'grip' };
-    const hB = look > 0.5 ? { x: CR[0] + 150, y: rim + 4, a: PI - 0.2, pose: 'rest' } : { x: CR[0] + 80 - 30 * jig2 * dig, y: rim + 50 + 30 * dig, a: PI - 1.2, pose: 'grip' };
-    const inBox = (h) => h.y > rim + 20;
-    limb(g, S1, hA, [-0.7, 0.6], 0.82, THA, { noHand: inBox(hA) });
-    limb(g, S2, hB, [0.7, 0.6], 0.82, THA, { noHand: inBox(hB), left: true });
-    crate(g, CR[0], CR[1], sc, { kdx: kdx + 18 * jig * dig, krot: 0.1 * jig2 * dig - 0.15 * kLift, kdy: kdy + 8 * Math.abs(jig) * dig, pdx: -14 * jig2 * dig, prot: 0.12 * jig * dig });
-    if (kLift > 0.02) hand(g, hA.x, hA.y, hA.a, 0.82 * 200, 'grip', { skin: MEN.thief.skin });
+    // where each lifted thing is (screen), from inside the crate to up by his face and back
+    const kIn = [CR[0] + sc * -40, CR[1] + sc * (-CH2 + 6)], kUp = [330, 1075];
+    const kp = lerp2(kIn, kUp, kW), kRot = -0.25 * kW;
+    const pIn = [CR[0] + sc * 92, CR[1] + sc * (-CH2 + 2)], pUp = [700, 930];
+    const pp = lerp2(pIn, pUp, bW), pRot = 0.22 - 0.5 * bW;
+    const sIn = [CR[0] - 30, CR[1] + 40], sUp = [430, 930];
+    const sp = lerp2(sIn, sUp, sW), sRot = -0.2 + 0.3 * sW;
+    const jig = deep > 0 ? Math.sin(tp * 13) : 0, jig2 = deep > 0 ? Math.sin(tp * 9.1 + 1) : 0;
+    // his hands: the right (screen left) takes the kettle, then the strainer; the left takes the biscuits; both dig; both come up empty
+    const restR = { x: CR[0] - 160, y: rim + 6, a: 0.25, pose: 'rest' }, restL = { x: CR[0] + 160, y: rim + 6, a: PI - 0.25, pose: 'rest' };
+    const emptyR = { x: CR[0] - 210, y: rim - 150, a: -2.2, pose: 'open' }, emptyL = { x: CR[0] + 210, y: rim - 150, a: -0.95, pose: 'open' };
+    const digR = { x: CR[0] - 80 + 30 * jig, y: rim + 90, a: 1.25, pose: 'grip' }, digL = { x: CR[0] + 90 - 30 * jig2, y: rim + 90, a: PI - 1.25, pose: 'grip' };
+    let hR = restR, hL = restL;
+    if (kW > 0.02) hR = { x: kp[0] - 6, y: kp[1] - sc * 83 + 6, a: -0.35, pose: 'grip' };
+    else if (sW > 0.02) hR = { x: sp[0] + sc * 140 * Math.cos(sRot), y: sp[1] + sc * 140 * Math.sin(sRot) - 18, a: -0.4, pose: 'grip' };
+    if (bW > 0.02) hL = { x: pp[0] + 10, y: pp[1] - sc * 78 + 4, a: PI - 0.5, pose: 'grip' };
+    const blendTo = (h, tgt, u) => ({ x: lerp(h.x, tgt.x, u), y: lerp(h.y, tgt.y, u), a: lerp(h.a, tgt.a, u), pose: u > 0.5 ? tgt.pose : h.pose });
+    if (deep > 0.02) { hR = blendTo(hR, digR, deep); hL = blendTo(hL, digL, deep); }
+    if (empty > 0.02) { hR = blendTo(hR, emptyR, empty); hL = blendTo(hL, emptyL, empty); }
+    const inBox = (h) => h.y > rim + 24;
+    limb(g, S1, hR, [-0.8, 0.5], 0.82, THA, { noHand: true });
+    limb(g, S2, hL, [0.8, 0.5], 0.82, THA, { noHand: true });
+    crateContents(g, CR[0], CR[1], sc, { noKettle: kW > 0.02, noPacket: bW > 0.02, kdx: 14 * jig * deep, krot: 0.1 * jig2 * deep, kdy: 8 * Math.abs(jig) * deep, pdx: -12 * jig2 * deep, prot: 0.12 * jig * deep });
+    // the lifted things rise from behind the crate's front
+    if (kW > 0.02) kettle(g, kp[0], kp[1], sc, kRot);
+    if (bW > 0.02) packet(g, pp[0], pp[1], sc, pRot);
+    if (sW > 0.02) strainer(g, sp[0], sp[1], sc * 0.95, sRot);
+    crateFront(g, CR[0], CR[1], sc);
+    for (const [h, left] of [[hR, false], [hL, true]]) if (!inBox(h)) hand(g, h.x, h.y, h.a, 0.82 * 205, h.pose, { skin: MEN.thief.skin, left });
     g.restore();
   }
 
