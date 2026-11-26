@@ -237,7 +237,7 @@
     g.save(); g.translate(x, y + 1130 * s); g.scale(s, s); legs(g, WEAR.thief, ph, -1, 1.8, { lean: 0.12 }); g.restore();
     g.save(); g.translate(x, y); g.rotate(-0.1); g.scale(s, s); torso(g, P.thief, WEAR.thief, -1);
     g.translate(-25, 0); D.headProfile(g, P.thief, { smile: o.smile ?? 0.05, close: blink(tc, 4.1), browUp: o.browUp ?? 0.2 }); g.restore();
-    const Wn = held ? UP(x, y, s, -560, 700 + 40 * Math.sin(ph * TAU * 2)) : UP(x, y, s, -320 * sw, 980);
+    const Wn = held ? (o.up ? UP(x, y, s, -300, 470 + 30 * Math.sin(ph * TAU * 2)) : UP(x, y, s, -560, 700 + 40 * Math.sin(ph * TAU * 2))) : UP(x, y, s, -320 * sw, 980);
     limb(g, S2, Wn, s, WEAR.thief, P.thief.skin, { pole: [0.2, 1] });
     D.hand(g, Wn[0], Wn[1], PI + 0.2, handS(s), held ? 'pinch' : 'rest', { left: false, skin: P.thief.skin });
     if (held) wallet(g, Wn[0] - 0.75 * handS(s), Wn[1] - 0.05 * handS(s), 0.62 * s, -0.15);
@@ -279,20 +279,24 @@
     for (let i = 0; i < 7; i++) { const bx = -40 + i * 175; g.fillStyle = '#b07a3a'; g.beginPath(); g.moveTo(bx, 1460); g.lineTo(bx + 160, 1460); g.lineTo(bx + 140, 1580); g.lineTo(bx + 20, 1580); g.closePath(); g.fill(); g.strokeStyle = 'rgba(70,40,15,0.5)'; g.lineWidth = 4; for (let k = 0; k < 4; k++) { g.beginPath(); g.moveTo(bx + 6 + k * 3, 1482 + k * 26); g.lineTo(bx + 154 - k * 3, 1482 + k * 26); g.stroke(); }
       const r = mulberry32(i + 5); for (let k = 0; k < 14; k++) { ell(g, bx + 30 + r() * 100, 1460 - r() * 26, 17, 16); g.fillStyle = ['#d9342b', '#b07a3a', '#e8b632', '#c9a24a'][i % 4]; g.fill(); } }
   }
-  const VW = { x: 270, y: 840, s: 0.56 };              // the woman at the vegetable stall
-  const LM = { x: 560, y: 780, s: 0.6 };               // the loud man
+  const VW = { x: 230, y: 840, s: 0.56 };              // the woman at the vegetable stall
+  const LM = { x: 495, y: 780, s: 0.6 };               // the loud man (room on his right for the running man and the wallet)
   function shotShout(g, t, T) {
     const tc = on2(t);
     g.save(); cam(g, t, { z: 1 + 0.07 * ramp(tc, T.chor, T.freeze), cx: 600, cy: 960, still: tc >= T.freeze - 0.05 });
     veg(g, tc);
-    // he comes running in from the right, the wallet held out, towards her (behind the loud man, so his pointing arm reads)
-    if (tc >= T.arrive) { const ru = clamp((tc - T.arrive) / 0.9); runner(g, tc, lerp(1300, 880, 1 - (1 - ru) * (1 - ru)), 770, 0.52, (tc - T.arrive) * 2.8, true, { browUp: 0.35 }); }
     // the loud man: weighing onions, then round to the running man and pointing ("Chor! Chor!")
     const tn = ramp(tc, T.chor - 0.3, T.chor - 0.05), pt = ramp(tc, T.chor - 0.15, T.chor + 0.08), lmT = lerp(-0.4, 0.5, tn);
     person(g, { L: P.loud, wear: WEAR.loud, x: LM.x, y: LM.y, s: LM.s, turn: lmT, tilt: -0.04 * pt,
       face: { op: talk(tc, ['c03'], 0.6) + 0.2 * pt, browIn: 0.9 * pt, frown: 0.6 * pt, look: tn > 0.5 ? [18, 0] : [-12, 8], close: blink(tc, 1.9) },
       arms: [{ w: UP(LM.x, LM.y, LM.s, -280, 1170), pose: 'rest' }, { w: lerp2(UP(LM.x, LM.y, LM.s, 300, 1170), UP(LM.x, LM.y, LM.s, 640, 360), pt), pose: pt > 0.5 ? 'point' : 'rest', a: pt > 0.5 ? -0.3 : null }] });
     const ph = backPocket(LM.x, LM.y, LM.s, lmT); phone(g, ph[0], ph[1] - 26 * LM.s, 0.42, 0.12);
+    // he comes running in from the right, the wallet held out towards her: in front of the loud man, so the wallet shows at the pick;
+    // the loud man's pointing hand is drawn again over him
+    if (tc >= T.arrive) {
+      const ru = clamp((tc - T.arrive) / 0.9); runner(g, tc, lerp(1300, 905, 1 - (1 - ru) * (1 - ru)), 770, 0.52, (tc - T.arrive) * 2.8, true, { browUp: 0.35, up: true });
+      if (pt > 0.3) { const Sp = UP(LM.x, LM.y, LM.s, 262, 462), Wp = lerp2(UP(LM.x, LM.y, LM.s, 300, 1170), UP(LM.x, LM.y, LM.s, 640, 360), pt); limb(g, Sp, Wp, LM.s, WEAR.loud, P.loud.skin, { pole: [0.45, 1] }); D.hand(g, Wp[0], Wp[1], -0.3, handS(LM.s), 'point', { left: false, skin: P.loud.skin }); }
+    }
     // she: her hand into the bag to pay, nothing in it, "My wallet!", round to the right
     const rch = ramp(tc, T.reach, T.reach + 0.3), alarm = ramp(tc, T.wallet - 0.12, T.wallet + 0.08), tw = ramp(tc, T.turn, T.turn + 0.3);
     const bp = UP(VW.x, VW.y, VW.s, 255, 905);
