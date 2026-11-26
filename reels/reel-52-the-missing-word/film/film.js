@@ -87,6 +87,9 @@
     T.read = at('c01'); T.readTea = atW('c01', /tea/); T.readEnd = en('c01');
     T.nods = [atW('c01', /spoons/) - 0.05, T.readTea + 0.05];   // her absent nods
     T.page = en('c01') + 0.3;                         // the notebook, close
+    T.pageOut = atW('n10c', /stuck/) + 0.3;           // back to the two of them
+    T.tear = atW('n10c', /notebook/) - 0.12;          // he rips the page out on "notebook" and holds it up
+    T.zoomIn = T.counts[2] - 0.06; T.zoomOut = T.listEnd + 0.06;   // close on her face and fingers through the middle of the list
     T.nb = atW('n10c', /notebook/);
     T.lane = en('n10c') + 0.12;                       // the lane: he tears the page out and marches
     T.whistle = T.lane + 0.3;
@@ -245,9 +248,10 @@
   const CO2 = { x: 280, y: 740, s: 0.82 }, SK2 = { x: 770, y: 720, s: 0.84 };
   function shotTwo(g, t, T) {
     const tp = on2(t);
-    const push = 1 + 0.05 * ramp(t, T.two, T.listEnd) + 0.05 * ramp(t, T.q - 0.1, T.qEnd + 0.4);
-    const d = K.drift(t, 4);
-    g.save(); g.translate(540 + d.x, 900 + d.y); g.scale(push, push); g.translate(-540, -900);
+    const close = t >= T.zoomIn && t < T.zoomOut;
+    const push = close ? 1.42 + 0.03 * ramp(t, T.zoomIn, T.zoomOut) : 1 + 0.05 * ramp(t, T.two, T.listEnd) + 0.05 * ramp(t, T.q - 0.1, T.qEnd + 0.4) - 0.04 * ramp(t, T.pageOut, T.lane);
+    const d = K.drift(t, 4), cxy = close ? [780, 1010] : [540, 900];
+    g.save(); g.translate(cxy[0] + d.x, cxy[1] + d.y); g.scale(push, push); g.translate(-cxy[0], -cxy[1]);
     g.drawImage(stallBlur(), 0, 0);
     // ---- the constable, side-on, facing her: the notebook in his near hand, the pencil in the far one behind it
     const Lc = life(5.2, tp, 1);
@@ -261,16 +265,29 @@
     const pen = { x: NB[0] + 36 + scrib, y: NB[1] - 96 + penY, a: 1.25, pose: 'pen' };
     const licking = win(tp, T.lick, T.lick + 0.15, T.lick + 0.35, T.lick + 0.55);
     if (licking > 0) { pen.x = lerp(pen.x, CO2.x + 150, licking); pen.y = lerp(pen.y, CO2.y + 110, licking); pen.a = lerp(pen.a, 2.2, licking); }
+    const rip = t >= T.pageOut ? mj((tp - T.tear) / 0.35) : 0, reach = t >= T.pageOut ? mj((tp - T.tear + 0.45) / 0.35) : 0;
+    const PG = [lerp(NB[0], 508, rip), lerp(NB[1] - 10, 770, rip)], pgA = lerp(-0.12, 0.06, rip);
+    if (reach > 0) { pen.x = lerp(pen.x, PG[0] + 10, reach); pen.y = lerp(pen.y, PG[1] - 118, reach); pen.a = lerp(pen.a, -1.45, reach); pen.pose = reach > 0.6 ? 'pinch' : 'pen'; }
     limb(g, [CO2.x + 60, CO2.y + 0.86 * 360], pen, [0.6, 0.8], CO2.s, COA, { size: 190 });
-    pencil(g, pen.x + 40, pen.y + 30, pen.a + 0.3, 1.0);
+    if (reach < 0.5) pencil(g, pen.x + 40, pen.y + 30, pen.a + 0.3, 1.0);
     coSide(g, CO2.x, CO2.y + 4 * Lc.breath, CO2.s, fC, { lean: -0.02 });
     // the notebook, its back to us, held up in his near hand
     notebookBack(g, NB[0], NB[1], -0.12, 1.25);
+    if (rip > 0) {                                        // the torn page, turned to us: the end of the list in his hand, TEA last
+      g.save(); g.translate(PG[0], PG[1]); g.rotate(pgA); g.scale(1.25, 1.25);
+      g.fillStyle = 'rgba(40,20,8,0.25)'; R(g, -66, -92, 140, 200, 3); g.fill();
+      g.fillStyle = '#f1e8d2'; R(g, -70, -100, 140, 200, 3); g.fill();
+      g.strokeStyle = '#e9e1cf'; g.lineWidth = 3; for (let i = 0; i < 7; i++) { g.beginPath(); g.arc(-60 + i * 20, -100, 5, 0, PI); g.stroke(); }   // the ragged top
+      g.strokeStyle = 'rgba(70,110,170,0.35)'; g.lineWidth = 1.5; for (let y = -70; y < 100; y += 30) { g.beginPath(); g.moveTo(-70, y); g.lineTo(70, y); g.stroke(); }
+      scrawl(g, 'KETTLE', -54, 8, 24, 1, { seed: 11, lw: 2.6 }); scrawl(g, 'SPOONS', -54, 38, 24, 1, { seed: 24, lw: 2.6 }); scrawl(g, 'TEA', -54, 68, 24, 1, { seed: 37, lw: 2.6 });
+      g.strokeStyle = '#24305e'; g.lineWidth = 2.6; g.beginPath(); g.moveTo(-56, 74); g.lineTo(-8, 73); g.stroke();
+      g.restore();
+    }
     limb(g, [CO2.x - 20, CO2.y + 0.86 * 380], { x: NB[0] - 70, y: NB[1] + 96, a: -1.2, pose: 'hold' }, [-0.4, 0.9], CO2.s, COA, { size: 200, left: true });
     // ---- the stall-keeper, facing him: the list on her fingers, then nine up, then her eyes down the lane as she nods
     const Ls = life(1.7, tp, 1), listing = tp >= T.box && tp < T.listEnd + 0.1;
     const out = win(tp, T.listEnd - 0.1, T.listEnd + 0.2, T.read - 0.2, T.read + 0.1);          // out of breath, nine fingers up
-    const away = ramp(tp, T.read - 0.1, T.read + 0.25) * (1 - ramp(tp, T.page - 0.05, T.page));
+    const away = ramp(tp, T.read - 0.1, T.read + 0.25);
     let nodY = 0; for (const tn of T.nods) nodY += 30 * win(tp, tn, tn + 0.14, tn + 0.22, tn + 0.42);
     const fS = {
       yaw: -0.32 + 0.6 * away, look: away > 0.5 ? [18, 2] : [-16, -2], close: blink(tp, 1.3) * (listing ? 0.3 : 1) + 0.15 * away,
@@ -426,7 +443,8 @@
       g.save();
       if (t < T.two) shotStall(g, t, T);
       else if (t < T.page) shotTwo(g, t, T);
-      else if (t < T.lane) shotPage(g, t, T);
+      else if (t < T.pageOut) shotPage(g, t, T);
+      else if (t < T.lane) shotTwo(g, t, T);
       else if (t < T.back) shotLane(g, t, T);
       else if (t < T.step) shotBack(g, t, T);
       else shotStep(g, t, T);
