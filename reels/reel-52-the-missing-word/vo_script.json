@@ -1,5 +1,5 @@
 {
- "note": "Draft 3's lines. n.. = the narrator (af_heart, task 'takes'); s.. the stall-keeper, c.. the constable, t.. the tea man, auditioned across the cast (task 'cast'). Run 1 auditioned s01, c01, t01, c02 across eighteen voices; run 2 s02 and c03; run 3 c00, t02 and s02b across twelve. Cast from the scores: stall-keeper bf_isabella, constable am_onyx, tea man am_adam. Run 4 re-reads the tea man's two lines across eight male voices (t02 creaked in every man still free in run 3).",
+ "note": "Draft 3's lines. n.. = the narrator (af_heart, task 'takes'); s.. the stall-keeper, c.. the constable, t.. the tea man, auditioned across the cast (task 'cast'). Run 1 auditioned s01, c01, t01, c02 across eighteen voices; run 2 s02 and c03; run 3 c00, t02 and s02b across twelve. Cast from the scores: stall-keeper bf_isabella, constable am_onyx, tea man am_adam. Run 4 re-reads the tea man's two lines across eight male voices (t02 creaked in every man still free in run 3). Run 5: t02 still creaked in every free male voice in run 4, apparently on the last word; two rewordings that don't end on \"morning\" (t02s, t02e: alternates, not placed) and the line again at three paces.",
  "voice": "af_heart",
  "speed": 1.0,
  "ref_text": "The market opens slowly in the mornings. Shutters rattle up one by one, a radio plays somewhere behind a wall, and the first customers stand at the counter counting out their change.",
@@ -45,6 +45,16 @@
    "text": "I bring it every morning!"
   },
   {
+   "id": "t02s",
+   "text": "I bring it every morning, sir!",
+   "alt": true
+  },
+  {
+   "id": "t02e",
+   "text": "Every morning, I bring it!",
+   "alt": true
+  },
+  {
    "id": "s02b",
    "text": "He's my tea man!"
   },
@@ -68,8 +78,9 @@
   "speed": 1.0
  },
  "cast_lines": [
-  "t01",
-  "t02"
+  "t02",
+  "t02s",
+  "t02e"
  ],
  "cast": [
   {
@@ -78,29 +89,21 @@
    "voice": "am_adam"
   },
   {
-   "id": "am_michael",
+   "id": "am_adam_104",
    "engine": "kokoro",
-   "voice": "am_michael"
+   "voice": "am_adam",
+   "speed": 1.04
   },
   {
-   "id": "bm_daniel",
+   "id": "am_adam_096",
    "engine": "kokoro",
-   "voice": "bm_daniel"
+   "voice": "am_adam",
+   "speed": 0.96
   },
   {
-   "id": "bm_fable",
+   "id": "am_echo",
    "engine": "kokoro",
-   "voice": "bm_fable"
-  },
-  {
-   "id": "bm_george",
-   "engine": "kokoro",
-   "voice": "bm_george"
-  },
-  {
-   "id": "am_eric",
-   "engine": "kokoro",
-   "voice": "am_eric"
+   "voice": "am_echo"
   },
   {
    "id": "am_liam",
@@ -108,9 +111,9 @@
    "voice": "am_liam"
   },
   {
-   "id": "am_echo",
+   "id": "am_michael",
    "engine": "kokoro",
-   "voice": "am_echo"
+   "voice": "am_michael"
   }
  ]
 }
