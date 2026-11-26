@@ -349,7 +349,9 @@
   // ================================================================ G · the grab; H · the handback (and the phone); J · let go
   function shotHeld(g, t, T, phase) {
     const tc = on2(t), hand = phase === 'hand', now = phase === 'now';
-    g.save(); cam(g, t, hand ? { z: 1.06, cx: 470, cy: 1000 } : { z: 1.0, cx: 520, cy: 960 });
+    // let go (HQ's note): a slow push in while the line that lands on the viewer is said, framed between him and the man in lilac
+    const kp = now ? mj(clamp((t - at('v07')) / (en('v07b') - at('v07')))) : 0;
+    g.save(); cam(g, t, hand ? { z: 1.06, cx: 470, cy: 1000 } : now ? { z: 1 + 0.3 * kp, f: [lerp(540, 620, kp), lerp(960, 900, kp)], still: true } : { z: 1.0, cx: 520, cy: 960 });
     veg(g, tc);
     // behind: an older woman in a navy saree and a woman with a basket, watching (soft)
     for (const e of [{ ...X.old, x: 860, y: 690, s: 0.33, turn: -0.4, look: [-14, 4] }, { ...X.basket, x: 95, y: 700, s: 0.33, turn: 0.4, look: [16, 4] }]) {
