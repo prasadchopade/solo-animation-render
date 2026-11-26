@@ -123,7 +123,7 @@
 
   // ================================================================ B · the bump at the bangle stall
   const BW = { x: 360, y: 830, s: 0.6 };              // the woman
-  const BAGP = UP(BW.x, BW.y, BW.s, 255, 905);         // her bag's mouth (her left hip)
+  const BAGP = UP(BW.x, BW.y, BW.s, 330, 700);         // her bag's mouth, at her waist on her left side, clear of her and the cart
   function himB(tc, T) {                               // the man who said sorry: in from the left, squeezing behind her, out right
     const k = [[T.cutB - 0.15, -160], [T.bump - 0.05, 380], [T.lift + 0.12, 640], [en('c01') + 0.7, 1260]];
     let i = 0; while (i < k.length - 2 && tc > k[i + 1][0]) i++;
@@ -147,6 +147,13 @@
         arms: [{ w: w0, pose: inBag > 0.4 || hasW ? 'pinch' : 'rest', hold: hasW ? (gg, A, h) => wallet(gg, A.w[0] + 0.3 * h, A.w[1] + 0.28 * h, 0.34, 1.0) : null },
                { w: lerp2(UP(hx, hy, hs, 300, 1180), UP(hx, hy, hs, 250, 90), sorry), pose: sorry > 0.4 ? 'open' : 'rest', a: sorry > 0.4 ? -1.5 : null }] });
     };
+    const drawLift = () => {
+      const hs2 = hs, S = UP(hx, hy + 6 * Math.abs(Math.sin(tc * 5.4)), hs2, -0.7 * 285 + 40 * 0.3, 470), rest0 = UP(hx, hy, hs2, -300, 1180), pock = UP(hx, hy, hs2, -200, 1080);
+      const W0 = inBag > 0 ? lerp2(rest0, [BAGP[0] + 6, BAGP[1] - 8], inBag) : lerp2([BAGP[0] + 20, BAGP[1]], pock, ramp(tc, T.lift + 0.22, T.pocket1 + 0.15));
+      const E = limb(g, S, W0, hs2, WEAR.lilac, P.lilac.skin, { pole: [-0.3, 1] }), a = Math.atan2(W0[1] - E[1], W0[0] - E[0]), h = handS(hs2);
+      D.hand(g, W0[0], W0[1], a, h, inBag > 0.4 || hasW ? 'pinch' : 'rest', { left: true, skin: P.lilac.skin });
+      if (hasW) wallet(g, W0[0] + 0.3 * h * Math.cos(a), W0[1] + 0.3 * h * Math.sin(a), 0.34, a + PI / 2);
+    };
     if (behind) drawHim();
     // she: bangles up to the light; a smile back on "sorry"; then off up the lane, left
     const go = ramp(tc, T.sheGo, T.sheGo + 0.9), sx = BW.x - 720 * go * go, sy = BW.y + 8 * Math.abs(Math.sin(go * 9)) * (go > 0 && go < 1 ? 1 : 0);
@@ -158,12 +165,14 @@
       arms: [{ w: lerp2(UP(sx, sy, BW.s, -300, 1180), UP(sx, sy, BW.s, -250, -160), up), pose: 'hold', a: up > 0.5 ? -PI / 2 - 0.1 : null, hold: up > 0.3 ? (gg, A, h) => bangles(gg, A.w[0] + 0.1 * h, A.w[1] - 0.6 * h, 0.9, 0.12) : null },
              { w: UP(sx, sy, BW.s, 330, 1140), pose: 'rest' }] });
     const bx = sx + (BAGP[0] - BW.x), by = BAGP[1] + (sy - BW.y);
-    bag(g, bx + 14 * jolt, by, 0.6, { wallet: tc < T.lift, sx: sx + BW.s * 160, sy: sy + BW.s * 420, rot: 0.05 * jolt });
+    bag(g, bx + 14 * jolt, by, 0.6, { wallet: tc < T.lift, sx: sx + BW.s * 150, sy: sy + BW.s * 400, rot: 0.05 * jolt });
+    // his lifting arm, over her, while it's at her bag (otherwise her body would hide the lift: it must be there to see on a rewatch)
+    if (behind && (inBag > 0 || hasW)) drawLift();
     if (!behind) drawHim();
     // the near side of the lane: a cart of bangle boxes along the bottom
-    g.fillStyle = lg(g, 0, 1440, 0, 1920, [0, '#7a4a28'], [1, '#4a2c16']); g.fillRect(-60, 1470, W + 120, 520);
+    g.fillStyle = lg(g, 0, 1500, 0, 1920, [0, '#7a4a28'], [1, '#4a2c16']); g.fillRect(-60, 1530, W + 120, 520);
     const cols = ['#e8413a', '#f0c32a', '#2fa5d6', '#c2366b', '#7a4fc6', '#ffffff'];
-    for (let i = 0; i < 9; i++) { const bx2 = -20 + i * 130; g.fillStyle = '#efe2c4'; R(g, bx2, 1440, 118, 70, 8); g.fill(); for (let k = 0; k < 5; k++) { g.strokeStyle = cols[(i + k) % cols.length]; g.lineWidth = 8; g.beginPath(); g.ellipse(bx2 + 22 + k * 19, 1466, 11, 18, 0, 0, TAU); g.stroke(); } }
+    for (let i = 0; i < 9; i++) { const bx2 = -20 + i * 130; g.fillStyle = '#efe2c4'; R(g, bx2, 1500, 118, 70, 8); g.fill(); for (let k = 0; k < 5; k++) { g.strokeStyle = cols[(i + k) % cols.length]; g.lineWidth = 8; g.beginPath(); g.ellipse(bx2 + 22 + k * 19, 1526, 11, 18, 0, 0, TAU); g.stroke(); } }
     g.restore();
   }
 
