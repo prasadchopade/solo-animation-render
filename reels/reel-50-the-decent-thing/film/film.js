@@ -132,14 +132,14 @@
     const u = clamp((tc - k[i][0]) / (k[i + 1][0] - k[i][0]));
     return lerp(k[i][1], k[i + 1][1], i === 1 ? u : mj(u) * 0.3 + u * 0.7);
   }
-  function shotBangle(g, t, T, o = {}) {
+  function shotBangle(g, t, T, o = {}) {   // o.noSeller: the replay's close-up leaves him out (his face would cross x 950)
     const tc = on2(t);
     g.save(); cam(g, t, o);
     g.drawImage(LN.bangleStall(), 0, 0);
-    g.save(); g.beginPath(); g.rect(0, 0, W, 1192); g.clip();                      // he stands behind his counter (its top at y 1192)
+    if (!o.noSeller) { g.save(); g.beginPath(); g.rect(0, 0, W, 1192); g.clip();                      // he stands behind his counter (its top at y 1192)
     person(g, { L: P.bangle, wear: WEAR.bangle, x: 850, y: 700, s: 0.3, turn: -0.35, face: { smile: 0.4, look: [-10, 4], close: blink(tc, 1.7) },
       arms: [{ w: [790, 1150], pose: 'rest', a: 1.3 }, { w: [925, 1155], pose: 'rest', a: 1.8 }] });
-    g.restore();
+    g.restore(); }
     const hx = himB(tc, T), hy = 790, hs = 0.5, behind = hx < BW.x + 250;
     const sorry = win(tc, at('c01') - 0.08, at('c01') + 0.12, en('c01') - 0.05, en('c01') + 0.3);
     const inBag = win(tc, T.lift - 0.22, T.lift - 0.05, T.lift + 0.06, T.lift + 0.24);
@@ -184,12 +184,11 @@
   // ================================================================ C · the drop: the bench by the chai stall, the constable passing
   const LX = 1060;                                     // the wide lane's x at the frame's left
   const BEN = { x: 110, y: 1330, w: 620 };
-  const DROP = [560, 1318], DROPFROM = 1190;           // where the wallet lands, and the height it falls from
+  const DROP = [455, 1318], DROPFROM = 1190;   // clear of the seated man's elbow (the review: the release was hidden)           // where the wallet lands, and the height it falls from
   const MOLE = { x: 838, y: 880, s: 0.46 };   // his cap's edge left of x 950            // the man with the mole at the chai stall
   function himC(tc, T) {
-    const k = [[T.cutC - 0.35, -180], [T.drop, 520], [T.drop + 1.6, 1260]];
-    let i = tc > k[1][0] ? 1 : 0; const u = clamp((tc - k[i][0]) / (k[i + 1][0] - k[i][0]));
-    return tc > k[2][0] ? 1260 : lerp(k[i][1], k[i + 1][1], u);
+    if (tc <= T.drop) return lerp(-180, 420, clamp((tc - (T.cutC - 0.35)) / (T.drop - (T.cutC - 0.35))));
+    return lerp(420, 470, mj(clamp((tc - T.drop) / 0.5))) - 900 * Math.pow(clamp((tc - T.drop - 0.5) / 1.6), 1.6);   // a step on, then back up the lane, left
   }
   function moleSeated(g, tc, T, o = {}) {
     const L = life(7.1, tc, 1), { x, y, s } = MOLE;
@@ -212,14 +211,14 @@
                { w: UP(cxp, cyp, cs, 300 - 120 * sw, 1170), pose: 'rest' }] });
     }
     // the man who said sorry: left to right behind the bench; the wallet slips from his hand over it; then into the crowd
-    const hx = himC(tc, T), hs = 0.44, into = 0, hy = 690;
+    const hx = himC(tc, T), back = tc > T.drop + 0.45, hs = back ? lerp(0.44, 0.38, clamp((tc - T.drop - 0.45) / 1.6)) : 0.44, into = 0, hy = back ? lerp(690, 650, clamp((tc - T.drop - 0.45) / 1.6)) : 690;
     const dropped = tc >= T.drop, glanceC = win(tc, T.drop - 0.5, T.drop - 0.32, T.drop + 0.1, T.drop + 0.35);
     if (hx > -400 && into < 0.98) {
       const ph = (hx + 180) / 260, sw = Math.sin(ph * TAU);
       const over = win(tc, T.drop - 0.4, T.drop - 0.18, T.drop + 0.02, T.drop + 0.16);   // the hand leaves the wallet at once (nothing near a dropped clue)
       const w1 = lerp2(UP(hx, hy, hs, 300 - 110 * sw, 1170), [DROP[0] + 30, DROPFROM], over);
       g.save(); g.globalAlpha = 1 - into;
-      person(g, { L: P.lilac, wear: WEAR.lilac, x: hx, y: hy + bobOf(ph) * hs, s: hs, turn: lerp(0.3, -0.5, glanceC) * (1 - into), legs: { ph, dir: 1 },
+      person(g, { L: P.lilac, wear: WEAR.lilac, x: hx, y: hy + bobOf(ph) * hs, s: hs, turn: back ? -0.45 : lerp(0.3, -0.5, glanceC) * (1 - into), legs: { ph, dir: back ? -1 : 1 },
         face: { smile: 0.25, look: glanceC > 0.3 ? [-18, -4] : [12, 2], close: blink(tc, 2.2) },
         arms: [{ w: UP(hx, hy, hs, -300 + 110 * sw, 1170), pose: 'rest' },
                { w: w1, pose: over > 0.3 && !dropped ? 'pinch' : 'rest', hold: !dropped ? (gg, A, h) => wallet(gg, A.w[0] + 0.25 * h, A.w[1] + 0.3 * h, 0.3, 1.15) : null }] });
@@ -242,7 +241,7 @@
     g.save(); g.translate(x, y + 1130 * s); g.scale(s, s); legs(g, WEAR.thief, ph, -1, 1.8, { lean: 0.12 }); g.restore();
     g.save(); g.translate(x, y); g.rotate(-0.1); g.scale(s, s); torso(g, P.thief, WEAR.thief, -1);
     g.translate(-25, 0); D.headProfile(g, P.thief, { smile: o.smile ?? 0.05, close: blink(tc, 4.1), browUp: o.browUp ?? 0.2 }); g.restore();
-    const Wn = held ? (o.up ? UP(x, y, s, -300, 470 + 30 * Math.sin(ph * TAU * 2)) : UP(x, y, s, -560, 700 + 40 * Math.sin(ph * TAU * 2))) : UP(x, y, s, -320 * sw, 980);
+    const Wn = held ? (o.up ? UP(x, y, s, -190, 640 + 30 * Math.sin(ph * TAU * 2)) : UP(x, y, s, -560, 700 + 40 * Math.sin(ph * TAU * 2))) : UP(x, y, s, -320 * sw, 980);
     limb(g, S2, Wn, s, WEAR.thief, P.thief.skin, { pole: [0.2, 1] });
     D.hand(g, Wn[0], Wn[1], PI + 0.2, handS(s), held ? 'pinch' : 'rest', { left: false, skin: P.thief.skin });
     if (held) wallet(g, Wn[0] - 0.75 * handS(s), Wn[1] - 0.05 * handS(s), 0.62 * s, -0.15);
@@ -274,7 +273,7 @@
   // ================================================================ E · "My wallet!" "Chor!" (and G, H, J, K after, in the same place)
   const X = {                                          // bystanders (new): a man in stripes, a woman in a red saree, an old man
     stripe: { L: { skin: '#a8724e', skinD: '#82563a', skinH: '#c48e68', hair: '#100c09', style: 'buzz', must: null, stub: 0, brow: 13, browTilt: 2, jaw: 0.96, ew: 41, eh: 21 }, wear: { kind: 'tee', top: '#d8e0ea', topL: '#ffffff', topD: '#9aa6b4', sleeve: 'short', legs: '#3a3632', shoe: '#2a2018' } },
-    basket: { L: { skin: '#bb8a64', skinD: '#956648', skinH: '#d6a882', hair: '#160f0b', style: 'long', must: null, stub: 0, brow: 11, browTilt: 4, jaw: 0.88, ew: 44, eh: 24, lips: '#a05050', lash: true }, wear: { kind: 'saree', top: '#2f4f8f', saree: '#b03050', sareeL: '#d05878', sareeD: '#7a1a34', border: '#f2e6c8', sleeve: 'blouse', shoe: '#5a3020' } },   // no saffron or mustard (the checklist, 29)
+    basket: { L: { skin: '#a87650', skinD: '#82583a', skinH: '#c4926a', hair: '#3a3430', style: 'short', must: null, stub: 0, brow: 12, browTilt: 2, jaw: 1.0, ew: 40, eh: 22, lips: '#8a4a4a' }, wear: { kind: 'saree', top: '#2f4f8f', saree: '#6a2a5a', sareeL: '#8a4a7a', sareeD: '#481a3c', border: '#f2e6c8', sleeve: 'blouse', shoe: '#5a3020' } },   // short grey-black hair, a plum saree: no lookalike of the victim   // no saffron or mustard (the checklist, 29)
     old: { L: { skin: '#b5835e', skinD: '#8f6043', skinH: '#d09e79', hair: '#9a9590', style: 'long', must: null, stub: 0, brow: 11, browTilt: 4, jaw: 0.95, ew: 40, eh: 21, lips: '#8a4a4a' }, wear: { kind: 'saree', top: '#6a3a5a', saree: '#22345e', sareeL: '#3a5288', sareeD: '#141f3a', border: '#c9b07a', sleeve: 'blouse', shoe: '#3a2418' } },   // an older woman (no lookalike of the bangle seller)
   };
   const backPocket = (x, y, s, tu) => UP(x, y, s, (tu <= 0 ? 1 : -1) * 318 * (1 - 0.3 * Math.abs(tu)) + 40 * tu, 1060);   // at his outer hip, sticking out past him   // the phone, up out of his back pocket at the hip away from his turn
@@ -360,12 +359,12 @@
     const free = ramp(tc, T.letGo, T.letGo + 0.35), holding = tc < T.letGo + 0.2;
     const lift = win(tc, T.phoneLift - 0.32, T.phoneLift - 0.08, T.phoneLift + 0.05, T.phoneLift + 0.32), took = tc >= T.phoneLift;
     // the constable: up from behind the crowd at the grab; a shrug when she lets him go, and back the way he came
-    const cin = ramp(tc, T.copBack, T.copBack + 0.6), cgo = ramp(tc, T.copGo, T.copGo + 0.9);
-    if (!hand && cin > 0 && cgo < 1) { g.save(); g.globalAlpha = cin * (1 - cgo); const cx2 = 655 + 30 * cgo, cs = 0.4;
-      person(g, { L: P.cop, wear: WEAR.cop, x: cx2, y: 650 - 20 * cin, s: cs, turn: -0.3, face: { look: [-14, 6], browIn: 0.4 * (1 - cgo), close: blink(tc, 5.1), smile: 0.3 * cgo } }); g.restore(); }
+    const cin = ramp(tc, T.copBack - 0.6, T.copBack + 0.9), cgo = ramp(tc, T.copGo, T.copGo + 1.2);
+    if (!hand && cin > 0 && cgo < 1) { const cx2 = lerp(-160, 650, cin) - 820 * cgo * cgo, cs = 0.38, ph2 = (cx2 + 160) / 240;
+      person(g, { L: P.cop, wear: WEAR.cop, x: cx2, y: 640, s: cs, turn: cgo > 0 ? -0.4 : 0.35, face: { look: [cgo > 0 ? -14 : 14, 6], browIn: 0.4 * (1 - cgo), close: blink(tc, 5.1), smile: 0.3 * cgo } }); }
     // the man who said sorry: in the crowd behind the loud man from lilIn (he steps out of it); the phone at the loud man's hip
-    const lx = 820, ly = 690, ls = 0.4, lin = ramp(tc, T.lilIn, T.lilIn + 0.5);
-    if (tc >= T.lilIn) {
+    const lx = 820, ly = 690, ls = 0.4, lin = 1;
+    {
       const smile = now ? 0.35 + 0.45 * win(tc, T.look + 0.15, T.look + 0.35, T.shrug + 0.4, T.shrug + 0.8) : 0.3;
       g.save(); g.globalAlpha = lin;
       person(g, { L: P.lilac, wear: WEAR.lilac, x: lx, y: ly, s: ls, turn: -0.35, face: { smile, look: now && tc > T.look ? [-18, 2] : [-10, 6], close: blink(tc, 2.2) },
@@ -379,7 +378,7 @@
       face: { op: phase === 'grab' ? 0.15 : 0.05, browIn: holding ? 0.8 : 0.2, browUp: 0.5 * free, frown: holding ? 0.4 : 0, look: [-14, 4], close: blink(tc, 1.9), smile: 0.15 * free },
       arms: [{ w: holding ? UP(MX, MY, MS, 210, 460) : UP(LMX, LMY, LMS, -290, 1170), pose: holding ? 'fist' : 'rest', behind: holding }, { w: UP(LMX, LMY, LMS, 300, 1170), pose: 'rest' }] });
     // the lift, drawn over the loud man while the hand is at his pocket: in plain view, never pointed at (fair on a rewatch)
-    if (tc >= T.lilIn && (lift > 0 || (took && tc < T.phoneLift + 0.35))) {
+    if (lift > 0 || (took && tc < T.phoneLift + 0.35)) {
       const S = UP(lx, ly, ls, -0.7 * 285 - 14, 470), backU = took ? ramp(tc, T.phoneLift, T.phoneLift + 0.35) : 0;
       const Wp = lerp2([pocket[0] + 4, pocket[1] - 10], UP(lx, ly, ls, -150, 900), backU);
       const E = limb(g, S, Wp, ls, WEAR.lilac, P.lilac.skin, { pole: [0.2, 1] }), an = Math.atan2(Wp[1] - E[1], Wp[0] - E[0]), h = handS(ls);
@@ -390,19 +389,20 @@
     if (phase === 'grab') person(g, { L: X.stripe.L, wear: X.stripe.wear, x: 360, y: 760, s: 0.46, turn: 0.45, face: { op: 0.2, browIn: 0.7, look: [16, 2], close: blink(tc, 3.7) },
       arms: [{ w: UP(360, 760, 0.46, -290, 1170), pose: 'rest' }, { w: UP(MX, MY, MS, -300, 700), pose: 'fist', front: true }] });
     // she, at the left (where the freeze left her): pushes in, takes her wallet from his hand, looks at it, at him; nods; he's let go
-    const take = ramp(tc, T.give - 0.12, T.give + 0.15), tip = UP(MX, MY, MS, -330, 680);
-    const wx = hand ? lerp(VW.x - 40, VW.x + 20, ramp(tc, T.push, T.push + 0.6)) : now ? VW.x + 20 : VW.x - 40, wy = VW.y + 10, ws = 0.58;
-    const herHand = take > 0 && (hand || now) ? lerp2(UP(wx, wy, ws, 300, 1100), [tip[0] + 10, tip[1] + 12], take < 1 ? take : 1 - 0.75 * ramp(tc, T.give + 0.4, T.give + 0.9)) : UP(wx, wy, ws, 300, 1100);
+    const take = ramp(tc, T.give - 0.12, T.give + 0.15), tip = [330, 1240];          // in front of her right side, clear of his body
+    const wx = hand ? lerp(VW.x - 60, VW.x - 40, ramp(tc, T.push, T.push + 0.6)) : now ? VW.x - 40 : VW.x - 60, wy = VW.y + 10, ws = 0.58;   // her shoulder stays off his
+    const kept = UP(wx, wy, ws, 140, 760);                                          // the wallet at her chest, after
+    const herHand = (hand || now) && take > 0 ? (tc < T.give + 0.4 ? lerp2(UP(wx, wy, ws, 300, 1100), [tip[0] - 6, tip[1] + 6], take) : lerp2([tip[0] - 6, tip[1] + 6], kept, ramp(tc, T.give + 0.4, T.give + 0.9))) : UP(wx, wy, ws, 300, 1100);
     const nod = win(tc, T.letGo - 0.4, T.letGo - 0.25, T.letGo, T.letGo + 0.2);
     person(g, { L: P.woman, wear: WEAR.woman, x: wx, y: wy, s: ws, turn: 0.45, tilt: 0.08 * nod,
       face: { op: phase === 'grab' ? 0.15 : 0, look: hand && take > 0.5 && tc < T.give + 1.0 ? [6, 16] : [18, -2], browUp: phase === 'grab' ? 0.8 : 0.6 * (1 - take) + 0.6 * win(tc, T.give + 0.9, T.give + 1.2, T.replay, T.replay + 1), browIn: 0.3 * (1 - take), smile: 0.45 * ramp(tc, T.give + 1.1, T.give + 1.5) + (now ? 0.4 : 0), close: blink(tc, 3.3) },
-      arms: [{ w: UP(wx, wy, ws, -290, 1170), pose: 'rest' }, { w: herHand, pose: take > 0.4 ? 'pinch' : 'rest', hold: (take >= 0.55 && (hand || now)) ? (gg, A, h) => wallet(gg, A.w[0] + 0.32 * h * Math.cos(A.ang), A.w[1] + 0.32 * h * Math.sin(A.ang), 0.4, A.ang + PI / 2) : null }] });
+      arms: [{ w: UP(wx, wy, ws, -290, 1170), pose: 'rest' }, (hand || now) && take > 0 ? null : { w: herHand, pose: 'rest' }] });
     // the man with the mole, in front: held, the wallet up in his hand; out to her; let go: his collar, his cap, the look, the shrug
     const strug = holding && !hand ? Math.sin(tc * 8) : 0;
     const coll = win(tc, T.collar, T.collar + 0.2, T.collar + 0.7, T.collar + 0.9), shrug = win(tc, T.shrug, T.shrug + 0.2, T.shrug + 0.55, T.shrug + 0.85), go = ramp(tc, T.heGo, T.heGo + 1.1);
     const mx = MX + 6 * strug + 520 * go * go, my = MY - 26 * shrug, ma = 1 - ramp(tc, T.heGo + 0.6, T.heGo + 1.1);
     const holdW = phase === 'grab' || (hand && tc < T.give);
-    const w0 = phase === 'grab' ? UP(mx, my, MS, -200, 420) : hand ? (tc < T.give + 0.25 ? lerp2(UP(MX, MY, MS, -200, 560), tip, ramp(tc, T.push, T.push + 0.6)) : UP(mx, my, MS, -280, 1000))
+    const w0 = phase === 'grab' ? UP(mx, my, MS, -200, 420) : hand ? (tc < T.give + 0.1 ? lerp2(UP(MX, MY, MS, -200, 560), [tip[0] + 40, tip[1] - 6], ramp(tc, T.push, T.push + 0.6)) : UP(mx, my, MS, -280, 1000))
       : (coll > 0 ? UP(mx, my, MS, 120, 330) : UP(mx, my, MS, -280, 1000));
     g.save(); g.globalAlpha = ma;
     person(g, { L: P.thief, wear: WEAR.thief, x: mx, y: my, s: MS, tilt: 0.04 * strug, turn: now ? (tc > T.look && tc < T.shrug + 0.7 ? 0.4 : -0.1) : -0.2,
@@ -412,8 +412,10 @@
                hold: holdW ? (gg, A, h) => wallet(gg, A.w[0] + 0.32 * h * Math.cos(A.ang), A.w[1] + 0.32 * h * Math.sin(A.ang), 0.4, A.ang + PI / 2) : null },
              { w: shrug > 0 ? UP(mx, my, MS, 330, 600) : UP(mx, my, MS, 280, 1000), pose: shrug > 0.3 ? 'open' : 'rest', a: shrug > 0.3 ? -1.0 : null, front: true }] });
     g.restore();
-    // her hand over his as she takes the wallet; the loud man's fist in his collar
-    if ((hand || now) && take > 0 && take < 1) D.hand(g, herHand[0], herHand[1], -0.6, handS(ws), 'pinch', { left: false, skin: P.woman.skin });
+    // her arm, from her own shoulder, over his hand as she takes the wallet, then the wallet held at her chest
+    if ((hand || now) && take > 0) { const S = UP(wx, wy, ws, 0.86 * 285 + 18, 455), E = limb(g, S, herHand, ws, WEAR.woman, P.woman.skin, { E: [(S[0] + herHand[0]) / 2 + 14, (S[1] + herHand[1]) / 2] }), an = Math.atan2(herHand[1] - E[1], herHand[0] - E[0]), h = handS(ws);   // foreshortened towards us, not folded across anyone
+      D.hand(g, herHand[0], herHand[1], an, h, 'hold', { left: false, skin: P.woman.skin });
+      if (take >= 0.55) wallet(g, herHand[0] + 0.45 * h * Math.cos(an), herHand[1] + 0.45 * h * Math.sin(an), 0.42, an + PI / 2); }   // over her fingers, so it shows
     if (holding) grip(g, ...UP(MX, MY, MS, 210, 460), -2.3, LMS, P.loud.skin, false);
     baskets(g);
     g.restore();
@@ -431,8 +433,8 @@
     person(g, { L: P.loud, wear: WEAR.loud, x, y, s, turn: tu + 0.4 * round,
       face: { op: 0.22 * look, browUp: 1.2 * look, browIn: 0.25, look: reach > 0.3 ? [16, 14] : look > 0.5 && pat < 0.5 ? [4, 16] : pat > 0.5 ? [18 * Math.sin((tc - T.pat) * 3.2), 2] : [-6, 6], close: blink(tc, 1.9) },
       arms: [{ w: pat > 0 ? UP(x, y, s, -150, 820 + 30 * pt) : UP(x, y, s, -290, 1170), pose: pat > 0 ? 'flat' : 'rest' },
-             { w: reach > 0.05 ? lerp2(UP(x, y, s, 300, 1170), [pk[0], pk[1] + 30], reach) : look > 0 && pat < 0.5 ? UP(x, y, s, 140, 640) : pat > 0 ? UP(x, y, s, 200, 1080 + 30 * pt) : UP(x, y, s, 300, 1170),
-               pose: reach > 0.5 ? 'flat' : look > 0 && pat < 0.5 ? 'open' : pat > 0 ? 'flat' : 'rest', a: look > 0 && pat < 0.5 && reach < 0.05 ? -1.9 : null, front: true }] });
+             { w: reach > 0.05 ? lerp2(UP(x, y, s, 300, 1170), [pk[0], pk[1] + 30], reach) : look > 0 && pat < 0.5 ? UP(x, y, s, 170, 1010) : pat > 0 ? UP(x, y, s, 200, 1080 + 30 * pt) : UP(x, y, s, 300, 1170),
+               pose: reach > 0.5 ? 'flat' : look > 0 && pat < 0.5 ? 'open' : pat > 0 ? 'flat' : 'rest', a: look > 0 && pat < 0.5 && reach < 0.05 ? -0.5 : null, front: true }] });
     baskets(g);
     g.restore();
   }
@@ -441,8 +443,8 @@
   function shotReplay(g, t, T) {
     const u = t - T.replay, sc = (a, b) => clamp((u - a) / (b - a));
     g.save(); g.filter = 'sepia(0.75) saturate(0.8) contrast(1.05)';
-    if (t < T.rDrop) shotBangle(g, lerp(T.bump - 0.4, T.lift + 0.6, sc(0, T.rDrop - T.replay)), T, { z: 1.6, f: [BAGP[0] - 10, BAGP[1] - 250], still: true });
-    else if (t < T.rEyes) shotBench(g, lerp(T.drop - 0.95, T.drop + 0.45, sc(T.rDrop - T.replay, T.rEyes - T.replay)), T, { z: 1.4, f: [DROP[0] - 20, 960], still: true });
+    if (t < T.rDrop) shotBangle(g, lerp(T.bump - 0.4, T.lift + 0.6, sc(0, T.rDrop - T.replay)), T, { z: 1.45, f: [BAGP[0] - 10, BAGP[1] - 170], still: true, noSeller: true });
+    else if (t < T.rEyes) shotBench(g, lerp(T.drop - 0.95, T.drop + 0.45, sc(T.rDrop - T.replay, T.rEyes - T.replay)), T, { z: 1.4, f: [690, 960], still: true });
     else {
       g.save(); cam(g, t, { z: 2.3, f: [MOLE.x - 30, MOLE.y - 10], still: true });
       g.save(); g.translate(-LX, 0); g.drawImage(LN.laneWide(), 0, 0); g.restore();
@@ -469,7 +471,7 @@
       arms: [{ w: UP(ox, 720, 0.42, -290, 1170), pose: 'rest' }, { w: UP(ox, 720, 0.42, 300, 1100), pose: 'fist' }] });
     person(g, { L: P.lilac, wear: WEAR.lilac, x: hx, y: hy + bobOf(ph) * hs, s: hs, turn: sorry > 0.2 ? 0.4 : -0.3, legs: { ph, dir: -1 },
       face: { smile: 0.45 + 0.3 * sorry, browUp: 0.5 * sorry, look: sorry > 0.2 ? [16, 2] : [-4, 15], op: talk(tc, ['c04'], 0.3), close: blink(tc, 2.2) },
-      arms: [{ w: UP(hx, hy, hs, -170, 840), pose: 'hold', hold: (gg, A, h) => phone(gg, A.w[0] + 0.2 * h * Math.cos(A.ang), A.w[1] + 0.2 * h * Math.sin(A.ang) - 0.1 * h, 0.3, A.ang + PI / 2 + 0.3 * Math.sin(tc * 2)) },
+      arms: [{ w: UP(hx, hy, hs, -170, 840), pose: 'hold', front: true, hold: (gg, A, h) => phone(gg, A.w[0] + 0.2 * h * Math.cos(A.ang), A.w[1] + 0.2 * h * Math.sin(A.ang) - 0.1 * h, 0.3, A.ang + PI / 2 + 0.3 * Math.sin(tc * 2)) },
              { w: sorry > 0.2 ? lerp2(UP(hx, hy, hs, 300, 1170), UP(hx, hy, hs, 250, 90), sorry) : UP(hx, hy, hs, 300, 1170), pose: sorry > 0.4 ? 'open' : 'rest', a: sorry > 0.4 ? -1.5 : null }] });
     g.restore();
   }
