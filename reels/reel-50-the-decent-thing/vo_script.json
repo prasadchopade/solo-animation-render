@@ -1,0 +1,41 @@
+{
+ "note": "Reel 50's voice. Narration: af_heart (k-heart), three takes per line (task=takes). Characters: an audition (task=cast) of the cast below on the cast_lines; the user picks the shout by ear from the casting reel (reel 41: am_adam, /ʧˈoːːr/). The c-lines are read by af_heart too in the takes run, and ignored.",
+ "voice": "af_heart",
+ "speed": 1.0,
+ "ref_text": "The lane was busy that afternoon.",
+ "cast_lines": ["c01", "c02", "c03", "c03b", "c03t", "c04"],
+ "cast": [
+  { "id": "k-adam", "engine": "kokoro", "voice": "am_adam" },
+  { "id": "k-michael", "engine": "kokoro", "voice": "am_michael" },
+  { "id": "k-onyx", "engine": "kokoro", "voice": "am_onyx" },
+  { "id": "k-daniel", "engine": "kokoro", "voice": "bm_daniel" },
+  { "id": "k-lewis", "engine": "kokoro", "voice": "bm_lewis" },
+  { "id": "k-omega", "engine": "kokoro", "voice": "hm_omega" },
+  { "id": "k-psi", "engine": "kokoro", "voice": "hm_psi" },
+  { "id": "k-bella", "engine": "kokoro", "voice": "af_bella" },
+  { "id": "k-sarah", "engine": "kokoro", "voice": "af_sarah" },
+  { "id": "k-emma", "engine": "kokoro", "voice": "bf_emma" },
+  { "id": "k-alpha", "engine": "kokoro", "voice": "hf_alpha" },
+  { "id": "k-beta", "engine": "kokoro", "voice": "hf_beta" }
+ ],
+ "take": { "id": "k-heart", "engine": "kokoro", "voice": "af_heart" },
+ "lines": [
+  { "id": "v01", "text": "You know this man is a thief." },
+  { "id": "c01", "text": "Sorry, sorry!" },
+  { "id": "v02", "text": "So watch closely, because somebody here is about to lose something." },
+  { "id": "c02", "text": "My wallet!" },
+  { "id": "c03", "text": "Chor! Chor!", "text_kokoro": "[Chor](/ʧˈoːːr/)! [Chor](/ʧˈoːːr/)!" },
+  { "id": "c03b", "text": "Chor! Chor!", "text_kokoro": "[Chor](/ʧˈoːɹ/)! [Chor](/ʧˈoːɹ/)!" },
+  { "id": "c03t", "text": "Thief! Thief!" },
+  { "id": "v03", "text": "This lane is about to grab somebody." },
+  { "id": "v03b", "text": "Who stole her wallet?" },
+  { "id": "v04", "text": "Nobody needed to see him do it, because everyone here knows what he is." },
+  { "id": "v05", "text": "But he wasn't running away with her wallet." },
+  { "id": "v05b", "text": "He was running after her, to give it back." },
+  { "id": "v06", "text": "He'd seen the man who said sorry take it, then drop it at the sight of a constable.", "text_kokoro": "He'd seen the man who said sorry take it, then drop it at the sight of a [constable](/kˈʌnstəbᵊl/)." },
+  { "id": "v07", "text": "If you said number two, you were right that he's a thief." },
+  { "id": "v07b", "text": "You were wrong about which way he was running." },
+  { "id": "v08", "text": "And the man who said sorry never left the lane." },
+  { "id": "c04", "text": "Sorry, sorry." }
+ ]
+}
