@@ -227,8 +227,8 @@ function placeCast(t) {
   // the people: the officer at the kerb (in November, in the road by the bump), the crowd (1967; two onlookers in
   // November), the mole guy (once, at 05:00)
   const o = A.officer; o.m.position.set(nov ? BUMP - 0.6 : 6.4, nov ? 0 : 0.15, nov ? -0.35 : 4.1); o.blob.position.set(o.m.position.x, o.m.position.y + 0.006, o.m.position.z);
-  const mole = A.mole; mole.m.visible = mole.blob.visible = t >= FIVE - 1.5 && t < CUT;
-  { const x = 18 - 1.1 * Math.max(0, t - FIVE + 1.5); mole.m.position.x = x; mole.blob.position.x = x; }
+  const mole = A.mole; mole.m.visible = mole.blob.visible = t >= FIVE - 1.5 && t < CUT;     // on the near pavement, watching them drive into the sun
+  mole.m.position.set(15.5, 0.15, WALK - 1.6); mole.blob.position.set(15.5, 0.156, WALK - 1.6);
   A.watchers.forEach((w, i) => {
     const look = nov && (i === 1 || i === 6); w.m.visible = w.blob.visible = !nov || look;
     const [x, z] = !nov ? w.home : i === 1 ? [BUMP - 1.7, -WALK + 1.2] : [BUMP + 3.2, -WALK + 1.0];
@@ -268,12 +268,12 @@ function keys67() {
     [0, P(0.42, 1.14, 0.3), P(0.42, 1.25, -2.0), 44, 2.3, 7],                                       // frame 0: Ingrid, frozen at the wheel
     [word('n01', 'every', 0.25), P(0.1, 1.3, 1.3), P(0.6, 1.5, -2.0), 46, 3.3, 5],                  // easing back...
     [word('n01', 'dead', 0.4) + 0.25, P(-3.2, 3.2, 4.5), P(3.0, 1.5, -2.0), 48, 0, 0],              // ... to the frozen street by "stop dead"
-    [T0('n02'), P(-5.6, 5.4, 4.5), P(5.5, 1.3, -1.0), 50, 0, 0],                                    // the whole street, the crowds, the clock
-    [XA + 2.0, P(-5.0, 5.8, 4.4), P(6.0, 1.2, 0.0), 50, 0, 0],                                      // it creeps across to the right, and stops again
-    [T0('n03') + 0.4, P(-5.0, 6.4, 4.4), P(10.5, 1.3, -0.5), 50, 0, 0],                             // the pick: the camera still over the waiting street
-    [T1('n03') + 0.6, P(-4.95, 6.4, 4.4), P(10.6, 1.3, -0.5), 50, 0, 0],
-    [T0('n04') + 0.6, P(xi + 0.05, 1.15, 4.05), P(xi, 1.25, 1.55), 44, 2.5, 7],                   // Ingrid, waiting on the right side
-    [word('n04', 'habit', 0.6), P(xi + 0.15, 1.13, 3.75), P(xi, 1.25, 1.55), 42, 2.2, 8],
+    [T0('n02'), P(-5.4, 5.0, 4.5), P(5.5, 1.3, -1.0), 50, 0, 0],                                    // the whole street, the crowds, the clock (still rising)
+    [XA + 2.0, P(-6.2, 6.0, 4.4), P(6.5, 1.2, 0.0), 50, 0, 0],                                      // it creeps across to the right, and stops again
+    [T0('n03') + 0.4, P(-5.8, 6.4, 4.4), P(10.5, 1.3, -0.5), 50, 0, 0],                             // the pick: over the waiting street...
+    [T1('n03') + 0.6, P(-3.9, 5.7, 4.3), P(11.0, 1.3, -0.4), 48, 0, 0],                             // ... pushing in slowly while you choose
+    [T0('n04') + 0.6, P(xi + 0.05, 1.15, 4.1), P(xi, 1.25, 1.55), 44, 2.55, 7],                    // Ingrid, waiting on the right side...
+    [word('n04', 'habit', 0.6), P(xi + 0.14, 1.12, 3.45), P(xi, 1.25, 1.55), 40, 1.9, 8],          // ... pushing in as the danger is spelled out
     [word('n04', 'someone', 0.5), P(7.0, 1.76, 5.6), P(6.5, 1.58, 4.07), 40, 1.62, 9],             // the last seconds: his eyes on the stopwatch
     [FIVE - 1.0, P(6.96, 1.76, 5.55), P(6.5, 1.58, 4.07), 40, 1.58, 9],
     [FIVE - 0.2, P(xi + 0.1, 1.15, 3.95), P(xi, 1.25, 1.55), 42, 2.4, 8],                          // 05:00: her face, the peak; the whistle
