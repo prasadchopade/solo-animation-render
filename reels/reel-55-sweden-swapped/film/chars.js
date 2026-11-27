@@ -143,6 +143,15 @@ export function ingrid(face = 'scared', hands = 'grip') {
 // ================================================================================== THE TRAFFIC OFFICER
 // A tall, thin constable in navy with a white cap cover, white gloves and a white cross-belt; a silver stopwatch.
 // pose: 'watch' (stopwatch up, eyes on it) | 'whistle' (whistle in, arm sweeping right) | 'idle' (the Monday: a blank page) | 'notes' (1969: writing up a crash)
+// a notebook held up to us: a spiral on top, ruled lines, a red margin; blank, or written on
+function notebook(g, x, y, w, h, written) {
+  rr(g, x - 5, y - 5, w + 10, h + 10, 8, '#7d5f43');
+  rr(g, x, y, w, h, 5, '#fbf8ef');
+  for (let k = 1; k < 6; k++) { const yy = y + 16 + k * (h - 22) / 6; line(g, [[x + 8, yy], [x + w - 8, yy]], 2, 'rgba(80,120,185,0.6)'); }
+  line(g, [[x + 26, y + 12], [x + 26, y + h - 6]], 2.5, 'rgba(200,70,60,0.75)');
+  for (let k = 0; k < 8; k++) ell(g, x + 12 + k * (w - 24) / 7, y + 2, 5, 10, '#55595f');
+  if (written) for (let k = 1; k < 6; k++) { const yy = y + 12 + k * (h - 22) / 6; line(g, [[x + 32, yy], [x + 40, yy - 5], [x + 52, yy + 2], [x + 66, yy - 4], [x + w - 18 - (k % 3) * 20, yy]], 4, '#2f2a26'); }
+}
 export function officer(pose = 'watch') {
   return paper(512, 1100, (g) => {
     const skin = '#e9c3a4', skinD = '#d6a684', navy = '#22304f', navyD = '#1a2540', white = '#f4f2ee';
@@ -183,21 +192,21 @@ export function officer(pose = 'watch') {
       for (const sx of [-26, 26]) curve(g, [hx + sx - 12, hy - 8], [hx + sx, hy - 2], [hx + sx + 12, hy - 8], 5, '#231a16');   // eyes half shut, pleased
       line(g, [[hx - 42, hy - 32], [hx - 12, hy - 32]], 6, '#6b4a3a'); line(g, [[hx + 12, hy - 32], [hx + 42, hy - 32]], 6, '#6b4a3a');
       curve(g, [hx - 16, hy + 64], [hx, hy + 74], [hx + 18, hy + 62], 5, '#7a3f35');
-      arm(g, [180, 350], [170, 470], [230, 470], 60, 48, 36, navy);
+      arm(g, [180, 350], [160, 470], [214, 500], 60, 48, 36, navy);
       arm(g, [334, 350], [400, 420], [330, 300], 60, 48, 36, navy);                                   // pencil up to his ear: nothing to note
-      rr(g, 214, 430, 104, 76, 6, '#f7f3e8');                                                          // the page, blank
-      ell(g, 232, 476, 22, 20, white); ell(g, 330, 296, 22, 20, white);
+      notebook(g, 196, 396, 150, 118, false);                                                          // held up to us: the page, blank
+      ell(g, 214, 500, 22, 20, white); ell(g, 330, 296, 22, 20, white);
       line(g, [[336, 290], [316, 236]], 6, '#c0392b');
-    } else {                                                                                         // 1969: writing it up, harried
+    } else {                                                                                         // November: writing it up, harried
       eyes(g, [[hx - 26, hy - 6, 1], [hx + 26, hy - 6, 1]], 11, [0, 0.95], 0.55, 0.85);
       line(g, [[hx - 42, hy - 26], [hx - 12, hy - 20]], 7, '#6b4a3a'); line(g, [[hx + 12, hy - 20], [hx + 42, hy - 26]], 7, '#6b4a3a');
       line(g, [[hx - 14, hy + 70], [hx + 14, hy + 66]], 5, '#7a3f35');
       sweat(g, hx + 60, hy - 30, 0.8);
-      arm(g, [180, 350], [170, 470], [230, 470], 60, 48, 36, navy);
-      arm(g, [334, 350], [360, 470], [300, 470], 60, 48, 36, navy);
-      rr(g, 214, 430, 104, 76, 6, '#efe9da'); for (let k = 0; k < 4; k++) line(g, [[226, 448 + k * 14], [306, 448 + k * 14]], 3, '#5a554c');
-      ell(g, 232, 476, 22, 20, white); ell(g, 300, 470, 22, 20, white);
-      line(g, [[300, 470], [270, 440]], 6, '#c0392b');                                                   // the pencil
+      arm(g, [180, 350], [150, 420], [212, 404], 60, 48, 36, navy);
+      arm(g, [334, 350], [380, 420], [314, 392], 60, 48, 36, navy);
+      notebook(g, 196, 300, 150, 118, true);                                                           // up at his chest: the page filling up
+      ell(g, 212, 404, 22, 20, white); ell(g, 314, 392, 22, 20, white);
+      line(g, [[314, 392], [288, 362]], 6, '#c0392b');                                                   // the pencil
     }
   }, 31 + pose.length);
 }
@@ -295,11 +304,12 @@ export function carBody(kind, dir = 1, o = {}) {
   const S = CAR[kind], PX = 240;                                   // pixels per metre
   const top = o.sign ? 0.32 : 0;                                   // room above the roof for a taxi sign
   const w = Math.round(S.len * PX + 60), h = Math.round((S.h + top) * PX + 60), ox = 30, oy = 30 + top * PX, L = S.len * PX, Hh = S.h * PX;
-  return paper(w, h, (g) => {
+  const holes = [];
+  const out = paper(w, h, (g) => {
     if (dir < 0) { g.translate(w, 0); g.scale(-1, 1); }            // facing left: mirror the drawing, never the words
     const T = (s, x, y, size, col) => { g.save(); g.translate(x, y); g.scale(dir < 0 ? -1 : 1, 1); g.fillStyle = col; g.font = `700 ${size}px Fredoka, sans-serif`; g.textAlign = 'center'; g.textBaseline = 'middle'; g.fillText(s, 0, 0); g.restore(); };
     const X = (u) => ox + u * L, Y = (v) => oy + Hh - v * PX;      // u along the car (0 back .. 1 front), v metres up
-    const glass = (pts) => { g.save(); g.globalCompositeOperation = 'destination-out'; poly(g, pts, '#000'); g.restore(); };
+    const glass = (pts) => { holes.push(pts); g.save(); g.globalCompositeOperation = 'destination-out'; poly(g, pts, '#000'); g.restore(); };
     const chrome = (pts, wdt = 7) => { g.strokeStyle = '#d7dbe0'; g.lineWidth = wdt; g.lineJoin = 'round'; g.beginPath(); g.moveTo(pts[0][0], pts[0][1]); for (const p of pts.slice(1)) g.lineTo(p[0], p[1]); g.closePath(); g.stroke(); };
     const wheelArch = (u) => ell(g, X(u), Y(S.wr), S.wr * PX * 1.18, S.wr * PX * 1.12, '#1c1c20');
     if (kind === 'saloon') {
@@ -343,6 +353,14 @@ export function carBody(kind, dir = 1, o = {}) {
     for (const u of S.wheels) wheelArch(u);
     if (o.sign) { rr(g, X(0.42), Y(1.5) - 50, 132, 52, 9, '#f6d24a'); T(o.sign, X(0.42) + 66, Y(1.5) - 23, 32, '#1d1d22'); }   // a taxi sign on the roof
   }, kind.length * 13, 12);
+  // the dark inside of the car, cut to its windows (a little larger than the glass): the film hangs it behind the
+  // driver and keeps it lined up with the windows from wherever the camera is, so it never shows outside them
+  const ic = cv(w, h), q = ic.getContext('2d');
+  if (dir < 0) { q.translate(w, 0); q.scale(-1, 1); }
+  q.fillStyle = q.strokeStyle = '#1e2530'; q.lineWidth = 14; q.lineJoin = 'round';
+  for (const pts of holes) { q.beginPath(); q.moveTo(pts[0][0], pts[0][1]); for (const p of pts.slice(1)) q.lineTo(p[0], p[1]); q.closePath(); q.fill(); q.stroke(); }
+  out.interior = holes.length ? ic : null;
+  return out;
 }
 export function wheel(r = 0.3) {
   const PX = 240, s = Math.round(r * PX * 2 + 24);
