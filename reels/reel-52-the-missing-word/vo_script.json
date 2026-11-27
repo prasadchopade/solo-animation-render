@@ -1,0 +1,130 @@
+{
+ "note": "Draft 3's lines. n.. = the narrator (af_heart, task 'takes'); s.. the stall-keeper, c.. the constable, t.. the tea man, auditioned across the cast (task 'cast'). Run 1 auditioned s01, c01, t01, c02 across eighteen voices; run 2 s02 and c03; run 3 c00, t02 and s02b across twelve. Cast from the scores: stall-keeper bf_isabella, constable am_onyx, tea man am_adam. Run 4 re-reads the tea man's two lines across eight male voices (t02 creaked in every man still free in run 3). Run 5: t02 still creaked in every free male voice in run 4, apparently on the last word; two rewordings that don't end on \"morning\" (t02s, t02e: alternates, not placed) and the line again at three paces. Run 5: \"I bring it every morning, sir!\" (t02s) read clean in am_adam at all three paces; it replaces t02, which creaked in every male voice but am_michael across three runs. Run 6 (the user, 26 Nov: \"more information\"; they chose one more line naming the experiment): n11, af_heart at three paces as cast entries. Run 7 (the fresh review of the final): c01 with a clear t in \"kettle\" (misaki flapped it: \"keddle\"), and n07b with \"he\" stressed for \"even HE\", each voice at three paces.",
+ "voice": "af_heart",
+ "speed": 1.0,
+ "ref_text": "The market opens slowly in the mornings. Shutters rattle up one by one, a radio plays somewhere behind a wall, and the first customers stand at the counter counting out their change.",
+ "lines": [
+  {
+   "id": "n01b",
+   "text": "You get one chance to hear what was in that box, so remember every word."
+  },
+  {
+   "id": "c00",
+   "text": "Slowly, madam. Everything that was in it."
+  },
+  {
+   "id": "s01",
+   "text": "My box! Milk, sugar, ginger, cardamom, the cups, the strainer, the biscuits, my kettle, the spoons!"
+  },
+  {
+   "id": "n03",
+   "text": "Did she say tea?"
+  },
+  {
+   "id": "n04",
+   "text": "She never said it."
+  },
+  {
+   "id": "c01",
+   "text": "The kettle, the spoons, and the tea.",
+   "text_kokoro": "The [kettle](/kˈɛtᵊl/), the spoons, and the tea."
+  },
+  {
+   "id": "n10c",
+   "text": "Every word she did say was about tea, so that's what stuck, in your memory and in his notebook."
+  },
+  {
+   "id": "n11",
+   "text": "Psychologists have tested this since 1959, and with lists like hers, most people say they heard the word that wasn't there.",
+   "text_kokoro": "Psychologists have tested this since nineteen fifty-nine, and with lists like hers, most people say they heard the word that wasn't there.",
+   "say": "Psychologists have tested this since nineteen fifty-nine, and with lists like hers, most people say they heard the word that wasn't there."
+  },
+  {
+   "id": "t01",
+   "text": "It's for her stall!"
+  },
+  {
+   "id": "c02",
+   "text": "Exactly."
+  },
+  {
+   "id": "t02",
+   "text": "I bring it every morning!",
+   "alt": true
+  },
+  {
+   "id": "t02s",
+   "text": "I bring it every morning, sir!"
+  },
+  {
+   "id": "t02e",
+   "text": "Every morning, I bring it!",
+   "alt": true
+  },
+  {
+   "id": "s02b",
+   "text": "He's my tea man!"
+  },
+  {
+   "id": "c03",
+   "text": "You nodded."
+  },
+  {
+   "id": "n07b",
+   "text": "Even he went looking for the tea.",
+   "text_kokoro": "Even [he](/hˈi/) went looking for the tea."
+  },
+  {
+   "id": "n08",
+   "text": "If you said no, name the nine things she did say."
+  }
+ ],
+ "take": {
+  "id": "af_heart",
+  "engine": "kokoro",
+  "voice": "af_heart",
+  "speed": 1.0
+ },
+ "cast_lines": [
+  "c01",
+  "n07b"
+ ],
+ "cast": [
+  {
+   "id": "am_onyx",
+   "engine": "kokoro",
+   "voice": "am_onyx",
+   "speed": 1.0
+  },
+  {
+   "id": "am_onyx_096",
+   "engine": "kokoro",
+   "voice": "am_onyx",
+   "speed": 0.96
+  },
+  {
+   "id": "am_onyx_104",
+   "engine": "kokoro",
+   "voice": "am_onyx",
+   "speed": 1.04
+  },
+  {
+   "id": "af_heart",
+   "engine": "kokoro",
+   "voice": "af_heart",
+   "speed": 1.0
+  },
+  {
+   "id": "af_heart_096",
+   "engine": "kokoro",
+   "voice": "af_heart",
+   "speed": 0.96
+  },
+  {
+   "id": "af_heart_104",
+   "engine": "kokoro",
+   "voice": "af_heart",
+   "speed": 1.04
+  }
+ ]
+}
