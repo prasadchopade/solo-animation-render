@@ -1,16 +1,19 @@
 {
  "voice": "af_heart",
  "speed": 1.0,
+ "cast": [ { "id": "k-heart", "engine": "kokoro", "voice": "af_heart" } ],
+ "cast_lines": ["n01"],
+ "ref_text": "The street was quiet before dawn, and everyone waited for the clock to reach five.",
  "take": { "id": "k-heart", "engine": "kokoro", "voice": "af_heart" },
  "lines": [
   { "id": "n01", "text": "Sweden once made every driver on the road stop dead at ten to five one morning in 1967,", "text_kokoro": "Sweden once made every driver on the road stop dead at ten to five one morning in nineteen sixty-seven," },
-  { "id": "n02", "text": "because at five o'clock, the whole country would switch to driving on the right, like its neighbours, though voters had said no by a landslide." },
+  { "id": "n02", "text": "because at five o'clock, the whole country would switch to driving on the right, like its neighbours." },
   { "id": "n03", "text": "So when they all switched at once, did road deaths go up, or down?" },
   { "id": "n04", "text": "Ingrid had driven on the left her whole life, and one slip of habit would put her head-on into someone." },
-  { "id": "n05", "text": "They went down, by almost half, because speed limits were cut that morning and everyone drove like a learner," },
-  { "id": "n06", "text": "and for two months, it looked as if Dagen H had made Sweden's roads safer overnight.", "text_kokoro": "and for two months, it looked as if [Dagen H](/dˈɑːɡən hˈO/) had made Sweden's roads safer overnight." },
-  { "id": "n06b", "text": "and for two months, it looked as if Dagen H had made Sweden's roads safer overnight.", "text_kokoro": "and for two months, it looked as if [Dagen H](/dˈɑɡɛn hˈO/) had made Sweden's roads safer overnight." },
-  { "id": "n06c", "text": "and for two months, it looked as if Dagen H had made Sweden's roads safer overnight.", "text_kokoro": "and for two months, it looked as if [Dagen H](/dˈɑːɡən hˈɔː/) had made Sweden's roads safer overnight." },
+  { "id": "n05", "text": "Deaths went down, by almost half, because speed limits were cut that morning and everyone drove like a learner," },
+  { "id": "n06", "text": "and for two months, it looked as if the switch, Dagen H, had made Sweden's roads safer overnight.", "text_kokoro": "and for two months, it looked as if the switch, [Dagen H](/dˈɑːɡən hˈO/), had made Sweden's roads safer overnight." },
+  { "id": "n06b", "text": "and for two months, it looked as if the switch, Dagen H, had made Sweden's roads safer overnight.", "text_kokoro": "and for two months, it looked as if the switch, [Dagen H](/dˈɑɡɛn hˈO/), had made Sweden's roads safer overnight." },
+  { "id": "n06c", "text": "and for two months, it looked as if the switch, Dagen H, had made Sweden's roads safer overnight.", "text_kokoro": "and for two months, it looked as if the switch, [Dagen H](/dˈɑːɡən hˈɔː/), had made Sweden's roads safer overnight." },
   { "id": "n07", "text": "But by November, the deaths were back where they'd been, because once the road felt normal, the care wore off." },
   { "id": "n08", "text": "So the safest Ingrid ever drove was the morning she was sure she'd crash." }
  ]
