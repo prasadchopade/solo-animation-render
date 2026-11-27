@@ -233,7 +233,7 @@ for (const fmt of FORMATS) {
     // sub-frame per 1.6 of change keeps the copies close enough to read as a smear (calibrated by eye against 32-sample
     // renders of Ep. 06, lab 2026-10-12). Sub-frames sit symmetrically around the frame time and never straddle a hard
     // cut (window.CUTS), so a cut is never double-exposed.
-    const SHUTTER = 0.5, MIN_SUB = 2, MAX_SUB = 24, LOCAL_MIN = 16, LOCAL_STEP = 1.6;
+    const SHUTTER = 0.5, MIN_SUB = 2, MAX_SUB = TL.blurMax || 24, LOCAL_MIN = 16, LOCAL_STEP = 1.6;   // timeline.json "blurMax" caps it (a 3D travelling shot moves every frame: 24 sub-frames cost ~12x; the Style Lab's option, reel 55); reels without it are unchanged
     const CW = Math.ceil(F.W / 32), CH = Math.ceil(F.H / 32), cells = new Float64Array(CW * CH);
     const local = (x, y) => {   // the biggest mean |difference| (0–255, all channels) in a 64-px window at a 32-px step, and where
       cells.fill(0);
