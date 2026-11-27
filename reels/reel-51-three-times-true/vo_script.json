@@ -1,0 +1,27 @@
+{
+ "voice": "af_heart",
+ "speed": 1.0,
+ "note": "Draft 3 (26 Nov). Narrator n-lines: af_heart takes. Characters, cast from run 1's fifteen voices (audio/vo_lab/cast/report.md): c01 barber am_onyx, c02 student hf_alpha, c03 rickshaw driver am_michael, c04 chaiwala bf_isabella. Run 2's cast re-reads only c03, with 'saab' planned long (large-v3 heard 'sob'), in am_michael at three paces.",
+ "ref_text": "The lane was busy, and nobody looked twice.",
+ "lines": [
+  { "id": "c01", "text": "You there, keep a hand on your wallet. There's a pickpocket at the east gate." },
+  { "id": "c02", "text": "Did you hear? There's a pickpocket at the east gate, everyone's saying it!" },
+  { "id": "c03", "text": "East gate, saab. Pickpocket. Police are going there now.", "text_kokoro": "East gate, [saab](/sˈɑːb/). Pickpocket. Police are going there now." },
+  { "id": "n01", "text": "So where's the pickpocket?" },
+  { "id": "n02", "text": "He's at the west gate, where he took a wallet in the very first second." },
+  { "id": "n03", "text": "And the warning was his." },
+  { "id": "n04b", "text": "So the three people who warned you were one man, three times." },
+  { "id": "n05c", "text": "They sounded like three witnesses, and not one of them had seen him," },
+  { "id": "n05d", "text": "but he'd seen every hand go to a pocket, yours too." },
+  { "id": "n07", "text": "So while the police ran east and grabbed the first man they saw running," },
+  { "id": "n08b", "text": "he walked back through every pocket he'd watched them touch." },
+  { "id": "c04", "text": "You there, keep a hand on your wallet." }
+ ],
+ "take": { "id": "af_heart", "engine": "kokoro", "voice": "af_heart" },
+ "cast_lines": ["c03"],
+ "cast": [
+  { "id": "am_michael", "engine": "kokoro", "voice": "am_michael" },
+  { "id": "am_michael_s096", "engine": "kokoro", "voice": "am_michael", "speed": 0.96 },
+  { "id": "am_michael_s104", "engine": "kokoro", "voice": "am_michael", "speed": 1.04 }
+ ]
+}
