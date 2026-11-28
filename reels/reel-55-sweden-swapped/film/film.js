@@ -347,6 +347,11 @@ function monotone(xs, ys, stops = []) {
     return (2 * u3 - 3 * u2 + 1) * ys[i] + (u3 - 2 * u2 + u) * h * m[i] + (-2 * u3 + 3 * u2) * ys[i + 1] + (u3 - u2) * h * m[i + 1]; };
 }
 let PATHS = null;
+// the officer's close-up, ended wider (HQ, 28 Nov; see camAt): from the tilt down onto him (keys67's "tilting down" key)
+// to the end of the hold ("cut"), the camera sits OB_D metres further back along its line to him, aiming OB_AIM higher
+const OB_T0 = word('n05', 'went', 0.1) + 0.45, OB_T1 = word('n05', 'cut', 0.95) + 0.2;
+const OB_D = 0.26, OB_AIM = 0.13, OB_DIR = (() => { const dx = 5.2 - 6.4, dz = 5.2 - 4.1, l = Math.hypot(dx, dz); return [dx / l, dz / l]; })();
+const OB_PASS = OB_T1 + 0.5, OB_BACK = 0.8, OB_RISE = 0.1;   // the swing past him: he's out of frame by OB_PASS
 function camAt(t) {
   if (!PATHS) {
     const mk = (K) => {
@@ -358,6 +363,19 @@ function camAt(t) {
   }
   const Pth = t < CUT ? PATHS.a : PATHS.b, u = Pth.u(t);
   const pos = Pth.pos.getPoint(u), tgt = Pth.tgt.getPoint(u);
+  // HQ's check of the final (28 Nov): in his close-up on "by almost half" the dome of the officer's helmet went above the
+  // top safe line (y 269). The shot now ends wider: from the tilt down onto him the camera eases OB_D further back along
+  // its line to him and aims OB_AIM higher, and hands it back during the swing to Ingrid. A local term rather than new
+  // keys, because moving a key reshapes the spline from 28.8 to 38.3 s; every frame outside 29.3-32.7 s stays as it was
+  let dfoc = 0;
+  if (t < CUT && t > OB_T0 && t < RIDE67) {
+    const k = ss(seg(t, OB_T0, OB_T0 + 0.45)) * (1 - ss(seg(t, OB_T1, RIDE67)));
+    // the swing to Ingrid used to pass a metre from him, so his head rode up out of the frame as he wiped out of it: now
+    // the camera swings wide, back towards the pavement and a little up, as it passes him (furthest at OB_PASS, once he's
+    // out of frame), then pushes in to the ride's framing by RIDE67
+    const r = ss(seg(t, OB_T1, OB_PASS)) * (1 - ss(seg(t, OB_PASS, RIDE67)));
+    pos.x += k * OB_DIR[0] * OB_D; pos.z += k * OB_DIR[1] * OB_D + r * OB_BACK; pos.y += r * OB_RISE; tgt.y += k * OB_AIM; dfoc = k * OB_D + r * OB_BACK;
+  }
   // the shots that ride beside Ingrid's taxi (the crawl after the switch; November's last shot): x locks to her car. The
   // keys already put the camera where she'll be, so this only takes up what the curve between keys leaves over
   const span = t < CUT ? [word('n05', 'cut', 0.95) + 0.2, RIDE67] : [tFace69(MEET69 - LEFT69), tFace69(MEET69 - LEFT69) + 0.45];
@@ -366,7 +384,7 @@ function camAt(t) {
     const x = CAST.ingrid.g.position.x + 0.42 + off, k = ss(seg(t, span[0], span[1]));
     pos.x = lerp(pos.x, x, k); tgt.x = lerp(tgt.x, x, k);
   }
-  return { pos, tgt, fov: Pth.fov(t), focus: Pth.foc(t), ap: Pth.ap(t) };
+  return { pos, tgt, fov: Pth.fov(t), focus: Pth.foc(t) + dfoc, ap: Pth.ap(t) };
 }
 
 // ------------------------------------------------------------------ faces (one feeling per face per line)
