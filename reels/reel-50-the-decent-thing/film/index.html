@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta charset="utf-8">
-<title>The Morning Sweden Swapped</title>
+<title>The Decent Thing</title>
 <style>
   /* Display + UI: Barlow (SIL OFL) — Condensed Bold for display, Semi Condensed for UI/captions. Data: Inconsolata (SIL OFL).
      Free licences, so the film renders identically on any machine (cloud runners included). 'Bahn' / 'Mono' are aliases. */
@@ -12,8 +12,6 @@
   @font-face { font-family: 'Bahn'; src: url(../../../assets/fonts/Barlow-Regular.ttf) format('truetype'); font-weight: 400; font-stretch: 100%; }
   @font-face { font-family: 'Bahn'; src: url(../../../assets/fonts/Barlow-SemiBold.ttf) format('truetype'); font-weight: 600; font-stretch: 100%; }
   @font-face { font-family: 'Mono'; src: url(../../../assets/fonts/Inconsolata.ttf) format('truetype'); font-weight: 200 900; font-stretch: 50% 200%; }
-  /* captions and the street's signs: Fredoka Bold (SIL OFL, ../../../assets/fonts/OFL-Fredoka.txt) */
-  @font-face { font-family: 'Fredoka'; src: url('../../../assets/fonts/Fredoka-700.woff2') format('woff2'); font-weight: 700; }
   :root {
     /* one accent (signal red) + its tonal ramp; everything else is warm neutral on blue-black */
     --bg: #07090c; --bg-2: #0e1217; --ink: #ece8e1; --ink-2: #8d949c; --ink-3: #3b434c; --line: #1c232b;
@@ -42,14 +40,6 @@
   .cw > span { display: inline-block; }
   canvas { position: absolute; left: 0; top: 0; }
 </style>
-<!-- three.js r170, MIT: ../../../engine/vendor/three/LICENSE -->
-<script type="importmap">
-{ "imports": {
-  "three": "../../../engine/vendor/three/three.module.min.js",
-  "three/addons/": "../../../engine/vendor/three/addons/",
-  "stage3d": "../../../engine/stage3d.js"
-} }
-</script>
 </head>
 <body>
 <div id="stage"></div>
@@ -61,6 +51,8 @@
 <script src="../../../engine/kit.js"></script>
 <script src="../../../engine/ui.js"></script>
 <script src="../../../engine/endcard/endcard.js"></script>
-<script type="module" src="film.js"></script>
+<script src="draw.js"></script>
+<script src="lane.js"></script>
+<script src="film.js"></script>
 </body>
 </html>
