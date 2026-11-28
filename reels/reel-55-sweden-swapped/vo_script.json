@@ -1,0 +1,19 @@
+{
+ "voice": "af_heart",
+ "speed": 1.0,
+ "cast": [ { "id": "k-heart", "engine": "kokoro", "voice": "af_heart" } ],
+ "cast_lines": ["n01"],
+ "ref_text": "The street was quiet before dawn, and everyone waited for the clock to reach five.",
+ "take": { "id": "k-heart", "engine": "kokoro", "voice": "af_heart" },
+ "lines": [
+  { "id": "n01", "text": "Sweden once made every driver on the road stop dead at ten to five on a September morning in 1967,", "text_kokoro": "Sweden once made every driver on the road stop dead at ten to five on a September morning in nineteen sixty-seven," },
+  { "id": "n02", "text": "because at five o'clock, the whole country would switch to driving on the right, like its neighbours." },
+  { "id": "n03", "text": "So when they all switched at once, did road deaths go up, or down?" },
+  { "id": "n04", "text": "Drivers like Ingrid had driven on the left all their lives, and one slip of habit would put them head-on into someone." },
+  { "id": "n05", "text": "Deaths went down, by almost half, with speed limits cut." },
+  { "id": "n06", "text": "For two months, it looked as if the switch they called Dagen H had made Sweden's roads safer overnight.", "text_kokoro": "For two months, it looked as if the switch they called [Dagen H](/dˈɑɡɛn hˈO/) had made Sweden's roads safer overnight." },
+  { "id": "n06b", "text": "For two months, it looked as if the switch they called Dagen H had made Sweden's roads safer overnight.", "text_kokoro": "For two months, it looked as if the switch they called [Dagen H](/dˈɑːɡɛn hˈO/) had made Sweden's roads safer overnight." },
+  { "id": "n07", "text": "But by November, with the limits still down, the deaths were back where they'd been, because once the road felt normal, the care wore off." },
+  { "id": "n08", "text": "So the safest Ingrid ever drove was the morning she was sure she'd crash." }
+ ]
+}

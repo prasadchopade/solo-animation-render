@@ -1,0 +1,242 @@
+{
+  "note": "Single source of truth for picture + sound, in BEATS (120 bpm: beat = 0.5 s). film.js reads marks via film/data.js; sync.mjs turns sfx into cues.json; score.py reads marks for the music; vo.json places the narration. Every reel ends with the Root Cause end card: 'end' → 'done' = 3.0 s (6 beats), engine/endcard.",
+  "title": "The Morning Sweden Swapped",
+  "duration": 54.0,
+  "fps": 30,
+  "bpm": 120,
+  "formats": [
+    "9x16"
+  ],
+  "music": {
+    "source": "synth (score.py → scripts/synth.py)"
+  },
+  "voiceover": {
+    "provider": "voice lab",
+    "voice": "k-heart",
+    "file": "vo.json"
+  },
+  "mix": {
+    "music": -7,
+    "sfx": -5,
+    "vo": 3.2,
+    "duck": true,
+    "spectral": true
+  },
+  "marks": {
+    "hook": 0,
+    "end": 102.0,
+    "done": 108.0
+  },
+  "sfx": [
+    {
+      "at": 0.04,
+      "type": "stopwatch",
+      "gain": 0.5,
+      "what": "the officer's stopwatch clicks on at 04:50 (one tick, above the voice's band)",
+      "len": 0.04,
+      "pitch": 1.0
+    },
+    {
+      "at": 0.0,
+      "type": "idle",
+      "gain": 0.5,
+      "what": "every engine still on the road, idling",
+      "len": 26.549999999999997
+    },
+    {
+      "at": 0.6,
+      "type": "idle",
+      "gain": 0.28,
+      "what": "the milk van idling, a little higher",
+      "len": 26.15,
+      "pitch": 1.35,
+      "pan": -0.35
+    },
+    {
+      "at": 18.336,
+      "type": "tyres",
+      "gain": 0.45,
+      "what": "the street creeps across to the right (the westbound first)",
+      "len": 4.6
+    },
+    {
+      "at": 43.764,
+      "type": "stopwatch",
+      "gain": 0.22,
+      "what": "the stopwatch running, under the words",
+      "len": 2.42,
+      "pitch": 1.0
+    },
+    {
+      "at": 48.564,
+      "type": "stopwatch",
+      "gain": 0.5,
+      "what": "the stopwatch alone after \"someone\", stopping short of five",
+      "len": 1.05,
+      "pitch": 1.0
+    },
+    {
+      "at": 49.3,
+      "type": "pips",
+      "gain": 0.5,
+      "what": "the radio's time signal: a pip at 04:59:59",
+      "len": 0.1
+    },
+    {
+      "at": 51.3,
+      "type": "pips",
+      "gain": 0.55,
+      "what": "the long pip: five o clock",
+      "len": 0.45
+    },
+    {
+      "at": 51.9,
+      "type": "peawhistle",
+      "gain": 0.75,
+      "what": "the officer's whistle: go",
+      "len": 0.75
+    },
+    {
+      "at": 51.4,
+      "type": "pullaway",
+      "gain": 0.45,
+      "what": "an engine pulling away on the right side",
+      "len": 2.3,
+      "pitch": 0.92,
+      "pan": -0.3
+    },
+    {
+      "at": 51.56,
+      "type": "pullaway",
+      "gain": 0.4,
+      "what": "an engine pulling away on the right side",
+      "len": 2.2,
+      "pitch": 1.02,
+      "pan": -0.2
+    },
+    {
+      "at": 52.76,
+      "type": "pullaway",
+      "gain": 0.45,
+      "what": "an engine pulling away on the right side",
+      "len": 2.0,
+      "pitch": 1.12,
+      "pan": 0.3
+    },
+    {
+      "at": 53.0,
+      "type": "pullaway",
+      "gain": 0.55,
+      "what": "an engine pulling away on the right side",
+      "len": 1.9,
+      "pitch": 0.74,
+      "pan": 0.2
+    },
+    {
+      "at": 52.1,
+      "type": "tyres",
+      "gain": 0.42,
+      "what": "the whole street rolling, slowly",
+      "len": 6.0
+    },
+    {
+      "at": 52.4,
+      "type": "applause",
+      "gain": 0.55,
+      "what": "the crowds on the pavements clapping",
+      "len": 2.3,
+      "pan": 0.25
+    },
+    {
+      "at": 54.5,
+      "type": "idle",
+      "gain": 0.34,
+      "what": "Ingrid's taxi creeping off, and its engine beside us as we ride along",
+      "len": 11.02,
+      "pitch": 1.08
+    },
+    {
+      "at": 54.1,
+      "type": "birds",
+      "gain": 0.3,
+      "what": "birds at sunrise (above the voice)",
+      "len": 11.27
+    },
+    {
+      "at": 76.58,
+      "type": "hit",
+      "gain": 0.6,
+      "what": "the hard cut to November, just before \"But\""
+    },
+    {
+      "at": 76.74,
+      "type": "steamhiss",
+      "gain": 0.3,
+      "what": "the bumped car's radiator steaming (above the voice)",
+      "len": 12.33
+    },
+    {
+      "at": 76.74,
+      "type": "idle",
+      "gain": 0.36,
+      "what": "the traffic held up behind the bump, idling",
+      "len": 12.33,
+      "pitch": 0.9,
+      "pan": 0.3
+    },
+    {
+      "at": 77.04,
+      "type": "pencil",
+      "gain": 0.2,
+      "what": "the officer writing it up (quiet, above the voice)",
+      "len": 0.9
+    },
+    {
+      "at": 82.184,
+      "type": "pencil",
+      "gain": 0.2,
+      "what": "the officer writing it up (quiet, above the voice)",
+      "len": 0.8
+    },
+    {
+      "at": 85.56,
+      "type": "pencil",
+      "gain": 0.2,
+      "what": "the officer writing it up (quiet, above the voice)",
+      "len": 0.9
+    },
+    {
+      "at": 91.32,
+      "type": "horn",
+      "gain": 0.42,
+      "what": "someone in the queue leans on the horn (in the gap after \"off\")",
+      "len": 0.22,
+      "pan": 0.4
+    },
+    {
+      "at": 90.24,
+      "type": "tyres",
+      "gain": 0.42,
+      "what": "Ingrid's taxi rolling in, slowing to a stop",
+      "len": 5.58
+    },
+    {
+      "at": 90.44,
+      "type": "idle",
+      "gain": 0.3,
+      "what": "her engine, at ease",
+      "len": 5.48,
+      "pitch": 1.05,
+      "pan": -0.2
+    },
+    {
+      "at": "end",
+      "type": "wav",
+      "file": "../../engine/endcard/endcard.wav",
+      "gain": 1.0,
+      "what": "end card sound"
+    }
+  ],
+  "gl": true,
+  "blurMax": 6
+}
