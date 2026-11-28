@@ -111,7 +111,7 @@ export function buildSet(st, THREE) {
   }
 
   // ------------------------------------------------------------------ the street clock, on a bracket over the watchmaker's
-  S.clockAt = new THREE.Vector3(1.6, 4.45, -WALK + 1.25);
+  S.clockAt = new THREE.Vector3(2.5, 3.45, -WALK + 1.25);              // low enough to sit below Instagram's header in the shots that show it
   {
     const face = canvasTex(256, 256, (g, w, h) => {
       g.fillStyle = '#f7f3e8'; g.beginPath(); g.arc(128, 128, 124, 0, Math.PI * 2); g.fill();

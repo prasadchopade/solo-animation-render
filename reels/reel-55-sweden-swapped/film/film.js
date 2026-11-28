@@ -61,11 +61,11 @@ function ingX69(t) {
   const u = (t - N1) / T; return x1 + NV * T * (u - u * u * u + u * u * u * u / 2);
 }
 const fx69 = (t) => ingX69(t) + 0.43;
-const MEET69 = 15.0;                                                         // where the camera waits for her, side-on at eye level
+const MEET69 = 15.0, LEFT69 = 0.28, LEFT67 = 0.17, END69 = 0.5;                                         // where the camera waits for her, side-on at eye level; she's framed this far left
 const tFace69 = (fx) => { let a = CUT, b = NSTOP; for (let i = 0; i < 40; i++) { const m = (a + b) / 2; if (fx69(m) < fx) a = m; else b = m; } return (a + b) / 2; };
 
 let st, THREE, SET, sun, hemi, fill, skyMat, capG, blobTex, glowTex;
-const CARDS = [], CARS = [], GLOWS = [], CAST = {}, STEAM = [];
+const CARDS = [], CARS = [], GLOWS = [], CAST = {}, STEAM = [], LEAVES = [];
 
 // ------------------------------------------------------------------ cards
 function card(canvases, h, o = {}) {
@@ -161,8 +161,10 @@ function build(root) {
         c += uCol * (smoothstep(0.9990, 0.99955, s) * uDisc + pow(s, 18.0) * 0.55 * uAmt + pow(s, 4.0) * 0.12 * uAmt); gl_FragColor = vec4(c, 1.0); }` });
   const sky = new THREE.Mesh(new THREE.SphereGeometry(800, 32, 16), skyMat); sky.frustumCulled = false; sky.renderOrder = -1; sc.add(sky); st.sky = sky;
 
-  // Ingrid's taxi. Her faces: 0 scared, 1 terror (the peak, at 05:00), 2 focus, 3 relief, 4 easy (November)
-  const ing = card([ingrid('scared', 'grip'), ingrid('terror', 'grip'), ingrid('focus', 'grip'), ingrid('relief', 'grip'), ingrid('easy', 'easy')], 1.32);
+  // Ingrid's taxi. Her faces: 0 scared, 1 terror (the peak, at 05:00), 2 focus, 3 relief, 4 easy (sunglasses, the bun: November),
+  // and on the ride as the care wears off: 5 relief with one hand, 6 sunglasses with one hand
+  const ing = card([ingrid('scared', 'grip'), ingrid('terror', 'grip'), ingrid('focus', 'grip'), ingrid('relief', 'grip'), ingrid('easy', 'easy'),
+    ingrid('relief', 'one'), ingrid('easy', 'one')], 1.32);
   CAST.ingrid = makeCar('saloon', 1, ing, { sign: 'TAXI' }); CAST.ingrid.face = ing;
   // the rest of what was allowed out at 04:50
   CAST.bus = makeCar('bus', 1, card([driver('bus', 'tense', 1), driver('bus', 'careful', 1), driver('bus', 'easy', 1)], 0.9));
@@ -184,6 +186,16 @@ function build(root) {
   const busts = ['old', 'kid', 'lady', 'old', 'lady'];
   const slots = SET.windows.filter((w) => w.side < 0 && w.f <= 1 && w.x > -8 && w.x < 16).filter((_, i) => i % 3 === 1).slice(0, busts.length);
   CAST.busts = slots.map((w, i) => { const c = card([windowBust(busts[i])], 0.95, { shadow: false }); c.m.position.set(w.x, w.y - 0.55, -WALK + 0.04); sc.add(c.m); return c; });
+  // the ride's last seconds: paper leaves coming down (the two months passing in one shot)
+  const leafCols = ['#e08a2e', '#e9b53c', '#b5532a', '#d46d2b'];
+  for (let i = 0; i < 9; i++) {
+    const c = document.createElement('canvas'); c.width = c.height = 96; const q = c.getContext('2d');
+    q.fillStyle = leafCols[i % 4]; q.beginPath(); q.moveTo(48, 6); q.quadraticCurveTo(92, 44, 48, 90); q.quadraticCurveTo(4, 44, 48, 6); q.fill();
+    q.strokeStyle = 'rgba(90,40,10,0.55)'; q.lineWidth = 4; q.beginPath(); q.moveTo(48, 12); q.lineTo(48, 88); q.stroke();
+    const tx = new THREE.CanvasTexture(c); tx.colorSpace = THREE.SRGBColorSpace;
+    const m = new THREE.Mesh(new THREE.PlaneGeometry(0.32, 0.32), new THREE.MeshStandardMaterial({ map: tx, alphaTest: 0.5, side: THREE.DoubleSide, roughness: 0.9, emissive: '#ffffff', emissiveMap: tx, emissiveIntensity: 0.2 }));
+    sc.add(m); LEAVES.push(m);
+  }
   // November's bump: steam from the estate's radiator, a hubcap and glass on the road
   const steamTex = radial('rgba(255,255,255,0.9)', 'rgba(255,255,255,0)');
   for (let i = 0; i < 6; i++) { const s = new THREE.Sprite(new THREE.SpriteMaterial({ map: steamTex, color: '#f3efe6', transparent: true, depthWrite: false, opacity: 0 })); sc.add(s); STEAM.push(s); }
@@ -203,7 +215,7 @@ function placeCast(t) {
   A.cycA.m.visible = A.cycA.blob.visible = !nov;                     // November's near lane is too close to the camera for a bicycle
   A.taxi.drv.m.visible = !nov; A.estate.drv.m.visible = false;      // in November the bumped cars' drivers are out on the road
   A.bits.visible = nov;
-  A.ingrid.face.m.position.y = nov ? 0.35 : 0.4;
+  A.ingrid.face.m.position.y = nov ? 0.35 : 0.4; A.ingrid.face.mat.emissiveIntensity = nov ? 0.5 : 0.32;   // brighter in November's last shot
   if (!nov) {
     // 04:50: stopped on the left (eastbound in the far lane, westbound in the near one). At about 04:51 each creeps across
     // to the right in turn and stops again; at 05:00 they drive off on the right, slowly: everyone driving like a learner
@@ -235,6 +247,17 @@ function placeCast(t) {
     w.m.position.x = w.blob.position.x = x; w.m.position.z = w.blob.position.z = z;
   });
   for (const b of A.busts) b.m.visible = !nov;
+  // the leaves: each falls for 3.2 s from its own moment, swaying and turning, placed where the ride's camera will be looking
+  const L0 = word('n06', 'dagen h', 0.45);
+  LEAVES.forEach((m, i) => {
+    const t0 = L0 - 0.6 + i * 0.38, u = (t - t0) / 3.2;
+    m.visible = !nov && u >= 0 && u <= 1; if (!m.visible) return;
+    const behind = i % 2 === 0;                                            // some come down beyond her taxi, some between us and it
+    const x = fx67(t0 + 1.6) + (behind ? -1.2 + ((i * 0.53) % 1) * 2.4 : (i % 2 ? -0.55 : 0.6));
+    const z = behind ? -0.6 - ((i * 0.37) % 1) * 2.6 : 2.9 + ((i * 0.29) % 1) * 0.4;
+    m.position.set(x + 0.35 * Math.sin(u * 7 + i), 3.9 - 3.6 * u, z);
+    m.rotation.set(0.6 * Math.sin(u * 9 + i), 1.2 * Math.sin(u * 5 + i * 2), i + u * 6);
+  });
   // the bump's steam: puffs rising and spreading from the estate's radiator (a pure function of t)
   STEAM.forEach((s, i) => {
     s.visible = nov; if (!nov) return;
@@ -250,12 +273,16 @@ const LOOK = {
   // the dawn light comes in a little from the south so the facades catch it; the disc you see (vis) sits at the end of the street
   dawn: { top: '#4f7fca', hor: '#ffbe80', fog: '#e2b996', dens: 0.011, hs: '#9fbbe6', hg: '#9a7258', hi: 1.2, sc: '#ffc27e', si: 3.8, dir: [1, 0.07, 0.34], vis: [1, 0.05, 0.012], exp: 1.2, fill: 0.6, lamps: 0, shafts: 1, day: 1 },
   morning: { top: '#5f97e0', hor: '#ffd7a6', fog: '#efd3b0', dens: 0.009, hs: '#b4d0f2', hg: '#b08c6c', hi: 1.35, sc: '#ffd6a0', si: 3.9, dir: [1, 0.15, 0.36], vis: [1, 0.11, 0.03], exp: 1.15, fill: 0.7, lamps: 0, shafts: 0.7, day: 1 },
-  november: { top: '#4d7fc4', hor: '#f3c891', fog: '#d9bf9c', dens: 0.010, hs: '#a7bfe0', hg: '#9a7a5a', hi: 1.2, sc: '#ffc88a', si: 3.4, dir: [-0.7, 0.16, 0.55], exp: 1.15, fill: 0.55, lamps: 0, shafts: 0.5, day: 1 },
+  // the ride slides from September towards autumn: the sun lower, warmer, from further round (HQ's note, 28 Nov)
+  autumn: { top: '#5a8fd8', hor: '#ffc98a', fog: '#f0c99a', dens: 0.010, hs: '#b6cbe8', hg: '#c08e60', hi: 1.3, sc: '#ffb86a', si: 4.2, dir: [-0.2, 0.12, 0.9], vis: [-0.2, 0.12, 0.9], exp: 1.22, fill: 0.7, lamps: 0, shafts: 0.4, day: 1 },
+  // November: warm gold, bright (the bookend to frame 0's cold blue)
+  november: { top: '#5f97e6', hor: '#ffd08e', fog: '#f2d2a4', dens: 0.009, hs: '#c3d6f0', hg: '#c99a68', hi: 1.45, sc: '#ffbe70', si: 4.6, dir: [-0.45, 0.14, 0.88], exp: 1.3, fill: 0.75, lamps: 0, shafts: 0.4, day: 1 },
 };
 function lightAt(t) {
   if (t >= CUT) return [LOOK.november, LOOK.november, 0];
   if (t < DAWN1) return [LOOK.night, LOOK.dawn, ss(seg(t, DAWN0, DAWN1))];
-  return [LOOK.dawn, LOOK.morning, ss(seg(t, DAWN1 + 1, MORN1))];
+  if (t < RIDE67) return [LOOK.dawn, LOOK.morning, ss(seg(t, DAWN1 + 1, RIDE67))];
+  return [LOOK.morning, LOOK.autumn, 0.75 * ss(seg(t, RIDE67 + 0.3, CUT))];
 }
 
 // ------------------------------------------------------------------ the camera: one travelling shot, one cut
@@ -266,7 +293,7 @@ function keys67() {
   const xi = PARK.ingrid + 0.45, ride = RIDE67;                                                    // her face, once she's waiting on the right
   return [
     [0, P(0.42, 1.14, 0.3), P(0.42, 1.25, -2.0), 44, 2.3, 7],                                       // frame 0: Ingrid, frozen at the wheel
-    [word('n01', 'every', 0.25), P(0.1, 1.3, 1.3), P(0.6, 1.5, -2.0), 46, 3.3, 5],                  // easing back...
+    [word('n01', 'every', 0.25), P(0.1, 1.3, 1.3), P(0.6, 1.62, -2.0), 46, 3.3, 5],                  // easing back...
     [word('n01', 'dead', 0.4) + 0.25, P(-3.2, 3.2, 4.5), P(3.0, 1.5, -2.0), 48, 0, 0],              // ... to the frozen street by "stop dead"
     [T0('n02'), P(-5.4, 5.0, 4.5), P(5.5, 1.3, -1.0), 50, 0, 0],                                    // the whole street, the crowds, the clock (still rising)
     [XA + 2.0, P(-6.2, 6.0, 4.4), P(6.5, 1.2, 0.0), 50, 0, 0],                                      // it creeps across to the right, and stops again
@@ -283,21 +310,21 @@ function keys67() {
     [word('n05', 'went', 0.1), P(2.7, 4.3, 4.5), P(22, 1.7, 1.0), 50, 0, 0],                       // "Deaths went down"
     [word('n05', 'half', 0.45) + 0.2, P(5.2, 1.55, 5.2), P(6.42, 1.3, 4.1), 44, 1.64, 7, 1],      // down to his notebook: a blank page
     [word('n05', 'cut', 0.95) + 0.2, P(5.26, 1.54, 5.18), P(6.5, 1.3, 4.1), 44, 1.64, 7, 1],
-    [ride, P(fx67(ride), 1.3, 4.4), P(fx67(ride), 1.2, 1.6), 44, 2.8, 6],                          // riding beside Ingrid as she crawls
-    [CUT - 0.01, P(fx67(CUT), 1.15, 3.85), P(fx67(CUT), 1.22, 1.55), 42, 2.3, 8],                 // ... and breathes out
+    [ride, P(fx67(ride) + LEFT67, 1.3, 4.4), P(fx67(ride) + LEFT67, 1.2, 1.6), 44, 2.8, 6],        // riding beside Ingrid as she crawls
+    [CUT - 0.01, P(fx67(CUT) + LEFT67, 1.15, 3.85), P(fx67(CUT) + LEFT67, 1.22, 1.55), 42, 2.3, 8], // ... and the care wears off
   ];
 }
 function keys69() {
-  const meet = tFace69(MEET69), up0 = word('n08', 'was', 0.5), up1 = NSTOP, o = 0.4;
+  const meet = tFace69(MEET69 - LEFT69), up0 = word('n08', 'was', 0.5), up1 = NSTOP, o = END69;
   return [
     [CUT, P(19.9, 1.7, 4.4), P(19.85, 1.2, -1.0), 44, 4.75, 3],                                    // November: the bump, the officer writing it up
     [word('n07', 'down', 0.4) + 0.1, P(19.8, 1.62, 4.2), P(19.8, 1.2, -1.0), 42, 4.55, 3],
     [word('n07', 'once', 0.6), P(18.3, 2.5, 4.45), P(20.4, 1.0, -1.2), 48, 0, 0],                  // the street, at ease again
     [T0('n08') - 0.5, P(MEET69, 1.18, 3.9), P(MEET69 + 1.4, 1.22, 1.55), 44, 2.6, 5, 1],          // eye level, the bumped taxi behind...
     [meet, P(MEET69, 1.16, 3.88), P(MEET69, 1.24, 1.55), 44, 2.33, 7, 1],                          // ... Ingrid drives in: frame 0 again
-    [up0, P(fx69(up0), 1.16, 3.86), P(fx69(up0), 1.24, 1.55), 44, 2.31, 7],
-    [up1, P(fx69(up1) + o, 2.2, 6.0), P(fx69(up1) + o, 1.2, 0.5), 38, 4.55, 2.5],                  // pulling back and up: the bump right behind her
-    [DUR, P(fx69(DUR) + o, 2.22, 6.02), P(fx69(DUR) + o, 1.2, 0.5), 38, 4.55, 2.5, 1],
+    [up0, P(fx69(up0) + LEFT69, 1.16, 3.86), P(fx69(up0) + LEFT69, 1.24, 1.55), 44, 2.31, 7],
+    [up1, P(fx69(up1) + o, 2.05, 6.0), P(fx69(up1) + o, 1.2, 0.5), 38, 4.6, 1.6],                  // pulling back and up: the bump right behind her
+    [DUR, P(fx69(DUR) + o, 2.07, 6.02), P(fx69(DUR) + o, 1.2, 0.5), 38, 4.6, 1.6, 1],
   ];
 }
 // the time map: monotone (Fritsch-Carlson), so the camera never runs back; a key marked 1 at index 6 is a stop, where
@@ -325,9 +352,9 @@ function camAt(t) {
   const pos = Pth.pos.getPoint(u), tgt = Pth.tgt.getPoint(u);
   // the shots that ride beside Ingrid's taxi (the crawl after the switch; November's last shot): x locks to her car. The
   // keys already put the camera where she'll be, so this only takes up what the curve between keys leaves over
-  const span = t < CUT ? [word('n05', 'cut', 0.95) + 0.2, RIDE67] : [tFace69(MEET69), tFace69(MEET69) + 0.6];
+  const span = t < CUT ? [word('n05', 'cut', 0.95) + 0.2, RIDE67] : [tFace69(MEET69 - LEFT69), tFace69(MEET69 - LEFT69) + 0.45];
   if (t >= span[0]) {
-    const off = t < CUT ? 0 : 0.4 * ss(seg(t, word('n08', 'was', 0.5), NSTOP));
+    const off = t < CUT ? LEFT67 : LEFT69 + (END69 - LEFT69) * ss(seg(t, word('n08', 'was', 0.5), NSTOP));     // framed left of centre: her nose and the bun point right
     const x = CAST.ingrid.g.position.x + 0.42 + off, k = ss(seg(t, span[0], span[1]));
     pos.x = lerp(pos.x, x, k); tgt.x = lerp(tgt.x, x, k);
   }
@@ -338,7 +365,10 @@ function camAt(t) {
 function faces(t) {
   let f = 0;
   if (t >= CUT) f = 4;                                                   // November: at ease
-  else if (t >= T0('n06')) f = 3;                                        // it looked safe: relief
+  else if (t >= word('n06', "sweden's", 0.65)) f = 4;                     // ... the bun: the care has worn off before November names it
+  else if (t >= word('n06', 'dagen h', 0.45)) f = 6;                       // ... sunglasses on
+  else if (t >= word('n06', 'as', 0.25)) f = 5;                            // ... one hand off the wheel
+  else if (t >= T0('n06')) f = 3;                                        // it looked safe: relief, both hands
   else if (t >= T0('n05')) f = 2;                                        // crawling like a learner
   else if (t >= FIVE - 0.6) f = 1;                                       // the peak: 05:00, driving off on the right for the first time
   CAST.ingrid.face.show(f);

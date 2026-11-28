@@ -131,11 +131,19 @@ export function ingrid(face = 'scared', hands = 'grip') {
       arm(g, [380, 420 + sh], [432, 470], [520, 318], 76, 60, 44, coat);                           // her right arm, up to the rim
       ell(g, 484, 250, 27, 23, skin, -0.3); ell(g, 524, 318, 27, 23, skin, -0.3);                  // both fists on the rim
       line(g, [[472, 242], [498, 256]], 4, skinD); line(g, [[512, 310], [538, 324]], 4, skinD);    // white knuckles
+    } else if (hands === 'one') {                                                                  // at ease: one hand on the rim, the other down in her lap
+      ell(g, 470, 236, 26, 22, skin, -0.2);
+      arm(g, [380, 430], [424, 520], [470, 612], 76, 60, 44, coat);
     } else {
       ell(g, 470, 236, 26, 22, skin, -0.2);                                                         // her left hand alone on the rim
-      arm(g, [380, 430], [420, 470], [404, 330], 76, 60, 44, coat);                                // her right hand up, a bun at her mouth
-      ell(g, 404, 326, 26, 22, skin);
-      ell(g, 420, 300, 40, 28, '#c98a4b'); g.strokeStyle = '#8f5528'; g.lineWidth = 5; g.beginPath(); g.ellipse(420, 298, 25, 15, 0, 0.3, 5.6); g.stroke(); ell(g, 420, 292, 8, 5, '#f4e7c9');
+      arm(g, [380, 430], [424, 470], [418, 340], 76, 60, 44, coat);                                // her right hand up: a cinnamon bun at her lips
+      ell(g, 418, 336, 26, 22, skin);
+      const bx = 432, by = 292;
+      ell(g, bx, by, 54, 38, '#c98a4b'); ell(g, bx, by - 6, 46, 28, '#d99a57');
+      g.strokeStyle = '#8f5528'; g.lineWidth = 6; g.lineCap = 'round'; g.beginPath();
+      for (let k = 0; k <= 46; k++) { const a = k * 0.36, r = 3 + k * 0.85; const x = bx + Math.cos(a) * r, y = by - 6 + Math.sin(a) * r * 0.6; k ? g.lineTo(x, y) : g.moveTo(x, y); }
+      g.stroke();
+      for (const [dx, dy] of [[-26, -18], [-8, -26], [14, -22], [30, -12], [-34, -2], [20, 2], [-14, 6], [4, -10]]) ell(g, bx + dx, by + dy, 5, 4, '#fbf7ee');   // pearl sugar
     }
   }, face.length * 7 + (hands === 'grip' ? 1 : 2), 11);
 }
